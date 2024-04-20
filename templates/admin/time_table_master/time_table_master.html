@@ -1,0 +1,205 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+
+{% endblock %}
+{% block heading %}
+  <span class="tab-title"><i class="fa-solid fa-users"></i> <span class="px-1">Time Table Master</span></span>
+{% endblock %}
+{% block body %}
+  <div class="d-flex justify-content-end">
+    <a href="/time_table_master/add_time_table" class="btn btn-primary">Add Time Table</a>
+  </div>
+  <div class="row">
+    <table id="example" class="table table-striped table-bordered" style="width:100%">
+      <thead>
+        <tr>
+          <th>Sr No</th>
+          <th>Subject</th>
+          <th>Teacher</th>
+          <th>Time</th>
+          <th>Day</th>
+          <th>Date</th>
+          <th>Class</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>English</td>
+          <td>XYZ ABC</td>
+          <td>30 Min</td>
+
+          <td>Monday</td>
+          <td>1st May 24</td>
+          <th>IA</th>
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>English</td>
+          <td>XYZ ABC</td>
+          <td>30 Min</td>
+
+          <td>Monday</td>
+          <td>1st May 24</td>
+          <th>IA</th>
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+
+        <tr>
+          <td>3</td>
+          <td>English</td>
+          <td>XYZ ABC</td>
+          <td>30 Min</td>
+
+          <td>Monday</td>
+          <td>1st May 24</td>
+          <th>IA</th>
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>English</td>
+          <td>XYZ ABC</td>
+          <td>30 Min</td>
+
+          <td>Monday</td>
+          <td>1st May 24</td>
+          <th>IA</th>
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>English</td>
+          <td>XYZ ABC</td>
+          <td>30 Min</td>
+
+          <td>Monday</td>
+          <td>1st May 24</td>
+          <th>IA</th>
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>English</td>
+          <td>XYZ ABC</td>
+          <td>30 Min</td>
+
+          <td>Monday</td>
+          <td>1st May 24</td>
+          <th>IA</th>
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>English</td>
+          <td>XYZ ABC</td>
+          <td>30 Min</td>
+
+          <td>Monday</td>
+          <td>1st May 24</td>
+          <th>IA</th>
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>English</td>
+          <td>XYZ ABC</td>
+          <td>30 Min</td>
+
+          <td>Monday</td>
+          <td>1st May 24</td>
+          <th>IA</th>
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>English</td>
+          <td>XYZ ABC</td>
+          <td>30 Min</td>
+
+          <td>Monday</td>
+          <td>1st May 24</td>
+          <th>IA</th>
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>English</td>
+          <td>XYZ ABC</td>
+          <td>30 Min</td>
+
+          <td>Monday</td>
+          <td>1st May 24</td>
+          <th>IA</th>
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>English</td>
+          <td>XYZ ABC</td>
+          <td>30 Min</td>
+
+          <td>Monday</td>
+          <td>1st May 24</td>
+          <th>IA</th>
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(document).ready(function () {
+      new DataTable('#example')
+    })
+  </script>
+{% endblock %}

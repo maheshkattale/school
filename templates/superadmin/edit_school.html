@@ -1,0 +1,80 @@
+{% extends "index.html" %}
+{% load static %} 
+{% block head %}
+{% endblock %}
+
+{% block heading %}
+<span class="tab-title">
+    <i class="fa-solid fa-school"></i>  <span class="px-1"> Edit School</span>
+</span>
+{% endblock %}
+
+
+
+
+
+{% block body %}
+
+<div class="card">
+    <div class="card-body">
+      <h5 class="card-title fw-semibold mb-4">Edit School Forms</h5>
+      <div class="card">
+        <div class="card-body">
+          <form>
+            <div class="row">
+                <div class="mb-3 col-lg-4">
+                    <label for="school_name" class="form-label">School Name</label>
+                    <input type="text" class="form-control" id="school_name" value="school_name" aria-describedby="school_name_error">
+                    <div id="school_name_error" class="form-text error_message"></div>
+                  </div>
+                  <div class="mb-3 col-lg-4">
+                      <label for="school_email" class="form-label">School Email</label>
+                      <input type="text" class="form-control" id="school_email" value="school_email" aria-describedby="school_email_error">
+                      <div id="school_email_error" class="form-text error_message"></div>
+                  </div>
+                  <div class="mb-3 col-lg-4">
+                      <label for="school_admin_email" class="form-label">Admin Email</label>
+                      <input type="text" class="form-control" id="school_admin_email" value="school_admin_email" aria-describedby="school_admin_email_error">
+                      <div id="school_admin_email_error" class="form-text error_message"></div>
+                  </div>
+                  <div class="mb-3 col-lg-4">
+                      <label for="school_admin_name" class="form-label">Admin Name</label>
+                      <input type="text" class="form-control" id="school_admin_name" value="school_admin_name" aria-describedby="school_admin_name_error">
+                      <div id="school_admin_name_error" class="form-text error_message"></div>
+                  </div>
+                  <div class="mb-3 col-lg-4">
+                      <label for="school_contact" class="form-label">Contact No</label>
+                      <input type="text" class="form-control" id="school_contact" value="school_contact" aria-describedby="school_contact_error">
+                      <div id="school_contact_error" class="form-text error_message"></div>
+                  </div>
+
+                  <div class="mb-3 col-lg-12">
+                      <label for="school_address" class="form-label">School Address</label>
+                      <textarea  class="form-control"  name="school_address" id="school_address" cols="30" rows="5" aria-describedby="school_address_error"> school_address </textarea>
+                      <div id="school_address_error" class="form-text error_message"></div>
+                  </div>
+            </div>
+
+            <div class="row">
+                <div class="d-flex justify-content-center">
+                    <a href="/school_master" class="btn btn-primary">Submit</a>
+                </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+      
+    </div>
+  </div> 
+  
+  
+{% endblock %}
+
+
+
+
+
+{% block script %}
+
+{% endblock %}

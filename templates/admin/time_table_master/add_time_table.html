@@ -1,0 +1,150 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+
+{% endblock %}
+
+{% block heading %}
+  <span class="tab-title"><i class="fa-solid fa-user"></i> <span class="px-1">Add Time Table</span></span>
+{% endblock %}
+
+{% block body %}
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title fw-semibold mb-4">Add Time Table Forms</h5>
+      <div class="card">
+        <div class="card-body">
+          <form>
+            <div class="row">
+
+              <div class="mb-3 col-lg-4">
+                <label for="class_name" class="form-label">Class</label> 
+                <select id="class_name" class="form-select" aria-describedby="class_name_error">
+                  <option>ABC</option>
+                  <option>XYZ</option>
+                </select>
+                <div id="class_name_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                  <label for="daterange" class="form-label">Dates</label>
+
+                    <span style="display:flex;">
+                      <span id="daterange"  class="form-control">
+                          <i class="fa fa-calendar"></i>&nbsp;
+                      <span id="spandatechange"></span> <i class="fa fa-caret-down"></i>
+                      </span>
+                    </span>
+                    <div id="date_err" class="form-text error_message"></div>
+
+              </div>
+
+
+
+
+              
+
+              <div class="mb-3 col-lg-4">
+                <label for="day" class="form-label">Days</label>
+                <select id="day" class="form-select" aria-describedby="day_error" multiple>
+                  <option>Monday</option>
+                  <option>Tuesday</option>
+                  <option>Wednesday</option>
+                  <option>Thursday</option>
+                  <option>Friday</option>
+                  <option>Saturday</option>
+                  <option>Sunday</option>
+                </select>
+                <div id="day_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="start_time" class="form-label">Start Time</label>
+                <input type="time" class="form-control" id="start_time" aria-describedby="start_time_error" />
+                <div id="start_time_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="end_time" class="form-label">End Time</label>
+                <input type="time" class="form-control" id="end_time" aria-describedby="end_time_error" />
+                <div id="end_time_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="subject" class="form-label">Subject</label>
+                <select id="subject" class="form-select" aria-describedby="subject_error">
+                  <option>Science</option>
+                  <option>Maths</option>
+                </select>
+                <div id="subject_error" class="form-text error_message"></div>
+              </div>
+
+
+              <div class="mb-3 col-lg-4">
+                <label for="teacher" class="form-label">Teacher</label>
+                <select id="teacher" class="form-select" aria-describedby="teacher_error">
+                  <option>Jons Albert</option>
+                  <option>Suyag Fatol</option>
+                </select>
+                <div id="teacher_error" class="form-text error_message"></div>
+              </div>
+
+
+
+            </div>
+
+            <div class="row">
+              <div class="d-flex justify-content-center">
+                <a href="/time_table_master" class="btn btn-primary">Submit</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  $(document).ready(function() {
+    $('#day').select2();
+    $('#class_name').select2();
+    $('#subject').select2();
+    $('#teacher').select2();
+
+    jQuery(function ($) {
+
+      var start = moment().subtract(0, 'days')
+      var end = moment()
+  
+      function cb(start, end) {
+      $('#daterange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+      }
+  
+      $('#daterange').daterangepicker(
+      {
+          startDate: start,
+          endDate: end,
+          ranges: {
+          Today: [moment(), moment()],
+          Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          }
+      },
+      cb
+      )
+  
+      cb(start, end)
+
+      // Use jQuery UI Datepicker for DOB input
+      $('#spandatechange').on('DOMSubtreeModified', function () {
+          console.log('DOMSubtreeModified')
+      })
+  })
+  });
+</script>
+{% endblock %}

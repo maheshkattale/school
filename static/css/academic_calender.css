@@ -1,0 +1,40 @@
+.modal-content {
+    border-radius: 0px !important;
+    padding: 0px 0px;    
+    border: none;
+
+}
+
+.modal-header {
+    border-radius: 0px;
+
+    background: #00A0EF;
+}
+.modal-title-calender{
+    font-size: 16px;
+}
+
+.fa-spin{
+    font-size: 40px;
+    color: #00A0EF;
+    
+}
+.spiner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    top: 51%;
+    left: 50%;
+    z-index: 100;
+}
+.fc-month-button{
+    display: none;
+}
+.font-weight-500{
+    font-weight: 500;
+}
+.fc th, .fc-basic-view td.fc-week-number, .fc-icon, .fc-toolbar {
+    text-align: left;
+}

@@ -22,6 +22,12 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('SchoolMaster/', include('SchoolMaster.urls')),
+    path('teacher_master/', include('teacher.urls')),
+    path('time_table_master/', include('time_table.urls')),
+    path('parent_student_master/', include('parent_student.urls')),
+    path('academic_calender/', include('academic_calender.urls')),
+    path('', include('school.urls')),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 

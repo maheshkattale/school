@@ -1,0 +1,118 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+
+{% endblock %}
+
+{% block heading %}
+  <span class="tab-title"><i class="fa-solid fa-user"></i> <span class="px-1">Edit Parent Student</span></span>
+{% endblock %}
+
+{% block body %}
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title fw-semibold mb-4">Edit Parent Student Forms</h5>
+      <div class="card">
+        <div class="card-body">
+          <form>
+            <div class="row">
+              <div class="mb-3 col-lg-4">
+                <label for="parent_name" class="form-label">Parent Name</label>
+                <input type="text" class="form-control" id="parent_name" aria-describedby="parent_name_error" />
+                <div id="parent_name_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="parent_email" class="form-label">Parent Email</label>
+                <input type="text" class="form-control" id="parent_email" aria-describedby="parent_email_error" />
+                <div id="parent_email_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="parent_contact" class="form-label">Contact No</label>
+                <input type="text" class="form-control" id="parent_contact" aria-describedby="parent_contact_error" />
+                <div id="parent_contact_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="children_count" class="form-label">No of Children</label>
+                <select id="children_count" class="form-select" aria-describedby="children_count_error">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>9</option>
+                  <option>10</option>
+                </select>
+                <div id="children_count_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="children_name" class="form-label">Children Name</label>
+                <input type="text" class="form-control" id="children_name" aria-describedby="children_name_error" />
+                <div id="children_name_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="children_date_of_birth" class="form-label"> Date Of Birth</label>
+                <input type="text" class="form-control" id="children_date_of_birth" aria-describedby="children_date_of_birth_error" readonly/>
+                <div id="children_date_of_birth_error" class="form-text error_message"></div>
+              </div>
+
+
+              <div class="mb-3 col-lg-4">
+                <label for="children_class" class="form-label">Class</label>
+                <select id="children_class" class="form-select" aria-describedby="children_class_error" >
+                  <option>1st</option>
+                  <option>2nd</option>
+                </select>
+                <div id="children_class_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="children_blood_group" class="form-label">Blood Group</label>
+                <select id="children_blood_group" class="form-select" aria-describedby="children_blood_group_error" >
+                  <option>A+</option>
+                  <option>O</option>
+                </select>
+                <div id="children_blood_group_error" class="form-text error_message"></div>
+              </div>
+
+
+              <div class="mb-3 col-lg-12">
+                <label for="address" class="form-label"> Address</label>
+                <textarea class="form-control" name="address" id="address" cols="30" rows="5" aria-describedby="address_error"></textarea>
+                <div id="address_error" class="form-text error_message"></div>
+              </div>
+              
+            </div>
+
+            <div class="row">
+              <div class="d-flex justify-content-center">
+                <a href="/parent_student_master" class="btn btn-primary">Submit</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  $(document).ready(function() {
+    $('#children_class').select2();
+    $('#children_count').select2();
+
+    $('#children_blood_group').select2();
+    flatpickr("#children_date_of_birth", {
+      dateFormat: "d-m-Y", // Customize date format if needed
+      // You can add more configuration options here
+    });
+  });
+</script>
+{% endblock %}

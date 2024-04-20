@@ -1,0 +1,90 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+
+{% endblock %}
+
+{% block heading %}
+  <span class="tab-title"><i class="fa-solid fa-user"></i> <span class="px-1">Edit teacher</span></span>
+{% endblock %}
+
+{% block body %}
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title fw-semibold mb-4">Edit Teacher Forms</h5>
+      <div class="card">
+        <div class="card-body">
+          <form>
+            <div class="row">
+              <div class="mb-3 col-lg-4">
+                <label for="teacher_name" class="form-label">Teacher Name</label>
+                <input type="text" class="form-control" id="teacher_name" value="teacher_name" aria-describedby="teacher_name_error" />
+                <div id="teacher_name_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="teacher_email" class="form-label">Teacher Email</label>
+                <input type="text" class="form-control" id="teacher_email" value="teacher_email" aria-describedby="teacher_email_error" />
+                <div id="teacher_email_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="teacher_designation" class="form-label">Designation</label>
+                <select id="teacher_designation" class="form-select" value="select" aria-describedby="teacher_designation_error">
+                  <option>ABC</option>
+                  <option>XYZ</option>
+                </select>
+                <div id="teacher_designation_error" class="form-text error_message"></div>
+              </div>
+              
+
+              <div class="mb-3 col-lg-4">
+                <label for="teacher_joining_date" class="form-label">Joining Date</label>
+                <input type="text" class="form-control" id="teacher_joining_date" value="" aria-describedby="teacher_joining_date_error" readonly/>
+                <div id="teacher_joining_date_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="teacher_contact" class="form-label">Contact No</label>
+                <input type="text" class="form-control" id="teacher_contact" value="teacher_contact" aria-describedby="teacher_contact_error" />
+                <div id="teacher_contact_error" class="form-text error_message"></div>
+              </div>
+              <div class="mb-3 col-lg-4">
+                <label for="teacher_subject" class="form-label">Subject</label>
+                <select id="teacher_subject" class="form-select" value="select" aria-describedby="teacher_subject_error" multiple>
+                  <option>Science</option>
+                  <option>Maths</option>
+                </select>
+                <div id="teacher_subject_error" class="form-text error_message"></div>
+              </div>
+              <div class="mb-3 col-lg-12">
+                <label for="teacher_address" class="form-label">Teacher Address</label>
+                <textarea class="form-control" name="teacher_address" id="teacher_address" cols="30" rows="5" aria-describedby="teacher_address_error"> Address</textarea>
+                <div id="teacher_address_error" class="form-text error_message"></div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="d-flex justify-content-center">
+                <a href="/teacher_master" class="btn btn-primary">Submit</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  $(document).ready(function() {
+    $('#teacher_subject').select2();
+    $('#teacher_designation').select2();
+    flatpickr("#teacher_joining_date", {
+      dateFormat: "d-m-Y", // Customize date format if needed
+      // You can add more configuration options here
+    });
+  });
+</script>
+{% endblock %}
