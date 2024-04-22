@@ -4,7 +4,7 @@ from helpers.models import TrackingModel
 
 # Create your models here.
 class Students(TrackingModel):
-    ParentId = models.IntegerField(max_length=255,null=True,blank=True)
+    ParentId = models.IntegerField(null=True,blank=True)
     StudentName = models.TextField(null=True, blank=True)
     StudentCode = models.CharField(max_length=150,null=True,blank=True)
     StudentClass = models.CharField(max_length=150,null=True,blank=True)
