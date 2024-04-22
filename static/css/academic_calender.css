@@ -1,40 +1,240 @@
-.modal-content {
-    border-radius: 0px !important;
-    padding: 0px 0px;    
+#calendar {
+    margin: 3px 10px;
+}
+.fc-row .fc-widget-header {
+    padding: 10px;
     border: none;
+    background: white;
+    color: #5E676F;
+    font-weight: 500;
+}
+
+.fc td, .fc th {
+    border-style: solid;
+    border-width: 1px;
+    padding: 0;
+    vertical-align: top;
+    background: white;
+}
+.fc .fc-button-group>* {
+    float: left;
+    margin: 0 0 0 -1px;
+    border: 0px;
+    background: transparent;
+}
+.fc-state-active{
+    background-color: transparent;
+    background-image: none;
+    box-shadow: none;
+    border-radius: 0px !important;
+    border-bottom: 2px solid #995dff !important;
+
+}
+.fc-state-default {
+
+    box-shadow: none;
+}
+.fc-time-grid-event .fc-time {
+    font-size: 16px;
+    white-space: nowrap;
+    display: flex;
+
+}
+.fc-day-grid-event .fc-time {
+    font-weight: 700;
+    display: flex;
+}
+.fc-time-grid-event .fc-content {
+    overflow: hidden;
+    font-size: 14px !important;
+    padding: 0px 5px;
+    
+}
+.fc-time-grid-event{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    
+}
+
+
+.fc-time-grid .fc-slats td {
+    border-bottom: 0;
+}
+.fc-time-grid-container{
+    max-height: 75vh !important;
+    overflow-y: scroll;
+
+}
+.fc-day-grid-container {
+    max-height: 75vh !important;
+    overflow-y: scroll;
+
+}
+hr{
+    margin: 0px;
+}
+
+
+.fc-agenda-view .fc-day-grid .fc-row .fc-content-skeleton {
+    padding-bottom: 0px;
+}
+
+#eventhead{
+    font-size: 14px;
+    font-weight: 400;
+    color: grey;
+    border-bottom: 1px solid grey;
+    padding: 10px 0;
+
+}
+#eventTitle{
+    font-size: 14px;
+    border: 1px solid grey;
+    padding: 10px;
+    border-radius: 9px;
+    
+    margin-bottom: 12px;
+
+    }
+
+.fc-view, .fc-view>table {
+
+    border-radius: 11px !important;
+    padding: 5px;
+}
+.fc-view-container *, .fc-view-container :after, .fc-view-container :before {
+
+    color: #5E676F;
+}
+.fc-event  {
+    left: 0% !important; 
+    right: 0% !important; 
+    margin:0px !important;
+}
+.fc-event-container .fc-event {
+    z-index: 1; /* Set a base z-index for all .fc-event elements */
+    transition: z-index 0.5s ease, transform 0.5s ease; /* Add transitions for opacity, z-index, and transform properties */
+
+    /* Use the :nth-child pseudo-class to increase z-index for each .fc-event */
+    &:nth-child(1) {
+        z-index: 2 !important;
+    }
+
+    &:nth-child(2) {
+        z-index: 3 !important;
+    }
+    &:nth-child(3) {
+        z-index: 4 !important;
+    }
+    &:nth-child(4) {
+        z-index: 5 !important;
+    }
+    &:nth-child(5) {
+        z-index: 6 !important;
+    }
+    &:nth-child(6) {
+        z-index: 7 !important;
+    }
+
+    /* Add more styles for additional .fc-event elements as needed */
+}
+.fc-event-container .fc-event:hover{
+    z-index: 10 !important;
+    transform: scale(1.01); /* Add a scale transform for a subtle zoom effect */
+}
+.fc-today-button {
+    border: 1px solid #995dff;
+    background: transparent;
+    color: black;
+    border-radius: 25px !important;
+    font-size: 14px !important;
+    padding: 0px 20px !important;
+}
+.main-wrapper {
+
+    background: white;
+        padding-top: 1rem;
+        margin: 5rem 1rem 10rem 1rem;
+    
+}
+.fc-toolbar .fc-center {
+    display: block;
+}
+.fc-toolbar .fc-left {
+    float: right;
+    display: flex;
+
+}
+
+.calender-heading{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.icon-heading{
+    display: flex!important;
+    flex-direction: row;
+    align-items: flex-start;
+}
+.fc-center>h5{    color: grey;
+font-size: 16px;
+font-weight: 400;
+}
+.modal-content {
+border-radius: 0px !important;
+padding: 0px 0px;    
+border: none;
 
 }
 
 .modal-header {
-    border-radius: 0px;
+border-radius: 0px;
 
-    background: #00A0EF;
+background: #995dff;
 }
 .modal-title-calender{
-    font-size: 16px;
+font-size: 16px;
 }
 
 .fa-spin{
-    font-size: 40px;
-    color: #00A0EF;
-    
+font-size: 40px;
+color: #995dff;
+
 }
 .spiner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+display: flex;
+justify-content: center;
+align-items: center;
 
-    position: absolute;
-    top: 51%;
-    left: 50%;
-    z-index: 100;
+position: absolute;
+top: 51%;
+left: 50%;
+z-index: 100;
 }
 .fc-month-button{
-    display: none;
+display: none;
 }
 .font-weight-500{
-    font-weight: 500;
+font-weight: 500;
 }
 .fc th, .fc-basic-view td.fc-week-number, .fc-icon, .fc-toolbar {
     text-align: left;
+}
+.fc .fc-button-group>* {
+    float: left;
+    margin: 0 0 0 -1px;
+    border: 0px;
+    background: transparent;
+}
+.fc-state-default {
+    box-shadow: none;
+}
+.fc-state-active {
+    background-color: transparent;
+    background-image: none;
+    box-shadow: none;
+    border-radius: 0px !important;
+    border-bottom: 2px solid #995dff !important;
 }

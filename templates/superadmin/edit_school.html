@@ -22,42 +22,42 @@
         <div class="card-body">
           <form>
             <div class="row">
-                <div class="mb-3 col-lg-4">
-                    <label for="school_name" class="form-label">School Name</label>
-                    <input type="text" class="form-control" id="school_name" value="school_name" aria-describedby="school_name_error">
-                    <div id="school_name_error" class="form-text error_message"></div>
-                  </div>
-                  <div class="mb-3 col-lg-4">
-                      <label for="school_email" class="form-label">School Email</label>
-                      <input type="text" class="form-control" id="school_email" value="school_email" aria-describedby="school_email_error">
-                      <div id="school_email_error" class="form-text error_message"></div>
-                  </div>
-                  <div class="mb-3 col-lg-4">
-                      <label for="school_admin_email" class="form-label">Admin Email</label>
-                      <input type="text" class="form-control" id="school_admin_email" value="school_admin_email" aria-describedby="school_admin_email_error">
-                      <div id="school_admin_email_error" class="form-text error_message"></div>
-                  </div>
-                  <div class="mb-3 col-lg-4">
-                      <label for="school_admin_name" class="form-label">Admin Name</label>
-                      <input type="text" class="form-control" id="school_admin_name" value="school_admin_name" aria-describedby="school_admin_name_error">
-                      <div id="school_admin_name_error" class="form-text error_message"></div>
-                  </div>
-                  <div class="mb-3 col-lg-4">
-                      <label for="school_contact" class="form-label">Contact No</label>
-                      <input type="text" class="form-control" id="school_contact" value="school_contact" aria-describedby="school_contact_error">
-                      <div id="school_contact_error" class="form-text error_message"></div>
-                  </div>
+              <div class="mb-3 col-lg-4">
+                <label for="school_name" class="form-label">School Name</label>
+                <input type="text" class="form-control" id="school_name" placeholder="Please enter school name" aria-describedby="school_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');">
+                <div id="school_name_error" class="form-text error_message"></div>
+              </div>
+              <div class="mb-3 col-lg-4">
+                  <label for="school_email" class="form-label">School Email</label>
+                  <input type="text" class="form-control" id="school_email" placeholder="Please enter school email" aria-describedby="school_email_error" oninput="email_validate('school_email');">
+                  <div id="school_email_error" class="form-text error_message"></div>
+              </div>
+              <div class="mb-3 col-lg-4">
+                  <label for="school_admin_email" class="form-label">Admin Email</label>
+                  <input type="text" class="form-control" id="school_admin_email" placeholder="Please enter school admin email" aria-describedby="school_admin_email_error" oninput="email_validate('school_admin_email');">
+                  <div id="school_admin_email_error" class="form-text error_message"></div>
+              </div>
+              <div class="mb-3 col-lg-4">
+                  <label for="school_admin_name" class="form-label">Admin Name</label>
+                  <input type="text" class="form-control" id="school_admin_name" placeholder="Please enter school admin name" aria-describedby="school_admin_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');">
+                  <div id="school_admin_name_error" class="form-text error_message"></div>
+              </div>
+              <div class="mb-3 col-lg-4">
+                  <label for="school_contact" class="form-label">Contact No</label>
+                  <input type="text" class="form-control" id="school_contact" placeholder="Please enter school contact" aria-describedby="school_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');">
+                  <div id="school_contact_error" class="form-text error_message"></div>
+              </div>
 
-                  <div class="mb-3 col-lg-12">
-                      <label for="school_address" class="form-label">School Address</label>
-                      <textarea  class="form-control"  name="school_address" id="school_address" cols="30" rows="5" aria-describedby="school_address_error"> school_address </textarea>
-                      <div id="school_address_error" class="form-text error_message"></div>
-                  </div>
+              <div class="mb-3 col-lg-12">
+                  <label for="school_address" class="form-label">School Address</label>
+                  <textarea  class="form-control"  name="school_address" id="school_address" cols="30" rows="5" aria-describedby="school_address_error"></textarea>
+                  <div id="school_address_error" class="form-text error_message"></div>
+              </div>
             </div>
 
             <div class="row">
                 <div class="d-flex justify-content-center">
-                    <a href="/school_master" class="btn btn-primary">Submit</a>
+                  <a  class="btn btn-primary" onclick="validate_form();">Submit</a>
                 </div>
             </div>
 
@@ -76,5 +76,85 @@
 
 
 {% block script %}
+<script>
+  function validate_form(){
+    debugger
+    var school_name=$('#school_name').val();
+    var school_email=$('#school_email').val();
+    var school_admin_email=$('#school_admin_email').val();
+    var school_admin_name=$('#school_admin_name').val();
+    var school_contact=$('#school_contact').val();
+    var school_password=$('#school_password').val();
+    var school_address=$('#school_address').val();
 
+
+    if(IsValid(school_name)){
+      $('#school_name').html();
+      $('#school_name_error').show().delay(3000).slideUp();
+      $('#school_name_error').html('Please enter school name');
+      $('#school_name').focus();
+      return false;
+    }
+    if(IsValid(school_email)){
+      $('#school_email').html();
+      $('#school_email_error').show().delay(3000).slideUp();
+      $('#school_email_error').html('Please enter school email');
+      $('#school_email').focus();
+      return false;
+    }
+    if(email_validate('school_email') == false){
+      $('#school_email').html();
+      $('#school_email_error').show().delay(3000).slideUp();
+      $('#school_email_error').html('Please enter school valid email ');
+      $('#school_email').focus();
+      return false;
+    }
+    if(IsValid(school_admin_email)){
+      $('#school_admin_email').html();
+      $('#school_admin_email_error').show().delay(3000).slideUp();
+      $('#school_admin_email_error').html('Please enter school admin email');
+      $('#school_admin_email').focus();
+      return false;
+    }
+    if(email_validate('school_admin_email') == false){
+      $('#school_admin_email').html();
+      $('#school_admin_email_error').show().delay(3000).slideUp();
+      $('#school_admin_email_error').html('Please enter school valid admin email ');
+      $('#school_admin_email').focus();
+      return false;
+    }
+    if(IsValid(school_admin_name)){
+      $('#school_admin_name').html();
+      $('#school_admin_name_error').show().delay(3000).slideUp();
+      $('#school_admin_name_error').html('Please enter school admin name');
+      $('#school_admin_name').focus();
+      return false;
+    }
+    if(IsValid(school_contact)){
+      $('#school_contact').html();
+      $('#school_contact_error').show().delay(3000).slideUp();
+      $('#school_contact_error').html('Please enter school contact number');
+      $('#school_contact').focus();
+      return false;
+    }
+    if(mobile_validate('school_contact') == false){
+      $('#school_contact').html();
+      $('#school_contact_error').show().delay(3000).slideUp();
+      $('#school_contact_error').html('Please enter school contact number ');
+      $('#school_contact').focus();
+      return false;
+    }
+
+    if(IsValid(school_address)){
+      $('#school_address').html();
+      $('#school_address_error').show().delay(3000).slideUp();
+      $('#school_address_error').html('Please enter school address ');
+      $('#school_address').focus();
+      return false;
+    }
+    else{
+      window.location.href = "/school_master";
+    }
+  }
+</script>
 {% endblock %}

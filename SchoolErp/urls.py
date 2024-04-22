@@ -21,12 +21,18 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('SchoolMaster/', include('SchoolMaster.urls')),
     path('teacher_master/', include('teacher.urls')),
     path('time_table_master/', include('time_table.urls')),
     path('parent_student_master/', include('parent_student.urls')),
     path('academic_calender/', include('academic_calender.urls')),
+    path('user/', include('user.urls')),
     path('', include('school.urls')),
+    # backend
+    path('api/User/', include('User.urls')),
+    path('api/SchoolMaster/', include('SchoolMaster.urls')),
+    path('api/DesignationMaster/', include('DesignationMaster.urls')),
+    path('api/SubjectMaster/', include('SubjectMaster.urls')),
+    # path('api/TeacherMaster/', include('TeacherMaster.urls')),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

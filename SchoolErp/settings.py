@@ -53,6 +53,11 @@ INSTALLED_APPS = [
     'SchoolMaster',
     'academic_calender',
     
+    'User',
+    'user',
+    
+    'DesignationMaster',
+    'SubjectMaster'
 ]
 
 MIDDLEWARE = [

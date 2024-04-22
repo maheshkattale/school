@@ -8063,7 +8063,34 @@
     },
     success: function(response){
        $('.taskcontent').html('');
-        eventslist=response.data
+        eventslist=[ {
+          "title": "English",
+          "start": "2024-04-20T08:30:00",
+          "end": "2024-04-20T10:00:00",
+          "color": "#F9F4FF",
+          "textColor": "#8833FF",
+          "uniqueText": " Lecture",
+          "date": "2024-04-20",
+        },
+        {
+          "title": "Marathi",
+          "start": "2024-04-20T10:30:00",
+          "end": "2024-04-20T12:00:00",
+          "color": "#FFF7F4",
+          "textColor": "#FF6633",
+          "uniqueText": " Lecture",
+          "date": "2024-04-20",
+        },
+        {
+          "title": "Science",
+          "start": "2024-04-20T05:30:00",
+          "end": "2024-04-20T07:00:00",
+          "color": "#FFF7F4",
+          "textColor": "#FF6633",
+          "uniqueText": " Lecture",
+          "date": "2024-04-20",
+        }
+      ]
 
 
 

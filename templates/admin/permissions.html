@@ -1,0 +1,359 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+<style>
+    .table-bordered thead th, .table-bordered thead td {
+        border-bottom-width: 2px;
+        font-weight: 700;
+    }
+    .table-bordered th, .table-bordered td {
+        border: 1px solid #e9ecef;
+    }
+    .Checkbox  {
+      cursor: pointer;
+    }
+
+    
+
+
+    
+    .label--checkbox {
+      position: relative;
+      margin: 0.5rem;
+      font-family: Arial, sans-serif;
+      line-height: 135%;
+      cursor: pointer;
+    }
+    
+    .Checkbox {
+      position: relative;
+      top: -0.375rem;
+      margin: 0 1rem 0 0;
+      cursor: pointer;
+    }
+    .Checkbox:before {
+      -webkit-transition: all 0.1s ease-in-out;
+      -moz-transition: all 0.1s ease-in-out;
+      transition: all 0.1s ease-in-out;
+      content: "";
+      position: absolute;
+      left: 0;
+      z-index: 1;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid #f2f2f2;
+    }
+    .Checkbox:checked:before {
+      -webkit-transform: rotate(-45deg);
+      -moz-transform: rotate(-45deg);
+      -ms-transform: rotate(-45deg);
+      -o-transform: rotate(-45deg);
+      transform: rotate(-45deg);
+      height: 0.5rem;
+      width: 20px;
+      border-color: #00960e;
+      border-top-style: none;
+      border-right-style: none;
+    }
+    .Checkbox:after {
+      content: "";
+      position: absolute;
+      top: -0.125rem;
+      left: 0;
+      width: 1.1rem;
+      height: 1.1rem;
+      background: #fff;
+      cursor: pointer;
+    }
+    
+
+
+    
+
+    
+    @-webkit-keyframes slideUp {
+      0% {
+        -webkit-transform: translateY(6.25rem);
+        transform: translateY(6.25rem);
+      }
+      100% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+      }
+    }
+    @keyframes slideUp {
+      0% {
+        -webkit-transform: translateY(6.25rem);
+        transform: translateY(6.25rem);
+      }
+      100% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+      }
+    }
+</style>
+{% endblock %}
+{% block heading %}
+  <span class="tab-title"><i class="fa-solid fa-list-check"></i> <span class="px-1">Permissions Master</span></span>
+{% endblock %}
+{% block body %}
+<div class="app-main">
+
+  <div class="app-main__outer">
+   <div class="app-main__inner">
+     <div class="inner-content">
+      <div class="app-page-title">
+       <div class="page-title-wrapper">
+        <div class="page-title-heading">
+
+        </div>
+
+      </div>
+    </div>    
+    <div class="main-card mb-3 card">
+      <form method="POST">
+        {%csrf_token%}
+        {% if messages %}
+              <div class="row" style="justify-content: center;">
+                <div class="col-sm-6 col-sm-offset-3">
+                  {% for message in messages %}
+                  <div style="margin:15px 0px" class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    <p style="margin-bottom: 0px;">{{ message }}</p>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+              <div id="snackbar"></div>
+      <div class="card-body vender">
+       <div class="form-row">
+
+        <div class="col-md-4 right-left">
+          <div class="position-relative form-group">
+            <label for="roleID" class="">Select Role <span class="text-danger">*</span></label>
+            <select onchange="getpermissionbyrole();" name="role" id="roleID" class="form-control">
+              <option selected value="">Select Role</option>
+              {% for i in Rolelist%}
+                <option value="{{i.id}}" >{{i.Role}}</option>   
+              {%endfor%} 
+            </select>
+          </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="">
+   <div class="card-body">
+    <table class="mb-0 table table-bordered">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th class="text-center">Description</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td scope="row">XYZ</td>
+          <td>
+            <table class="mb-0 table">
+              <thead>
+                <tr>
+
+                  <th>Sub-Menu</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>xyz</td>
+                  <td class="text-center">
+                    <label class="label--checkbox">
+                      <input type="checkbox" class="Checkbox  check" id="check" name="menuItemCheck" value="">
+                    </label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td class="text-center">
+            <input type="checkbox" class="Checkbox check" id="check" name="menuItemCheck" value="">
+          </td>
+        </tr>
+
+       
+        
+       
+
+       
+
+        <tr>
+          <td scope="row">ABC</td>
+          <td></td>
+          <td class="text-center">
+            <input type="checkbox" class="Checkbox  check  " id="check" name="menuItemCheck" value="">
+          </td>
+          
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="form-row">
+      <div class="col-md-12 text-center">
+      <button type="submit" class="mt-2 btn btn-primary" onclick="return permissionValidate();">Submit</button>
+    </div>
+    </div>
+  </div>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+
+<script>
+    $(document).ready(function () {
+        $('#roleID').select2()
+  
+  
+      })
+
+
+
+  function permissionValidate(){
+    var x = document.getElementById("snackbar");
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+
+    var role = $("#roleID").val();
+    console.log("sds",role)
+
+    if (IsValid(role)) {
+      $('#snackbar').html('');
+      $('#snackbar').html('Role field is required');
+      $('#roleID').focus();
+      return false;
+  }else{
+    $('#snackbar').addClass('validationBox')
+  }
+  }
+
+    function getpermissionbyrole() {
+        
+        $('.Checkbox').prop('checked', false)
+        var roleID = $('#roleID').val();
+        var html;
+        $.ajax({
+            type: "POST",
+            url: frontendURL + "getpermissionbyrole",
+            data: {
+                'roleID': roleID,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (response) {  
+            console.log("rep",response.data)          
+                    $(response.data).each(function (i, o) {
+                        $(o.permission).each(function (j, k) {
+                            $('#check' + k).prop('checked', true)
+                        })
+                    })
+                
+            }
+        });
+    }
+
+    $("#check8").click(function () {
+    $(".8").prop('checked', this.checked);
+    });
+
+    $("#check1").click(function () {
+    $(".1").prop('checked', this.checked);
+    });
+
+    $("#check28").click(function () {
+    $(".28").prop('checked', this.checked);
+    });
+
+
+
+    $(".8").click(function () {
+    var totalCheckboxes = $('.8:checked').length;
+    if ( totalCheckboxes < 1){
+        $('#check8').prop('checked', false);
+    }else{
+        $('#check8').prop('checked', true);
+    }
+    });
+
+    $(".1").click(function () {
+    var secondCheckboxes = $('.1:checked').length;
+    if (secondCheckboxes < 1 ){
+        $('#check1').prop('checked', false);
+    }else {
+        $('#check1').prop('checked', true);
+    }
+    
+    });
+
+    $(".28").click(function () {
+    var secondCheckboxes = $('.28:checked').length;
+    if (secondCheckboxes < 1 ){
+        $('#check28').prop('checked', false);
+    }else {
+        $('#check28').prop('checked', true);
+    }
+    
+    });
+
+    $('.parentclass1').click(function(){
+    $(".childclass1").prop("checked", this.checked);
+    });
+    $('.childclass1').click(function() {
+        if ($('.childclass1:checked').length < 1) {
+        $('.parentclass1').prop('checked', false);
+        } else {
+        $('.parentclass1').prop('checked', true);
+        }
+    });
+
+    $('.parentclass4').click(function(){
+    $(".childclass4").prop("checked", this.checked);
+    });
+    $('.childclass4').click(function() {
+        if ($('.childclass4:checked').length < 1) {
+        $('.parentclass4').prop('checked', false);
+        } else {
+        $('.parentclass4').prop('checked', true);
+        }
+    });
+
+    $('.parentclass7').click(function(){
+    $(".childclass7").prop("checked", this.checked);
+    });
+    $('.childclass7').click(function() {
+    if ($('.childclass7:checked').length < 1) {
+      $('.parentclass7').prop('checked', false);
+    } else {
+      $('.parentclass7').prop('checked', true);
+    }
+  });
+
+</script>
+
+
+
+
+
+{% endblock %}

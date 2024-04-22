@@ -1,0 +1,236 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block heading %}
+  <span class="tab-title"><i class="fa-solid fa-list-check"></i> <span class="px-1">Profile</span></span>
+{% endblock %}
+{% block head %}
+  <link src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+  <link src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.css" />
+  <style>
+
+
+    .file-upload {
+      display: none;
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #00b0ef;
+    }
+
+    
+
+    .profilecard {
+        background-color: #b9b9b910;
+        padding: 10px;
+        position: relative;
+
+        --bs-card-border-width: var(--bs-border-width);
+        --bs-card-border-color: var(--bs-border-color-translucent);
+        --bs-card-border-radius: var(--bs-border-radius);
+        border: var(--bs-card-border-width) solid var(--bs-card-border-color);
+        border-radius: var(--bs-card-border-radius);
+
+
+      }
+      .proheading {
+        font-weight: 500;
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      .upload-button {
+        position: absolute;
+        left: 60%;
+        cursor: pointer;
+        font-size: 21px;
+        top: 66%;
+      }
+      .username {
+        color: black;
+        font-weight: 500;
+      }
+      .profile-pic{
+        border-radius: 50%;
+      }
+  </style>
+{% endblock %}
+{% block body %}
+  <!-- Main page -> Manage Task -->
+  <main class="main-wrapper">
+    <!-- ==================Row1======================= -->
+    <div class="common-box-section">
+      <div id="snackbar"></div>
+
+      <div class="row pt-3">
+        <div class="col-xl-3">
+          <!-- Profile picture card -->
+          <div class="profilecard mb-1">
+            <div class="proheading d-none">My Profile</div>
+            <div class="py-2 text-center">
+              <div class="mb-2">
+                <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{% static 'assets/images/profile/profile.jpg' %}" alt="" />
+              </div>
+              <div class="p-image">
+                <i class="fa fa-camera upload-button"></i>
+                <input data-file_types="jpg|jpeg|png|ico|bmp" name="photo" id="profileimage" type="file" class="file-upload" onchange="document.getElementById('idProofPreview').src = window.URL.createObjectURL(this.files[0])" />
+              </div>
+
+              <div class="mb-1 username">Mahesh Kattale</div>
+              <div class="small font-italic text-muted mb-2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-9 px-0">
+          <!-- Account details card -->
+          <div class="tab-content" id="v-pills-tabContent">
+            <div class="tab-pane fade shadow rounded bg-white show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+              <div class="main-card">
+                <div class="p-3">
+                  <div class="row mb-3">
+                    <div class="mb-3 col-lg-4">
+                      <label for="user_first_name" class="form-label">First Name</label>
+                      <input type="text" class="form-control" id="user_first_name" aria-describedby="user_first_name_error" placeholder="Enter First Name"/>
+                      <div id="user_first_name_error" class="form-text error_message"></div>
+                    </div>
+
+                    <div class="mb-3 col-lg-4">
+                        <label for="user_last_name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="user_last_name" aria-describedby="user_last_name_error" placeholder="Enter Last Name"/>
+                        <div id="user_last_name_error" class="form-text error_message"></div>
+                      </div>
+                      
+                    <div class="mb-3 col-lg-4">
+                        <label for="phone_number" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phone_number" aria-describedby="phone_number_error" placeholder="Enter Phone Name"/>
+                        <div id="phone_number_error" class="form-text error_message"></div>
+                      </div>
+                      <div class="mb-3 col-lg-4">
+                        <label for="email" class="form-label">Official Email</label>
+                        <input type="text" class="form-control" id="email" aria-describedby="email_error" placeholder="Enter Official Email"/>
+                        <div id="email_error" class="form-text error_message"></div>
+                      </div>
+
+                      <div class="mb-3 col-lg-4">
+                        <label for="alternate_email" class="form-label">Alternate Email</label>
+                        <input type="text" class="form-control" id="alternate_email" aria-describedby="alternate_email_error" placeholder="Enter Alternate Email"/>
+                        <div id="alternate_email_error" class="form-text error_message"></div>
+                      </div>
+
+                      <div class="mb-3 col-lg-4">
+                        <label for="date_of_birth" class="form-label">Birth Date</label>
+                        <input type="text" class="form-control" id="date_of_birth" aria-describedby="date_of_birth_error" readonly placeholder="Please select DOB"/>
+                        <div id="date_of_birth_error" class="form-text error_message"></div>
+                      </div>
+
+                    <div class="mb-3 col-lg-6">
+                        Residential Address
+                    </div>
+                    <div class="mb-3 col-lg-6">
+
+                        Permanant Address
+                    </div>
+                      <div class="mb-3 col-lg-6">
+                        <label for="residential_addressline1" class="form-label">Address Line 1</label>
+                        <input type="text" class="form-control" id="residential_addressline1" aria-describedby="residential_addressline1_error" readonly placeholder="Please Enter Address "/>
+                        <div id="residential_addressline1_error" class="form-text error_message"></div>
+                      </div>
+
+                      <div class="mb-3 col-lg-6">
+                        <label for="permanaent_addressline1" class="form-label">Address Line 1</label>
+                        <input type="text" class="form-control" id="permanaent_addressline1" aria-describedby="permanaent_addressline1_error" readonly placeholder="Please Enter Address "/>
+                        <div id="permanaent_addressline1_error" class="form-text error_message"></div>
+                      </div>
+
+                      <div class="mb-3 col-lg-6">
+                        <label for="residential_addressline2" class="form-label">Address Line 2</label>
+                        <input type="text" class="form-control" id="residential_addressline2" aria-describedby="residential_addressline2_error" readonly placeholder="Please Enter Address "/>
+                        <div id="residential_addressline2_error" class="form-text error_message"></div>
+                      </div>
+
+                      <div class="mb-3 col-lg-6">
+                        <label for="permanaent_addressline2" class="form-label">Address Line 2</label>
+                        <input type="text" class="form-control" id="permanaent_addressline2" aria-describedby="permanaent_addressline2_error" readonly placeholder="Please Enter Address "/>
+                        <div id="permanaent_addressline2_error" class="form-text error_message"></div>
+                      </div>
+
+
+                      <div class="mb-3 col-lg-3">
+                        <label for="residential_city" class="form-label">City</label>
+                        <input type="text" class="form-control" id="residential_city" aria-describedby="residential_city_error" readonly placeholder="Please Enter Address "/>
+                        <div id="residential_city_error" class="form-text error_message"></div>
+                      </div>
+                      <div class="mb-3 col-lg-3">
+                        <label for="residential_pincode" class="form-label"> Pincode</label>
+                        <input type="text" class="form-control" id="residential_pincode" aria-describedby="residential_pincode_error" readonly placeholder="Please Enter Address "/>
+                        <div id="residential_pincode_error" class="form-text error_message"></div>
+                      </div>
+
+
+
+                      <div class="mb-3 col-lg-3">
+                        <label for="residential_city" class="form-label">City</label>
+                        <input type="text" class="form-control" id="residential_city" aria-describedby="residential_city_error" readonly placeholder="Please Enter Address "/>
+                        <div id="residential_city_error" class="form-text error_message"></div>
+                      </div>
+                      <div class="mb-3 col-lg-3">
+                        <label for="residential_pincode" class="form-label"> Pincode</label>
+                        <input type="text" class="form-control" id="residential_pincode" aria-describedby="residential_pincode_error" readonly placeholder="Please Enter Address "/>
+                        <div id="residential_pincode_error" class="form-text error_message"></div>
+                      </div>
+
+                      <div class="mb-3 col-lg-3">
+                        <label for="permanaent_state" class="form-label">State</label>
+                        <input type="text" class="form-control" id="permanaent_state" aria-describedby="permanaent_state_error" readonly placeholder="Please Enter Address "/>
+                        <div id="permanaent_state_error" class="form-text error_message"></div>
+                      </div>
+                      
+                      <div class="mb-3 col-lg-3">
+                        <label for="permanaent_country" class="form-label"> Country</label>
+                        <input type="text" class="form-control" id="permanaent_country" aria-describedby="permanaent_country_error" readonly placeholder="Please Enter Address "/>
+                        <div id="permanaent_country_error" class="form-text error_message"></div>
+                      </div>
+
+
+
+                      <div class="mb-3 col-lg-3">
+                        <label for="permanaent_state" class="form-label">State</label>
+                        <input type="text" class="form-control" id="permanaent_state" aria-describedby="permanaent_state_error" readonly placeholder="Please Enter Address "/>
+                        <div id="permanaent_state_error" class="form-text error_message"></div>
+                      </div>
+
+                      <div class="mb-3 col-lg-3">
+                        <label for="permanaent_country" class="form-label"> Country</label>
+                        <input type="text" class="form-control" id="permanaent_country" aria-describedby="permanaent_country_error" readonly placeholder="Please Enter Address "/>
+                        <div id="permanaent_country_error" class="form-text error_message"></div>
+                      </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="submitbutton d-flex justify-content-center">
+                      <span class="btn btn-primary">Submit</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(document).ready(function() {
+
+        flatpickr("#date_of_birth", {
+          dateFormat: "d-m-Y", // Customize date format if needed
+          // You can add more configuration options here
+        });
+      });
+  </script>
+{% endblock %}

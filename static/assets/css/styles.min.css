@@ -2678,7 +2678,7 @@ progress {
 }
 
 .table>:not(caption)>*>* {
-    padding: 16px 16px;
+    padding: 10px 10px;
     background-color: var(--bs-table-bg);
     border-bottom-width: var(--bs-border-width);
     -webkit-box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
@@ -19746,3 +19746,20 @@ ul {
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
 }
+
+.dt-bootstrap4>div{
+    margin: 12px 0px;
+}
+.field-icon {
+    float: right;
+    margin-left: -25px;
+    margin-top: -25px;
+    margin-right: 10px;
+    position: relative;
+    z-index: 2;
+  }
+.fa-eye{
+    color: #00b6ff;
+}
+  
+  

@@ -18,13 +18,13 @@
             <div class="row">
               <div class="mb-3 col-lg-4">
                 <label for="teacher_name" class="form-label">Teacher Name</label>
-                <input type="text" class="form-control" id="teacher_name" aria-describedby="teacher_name_error" />
+                <input type="text" class="form-control" id="teacher_name" aria-describedby="teacher_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
                 <div id="teacher_name_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_email" class="form-label">Teacher Email</label>
-                <input type="text" class="form-control" id="teacher_email" aria-describedby="teacher_email_error" />
+                <input type="text" class="form-control" id="teacher_email" aria-describedby="teacher_email_error"  oninput="email_validate('teacher_email');" />
                 <div id="teacher_email_error" class="form-text error_message"></div>
               </div>
 
@@ -46,7 +46,7 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_contact" class="form-label">Contact No</label>
-                <input type="text" class="form-control" id="teacher_contact" aria-describedby="teacher_contact_error" />
+                <input type="text" class="form-control" id="teacher_contact" aria-describedby="teacher_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');"/>
                 <div id="teacher_contact_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
@@ -66,7 +66,7 @@
 
             <div class="row">
               <div class="d-flex justify-content-center">
-                <a href="/teacher_master" class="btn btn-primary">Submit</a>
+                <a  class="btn btn-primary" onclick="validate_form();">Submit</a>
               </div>
             </div>
           </form>
@@ -86,5 +86,86 @@
       // You can add more configuration options here
     });
   });
+
+
+  function validate_form(){
+    var teacher_name=$('#teacher_name').val();
+    var teacher_email=$('#teacher_email').val();
+    var teacher_designation=$('#teacher_designation').val();
+    var teacher_joining_date=$('#teacher_joining_date').val();
+    var teacher_contact=$('#teacher_contact').val();
+    var teacher_subject=$('#teacher_subject').val();
+    var teacher_address=$('#teacher_address').val();
+
+
+    if(IsValid(teacher_name)){
+      $('#teacher_name').html();
+      $('#teacher_name_error').show().delay(3000).slideUp();
+      $('#teacher_name_error').html('Please enter teacher name');
+      $('#teacher_name').focus();
+      return false;
+    }
+    if(IsValid(teacher_email)){
+      $('#teacher_email').html();
+      $('#teacher_email_error').show().delay(3000).slideUp();
+      $('#teacher_email_error').html('Please enter teacher email');
+      $('#teacher_email').focus();
+      return false;
+    }
+    if(email_validate('teacher_email') == false){
+      $('#teacher_email').html();
+      $('#teacher_email_error').show().delay(3000).slideUp();
+      $('#teacher_email_error').html('Please enter teacher valid email ');
+      $('#teacher_email').focus();
+      return false;
+    }
+    if(IsValid(teacher_designation)){
+      $('#teacher_designation').html();
+      $('#teacher_designation_error').show().delay(3000).slideUp();
+      $('#teacher_designation_error').html('Please select teacher designation');
+      $('#teacher_designation').focus();
+      return false;
+    }
+    
+    if(IsValid(teacher_joining_date)){
+      $('#teacher_joining_date').html();
+      $('#teacher_joining_date_error').show().delay(3000).slideUp();
+      $('#teacher_joining_date_error').html('Please select teacher joining date');
+      $('#teacher_joining_date').focus();
+      return false;
+    }
+    if(IsValid(teacher_contact)){
+      $('#teacher_contact').html();
+      $('#teacher_contact_error').show().delay(3000).slideUp();
+      $('#teacher_contact_error').html('Please enter teacher contact number');
+      $('#teacher_contact').focus();
+      return false;
+    }
+    if(mobile_validate('teacher_contact') == false){
+      $('#teacher_contact').html();
+      $('#teacher_contact_error').show().delay(3000).slideUp();
+      $('#teacher_contact_error').html('Please enter teacher contact number ');
+      $('#teacher_contact').focus();
+      return false;
+    }
+    if(IsValid(teacher_subject)){
+      $('#teacher_subject').html();
+      $('#teacher_subject_error').show().delay(3000).slideUp();
+      $('#teacher_subject_error').html('Please enter teacher subject ');
+      $('#teacher_subject').focus();
+      return false;
+    }
+
+    if(IsValid(teacher_address)){
+      $('#teacher_address').html();
+      $('#teacher_address_error').show().delay(3000).slideUp();
+      $('#teacher_address_error').html('Please enter teacher address ');
+      $('#teacher_address').focus();
+      return false;
+    }
+    else{
+      window.location.href = "/teacher_master";
+    }
+  }
 </script>
 {% endblock %}

@@ -30,3 +30,15 @@ class add_school(GenericAPIView):
 class edit_school(GenericAPIView):
     def get(self,request):
         return render(request, 'superadmin/edit_school.html',{})
+class mail(GenericAPIView):
+    def get(self,request):
+        return render(request, 'admin/permissions.html',{})
+    
+class marksheet(GenericAPIView):
+    def get(self,request):
+        return render(request, 'commingsoon.html',{})
+    
+
+class permissions(GenericAPIView):
+    def get(self,request):
+        return render(request, 'admin/permissions.html',{})
