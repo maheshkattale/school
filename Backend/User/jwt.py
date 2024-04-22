@@ -23,7 +23,7 @@ class CustomAPIException(ValidationError):
             self.status_code = status_code
 
 
-class customerJWTAuthentication(BaseAuthentication):
+class userJWTAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
 
@@ -50,21 +50,49 @@ class customerJWTAuthentication(BaseAuthentication):
                 token, settings.SECRET_KEY, algorithms="HS256")
             email = payload['email']
             User_id = payload['id']
-
+            source = payload['source']
+            print("decode email",email,User_id,source)
             Users = User.objects.get(id=User_id, email=email)
-            userTok = UserToken.objects.filter(
-                authToken=token, User=Users.id, isActive=True).first()
-            if userTok is None:
+            if source == "Web":
+                userTok = UserToken.objects.filter(
+                    WebToken=token, User=Users.id, isActive=True).first()
+                if userTok is None:
+                    error_msg = {
+                            "data": [],
+                            "response": {
+                                "n": 0,
+                                "msg": 'Token is expired, login again',
+                                "status": 'Failed'
+                            }
+                    }
+                    raise CustomAPIException(error_msg)              
+                return (Users, token)
+            elif source == "Mobile":
+                userTok = UserToken.objects.filter(
+                    MobileToken=token, User=Users.id, isActive=True).first()
+                if userTok is None:
+                    error_msg = {
+                            "data": [],
+                            "response": {
+                                "n": 0,
+                                "msg": 'Token is expired, login again',
+                                "status": 'Failed'
+                            }
+                    }
+                    raise CustomAPIException(error_msg)              
+                return (Users, token)
+            else:
+                
                 error_msg = {
                         "data": [],
                         "response": {
                             "n": 0,
-                            "msg": 'Token is expired, login again',
+                            "msg": 'Token not valid',
                             "status": 'Failed'
                         }
                 }
                 raise CustomAPIException(error_msg)              
-            return (Users, token)
+                
 
         except jwt.ExpiredSignatureError as ex:
             error_msg = {

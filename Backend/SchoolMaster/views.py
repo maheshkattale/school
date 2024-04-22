@@ -9,13 +9,15 @@ from User.models import User,Role
 from User.serializers import UserSerializer
 from SchoolMaster.serializers import schoolSerializer
 from SchoolMaster.common import createschooladmin
+from django.template.loader import get_template, render_to_string
+
 
 
 def schoolUniqueCode(schoolname):
     school = [s[0].upper() for s in schoolname.split()]
     schoolJoin = "".join(school)
     firstschool = schoolJoin + "001"
-    schoolobject = School.objects.filter(isactive=True).order_by('-created_at').first()
+    schoolobject = School.objects.filter(isActive=True).order_by('-createdAt').first()
     if schoolobject is None:
         schoolcode = firstschool
         return schoolcode
@@ -32,6 +34,7 @@ class AddSchool(GenericAPIView):
     def post(self,request):
         userdata = {}
         data = request.data.copy()
+        data['isActive'] = True
         schoolexist = School.objects.filter(Name=data['Name'],isActive= True).first()
         if schoolexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "School Name already exist","status": "failure"}})
@@ -58,12 +61,12 @@ class AddSchool(GenericAPIView):
             if serializer.is_valid():
                 serializer.save()
 
-                # userdata['email'] = data['admin_Email']
-                # userdata['Username'] = data['admin_Name']
-                # userdata['school_code'] = schoolcode
+                createschooladmin(data['admin_Email'],data['admin_Name'],schoolcode)
 
-                roleObject = Role.objects.create(Active=True,RoleName='Admin',school_code = schoolcode)
-                createschooladmin(data['admin_Email'],data['admin_Name'],schoolcode,roleObject)
+                # subject = "Set Password"
+                # data2 = {"subject": subject,"email":data['admin_Email'],"adminname":data['admin_Name'],
+                #     "template": 'mails/sendmailforpassword.html'}
+                # message = render_to_string(data2['template'], data2)
 
                 return Response({"data":'',"response": {"n": 1, "msg": "School added successfully","status": "success"}})
             else:
