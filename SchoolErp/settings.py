@@ -24,6 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(os.path.join(settings.BASE_DIR, "Backend"))
 sys.path.append(os.path.join(settings.BASE_DIR, "Frontend"))
 
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.office365.com'
+EMAIL_HOST_USER='no-reply@onerooftech.com'
+EMAIL_HOST_PASSWORD='Applic@tion$@123'
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -57,7 +65,9 @@ INSTALLED_APPS = [
     'user',
     
     'DesignationMaster',
-    'SubjectMaster'
+    'SubjectMaster',
+    'TeacherMaster',
+    'Parent_StudentMaster'
 ]
 
 MIDDLEWARE = [
