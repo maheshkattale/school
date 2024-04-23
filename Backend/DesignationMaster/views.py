@@ -10,15 +10,20 @@ import json
 from rest_framework.generics import GenericAPIView
 from DesignationMaster.models import Designation
 from DesignationMaster.serializers import DesignationSerializer
-
+from rest_framework.authentication import (BaseAuthentication,
+                                           get_authorization_header)
+from rest_framework import permissions
+from User.jwt import userJWTAuthentication
 
 
 
 class AddDesignation(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
         data['isActive'] = True
-        Desgnexist = Designation.objects.filter(designationName=data['Name'],isActive= True).first()
+        Desgnexist = Designation.objects.filter(designationName=data['designationName'],isActive= True).first()
         if Desgnexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Designation already exist","status": "failure"}})
         else:
@@ -31,6 +36,8 @@ class AddDesignation(GenericAPIView):
 
         
 class Designationlist(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
         desgobjs = Designation.objects.filter(isActive=True).order_by('-id')
         serializer = DesignationSerializer(desgobjs,many=True)
@@ -38,6 +45,8 @@ class Designationlist(GenericAPIView):
       
        
 class getDesignationbyid(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         id = request.data.get('id')
         desgobj = Designation.objects.filter(id=id,isActive=True).first()
@@ -50,12 +59,14 @@ class getDesignationbyid(GenericAPIView):
 
 
 class updatedesignation(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
         desgid = data['id']
         desgobj = Designation.objects.filter(id=desgid,isActive=True).first()
         if desgobj is not None:
-            desgexist = Designation.objects.filter(designationName=data['Name'],isActive= True).exclude(id=desgid).first()
+            desgexist = Designation.objects.filter(designationName=data['designationName'],isActive= True).exclude(id=desgid).first()
             if desgexist is not None:
                 return Response({"data":'',"response": {"n": 0, "msg": "Designation already exist","status": "failure"}})
             else:
@@ -69,6 +80,8 @@ class updatedesignation(GenericAPIView):
             return Response({"data":'',"response": {"n": 0, "msg": "Designation not found ","status": "failure"}})
 
 class deletedesignation(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
         desgid = data['id']

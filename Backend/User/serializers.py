@@ -7,6 +7,12 @@ class UserSerializer(serializers.ModelSerializer):
         model= User
         fields='__all__'
 
+    
+class UserlistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= User
+        fields=['id','Username','mobileNumber','email','role','designation','joiningDate','school_code']
+
 class MenuItemSerializer(serializers.ModelSerializer):
     class Meta:
         model= MenuItem

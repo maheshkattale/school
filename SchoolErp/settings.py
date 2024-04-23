@@ -64,13 +64,14 @@ INSTALLED_APPS = [
     'class',
     'subject',
     
-    'User',
     'user',
-    
+
+    'User',
     'DesignationMaster',
     'SubjectMaster',
     'TeacherMaster',
-    'Parent_StudentMaster'
+    'Parent_StudentMaster',
+    'ClassMaster'
 ]
 
 MIDDLEWARE = [

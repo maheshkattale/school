@@ -8,4 +8,6 @@ urlpatterns = [
     path('getbyid', getParentStudentbyid.as_view(), name = 'getbyid'),
     path('update', updateParentStudent.as_view(), name = 'update'),
     # path('delete', deleteParentStudent.as_view(), name = 'delete'),
+    path('studentlist', studentlist.as_view(), name = 'studentlist'),
+    path('studentsbyclasslist', studentsbyclasslist.as_view(), name = 'studentsbyclasslist'),
 ]
