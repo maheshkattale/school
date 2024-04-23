@@ -60,6 +60,9 @@ INSTALLED_APPS = [
     'time_table',
     'SchoolMaster',
     'academic_calender',
+    'designation',
+    'class',
+    'subject',
     
     'User',
     'user',

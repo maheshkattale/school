@@ -4,7 +4,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 import json
 from rest_framework.generics import GenericAPIView
-
+from .static_info import frontend_url
 # Create your views here.
 
 class login(GenericAPIView):
@@ -32,8 +32,11 @@ class edit_school(GenericAPIView):
         return render(request, 'superadmin/edit_school.html',{})
 class mail(GenericAPIView):
     def get(self,request):
-        return render(request, 'admin/permissions.html',{})
+        return render(request, 'mails/school_registration.html',{'Admin_Name':'Mahesh Kattale','frontend_url':frontend_url})
     
+class reset_password_mail(GenericAPIView):
+    def get(self,request):
+        return render(request, 'mails/reset_password.html',{'Admin_Name':'Mahesh Kattale','frontend_url':frontend_url})
 class marksheet(GenericAPIView):
     def get(self,request):
         return render(request, 'commingsoon.html',{})

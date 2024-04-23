@@ -16,71 +16,100 @@
         <div class="card-body">
           <form>
             <div class="row">
-              <div class="mb-3 col-lg-4">
+              <div class="mb-3 col-lg-3">
                 <label for="parent_name" class="form-label">Parent Name</label>
-                <input type="text" class="form-control" id="parent_name" aria-describedby="parent_name_error" />
+                <input type="text" class="form-control" id="parent_name" placeholder="Please enter parent name" aria-describedby="parent_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
                 <div id="parent_name_error" class="form-text error_message"></div>
               </div>
 
-              <div class="mb-3 col-lg-4">
+              <div class="mb-3 col-lg-3">
                 <label for="parent_email" class="form-label">Parent Email</label>
-                <input type="text" class="form-control" id="parent_email" aria-describedby="parent_email_error" />
+                <input type="text" class="form-control" id="parent_email" placeholder="Please enter parent email" aria-describedby="parent_email_error" oninput="email_validate('parent_email')"/>
                 <div id="parent_email_error" class="form-text error_message"></div>
               </div>
 
-              <div class="mb-3 col-lg-4">
+              <div class="mb-3 col-lg-3">
                 <label for="parent_contact" class="form-label">Contact No</label>
-                <input type="text" class="form-control" id="parent_contact" aria-describedby="parent_contact_error" />
+                <input type="text" class="form-control" id="parent_contact" placeholder="Please enter parent contact" aria-describedby="parent_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');" />
                 <div id="parent_contact_error" class="form-text error_message"></div>
               </div>
 
-              <div class="mb-3 col-lg-4">
+              <div class="mb-3 col-lg-3">
                 <label for="children_count" class="form-label">No of Children</label>
-                <select id="children_count" class="form-select" aria-describedby="children_count_error">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>9</option>
-                  <option>10</option>
+                <select id="children_count" class="form-select" aria-describedby="children_count_error" onchange="add_childern_feilds();">
+                  <option value="1" selected>1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="9">9</option>
+                  <option value="1">10</option>
                 </select>
                 <div id="children_count_error" class="form-text error_message"></div>
               </div>
 
-              <div class="mb-3 col-lg-4">
-                <label for="children_name" class="form-label">Children Name</label>
-                <input type="text" class="form-control" id="children_name" aria-describedby="children_name_error" />
+
+
+
+
+
+
+            </div>
+
+
+            <div class="row" id="children_div" count="1">
+              <div class="col-lg-12">
+                <h5 class="card-title fw-semibold">Children 1</h5>
+              </div>
+              <div class="mb-3 col-lg-3">
+                <label for="children1_name" class="form-label"> Name</label>
+                <input type="text" class="form-control" id="children1_name"  placeholder="Please enter children name" v aria-describedby="children1_name_error" />
                 <div id="children_name_error" class="form-text error_message"></div>
               </div>
-
-              <div class="mb-3 col-lg-4">
-                <label for="children_date_of_birth" class="form-label"> Date Of Birth</label>
-                <input type="text" class="form-control" id="children_date_of_birth" aria-describedby="children_date_of_birth_error" readonly/>
-                <div id="children_date_of_birth_error" class="form-text error_message"></div>
-              </div>
-
-
-              <div class="mb-3 col-lg-4">
-                <label for="children_class" class="form-label">Class</label>
-                <select id="children_class" class="form-select" aria-describedby="children_class_error" >
-                  <option>1st</option>
-                  <option>2nd</option>
+              <div class="mb-3 col-lg-3">
+                <label for="children1_class" class="form-label">Class</label>
+                <select id="children1_class" class="form-select" aria-describedby="children1_class_error" >
+                  <option value="1st" selected>1st</option>
+                  <option value="2nd">2nd</option>
                 </select>
-                <div id="children_class_error" class="form-text error_message"></div>
+                <div id="children1_class_error" class="form-text error_message"></div>
+              </div>
+              <div class="mb-3 col-lg-2">
+                <label for="children1_date_of_birth" class="form-label"> Date Of Birth</label>
+                <input type="text" class="form-control" id="children1_date_of_birth" placeholder="Please select children DOB" aria-describedby="children1_date_of_birth_error" readonly/>
+                <div id="children1_date_of_birth_error" class="form-text error_message"></div>
               </div>
 
-              <div class="mb-3 col-lg-4">
-                <label for="children_blood_group" class="form-label">Blood Group</label>
-                <select id="children_blood_group" class="form-select" aria-describedby="children_blood_group_error" >
-                  <option>A+</option>
-                  <option>O</option>
+
+
+              <div class="mb-3 col-lg-2">
+                <label for="children1_blood_group" class="form-label">Blood Group</label>
+                <select id="children1_blood_group" class="form-select" aria-describedby="children1_blood_group_error" >
+                  <option value="A+" selected>A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
                 </select>
-                <div id="children_blood_group_error" class="form-text error_message"></div>
+                <div id="children1_blood_group_error" class="form-text error_message"></div>
               </div>
 
+              <div class="mb-3 col-lg-2">
+                <label for="children1_date_of_joining" class="form-label"> Date Of joining</label>
+                <input type="text" class="form-control" id="children1_date_of_joining" placeholder="Please select children DOJ" aria-describedby="children1_date_of_joining_error" readonly/>
+                <div id="children1_date_of_joining_error" class="form-text error_message"></div>
+              </div>
+
+            </div>
+
+
+
+            <div class="row">
 
               <div class="mb-3 col-lg-12">
                 <label for="address" class="form-label"> Address</label>
@@ -92,7 +121,7 @@
 
             <div class="row">
               <div class="d-flex justify-content-center">
-                <a href="/parent_student_master" class="btn btn-primary">Submit</a>
+                <a onclick="validate_form();" class="btn btn-primary">Submit</a>
               </div>
             </div>
           </form>
@@ -105,14 +134,210 @@
 {% block script %}
 <script>
   $(document).ready(function() {
-    $('#children_class').select2();
+    $('#children1_class').select2();
     $('#children_count').select2();
-
-    $('#children_blood_group').select2();
-    flatpickr("#children_date_of_birth", {
-      dateFormat: "d-m-Y", // Customize date format if needed
-      // You can add more configuration options here
+    $('#children1_blood_group').select2();
+    flatpickr("#children1_date_of_birth", {
+      dateFormat: "d-m-Y",
     });
+    flatpickr("#children1_date_of_joining", {
+      dateFormat: "d-m-Y",
+    });
+
   });
+  function add_childern_feilds(){
+    var count=$('#children_count').val();
+    var children_div=''
+
+    for (var i = 0; i < count; i++) {
+      
+      // Your code block to be executed 4 times
+      var counter= i + 1
+      console.log("Iteration " + (i + 1)); // Example code, replace with your actual code
+
+      children_div+=`
+      <div class="col-lg-12">
+        <h5 class="card-title fw-semibold">Children `+counter+`</h5>
+
+        
+      </div>
+      <div class="mb-3 col-lg-3">
+        <label for="children`+counter+`_name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="children`+counter+`_name" placeholder="Please enter children name" aria-describedby="children`+counter+`_name_error" />
+        <div id="children`+counter+`_name_error" class="form-text error_message"></div>
+      </div>
+      <div class="mb-3 col-lg-3">
+        <label for="children`+counter+`_class" class="form-label">Class</label>
+        <select id="children`+counter+`_class" class="form-select" aria-describedby="children`+counter+`_class_error" >
+          <option value="1st">1st</option>
+          <option value="2nd">2nd</option>
+        </select>
+        <div id="children`+counter+`_class_error" class="form-text error_message"></div>
+      </div>
+      <div class="mb-3 col-lg-2">
+        <label for="children`+counter+`_date_of_birth" class="form-label"> Date Of Birth</label>
+        <input type="text" class="form-control" id="children`+counter+`_date_of_birth" placeholder="Please select children DOB" aria-describedby="children`+counter+`_date_of_birth_error" readonly/>
+        <div id="children`+counter+`_date_of_birth_error" class="form-text error_message"></div>
+      </div>
+
+
+
+      <div class="mb-3 col-lg-2">
+        <label for="children`+counter+`_blood_group" class="form-label">Blood Group</label>
+        <select id="children`+counter+`_blood_group" class="form-select" aria-describedby="children`+counter+`_blood_group_error" >
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+        <div id="children`+counter+`_blood_group_error" class="form-text error_message"></div>
+      </div>
+
+      <div class="mb-3 col-lg-2">
+        <label for="children`+counter+`_date_of_joining" class="form-label"> Date Of joining</label>
+        <input type="text" class="form-control" id="children`+counter+`_date_of_joining" placeholder="Please select children DOJ" aria-describedby="children`+counter+`_date_of_joining_error" readonly/>
+        <div id="children`+counter+`_date_of_joining_error" class="form-text error_message"></div>
+      </div>
+
+      `
+    }
+   
+    $('#children_div').html(children_div)
+    $('#children_div').attr('count',count)
+
+    
+    for (var i = 0; i < count; i++) {
+      var counter2= i + 1
+
+      $('#children'+counter2+'_class').select2();
+
+      $('#children'+counter2+'_blood_group').select2();
+      flatpickr("#children"+counter2+"_date_of_birth", {
+        dateFormat: "d-m-Y",
+      });
+      flatpickr("#children"+counter2+"_date_of_joining", {
+        dateFormat: "d-m-Y",
+      });
+    }
+
+  }
+  function validate_form(){
+    var parent_name=$('#parent_name').val();
+    var parent_email=$('#parent_email').val();
+    var parent_contact=$('#parent_contact').val();
+    var address=$('#address').val();
+
+    if(IsValid(parent_name)){
+      $('#parent_name').html();
+      $('#parent_name_error').show().delay(3000).slideUp();
+      $('#parent_name_error').html('Please enter parent name');
+      $('#parent_name').focus();
+      return false;
+    }
+    if(IsValid(parent_email)){
+      $('#parent_email').html();
+      $('#parent_email_error').show().delay(3000).slideUp();
+      $('#parent_email_error').html('Please enter parent email');
+      $('#parent_email').focus();
+      return false;
+    }
+    if(email_validate('parent_email') == false){
+      $('#parent_email').html();
+      $('#parent_email_error').show().delay(3000).slideUp();
+      $('#parent_email_error').html('Please enter parent valid email ');
+      $('#parent_email').focus();
+      return false;
+    }
+    if(IsValid(parent_contact)){
+      $('#parent_contact').html();
+      $('#parent_contact_error').show().delay(3000).slideUp();
+      $('#parent_contact_error').html('Please enter parent contact number');
+      $('#parent_contact').focus();
+      return false;
+    }
+    if(mobile_validate('parent_contact') == false){
+      $('#parent_contact').html();
+      $('#parent_contact_error').show().delay(3000).slideUp();
+      $('#parent_contact_error').html('Please enter parent contact number ');
+      $('#parent_contact').focus();
+      return false;
+    }
+    if(validate_child() == false){
+      return false;
+    }
+    if(IsValid(address)){
+      $('#address').html();
+      $('#address_error').show().delay(3000).slideUp();
+      $('#address_error').html('Please enter address');
+      $('#address').focus();
+      return false;
+    }else{
+      Swal.fire({
+        title: 'Successful !',
+        text: 'This is a SweetAlert dialog.',
+        icon: 'success',
+      }).then((result) => {
+        window.location.href = "/parent_student_master";
+
+      });
+    }
+  }
+  function validate_child(){
+    debugger
+    var count=$('#children_div').attr('count');
+    console.log("count",count);
+    var status=true
+    for (var i = 0; i < count; i++) {
+      var counter= i + 1
+
+      var children_name=$('#children'+counter+'_name').val();
+      var children_class=$('#children'+counter+'_class').val();
+      var children_date_of_birth=$('#children'+counter+'_date_of_birth').val();
+      var children_blood_group=$('#children'+counter+'_blood_group').val();
+      var children_date_of_joining=$('#children'+counter+'_date_of_joining').val();
+
+  
+      if(IsValid(children_name)){
+        $('#children'+counter+'_name').html();
+        $('#children'+counter+'_name_error').show().delay(3000).slideUp();
+        $('#children'+counter+'_name_error').html('Please enter children name');
+        $('#children'+counter+'_name').focus();
+        status= false;
+      }
+      if(IsValid(children_class)){
+        $('#children'+counter+'_class').html();
+        $('#children'+counter+'_class_error').show().delay(3000).slideUp();
+        $('#children'+counter+'_class_error').html('Please select children class');
+        $('#children'+counter+'_class').focus();
+        status= false;
+      }
+      if(IsValid(children_date_of_birth)){
+        $('#children'+counter+'_date_of_birth').html();
+        $('#children'+counter+'_date_of_birth_error').show().delay(3000).slideUp();
+        $('#children'+counter+'_date_of_birth_error').html('Please select children date of birth');
+        $('#children'+counter+'_date_of_birth').focus();
+        status= false;
+      }
+      if(IsValid(children_blood_group)){
+        $('#children'+counter+'_blood_group').html();
+        $('#children'+counter+'_blood_group_error').show().delay(3000).slideUp();
+        $('#children'+counter+'_blood_group_error').html('Please select children blood group');
+        $('#children'+counter+'_blood_group').focus();
+        status= false;
+      }
+      if(IsValid(children_date_of_joining)){
+        $('#children'+counter+'_date_of_joining').html();
+        $('#children'+counter+'_date_of_joining_error').show().delay(3000).slideUp();
+        $('#children'+counter+'_date_of_joining_error').html('Please select children date of joining');
+        $('#children'+counter+'_date_of_joining').focus();
+        status= false;
+      }
+    }
+    return status
+  }
 </script>
 {% endblock %}

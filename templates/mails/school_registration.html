@@ -20,11 +20,11 @@
         .container {
             max-width: 600px;
             margin: 20px auto;
+            margin-bottom: 0px;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
             background-color: #fff;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
         /* Heading Styles */
@@ -43,7 +43,6 @@
         /* Signature Styles */
         .signature {
             margin-top: 20px;
-            border-top: 1px solid #ccc;
             padding-top: 10px;
             font-style: italic;
             color: #888;
@@ -51,29 +50,52 @@
 
         /* Logo Styles */
         .logo {
-            max-width: 100px;
             display: block;
-            margin: 0 auto;
+            margin: auto;
+            margin-bottom: 20px;
+        }
+        .link-btn{
+            color: white;
+            background: #995dff;
+            padding: 10px;
+            border-radius: 10px;
+            text-decoration: none;
+        }
+        .bottom_container {
+            max-width: 600px;
+            padding: 5px 20px;
+            
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: #995dff;
+            color: WHITE;
+            margin: 0px auto;
+
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="{{frontend_url}}/static/assets/images/logos/black-ort_logo.png" alt="School Logo" class="logo">
+        <img src="{{frontend_url}}static/assets/images/logos/black-ort_logo.png" alt="Company Logo" class="logo">
+        <hr>
         <h2>Successful Registration for School ERP Application</h2>
-        <p>Dear {{School_Name}},</p>
-        <p>I'm delighted to announce that our registration for the School ERP Application is now complete! This milestone signifies a significant step forward in enhancing our school's efficiency and operations.</p>
+        <p>Dear {{Admin_Name}},</p>
+        <p>I'm delighted to announce that our registration for the School ERP Application is now completed.</p>
         <p>With the registration finalized, we can now take full advantage of the ERP system's features to streamline administrative processes and improve communication among stakeholders.</p>
-        <p>I extend my gratitude to everyone involved for their contributions and dedication to this endeavor. Together, we're advancing our school's mission and ensuring a better educational experience for our students.</p>
-        <p>Stay tuned for further updates on the implementation process, including training sessions and support resources.</p>
+        <p>To set your password and access the ERP system, please click on the following link: </p>
+        <div style="text-align: center;">
+            <a class="link-btn" href="{{frontend_url}}setpassword">Set Password</a>
+        </div>
         <p>Thank you for your cooperation and support throughout this journey.
 
         </p>
         <div class="signature">
             <p>Best regards,</p>
-            <p>School ERP</p>
-            <p>9999999999</p>
+            <div>School ERP</div>
+            <div>9999999999</div>
         </div>
+    </div>
+    <div class="bottom_container">
+        <p class="mb-0 fs-4" style="color: white;">Copyright © 2024 <a href="https://onerooftech.com/" target="_blank" class="pe-1 text-primary text-decoration-underline">OneRoof Technologies  </a>LLP All rights reserved</p>
     </div>
 </body>
 </html>

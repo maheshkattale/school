@@ -1,0 +1,309 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+
+{% endblock %}
+{% block heading %}
+  <span class="tab-title"><i class="fa-solid fa-users"></i> <span class="px-1">class Master</span></span>
+{% endblock %}
+{% block body %}
+  <div class="d-flex justify-content-end">
+    <a data-bs-toggle="modal" data-bs-target="#add_class" class="btn btn-primary">Add class</a>
+ 
+    <div id="add_class" class="modal">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+          <div class="modal-body">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">Add class Forms</h5>
+              <div class="card">
+                <div class="card-body">
+                  <form>
+                    <div class="row">
+
+
+
+
+
+     
+
+
+
+                      <div class="mb-3 col-lg-6">
+                        <label for="class_name" class="form-label">class Name</label>
+                        <input type="text" class="form-control" id="class_name" placeholder="Please enter class name" aria-describedby="class_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                        <div id="class_name_error" class="form-text error_message"></div>
+                      </div>
+
+
+
+                    </div>
+
+                    <div class="row">
+                      <div class="d-flex justify-content-center">
+                        <a onclick="validate_add_form();" class="btn btn-primary">Submit</a>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div> 
+  </div>
+  <div class="row">
+    <table id="example" class="table table-striped table-bordered" style="width:100%">
+      <thead>
+        <tr>
+          <th>Sr No</th>
+          <th>class</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>English</td>
+          
+
+          
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>English</td>
+          
+
+          
+
+          <td>
+            <a data-bs-toggle="modal" data-bs-target="#edit_class2"  ><i data-bs-toggle="tooltip"  title="Edit class" class="fa-solid fa-pen-to-square mx-1"></i></a>
+
+            <div id="edit_class2" class="modal">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+        
+                  <div class="modal-body">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title fw-semibold mb-4">Edit class Forms</h5>
+                      <div class="card">
+                        <div class="card-body">
+                          <form>
+                            <div class="row">
+        
+        
+        
+        
+        
+             
+        
+        
+        
+                              <div class="mb-3 col-lg-6">
+                                <label for="class_name2" class="form-label">class Name</label>
+                                <input type="text" class="form-control" id="class_name2" placeholder="Please enter class name" aria-describedby="class_name_error2" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                                <div id="class_name_error2" class="form-text error_message"></div>
+                              </div>
+        
+        
+
+                            </div>
+        
+                            <div class="row">
+                              <div class="d-flex justify-content-center">
+                                <a onclick="validate_edit_form('2');" class="btn btn-primary">Submit</a>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+
+        <tr>
+          <td>3</td>
+          <td>English</td>
+          
+
+          
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>English</td>
+          
+
+          
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>English</td>
+          
+
+          
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>English</td>
+          
+
+          
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>English</td>
+          
+
+          
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>English</td>
+          
+
+          
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>English</td>
+          
+
+          
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>English</td>
+          
+
+          
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>English</td>
+          
+
+          
+
+          <td>
+            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(document).ready(function () {
+
+
+      new DataTable('#example');
+
+    })
+    function validate_add_form(){
+      debugger
+      var class_name=$('#class_name').val()
+      var class_code=$('#class_code').val()
+
+      if(IsValid(class_name)){
+        $('#class_name').html();
+        $('#class_name_error').show().delay(3000).slideUp();
+        $('#class_name_error').html('Please enter class name');
+        $('#class_name').focus();
+        return false;
+      }else{
+        Swal.fire({
+          title: 'Successful !',
+          text: 'class added successfully.',
+          icon: 'success',
+        }).then((result) => {
+          window.location.href = "/class_master";
+  
+        });
+      }
+    }
+    function validate_edit_form(id){
+      debugger
+      var class_name=$('#class_name'+id).val()
+      var class_code=$('#class_code'+id).val()
+
+      if(IsValid(class_name)){
+        $('#class_name'+id).html();
+        $('#class_name_error'+id).show().delay(3000).slideUp();
+        $('#class_name_error'+id).html('Please enter class name');
+        $('#class_name'+id).focus();
+        return false;
+      }
+      else{
+        Swal.fire({
+          title: 'Successful !',
+          text: 'class updated successfully.',
+          icon: 'success',
+        }).then((result) => {
+          window.location.href = "/class_master";
+  
+        });
+      }
+    }
+  </script>
+{% endblock %}

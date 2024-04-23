@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="{% static 'assets/css/styles.min.css'%}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-  </head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
 
   <body>
 
@@ -60,7 +61,7 @@
             <li class="sidebar-item">
               <a class="sidebar-link" href="/school_master" aria-expanded="false">
                 <span>
-                  <i class="ti ti-article"></i>
+                  <i class="ti ti-home"></i>
                 </span>
                 <span class="hide-menu">School Master</span>
               </a>
@@ -68,7 +69,7 @@
             <li class="sidebar-item">
               <a class="sidebar-link" href="/teacher_master/" aria-expanded="false">
                 <span>
-                  <i class="ti ti-article"></i>
+                  <i class="ti ti-user"></i>
                 </span>
                 <span class="hide-menu">Teacher Master</span>
               </a>
@@ -76,9 +77,9 @@
 
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="/parent_student_master" aria-expanded="false">
+              <a class="sidebar-link" href="/parent_student_master/" aria-expanded="false">
                 <span>
-                  <i class="ti ti-alert-circle"></i>
+                  <i class="ti ti-users"></i>
                 </span>
                 <span class="hide-menu">Parents/ Student Master</span>
               </a>
@@ -96,7 +97,7 @@
             <li class="sidebar-item">
               <a class="sidebar-link" href="/academic_calender/" aria-expanded="false">
                 <span>
-                  <i class="ti ti-file-description"></i>
+                  <i class="ti ti-calendar"></i>
                 </span>
                 <span class="hide-menu">Academic Calendar</span>
               </a>
@@ -104,9 +105,35 @@
             <li class="sidebar-item">
               <a class="sidebar-link" href="/marksheet" aria-expanded="false">
                 <span>
-                  <i class="ti ti-typography"></i>
+                  <i class="ti ti-clipboard"></i>
                 </span>
                 <span class="hide-menu">Marksheet</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="/class_master/" aria-expanded="false">
+                <span>
+                  <i class="ti ti-pencil"></i>
+                </span>
+                <span class="hide-menu">Class Master</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="/subject_master/" aria-expanded="false">
+                <span>
+                  <i class="ti ti-book"></i>
+                </span>
+                <span class="hide-menu">Subject Master</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="/designation_master/" aria-expanded="false">
+                <span>
+                  <i class="ti ti-pin"></i>
+                </span>
+                <span class="hide-menu">Designation Master</span>
               </a>
             </li>
             <li class="nav-small-cap">
@@ -241,9 +268,10 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="{% static 'js/index.js' %} "></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="{% static 'js/index.js' %} "></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     {% block script %}
 

@@ -18,19 +18,20 @@
             <div class="row">
               <div class="mb-3 col-lg-4">
                 <label for="teacher_name" class="form-label">Teacher Name</label>
-                <input type="text" class="form-control" id="teacher_name" aria-describedby="teacher_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
+                <input type="text" class="form-control" id="teacher_name" placeholder="Please enter name" aria-describedby="teacher_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
                 <div id="teacher_name_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_email" class="form-label">Teacher Email</label>
-                <input type="text" class="form-control" id="teacher_email" aria-describedby="teacher_email_error"  oninput="email_validate('teacher_email');" />
+                <input type="text" class="form-control" id="teacher_email" placeholder="Please enter email" aria-describedby="teacher_email_error"  oninput="email_validate('teacher_email');" />
                 <div id="teacher_email_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_designation" class="form-label">Designation</label>
                 <select id="teacher_designation" class="form-select" aria-describedby="teacher_designation_error">
+                  <option value="" selected> Please select Designation</option>
                   <option>ABC</option>
                   <option>XYZ</option>
                 </select>
@@ -40,13 +41,13 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_joining_date" class="form-label">Joining Date</label>
-                <input type="text" class="form-control" id="teacher_joining_date" aria-describedby="teacher_joining_date_error" readonly/>
+                <input type="text" class="form-control" id="teacher_joining_date" placeholder="Please enter joining date" aria-describedby="teacher_joining_date_error" readonly/>
                 <div id="teacher_joining_date_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_contact" class="form-label">Contact No</label>
-                <input type="text" class="form-control" id="teacher_contact" aria-describedby="teacher_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');"/>
+                <input type="text" class="form-control" id="teacher_contact" placeholder="Please enter contact no" aria-describedby="teacher_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');"/>
                 <div id="teacher_contact_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
@@ -89,6 +90,7 @@
 
 
   function validate_form(){
+    debugger
     var teacher_name=$('#teacher_name').val();
     var teacher_email=$('#teacher_email').val();
     var teacher_designation=$('#teacher_designation').val();
@@ -148,10 +150,10 @@
       $('#teacher_contact').focus();
       return false;
     }
-    if(IsValid(teacher_subject)){
+    if(teacher_subject=="" || teacher_subject == null || teacher_subject ==[] || teacher_subject == undefined){
       $('#teacher_subject').html();
       $('#teacher_subject_error').show().delay(3000).slideUp();
-      $('#teacher_subject_error').html('Please enter teacher subject ');
+      $('#teacher_subject_error').html('Please select teacher subject ');
       $('#teacher_subject').focus();
       return false;
     }
@@ -164,7 +166,14 @@
       return false;
     }
     else{
-      window.location.href = "/teacher_master";
+      Swal.fire({
+        title: 'Successful !',
+        text: 'This is a SweetAlert dialog.',
+        icon: 'success',
+      }).then((result) => {
+        window.location.href = "/teacher_master";
+
+      });
     }
   }
 </script>

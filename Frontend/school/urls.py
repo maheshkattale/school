@@ -13,6 +13,7 @@ urlpatterns = [
     path('mail', mail.as_view(), name = 'mail'),
     path('marksheet', marksheet.as_view(), name = 'marksheet'),
     path('permissions', permissions.as_view(), name = 'permissions'),
-    
+    path('reset_password_mail', reset_password_mail.as_view(), name = 'reset_password_mail'),
+
     
 ]

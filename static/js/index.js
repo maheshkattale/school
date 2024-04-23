@@ -11,7 +11,7 @@ $(".toggle-password").click(function () {
 
 function IsValid(value) {
   value=value.trim();
-  if (value == "" || value == null || value == undefined) {
+  if (value == "" || value == null || value == undefined ) {
     return true;
   } else {
     return false;

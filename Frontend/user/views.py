@@ -10,4 +10,10 @@ from rest_framework.generics import GenericAPIView
 class profile(GenericAPIView):
     def get(self,request):
         return render(request, 'user/my_profile.html',{})
-    
+
+class reset_password(GenericAPIView):
+    def get(self,request):
+        return render(request, 'user/reset_password.html',{})
+class set_password(GenericAPIView):
+    def get(self,request):
+        return render(request, 'user/set_password.html',{})
