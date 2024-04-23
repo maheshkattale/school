@@ -10,15 +10,20 @@ import json
 from rest_framework.generics import GenericAPIView
 from SubjectMaster.models import Subject
 from SubjectMaster.serializers import SubjectSerializer
-
+from rest_framework.authentication import (BaseAuthentication,
+                                           get_authorization_header)
+from rest_framework import permissions
+from User.jwt import userJWTAuthentication
 
 
 
 class AddSubject(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
         data['isActive'] = True
-        subjectnexist = Subject.objects.filter(SubjectName=data['Name'],isActive= True).first()
+        subjectnexist = Subject.objects.filter(SubjectName=data['SubjectName'],isActive= True).first()
         if subjectnexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Subject already exist","status": "failure"}})
         else:
@@ -31,6 +36,8 @@ class AddSubject(GenericAPIView):
 
         
 class Subjectlist(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
         subjectobjs = Subject.objects.filter(isActive=True).order_by('-id')
         serializer = SubjectSerializer(subjectobjs,many=True)
@@ -38,6 +45,8 @@ class Subjectlist(GenericAPIView):
       
        
 class getSubjectbyid(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         id = request.data.get('id')
         subjectobj = Subject.objects.filter(id=id,isActive=True).first()
@@ -50,12 +59,14 @@ class getSubjectbyid(GenericAPIView):
 
 
 class updateSubject(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
         subjectid = data['id']
         subjectobj = Subject.objects.filter(id=subjectid,isActive=True).first()
         if subjectobj is not None:
-            subjectexist = Subject.objects.filter(SubjectName=data['Name'],isActive= True).exclude(id=subjectid).first()
+            subjectexist = Subject.objects.filter(SubjectName=data['SubjectName'],isActive= True).exclude(id=subjectid).first()
             if subjectexist is not None:
                 return Response({"data":'',"response": {"n": 0, "msg": "Subject already exist","status": "failure"}})
             else:
@@ -69,6 +80,8 @@ class updateSubject(GenericAPIView):
             return Response({"data":'',"response": {"n": 0, "msg": "Subject not found ","status": "failure"}})
 
 class deleteSubject(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
         subjectid = data['id']

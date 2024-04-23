@@ -10,7 +10,16 @@ from User.serializers import UserSerializer
 from SchoolMaster.serializers import schoolSerializer
 from SchoolMaster.common import createschooladmin
 from django.template.loader import get_template, render_to_string
+from rest_framework.authentication import (BaseAuthentication,
+                                           get_authorization_header)
+from rest_framework import permissions
+from User.jwt import userJWTAuthentication
+from django.template.loader import get_template, render_to_string
+from django.core.mail import EmailMessage
+from rest_framework.response import Response
+from SchoolErp.settings import EMAIL_HOST_USER
 
+frontend_url = 'http://127.0.0.1:8000/'
 
 
 def schoolUniqueCode(schoolname):
@@ -22,7 +31,7 @@ def schoolUniqueCode(schoolname):
         schoolcode = firstschool
         return schoolcode
     else:
-        stripschool = schoolobject.schoolcode[-3:]
+        stripschool = schoolobject.school_code[-3:]
         increementschool = int(stripschool) + 1
         placeschool = "%03d" % (increementschool)
         newschoolcode = schoolJoin + str(placeschool)
@@ -31,6 +40,8 @@ def schoolUniqueCode(schoolname):
 
 
 class AddSchool(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         userdata = {}
         data = request.data.copy()
@@ -63,17 +74,43 @@ class AddSchool(GenericAPIView):
 
                 createschooladmin(data['admin_Email'],data['admin_Name'],schoolcode)
 
-                # subject = "Set Password"
-                # data2 = {"subject": subject,"email":data['admin_Email'],"adminname":data['admin_Name'],
-                #     "template": 'mails/sendmailforpassword.html'}
-                # message = render_to_string(data2['template'], data2)
+                adminobj = User.objects.filter(email=data['admin_Email']).first()
+                if adminobj is not None :
+                    adminid = adminobj.id
 
-                return Response({"data":'',"response": {"n": 1, "msg": "School added successfully","status": "success"}})
+                    #send mail
+                    subject = "School Registration succesful"
+                    data2 = {"adminname": data['admin_Name'],"email":data['Email'],'adminid':adminid, "Name":data['Name'],'frontend_url':frontend_url,
+                                "template": 'mails/school_registration.html'}
+                    message = render_to_string(
+                            data2['template'], data2)
+                    try:
+                        msg = EmailMessage(
+                            subject,
+                            message,
+                            EMAIL_HOST_USER,
+                            [data['admin_Email']],
+                        )
+                        msg.content_subtype = "html"
+                        m = msg.send()
+                        if m:
+                            print(m)
+                        data['n'] = 1
+                        data['Msg'] = 'Email has been sent'
+                        data['Status'] = "Success"
+                        return Response({"data":'',"response": {"n": 1, "msg": "School added successfully","status": "success"}})
+                    except Exception as e:
+                        return Response({'n': 0, 'Msg': 'Email could not be sent', 'Status': 'Failed'})
+                else:
+                    return Response({"data":'',"response": {"n": 0, "msg": "admin not found","status": "failure"}})
             else:
-                return Response({"data":'',"response": {"n": 0, "msg": "School not added ","status": "failure"}})
-          
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "School not added ","status": "failure"}})
+
+
 
 class schoollist(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
         schoolobjs = School.objects.filter(isActive=True).order_by('-id')
         serializer = schoolSerializer(schoolobjs,many=True)
@@ -81,6 +118,8 @@ class schoollist(GenericAPIView):
        
 
 class getschoolbyid(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
             id = request.data.get('id')
             schoolobj = School.objects.filter(id=id,isActive=True).first()
@@ -92,11 +131,14 @@ class getschoolbyid(GenericAPIView):
             
 
 class updateSchool(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
         schoolid = data['id']
         schoolobj = School.objects.filter(id=schoolid,isActive=True).first()
         if schoolobj is not None:
+            schoolcode = schoolobj.school_code
             schoolexist = School.objects.filter(Name=data['Name'],isActive= True).exclude(id=schoolid).first()
             if schoolexist is not None:
                 return Response({"data":'',"response": {"n": 0, "msg": "school already exist","status": "failure"}})
@@ -113,7 +155,7 @@ class updateSchool(GenericAPIView):
             if adminemail is not None:
                 return Response({"data":'',"response": {"n": 0, "msg": "School Admin Email already exist","status": "failure"}})
             
-            useradminemail = User.objects.filter(email=data['admin_Email'],isActive= True).exclude(id=schoolid).first()
+            useradminemail = User.objects.filter(email=data['admin_Email'],isActive= True).exclude(school_code=schoolcode).first()
             if useradminemail is not None:
                 return Response({"data":'',"response": {"n": 0, "msg": "School Admin Email already exist","status": "failure"}})
 
@@ -121,14 +163,31 @@ class updateSchool(GenericAPIView):
                 serializer = schoolSerializer(schoolobj,data=data,partial=True)
                 if serializer.is_valid():
                     serializer.save()
-                    return Response({"data":serializer.data,"response": {"n": 1, "msg": "School Updated successfully","status": "success"}})
+
+                    adminobj = User.objects.filter(school_code=schoolcode,role_id=2,isActive=True).first()
+                    admindata = {}
+                    admindata['email'] = data['admin_Email']
+                    admindata['Username'] = data['admin_Name']
+                    if adminobj is not None:
+                        adminser = UserSerializer(adminobj,data=admindata,partial=True)
+                        if adminser.is_valid():
+                            adminser.save()
+
+                            return Response({"data":serializer.data,"response": {"n": 1, "msg": "School Updated successfully","status": "success"}})
+                    
+                        else:
+                            return Response({"data":adminser.errors,"response": {"n": 0, "msg": "Couldn't Update admin ! ","status": "failure"}})
+                    else:
+                        return Response({"data":'',"response": {"n": 0, "msg": "Couldn't find admin email to update ! ","status": "failure"}})
                 else:
                     return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Update School ! ","status": "failure"}})
         else:
-            return Response({"data":'',"response": {"n": 0, "msg": "School not found ","status": "failure"}})
+            return Response({"data":'',"response": {"n": 0, "msg": "School is not Active ","status": "failure"}})
 
 
 class disableSchool(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
         schoolid = data['id']
@@ -148,6 +207,8 @@ class disableSchool(GenericAPIView):
 
 
 class enableSchool(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
         schoolid = data['id']

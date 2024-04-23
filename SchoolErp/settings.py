@@ -60,14 +60,14 @@ INSTALLED_APPS = [
     'time_table',
     'SchoolMaster',
     'academic_calender',
-    
-    'User',
     'user',
-    
+
+    'User',
     'DesignationMaster',
     'SubjectMaster',
     'TeacherMaster',
-    'Parent_StudentMaster'
+    'Parent_StudentMaster',
+    'ClassMaster'
 ]
 
 MIDDLEWARE = [
