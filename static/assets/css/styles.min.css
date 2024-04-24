@@ -6133,7 +6133,7 @@ fieldset:disabled .btn {
 }
 
 
-.sidebar-nav ul .sidebar-item.selected>.sidebar-link1.active{
+.sidebar-nav ul .sidebar-item.selected>.sidebar-link1.active {
     background-color: #7272720a;
     color: #995dff;
     font-weight: 700;
@@ -9476,7 +9476,7 @@ fieldset:disabled .btn {
 }
 
 .link-primary {
-    color: #995dff!important
+    color: #995dff !important
 }
 
 .link-primary:focus,
@@ -19382,7 +19382,7 @@ fieldset:disabled .btn {
 .app-header .navbar .navbar-nav.quick-links .nav-item:hover .nav-link {
     -webkit-transition: all 0.1s ease-in-out;
     transition: all 0.1s ease-in-out;
-    color: #995dff!important
+    color: #995dff !important
 }
 
 .app-header .navbar .navbar-nav.quick-links .nav-item:hover .nav-link:before {
@@ -19655,31 +19655,37 @@ ul {
 .rounded-circle {
     border-radius: 50% !important
 }
+
 .radial-gradient {
     position: relative
 }
 
 
-.login-card{   
+.login-card {
     background: white;
     padding: 16px;
     box-shadow: 0 0 5px grey;
     border-radius: 15px;
+    margin-top: 15%;
 }
-.tab-title{
+
+.tab-title {
     font-size: 16px;
     font-weight: 500;
 }
-.error_message{
+
+.error_message {
     color: red;
 }
+
 .sidebar-nav ul .sidebar-item.selected>.sidebar-link,
 .sidebar-nav ul .sidebar-item.selected>.sidebar-link.active,
 .sidebar-nav ul .sidebar-item>.sidebar-link.active {
     background-color: #995dff;
     color: #fff
 }
-.select2-container .select2-selection--single .select2-selection__rendered{
+
+.select2-container .select2-selection--single .select2-selection__rendered {
     display: block;
     width: 100%;
     padding: 8px 16px;
@@ -19701,22 +19707,27 @@ ul {
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
 }
+
 .select2-container--default .select2-selection--single {
     background-color: #fff;
     border: none;
 }
+
 .select2-dropdown {
 
     border: var(--bs-border-width) solid #DFE5EF;
 
 }
+
 .select2-container--default.select2-container--focus .select2-selection--multiple {
     border: var(--bs-border-width) solid #DFE5EF;
 }
+
 .select2-container--default .select2-selection--multiple {
     border: var(--bs-border-width) solid #DFE5EF;
 
 }
+
 .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 26px;
     position: absolute;
@@ -19724,7 +19735,8 @@ ul {
     right: 2%;
     width: 20px;
 }
-.select2-container--default .select2-selection--multiple{
+
+.select2-container--default .select2-selection--multiple {
     display: block;
     width: 100%;
     padding: 3px 0px;
@@ -19747,9 +19759,10 @@ ul {
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
 }
 
-.dt-bootstrap4>div{
+.dt-bootstrap4>div {
     margin: 12px 0px;
 }
+
 .field-icon {
     float: right;
     margin-left: -25px;
@@ -19757,9 +19770,115 @@ ul {
     margin-right: 10px;
     position: relative;
     z-index: 2;
-  }
-.fa-eye{
+}
+
+.fa-eye {
     color: #00b6ff;
 }
-  
-  
+
+.notice {
+    z-index: 99;
+    padding: 15px;
+    background: white;
+    border-left: 6px solid #7f7f84;
+    margin: 0px 5px;
+    -webkit-box-shadow: 0 5px 8px -6px rgba(0, 0, 0, .2);
+    -moz-box-shadow: 0 5px 8px -6px rgba(0, 0, 0, .2);
+    box-shadow: 0 5px 8px -6px rgba(0, 0, 0, .2);
+}
+
+.notice-sm {
+    padding: 10px;
+    font-size: 80%;
+}
+
+.notice-lg {
+    padding: 35px;
+    font-size: large;
+}
+
+.notice-success {
+    border-color: #80D651;
+}
+
+.notice-success>strong {
+    color: #80D651;
+}
+
+.notice-info {
+    border-color: #45ABCD;
+}
+
+.notice-info>strong {
+    color: #45ABCD;
+}
+
+.notice-warning {
+    border-color: #FEAF20;
+}
+
+.notice-warning>strong {
+    color: #FEAF20;
+}
+
+.notice-danger {
+    border-color: #d73814;
+}
+
+.notice-error {
+    border-color: #d73814;
+}
+
+.msg-error {
+    color: #d73814;
+}
+
+.msg-danger {
+    color: #d73814;
+}
+
+.msg-warning {
+    color: #FEAF20;
+}
+
+.msg-success {
+    color: #80D651;
+}
+
+.msg-info {
+    color: #45ABCD;
+}
+
+.notice-danger>strong {
+    color: #d73814;
+}
+
+.admin-alert {
+    position: absolute;
+    top: 0%;
+    right: 0px;
+    width: 30%;
+    animation-name: alert-message;
+    animation-duration: 3s;
+    visibility: hidden;
+}
+
+@keyframes alert-message {
+    0% {
+        visibility: visible;
+        right: 0px;
+        top: 85px;
+    }
+
+    50% {
+        visibility: visible;
+        right: 90px;
+        top: 85px;
+    }
+
+    100% {
+        visibility: visible;
+        right: 80px;
+        top: 85px;
+    }
+}

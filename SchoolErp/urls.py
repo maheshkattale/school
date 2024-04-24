@@ -29,7 +29,8 @@ urlpatterns = [
     path('parent_student_master/', include('parent_student.urls')),
     path('academic_calender/', include('academic_calender.urls')),
     path('user/', include('user.urls')),
-    path('', include('school.urls')),
+    path('',include(('school.urls', 'school'),namespace='school')),
+
     # backend
     path('api/User/', include('User.urls')),
     path('api/SchoolMaster/', include('SchoolMaster.urls')),

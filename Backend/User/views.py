@@ -29,28 +29,50 @@ class login(GenericAPIView):
     def post(self,request):
         email = request.data.get("email")
         Password = request.data.get("password")
-        print("email",email,"ppp",Password,type(Password))
         source = request.data.get("source")
         if email is None or Password is None :
-            return Response({'msg': 'Please provide username and password','n':0})
+            return Response(
+                                                {
+                    "data" : {'token':'','username':'','schoolcode':''},
+                    "response":{
+                    "status":"error",
+                    'msg': 'Please provide username and password',
+                    'n':0
+                    }})
         
         userexist = User.objects.filter(email=email, isActive=True).first()
         if userexist is None:
-           return Response({'msg': 'This user is not active','n':0})
+           return Response(
+                    {
+                    "data" : {'token':'','username':'','schoolcode':''},
+                    "response":{
+                    "status":"error",
+                    'msg': 'This user is not active',
+                    'n':0
+                    }}
+                           )
         else:
             print("userexist",userexist.email , "pass",userexist.password )
             # user = authenticate(email=email,password=password)
             p = check_password(Password,userexist.password)
-            print("P",p)
             if p is False:
-                return Response({'msg': 'Invalid Credentials','n':0})
+                return Response(
+                                
+                    {
+                    "data" : {'token':'','username':'','schoolcode':''},
+                    "response":{
+                    "status":"error",
+                    'msg': 'Invalid Credentials',
+                    'n':0
+                    }}
+                                
+                                )
             else:
                 useruuid = str(userexist.id)
                 role = userexist.role
                 username = userexist.Username
                 schoolcode = userexist.school_code
                 Token = createtoken(useruuid,email,source)
-                print("TTTToken",Token)
                 if source == "Web":
                     web_tokenexist = UserToken.objects.filter(User=useruuid,isActive=True,source=source).update(isActive=False)
                     createwebtoken = UserToken.objects.create(User=useruuid,WebToken=Token,source=source)
@@ -58,7 +80,14 @@ class login(GenericAPIView):
                     mobile_tokenexist = UserToken.objects.filter(User=useruuid,isActive=True,source=source).update(isActive=False)
                     createmobiletoken = UserToken.objects.create(User=useruuid,MobileToken=Token,source=source)
                 else:
-                    return Response({'msg': 'Please Provide Source','n':0})
+                    return Response({
+                    "data" : {'token':'','username':'','schoolcode':''},
+                    "response":{
+                    "status":"error",
+                    'msg': 'Please Provide Source',
+                    'n':0
+                    }
+                })
                 
                 return Response({
                     "data" : {'token':Token,'username':username,'schoolcode':schoolcode},
