@@ -44,16 +44,14 @@ class login(GenericAPIView):
 class logout(GenericAPIView):
     def get(self,request):
         try:
-            print("hii")
             tok = request.session.get('token', False)
             t = 'Token {}'.format(tok)
             headers = {'Authorization': t}
             logout_request = requests.post(logout_url, headers=headers)
             logout_response = logout_request.json()
-            print("logout_response",logout_response)
             if logout_response['response']['n'] == 1:
                 del request.session['token']
-                messages.error(request, logout_response['response']['msg'])
+                messages.success(request, logout_response['response']['msg'])
                 return redirect('school:login')
             else:
                 messages.error(request, logout_response['response']['msg'])

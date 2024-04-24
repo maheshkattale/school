@@ -66,29 +66,15 @@
         </tr>
       </thead>
       <tbody>
+        {% for i  in classes %}
         <tr>
-          <td>1</td>
-          <td>English</td>
-          
-
-          
+          <td>{{forloop.counter}}</td>
+          <td>{{i.ClassName}}</td>
 
           <td>
-            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>English</td>
-          
+            <a data-bs-toggle="modal" data-bs-target="#edit_class{{i.id}}"  ><i data-bs-toggle="tooltip"  title="Edit class" class="fa-solid fa-pen-to-square mx-1"></i></a>
 
-          
-
-          <td>
-            <a data-bs-toggle="modal" data-bs-target="#edit_class2"  ><i data-bs-toggle="tooltip"  title="Edit class" class="fa-solid fa-pen-to-square mx-1"></i></a>
-
-            <div id="edit_class2" class="modal">
+            <div id="edit_class{{i.id}}" class="modal">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
         
@@ -110,9 +96,9 @@
         
         
                               <div class="mb-3 col-lg-6">
-                                <label for="class_name2" class="form-label">class Name</label>
-                                <input type="text" class="form-control" id="class_name2" placeholder="Please enter class name" aria-describedby="class_name_error2" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
-                                <div id="class_name_error2" class="form-text error_message"></div>
+                                <label for="class_name{{i.id}}" class="form-label">class Name</label>
+                                <input type="text" class="form-control" id="class_name{{i.id}}" placeholder="Please enter class name" aria-describedby="class_name_error{{i.id}}" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                                <div id="class_name_error{{i.id}}" class="form-text error_message"></div>
                               </div>
         
         
@@ -121,7 +107,7 @@
         
                             <div class="row">
                               <div class="d-flex justify-content-center">
-                                <a onclick="validate_edit_form('2');" class="btn btn-primary">Submit</a>
+                                <a onclick="validate_edit_form('{{i.id}}');" class="btn btn-primary">Submit</a>
                               </div>
                             </div>
                           </form>
@@ -138,115 +124,7 @@
             <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
           </td>
         </tr>
-
-        <tr>
-          <td>3</td>
-          <td>English</td>
-          
-
-          
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>English</td>
-          
-
-          
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>English</td>
-          
-
-          
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>English</td>
-          
-
-          
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>English</td>
-          
-
-          
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>English</td>
-          
-
-          
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td>English</td>
-          
-
-          
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td>English</td>
-          
-
-          
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td>English</td>
-          
-
-          
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit class" href="/class_master/edit_class"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete class"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>
