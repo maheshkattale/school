@@ -63,9 +63,10 @@ class add_teacher(GenericAPIView):
     
 class edit_teacher(GenericAPIView):
     def get(self,request,id):
-        
+
         tok = request.session.get('token', False)
         if tok:
+            print("byy")
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             designation_list_request = requests.get(designation_list_url,headers=headers)
@@ -74,17 +75,17 @@ class edit_teacher(GenericAPIView):
             subject_list_response = subject_list_request.json()
             data={}
             data['id']=id
-            get_teacher_info_request = requests.get(get_teacher_info_url,headers=headers,data=data)
+            get_teacher_info_request = requests.post(get_teacher_info_url,headers=headers,data=data)
             get_teacher_info_response = get_teacher_info_request.json()
             
-            
-            return render(request, 'admin/teacher_master/edit_teacher.html',{'designations':designation_list_response['data'],'subjects':subject_list_response['data']})
+            print("get_teacher_info_response",get_teacher_info_response)
+            return render(request, 'admin/teacher_master/edit_teacher.html',{'designations':designation_list_response['data'],'subjects':subject_list_response['data'],'teacher':get_teacher_info_response['data'],'teacher_subjects':get_teacher_info_response['subjectidlist']})
     
 
-    def post(self,request):
-        
+    def post(self,request,id):
         tok = request.session.get('token', False)
         if tok:
+
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
