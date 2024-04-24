@@ -36,17 +36,7 @@
 
               <div class="mb-3 col-lg-3">
                 <label for="children_count" class="form-label">No of Children</label>
-                <select id="children_count" class="form-select" aria-describedby="children_count_error" onchange="add_childern_feilds();">
-                  <option value="1" selected>1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="9">9</option>
-                  <option value="1">10</option>
-                </select>
+                <div><span class="quantity_Id" id="child_count">0</span><span class="quantitybtnspan"><button type="button" class="btn quantitybtn plus-btn" id="addquantity2" onclick="addchild()">+</button></span></div>
                 <div id="children_count_error" class="form-text error_message"></div>
               </div>
 
@@ -59,53 +49,27 @@
             </div>
 
 
-            <div class="row" id="children_div" count="1">
-              <div class="col-lg-12">
-                <h5 class="card-title fw-semibold">Children 1</h5>
-              </div>
-              <div class="mb-3 col-lg-3">
-                <label for="children1_name" class="form-label"> Name</label>
-                <input type="text" class="form-control" id="children1_name"  placeholder="Please enter children name" v aria-describedby="children1_name_error" />
-                <div id="children_name_error" class="form-text error_message"></div>
-              </div>
-              <div class="mb-3 col-lg-3">
-                <label for="children1_class" class="form-label">Class</label>
-                <select id="children1_class" class="form-select" aria-describedby="children1_class_error" >
-                  <option value="1st" selected>1st</option>
-                  <option value="2nd">2nd</option>
-                </select>
-                <div id="children1_class_error" class="form-text error_message"></div>
-              </div>
-              <div class="mb-3 col-lg-2">
-                <label for="children1_date_of_birth" class="form-label"> Date Of Birth</label>
-                <input type="text" class="form-control" id="children1_date_of_birth" placeholder="Please select children DOB" aria-describedby="children1_date_of_birth_error" readonly/>
-                <div id="children1_date_of_birth_error" class="form-text error_message"></div>
-              </div>
-
-
-
-              <div class="mb-3 col-lg-2">
-                <label for="children1_blood_group" class="form-label">Blood Group</label>
-                <select id="children1_blood_group" class="form-select" aria-describedby="children1_blood_group_error" >
-                  <option value="A+" selected>A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
-                <div id="children1_blood_group_error" class="form-text error_message"></div>
-              </div>
-
-              <div class="mb-3 col-lg-2">
-                <label for="children1_date_of_joining" class="form-label"> Date Of joining</label>
-                <input type="text" class="form-control" id="children1_date_of_joining" placeholder="Please select children DOJ" aria-describedby="children1_date_of_joining_error" readonly/>
-                <div id="children1_date_of_joining_error" class="form-text error_message"></div>
-              </div>
-
-            </div>
+            <div class="form-row" id="child-table">
+              <table class="table">
+               <thead>
+                <tr>
+                 <th class="text-center">S.N.</th>
+                 <th class="text-center">Student Name</th>
+                 <th class="text-center">Student Class</th>
+                  <th class="text-center">Date of Birth</th>
+                  <th class="text-center">Date of Joining</th>
+                  <th class="text-center">Blood Group</th>
+                  <th></th>
+               </tr>
+             </thead>
+             <tbody id="Childinfotable">
+            
+             
+               
+               
+             </tbody>
+           </table>
+         </div>
 
 
 
@@ -137,54 +101,65 @@
     $('#children1_class').select2();
     $('#children_count').select2();
     $('#children1_blood_group').select2();
-    flatpickr("#children1_date_of_birth", {
+    flatpickr(".date_of_birth", {
       dateFormat: "d-m-Y",
     });
-    flatpickr("#children1_date_of_joining", {
+    flatpickr(".date_of_joining", {
       dateFormat: "d-m-Y",
     });
 
   });
+
+  function addchild(){
+    var ccount=$('#child_count').text();
+    var inccount = parseInt(ccount) + 1;
+   $('#child_count').text(inccount);
+   add_childern_feilds()
+  }
+
+
+counter=1
+var counterlist = []
   function add_childern_feilds(){
-    var count=$('#children_count').val();
-    var children_div=''
-
-    for (var i = 0; i < count; i++) {
-      
-      // Your code block to be executed 4 times
-      var counter= i + 1
-      console.log("Iteration " + (i + 1)); // Example code, replace with your actual code
-
-      children_div+=`
-      <div class="col-lg-12">
-        <h5 class="card-title fw-semibold">Children `+counter+`</h5>
-
+    var count=$('#child_count').text();
+    var trHTML=''
+    $.ajax({
+     type: 'POST',
+      url: frontendURL+'parent_student_master/add_parent_student',
+      dataType: 'json',
+      data:{
+        csrfmiddlewaretoken: '{{ csrf_token }}',
         
-      </div>
-      <div class="mb-3 col-lg-3">
-        <label for="children`+counter+`_name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="children`+counter+`_name" placeholder="Please enter children name" aria-describedby="children`+counter+`_name_error" />
-        <div id="children`+counter+`_name_error" class="form-text error_message"></div>
-      </div>
-      <div class="mb-3 col-lg-3">
-        <label for="children`+counter+`_class" class="form-label">Class</label>
-        <select id="children`+counter+`_class" class="form-select" aria-describedby="children`+counter+`_class_error" >
-          <option value="1st">1st</option>
-          <option value="2nd">2nd</option>
+      },
+     
+      success: function (response) {   
+        console.log("response",response)
+      trHTML+=`
+      <tr class="countchildren" id="rowd`+counter+`">
+        <th scope="row" class="text-center srNumber">`+counter+`</th>
+
+        <td class="text-center"> <input type="text" class="form-control"  id="childname`+counter+`"  placeholder="Please enter children name" aria-describedby="childnameerror`+counter+`" />
+        <div id="childnameerror`+counter+`" class="form-text error_message"></div></td>
+
+        <td class="text-center">
+          <select id="childclass`+counter+`" class="form-select" aria-describedby="childclasserror`+counter+`">
+          
         </select>
-        <div id="children`+counter+`_class_error" class="form-text error_message"></div>
-      </div>
-      <div class="mb-3 col-lg-2">
-        <label for="children`+counter+`_date_of_birth" class="form-label"> Date Of Birth</label>
-        <input type="text" class="form-control" id="children`+counter+`_date_of_birth" placeholder="Please select children DOB" aria-describedby="children`+counter+`_date_of_birth_error" readonly/>
-        <div id="children`+counter+`_date_of_birth_error" class="form-text error_message"></div>
-      </div>
+        <div id="childclasserror`+counter+`" class="form-text error_message"></div>
+        </td>
 
+        <td class="text-center">
+          <input type="text" class="form-control date_of_birth" id="child_dateofbirth`+counter+`" placeholder="Please select children DOB" aria-describedby="child_dateofbirtherror`+counter+`"  readonly/>
+        <div id="child_dateofbirtherror`+counter+`"  class="form-text error_message"></div>
+          </td>
 
+        <td class="text-center">
+          <input type="text" class="form-control date_of_joining" id="child_dateofjoining`+counter+`"  placeholder="Please select children DOJ" aria-describedby="child_dateofjoiningerror`+counter+`" readonly/>
+        <div id="child_dateofjoiningerror`+counter+`"   class="form-text error_message"></div>
+          </td>
 
-      <div class="mb-3 col-lg-2">
-        <label for="children`+counter+`_blood_group" class="form-label">Blood Group</label>
-        <select id="children`+counter+`_blood_group" class="form-select" aria-describedby="children`+counter+`_blood_group_error" >
+        <td class="text-center">
+          <select id="child_bloodgroup`+counter+`"   class="form-select" aria-describedby="child_bloodgrouperror`+counter+`" >
           <option value="A+">A+</option>
           <option value="A-">A-</option>
           <option value="B+">B+</option>
@@ -194,37 +169,69 @@
           <option value="O+">O+</option>
           <option value="O-">O-</option>
         </select>
-        <div id="children`+counter+`_blood_group_error" class="form-text error_message"></div>
-      </div>
+        <div id="child_bloodgrouperror`+counter+`" class="form-text error_message"></div>
+          </td>
 
-      <div class="mb-3 col-lg-2">
-        <label for="children`+counter+`_date_of_joining" class="form-label"> Date Of joining</label>
-        <input type="text" class="form-control" id="children`+counter+`_date_of_joining" placeholder="Please select children DOJ" aria-describedby="children`+counter+`_date_of_joining_error" readonly/>
-        <div id="children`+counter+`_date_of_joining_error" class="form-text error_message"></div>
-      </div>
-
+        <td class="text-left"><a href="javascript:void(0);" class="view-btn" id="delete`+counter+`" onclick="deleteChild(`+counter+`)"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a></td>
+        
+      </tr>
       `
-    }
-   
-    $('#children_div').html(children_div)
-    $('#children_div').attr('count',count)
+    $('#Childinfotable').append(trHTML)
+    $(".srNumber").each(function(i,v){
+          $(v).text(i+1);
+      })
+      counterlist.push(counter)
+      counter=counter+1;
+      
+      // $.each(classlist, function(index, value){  
+      //         classOpt += `<option value="` + value.id + `">` + value.balancequantity + `</option>`;           
+      //       });
+      //       $("children_class"+counter).html(sizeColorOpt);
 
-    
-    for (var i = 0; i < count; i++) {
-      var counter2= i + 1
-
-      $('#children'+counter2+'_class').select2();
-
-      $('#children'+counter2+'_blood_group').select2();
-      flatpickr("#children"+counter2+"_date_of_birth", {
-        dateFormat: "d-m-Y",
-      });
-      flatpickr("#children"+counter2+"_date_of_joining", {
-        dateFormat: "d-m-Y",
-      });
-    }
-
+      flatpickr(".date_of_birth", {
+      dateFormat: "d-m-Y",
+    });
+    flatpickr(".date_of_joining", {
+      dateFormat: "d-m-Y",
+    });
+    lengthtr=$('#child-table tbody tr').length;
+    $('#child_count').text(lengthtr);
   }
+   })     
+  }
+
+
+  function deleteChild(childid){  
+  var productRowCount = $(".countchildren").length
+  counterlist.splice(counterlist.indexOf(childid),1)
+  $("#rowd"+childid).remove(); 
+  $('tbody').find('tr').each(function (index) {
+    var firstTDDomEl = $(this).find('th')[0];
+    var $firstTDJQObject = $(firstTDDomEl);
+    $firstTDJQObject.text(index + 1);
+  });
+  lengthtr=$('#child-table tbody tr').length;
+    $('#child_count').text(lengthtr);
+}
+
+function studentlist(){
+  var x = document.getElementById("snackbar");
+  x.className = "show";
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000); 
+   var studentlist = [];
+   var counter = 0;
+    lengthtr=$('#child-table tbody tr').length;
+    $(counterlist).each(function(o,i){
+      var childname= $('#childname'+i).text();
+      var childclass = $('#productValue'+i).text();
+      var dateofbirth = $('#Availquantity'+i).val();
+      var dateobjoining = $('#Requiredqty'+i).val();
+      var bloodgroup = $('#balanceqty'+i).val();
+      data = { 'childname': childname, 'childclass':childclass,'dateofbirth':dateofbirth,'dateobjoining': dateobjoining,'bloodgroup':bloodgroup}
+      studentlist.push(data)
+    })
+  }
+
   function validate_form(){
     var parent_name=$('#parent_name').val();
     var parent_email=$('#parent_email').val();
