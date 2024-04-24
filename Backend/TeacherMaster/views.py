@@ -31,9 +31,7 @@ class AddTeacher(GenericAPIView):
         data = request.data.copy()
         data['isActive'] = True
         subjects = json.loads(data['subjects'])
-        print("subjects",subjects,type(subjects))
         schoolcode = request.user.school_code
-        print("sss",schoolcode)
         teacherexist = User.objects.filter(Username=data['Name'],isActive= True).first()
         if teacherexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Teacher Name already exist","status": "failure"}})
@@ -52,7 +50,6 @@ class AddTeacher(GenericAPIView):
             teacherobj = User.objects.filter(email=data['Email']).first()
             if teacherobj is not None :
                 teacherid = teacherobj.id
-                print("teacherid",teacherid)
 
                 for s in subjects:
                     TeacherSubject.objects.create(TeacherId=str(teacherid),SubjectId_id=s)
@@ -118,6 +115,7 @@ class getTeacherbyid(GenericAPIView):
         if teacherobj is not None:
             serializer = UserSerializer(teacherobj)
             subjectlist = []
+            subjectidlist = []
             teachersubjectobj = TeacherSubject.objects.filter(TeacherId=teacherobj.id,isActive=True)
             ser = TeacherSubjectSerializer(teachersubjectobj,many=True)
             for t in ser.data:
@@ -127,10 +125,10 @@ class getTeacherbyid(GenericAPIView):
                     subdict['subid'] = t['SubjectId']
                     subdict['subjectname'] = subobj.SubjectName
                     subjectlist.append(subdict)
-
-            return Response({"data":serializer.data,"subjectlist":subjectlist,"response": {"n": 1, "msg": "Teacher found successfully","status": "success"}})
+                    subjectidlist.append(t['SubjectId'])
+            return Response({"data":serializer.data,"subjectlist":subjectlist,'subjectidlist':subjectidlist,"response": {"n": 1, "msg": "Teacher found successfully","status": "success"}})
         else:
-            return Response({"data":'',"response": {"n": 0, "msg": "Teacher not found ","status": "failure"}})
+            return Response({"data":'','subjectlist':[],'subjectidlist':[],"response": {"n": 0, "msg": "Teacher not found ","status": "failure"}})
 
 
 class deleteTeacher(GenericAPIView):
@@ -151,3 +149,46 @@ class deleteTeacher(GenericAPIView):
                 return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Delete Teacher ! ","status": "failure"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Teacher not found ","status": "failure"}})
+
+
+
+class UpdateTeacher(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        data['isActive'] = True
+        subjects = json.loads(data['subjects'])
+        schoolcode = request.user.school_code
+        teacher_obj = User.objects.filter(id=data['id'],isActive= True).first()
+        if teacher_obj is not None:
+            
+            teacherexist = User.objects.filter(Username=data['Username'],isActive= True).exclude(id=data['id']).first()
+            if teacherexist is not None:
+                return Response({"data":'',"response": {"n": 0, "msg": "Teacher Name already exist","status": "failure"}})
+            
+            teacheremailexist = User.objects.filter(email=data['email'],isActive= True).exclude(id=data['id']).first()
+            if teacheremailexist is not None:
+                return Response({"data":'',"response": {"n": 0, "msg": "Email already exist","status": "failure"}})
+            
+            teachermobileexist = User.objects.filter(mobileNumber=data['mobileNumber'],isActive= True).exclude(id=data['id']).first()
+            if teachermobileexist is not None:
+                return Response({"data":'',"response": {"n": 0, "msg": "Mobile Number already exist","status": "failure"}})
+            
+            else:
+                serializer=UserSerializer(teacher_obj,data=data,partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    delete_subject=TeacherSubject.objects.filter(TeacherId=str(serializer.data['id'])).delete()
+                    for s in subjects:
+                        subject_obj=TeacherSubject.objects.create(TeacherId=str(serializer.data['id']),SubjectId_id=s)
+                            
+                    return Response({"data":'',"response": {"n": 1, "msg": "Teacher updated successfully","status": "success"}})
+                else:
+                    first_key, first_value = next(iter(serializer.errors.items()))
+                    return Response({"data":'',"response": {"n": 0, "msg": first_key +' ' +first_value[0],"status": "failure"}})
+
+        else:
+            
+            return Response({"data":'',"response": {"n": 0, "msg": "Teacher not found","status": "failure"}})
+

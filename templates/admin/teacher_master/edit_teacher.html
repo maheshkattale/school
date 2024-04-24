@@ -12,64 +12,72 @@
   <div class="card">
     <div class="card-body">
       <h5 class="card-title fw-semibold mb-4">Edit Teacher Forms</h5>
+
       <div class="card">
         <div class="card-body">
           <form>
             <div class="row">
               <div class="mb-3 col-lg-4">
                 <label for="teacher_name" class="form-label">Teacher Name</label>
-                <input type="text" class="form-control" id="teacher_name" placeholder="Please enter name" value="" aria-describedby="teacher_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
+                <input type="text" class="form-control" id="teacher_name" placeholder="Please enter name" value="{{ teacher.Username }}" aria-describedby="teacher_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
                 <div id="teacher_name_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_email" class="form-label">Teacher Email</label>
-                <input type="text" class="form-control" id="teacher_email" placeholder="Please enter email" value="" aria-describedby="teacher_email_error" oninput="email_validate('teacher_email');"/>
+                <input type="text" class="form-control" id="teacher_email" placeholder="Please enter email" value="{{ teacher.email }}" aria-describedby="teacher_email_error" oninput="email_validate('teacher_email');" />
                 <div id="teacher_email_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_designation" class="form-label">Designation</label>
                 <select id="teacher_designation" class="form-select" value="" aria-describedby="teacher_designation_error">
-
-                  <option value="" > Please select Designation</option>
+                  <option value="">Please select Designation</option>
                   {% for designation in designations %}
-                    <option value="{{designation.id}}"> {{designation.designationName}}</option>
+                    {% if teacher.designation == designation.id %}
+                      <option value="{{ designation.id }}" selected>{{ designation.designationName }}</option>
+                    {% else %}
+                      <option value="{{ designation.id }}">{{ designation.designationName }}</option>
+                    {% endif %}
                   {% endfor %}
                 </select>
                 <div id="teacher_designation_error" class="form-text error_message"></div>
               </div>
-              
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_joining_date" class="form-label">Joining Date</label>
-                <input type="text" class="form-control" id="teacher_joining_date" placeholder="Please select joining date" value="" aria-describedby="teacher_joining_date_error" readonly/>
+                <input type="text" class="form-control" id="teacher_joining_date" placeholder="Please select joining date" value="{{ teacher.joiningDate }}" aria-describedby="teacher_joining_date_error" readonly />
                 <div id="teacher_joining_date_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_contact" class="form-label">Contact No</label>
-                <input type="text" class="form-control" id="teacher_contact" placeholder="Please enter contact no" value="" aria-describedby="teacher_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');" />
+                <input type="text" class="form-control" id="teacher_contact" placeholder="Please enter contact no" value="{{ teacher.mobileNumber }}" aria-describedby="teacher_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');" />
                 <div id="teacher_contact_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
                 <label for="teacher_subject" class="form-label">Subject</label>
                 <select id="teacher_subject" class="form-select" value="" aria-describedby="teacher_subject_error" multiple>
-                  <option>Science</option>
-                  <option>Maths</option>
+                  {% for subject in subjects %}
+                    {% if subject.id in teacher_subjects %}
+                      <option value="{{ subject.id }}" selected>{{ subject.SubjectName }}</option>
+                    {% else %}
+                      <option value="{{ subject.id }}">{{ subject.SubjectName }}</option>
+                    {% endif %}
+                  {% endfor %}
                 </select>
                 <div id="teacher_subject_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-12">
                 <label for="teacher_address" class="form-label">Teacher Address</label>
-                <textarea class="form-control" name="teacher_address" id="teacher_address" cols="30" rows="5" aria-describedby="teacher_address_error"> Address</textarea>
+                <textarea class="form-control" name="teacher_address" id="teacher_address" cols="30" rows="5" aria-describedby="teacher_address_error">Address</textarea>
                 <div id="teacher_address_error" class="form-text error_message"></div>
               </div>
             </div>
 
             <div class="row">
               <div class="d-flex justify-content-center">
-                <a  class="btn btn-primary" onclick="validate_form();">Submit</a>
+                <a class="btn btn-primary" onclick="validate_form();">Submit</a>
               </div>
             </div>
           </form>
@@ -80,101 +88,139 @@
 {% endblock %}
 
 {% block script %}
-<script>
-  $(document).ready(function() {
-    $('#teacher_subject').select2();
-    $('#teacher_designation').select2();
-    flatpickr("#teacher_joining_date", {
-      dateFormat: "d-m-Y", // Customize date format if needed
-      // You can add more configuration options here
-    });
-  });
-
-
-  function validate_form(){
-    var teacher_name=$('#teacher_name').val();
-    var teacher_email=$('#teacher_email').val();
-    var teacher_designation=$('#teacher_designation').val();
-    var teacher_joining_date=$('#teacher_joining_date').val();
-    var teacher_contact=$('#teacher_contact').val();
-    var teacher_subject=$('#teacher_subject').val();
-    var teacher_address=$('#teacher_address').val();
-
-
-    if(IsValid(teacher_name)){
-      $('#teacher_name').html();
-      $('#teacher_name_error').show().delay(3000).slideUp();
-      $('#teacher_name_error').html('Please enter teacher name');
-      $('#teacher_name').focus();
-      return false;
-    }
-    if(IsValid(teacher_email)){
-      $('#teacher_email').html();
-      $('#teacher_email_error').show().delay(3000).slideUp();
-      $('#teacher_email_error').html('Please enter teacher email');
-      $('#teacher_email').focus();
-      return false;
-    }
-    if(email_validate('teacher_email') == false){
-      $('#teacher_email').html();
-      $('#teacher_email_error').show().delay(3000).slideUp();
-      $('#teacher_email_error').html('Please enter teacher valid email ');
-      $('#teacher_email').focus();
-      return false;
-    }
-    if(IsValid(teacher_designation)){
-      $('#teacher_designation').html();
-      $('#teacher_designation_error').show().delay(3000).slideUp();
-      $('#teacher_designation_error').html('Please select teacher designation');
-      $('#teacher_designation').focus();
-      return false;
-    }
+  <script>
+    $(document).ready(function () {
+      $('#teacher_subject').select2()
+      $('#teacher_designation').select2()
+      flatpickr('#teacher_joining_date', {
+        dateFormat: 'd-m-Y' // Customize date format if needed
+        // You can add more configuration options here
+      })
+    })
     
-    if(IsValid(teacher_joining_date)){
-      $('#teacher_joining_date').html();
-      $('#teacher_joining_date_error').show().delay(3000).slideUp();
-      $('#teacher_joining_date_error').html('Please select teacher joining date');
-      $('#teacher_joining_date').focus();
-      return false;
-    }
-    if(IsValid(teacher_contact)){
-      $('#teacher_contact').html();
-      $('#teacher_contact_error').show().delay(3000).slideUp();
-      $('#teacher_contact_error').html('Please enter teacher contact number');
-      $('#teacher_contact').focus();
-      return false;
-    }
-    if(mobile_validate('teacher_contact') == false){
-      $('#teacher_contact').html();
-      $('#teacher_contact_error').show().delay(3000).slideUp();
-      $('#teacher_contact_error').html('Please enter teacher contact number ');
-      $('#teacher_contact').focus();
-      return false;
-    }
-    if(teacher_subject=="" || teacher_subject == null || teacher_subject ==[] || teacher_subject == undefined){
-      $('#teacher_subject').html();
-      $('#teacher_subject_error').show().delay(3000).slideUp();
-      $('#teacher_subject_error').html('Please select teacher subject ');
-      $('#teacher_subject').focus();
-      return false;
-    }
+    function validate_form() {
+      var teacher_name = $('#teacher_name').val()
+      var teacher_email = $('#teacher_email').val()
+      var teacher_designation = $('#teacher_designation').val()
+      var teacher_joining_date = $('#teacher_joining_date').val()
+      var teacher_contact = $('#teacher_contact').val()
+      var teacher_subject = $('#teacher_subject').val()
+      var teacher_address = $('#teacher_address').val()
+    
+      if (IsValid(teacher_name)) {
+        $('#teacher_name').html()
+        $('#teacher_name_error').show().delay(3000).slideUp()
+        $('#teacher_name_error').html('Please enter teacher name')
+        $('#teacher_name').focus()
+        return false
+      }
+      if (IsValid(teacher_email)) {
+        $('#teacher_email').html()
+        $('#teacher_email_error').show().delay(3000).slideUp()
+        $('#teacher_email_error').html('Please enter teacher email')
+        $('#teacher_email').focus()
+        return false
+      }
+      if (email_validate('teacher_email') == false) {
+        $('#teacher_email').html()
+        $('#teacher_email_error').show().delay(3000).slideUp()
+        $('#teacher_email_error').html('Please enter teacher valid email ')
+        $('#teacher_email').focus()
+        return false
+      }
+      if (IsValid(teacher_designation)) {
+        $('#teacher_designation').html()
+        $('#teacher_designation_error').show().delay(3000).slideUp()
+        $('#teacher_designation_error').html('Please select teacher designation')
+        $('#teacher_designation').focus()
+        return false
+      }
+    
+      if (IsValid(teacher_joining_date)) {
+        $('#teacher_joining_date').html()
+        $('#teacher_joining_date_error').show().delay(3000).slideUp()
+        $('#teacher_joining_date_error').html('Please select teacher joining date')
+        $('#teacher_joining_date').focus()
+        return false
+      }
+      if (IsValid(teacher_contact)) {
+        $('#teacher_contact').html()
+        $('#teacher_contact_error').show().delay(3000).slideUp()
+        $('#teacher_contact_error').html('Please enter teacher contact number')
+        $('#teacher_contact').focus()
+        return false
+      }
+      if (mobile_validate('teacher_contact') == false) {
+        $('#teacher_contact').html()
+        $('#teacher_contact_error').show().delay(3000).slideUp()
+        $('#teacher_contact_error').html('Please enter teacher contact number ')
+        $('#teacher_contact').focus()
+        return false
+      }
+      if (teacher_subject == '' || teacher_subject == null || teacher_subject == [] || teacher_subject == undefined) {
+        $('#teacher_subject').html()
+        $('#teacher_subject_error').show().delay(3000).slideUp()
+        $('#teacher_subject_error').html('Please select teacher subject ')
+        $('#teacher_subject').focus()
+        return false
+      }
+    
+      if (IsValid(teacher_address)) {
+        $('#teacher_address').html()
+        $('#teacher_address_error').show().delay(3000).slideUp()
+        $('#teacher_address_error').html('Please enter teacher address ')
+        $('#teacher_address').focus()
+        return false
+      } else {
 
-    if(IsValid(teacher_address)){
-      $('#teacher_address').html();
-      $('#teacher_address_error').show().delay(3000).slideUp();
-      $('#teacher_address_error').html('Please enter teacher address ');
-      $('#teacher_address').focus();
-      return false;
-    }
-    else{
-      Swal.fire({
-        title: 'Successful !',
-        text: 'This is a SweetAlert dialog.',
-        icon: 'success',
-      }).then((result) => {
-        window.location.href = "/teacher_master";
 
-      });    }
-  }
-</script>
+        var fd = new FormData();    
+        fd.append("Username",teacher_name);
+        fd.append("email",teacher_email);
+        fd.append("designation",teacher_designation);
+        fd.append("joiningDate",yyyy_mm_dd(teacher_joining_date));
+        fd.append("mobileNumber",teacher_contact);
+        fd.append("subjects",JSON.stringify(teacher_subject));
+        fd.append("teacher_address",teacher_address);
+        fd.append("id",'{{teacher.id}}');
+
+
+
+
+        
+        fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+        $.ajax({
+          type: "POST",
+          url: frontendURL+"teacher_master/edit_teacher/"+"{{teacher.id}}",
+          data: fd,
+          processData: false,
+          contentType: false,
+          
+          success: function(response) {
+            if(response.response.n ==1){
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'success',
+              }).then((result) => {
+                window.location.href = "/teacher_master";
+        
+              });
+            }else{
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'error',
+              })
+            }
+  
+      
+          },
+        });
+
+
+
+
+
+      }
+    }
+  </script>
 {% endblock %}

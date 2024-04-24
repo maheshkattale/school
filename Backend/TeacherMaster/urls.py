@@ -6,7 +6,7 @@ urlpatterns = [
     path('Add', AddTeacher.as_view(), name = 'Add'),
     path('list', Teacherlist.as_view(), name = 'list'),
     path('getbyid', getTeacherbyid.as_view(), name = 'getbyid'),
-    # path('update', editTeacher.as_view(), name = 'list'),
+    path('update', UpdateTeacher.as_view(), name = 'list'),
     path('delete', deleteTeacher.as_view(), name = 'list'),
 
 ]

@@ -39,3 +39,6 @@ class add_parent_student(GenericAPIView):
 class edit_parent_student(GenericAPIView):
     def get(self,request):
         return render(request, 'admin/parent_student_master/edit_parent_student.html',{})
+class student_list(GenericAPIView):
+    def get(self,request):
+        return render(request, 'admin/parent_student_master/student_cards.html',{})
