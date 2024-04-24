@@ -5,7 +5,7 @@ from rest_framework.response import Response
 import json
 from rest_framework.generics import GenericAPIView
 from User.models import User
-from User.serializers import UserSerializer
+from User.serializers import UserSerializer,UserlistSerializer
 from rest_framework.authentication import (BaseAuthentication,
                                            get_authorization_header)
 from User.jwt import userJWTAuthentication
@@ -13,6 +13,12 @@ from rest_framework import permissions
 from .models import *
 from .serializers import *
 from SchoolMaster.models import *
+from django.template.loader import get_template, render_to_string
+from django.core.mail import EmailMessage
+from rest_framework.response import Response
+from SchoolErp.settings import EMAIL_HOST_USER
+
+frontend_url = 'http://127.0.0.1:8000/'
 
 
 def createstudentid(schoolcode):
@@ -21,7 +27,7 @@ def createstudentid(schoolcode):
         studentcount = 1
         return f"{schoolcode}/{studentcount:04d}"
     else:
-        studentcount = int(studentobject.student_id.split('/')[-1]) + 1
+        studentcount = int(studentobject.StudentCode.split('/')[-1]) + 1
         return f"{schoolcode}/{studentcount:04d}"
       
 
@@ -49,20 +55,45 @@ class AddParentStudent(GenericAPIView):
         else:
             parentcreate = User.objects.create(email=data['Email'],Username = data['Name'], school_code = schoolcode,role_id = 5,password = str(12345),textPassword = str(12345),mobileNumber=data['MobileNumber'])
             
-           
-
             parentobj = User.objects.filter(email=data['Email']).first()
-            parentid = parentobj.id
+            if parentobj is not None :
+                parentid = parentobj.id
+            
+                print("parentiiid",parentid)
+                for s in studentlist:
+                    print("sssss",s)
+                    newstudentcode = createstudentid(schoolcode)
+                    print("stucode",newstudentcode)
+                    Students.objects.create(ParentId=parentid,StudentName=s['Studentname'],StudentClass_id=s['StudentClass'],DateOfBirth = s['DateOfBirth'],DateofJoining=s['DateofJoining'],school_code=schoolcode,StudentCode=newstudentcode)
+
+            
+                #send mail
+                subject = "Registration succesful"
+                data2 = {"Name": data['Name'],"email":data['Email'],'parentid':parentid,'frontend_url':frontend_url,
+                            "template": 'mails/school_registration.html'}
+                message = render_to_string(
+                        data2['template'], data2)
+                # send_mail(data2, message)
+                try:
+                    msg = EmailMessage(
+                        subject,
+                        message,
+                        EMAIL_HOST_USER,
+                        [data['Email']],
+                    )
+                    msg.content_subtype = "html"
+                    m = msg.send()
+                    if m:
+                        print(m)
+                    data['n'] = 1
+                    data['Msg'] = 'Email has been sent'
+                    data['Status'] = "Success"
+                    return Response({"data":'',"response": {"n": 1, "msg": "Parent info added successfully","status": "success"}})
+                except Exception as e:
+                    return Response({'n': 0, 'Msg': 'Email could not be sent', 'Status': 'Failed'})
+            else:
+                 return Response({'n': 0, 'Msg': 'Parent Not Created', 'Status': 'Failed'})
         
-            print("parentid",parentid)
-            for s in studentlist:
-                year = str(s['DateofJoining']).split("-")[0]
-                newstudentcode = createstudentid(schoolname,year,schoolcode)
-                Students.objects.create(ParentId=parentid,StudentName=s['Studentname'],StudentClass=s['StudentClass'],DateOfBirth = s['DateOfBirth'],DateofJoining=s['DateofJoining'],school_code=schoolcode,StudentCode=newstudentcode)
-
-            #send mail
-
-            return Response({"data":'',"response": {"n": 1, "msg": "Parent info added successfully","status": "success"}})
            
 
 class ParentStudentlist(GenericAPIView):
@@ -71,15 +102,13 @@ class ParentStudentlist(GenericAPIView):
     def get(self,request):
         schoolcode = request.user.school_code
         Parentobj = User.objects.filter(isActive=True,role_id=5,school_code = schoolcode)
-        parentserializer = UserSerializer(Parentobj,many=True)
+        parentserializer = UserlistSerializer(Parentobj,many=True)
         for p in parentserializer.data:
-            studentlist = []
+            
             studentobj = Students.objects.filter(ParentId = p['id'],isActive=True,school_code=schoolcode)
             studentser =  StudentSerializer(studentobj,many=True)
            
-            studentlist = studentser.data
-            
-            p['Studentslist'] = studentlist
+            p['Studentslist'] = studentser.data
         return Response({"data":parentserializer.data,"response": {"n": 1, "msg": "Parents list found successfully","status": "success"}})
     
 
@@ -93,7 +122,7 @@ class getParentStudentbyid(GenericAPIView):
         if Parentobj is not None:
             serializer = UserSerializer(Parentobj)
             studentlist = []
-            stuobj = Students.objects.filter(ParentId = p['id'],isActive=True,school_code=schoolcode)
+            stuobj = Students.objects.filter(ParentId = Parentobj.id,isActive=True,school_code=schoolcode)
             ser = StudentSerializer(stuobj,many=True)
             return Response({"data":serializer.data,"studentlist":ser.data,"response": {"n": 1, "msg": "parent found successfully","status": "success"}})
         else:
@@ -129,10 +158,16 @@ class updateParentStudent(GenericAPIView):
                 parentserializer.save()
 
                 parentid = parentobj.id
-                # for s in studentlist:
-                #     year = str(s['DateofJoining']).split("-")[0]
-                #     newstudentcode = createstudentid(schoolname,year,schoolcode)
-                #     Students.objects.create(ParentId=parentid,StudentName=s['Studentname'],StudentClass=s['StudentClass'],DateOfBirth = s['DateOfBirth'],DateofJoining=s['DateofJoining'],school_code=schoolcode,StudentCode=newstudentcode)
+
+                for s in studentlist:
+                    studentdata = {}
+                    studentcode = s['studentcode']
+                    studentdata['']
+                    stuobj = Students.objects.filter(StudentCode=studentcode,isActive=True).first()
+                    if stuobj is not None :
+                        stuserializer = StudentSerializer(stuobj,data=studentdata,partial=True)
+                        if stuserializer.is_valid():
+                            stuserializer.save()
 
                 return Response({"data":'',"studentlist":'',"response": {"n": 1, "msg": "parent updated successfully","status": "success"}})
             else:
@@ -147,10 +182,11 @@ class getParentStudentbyid(GenericAPIView):
         schoolcode = request.user.school_code
         Parentobj = User.objects.filter(id=parentid,isActive=True,school_code = schoolcode).first()
         if Parentobj is not None:
-            serializer = UserSerializer(Parentobj)
+            serializer = UserlistSerializer(Parentobj)
             studentlist = []
-            stuobj = Students.objects.filter(ParentId = p['id'],isActive=True,school_code=schoolcode)
+            stuobj = Students.objects.filter(ParentId = Parentobj.id,isActive=True,school_code=schoolcode)
             ser = StudentSerializer(stuobj,many=True)
+        
             return Response({"data":serializer.data,"studentlist":ser.data,"response": {"n": 1, "msg": "parent found successfully","status": "success"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "parent not found ","status": "failure"}})
