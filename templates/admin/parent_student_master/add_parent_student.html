@@ -47,10 +47,10 @@
 
 
             </div>
+            {{ classlist|json_script:"classlist" }}
 
-
-            <div class="form-row" id="child-table">
-              <table class="table">
+            <div class="form-row" >
+              <table class="table" id="child-table">
                <thead>
                 <tr>
                  <th class="text-center">S.N.</th>
@@ -117,25 +117,16 @@
    add_childern_feilds()
   }
 
-
+var classlist = JSON.parse(document.getElementById('classlist').textContent);
 counter=1
 var counterlist = []
   function add_childern_feilds(){
     var count=$('#child_count').text();
     var trHTML=''
-    $.ajax({
-     type: 'POST',
-      url: frontendURL+'parent_student_master/add_parent_student',
-      dataType: 'json',
-      data:{
-        csrfmiddlewaretoken: '{{ csrf_token }}',
-        
-      },
-     
-      success: function (response) {   
-        console.log("response",response)
+    var classOpt = ''
+ 
       trHTML+=`
-      <tr class="countchildren" id="rowd`+counter+`">
+      <tr class="countchildren" id="rowd`+counter+`" style="height:100px;">
         <th scope="row" class="text-center srNumber">`+counter+`</th>
 
         <td class="text-center"> <input type="text" class="form-control"  id="childname`+counter+`"  placeholder="Please enter children name" aria-describedby="childnameerror`+counter+`" />
@@ -180,13 +171,16 @@ var counterlist = []
     $(".srNumber").each(function(i,v){
           $(v).text(i+1);
       })
+     
+      console.log('classlist',classlist)
+      var classOpt = '<option value="">select class</option>';
+      $.each(classlist, function(index, value){  
+              classOpt += `<option value="` + value.id + `">` + value.ClassName + `</option>`;           
+            });
+            $("#childclass"+counter).html(classOpt);
+
       counterlist.push(counter)
       counter=counter+1;
-      
-      // $.each(classlist, function(index, value){  
-      //         classOpt += `<option value="` + value.id + `">` + value.balancequantity + `</option>`;           
-      //       });
-      //       $("children_class"+counter).html(sizeColorOpt);
 
       flatpickr(".date_of_birth", {
       dateFormat: "d-m-Y",
@@ -197,8 +191,7 @@ var counterlist = []
     lengthtr=$('#child-table tbody tr').length;
     $('#child_count').text(lengthtr);
   }
-   })     
-  }
+
 
 
   function deleteChild(childid){  
@@ -215,9 +208,6 @@ var counterlist = []
 }
 
 function studentlist(){
-  var x = document.getElementById("snackbar");
-  x.className = "show";
-  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000); 
    var studentlist = [];
    var counter = 0;
     lengthtr=$('#child-table tbody tr').length;
@@ -233,6 +223,7 @@ function studentlist(){
   }
 
   function validate_form(){
+    debugger;
     var parent_name=$('#parent_name').val();
     var parent_email=$('#parent_email').val();
     var parent_contact=$('#parent_contact').val();
@@ -296,53 +287,59 @@ function studentlist(){
   }
   function validate_child(){
     debugger
-    var count=$('#children_div').attr('count');
+    count=$('#child-table tbody tr').length;
     console.log("count",count);
     var status=true
     for (var i = 0; i < count; i++) {
-      var counter= i + 1
+      debugger;
+      var forcounter= i + 1
 
-      var children_name=$('#children'+counter+'_name').val();
-      var children_class=$('#children'+counter+'_class').val();
-      var children_date_of_birth=$('#children'+counter+'_date_of_birth').val();
-      var children_blood_group=$('#children'+counter+'_blood_group').val();
-      var children_date_of_joining=$('#children'+counter+'_date_of_joining').val();
+      var children_name=$("#childname"+forcounter).val();
+      var children_class=$("#childclass"+forcounter).val();
+      var children_date_of_birth=$("#child_dateofbirth"+forcounter).val();
+      var children_blood_group=$("#child_bloodgroup"+forcounter).val();
+      var children_date_of_joining=$("#child_dateofjoining"+forcounter).val();
 
   
       if(IsValid(children_name)){
-        $('#children'+counter+'_name').html();
-        $('#children'+counter+'_name_error').show().delay(3000).slideUp();
-        $('#children'+counter+'_name_error').html('Please enter children name');
-        $('#children'+counter+'_name').focus();
+        $('#childname'+forcounter).html();
+        $('#childnameerror'+forcounter).show().delay(3000).slideUp();
+        $('#childnameerror'+forcounter).html('Please enter children name');
+        $('#childname'+forcounter).focus();
         status= false;
+        return false
       }
       if(IsValid(children_class)){
-        $('#children'+counter+'_class').html();
-        $('#children'+counter+'_class_error').show().delay(3000).slideUp();
-        $('#children'+counter+'_class_error').html('Please select children class');
-        $('#children'+counter+'_class').focus();
+        $('childclass'+forcounter).html();
+        $('childclasserror'+forcounter).show().delay(3000).slideUp();
+        $('childclasserror'+forcounter).html('Please select children class');
+        $('childclass'+forcounter).focus();
         status= false;
+        return false
       }
       if(IsValid(children_date_of_birth)){
-        $('#children'+counter+'_date_of_birth').html();
-        $('#children'+counter+'_date_of_birth_error').show().delay(3000).slideUp();
-        $('#children'+counter+'_date_of_birth_error').html('Please select children date of birth');
-        $('#children'+counter+'_date_of_birth').focus();
+        $('child_dateofbirth'+forcounter).html();
+        $('child_dateofbirtherror'+forcounter).show().delay(3000).slideUp();
+        $('child_dateofbirtherror'+forcounter).html('Please select children date of birth');
+        $('child_dateofbirth'+forcounter).focus();
         status= false;
+        return false
       }
       if(IsValid(children_blood_group)){
-        $('#children'+counter+'_blood_group').html();
-        $('#children'+counter+'_blood_group_error').show().delay(3000).slideUp();
-        $('#children'+counter+'_blood_group_error').html('Please select children blood group');
-        $('#children'+counter+'_blood_group').focus();
+        $('child_bloodgroup'+forcounter).html();
+        $('child_bloodgrouperror'+forcounter).show().delay(3000).slideUp();
+        $('child_bloodgrouperror'+forcounter).html('Please select children blood group');
+        $('child_bloodgroup'+forcounter).focus();
         status= false;
+        return false
       }
       if(IsValid(children_date_of_joining)){
-        $('#children'+counter+'_date_of_joining').html();
-        $('#children'+counter+'_date_of_joining_error').show().delay(3000).slideUp();
-        $('#children'+counter+'_date_of_joining_error').html('Please select children date of joining');
-        $('#children'+counter+'_date_of_joining').focus();
+        $('child_dateofjoining'+forcounter).html();
+        $('child_dateofjoiningerror'+forcounter).show().delay(3000).slideUp();
+        $('child_dateofjoiningerror'+forcounter).html('Please select children date of joining');
+        $('child_dateofjoining'+forcounter).focus();
         status= false;
+        return false
       }
     }
     return status

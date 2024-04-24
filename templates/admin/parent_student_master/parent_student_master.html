@@ -18,7 +18,6 @@
           <tr>
               <th>Sr No</th>
               <th>Parent Name</th>
-              <th>Address</th>
               <th>Email</th>
               <th>Contact</th>
               <th>Action</th>
@@ -26,13 +25,11 @@
       </thead>
       <tbody>
           <tr>
-              <td>1</td>
-              <td>Tiger Nixon</td>
-              <td>System Architect</td>
-              
-              <td>abc@gmail.com</td>
-              <td>9911881177</td>
-                            <td>
+              <td>{{forloop.counter}}</td>
+              <td>{{i.Username}}</td>
+              <td>{{i.email}}</td>
+              <td>{{i.mobileNumber}}</td>
+              <td>
                 <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
                 <a data-bs-toggle="tooltip" title="Delete Parent" ><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
               </td>
