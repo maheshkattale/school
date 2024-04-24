@@ -87,3 +87,7 @@ function mobile_validate(id) {
 
   return true;
 }
+function yyyy_mm_dd(dateString) {
+  var parts = dateString.split("-");
+  return parts[2] + "-" + parts[1] + "-" + parts[0];
+}

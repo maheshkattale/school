@@ -15,6 +15,7 @@
       <div class="card">
         <div class="card-body">
           <form>
+
             <div class="row">
               <div class="mb-3 col-lg-4">
                 <label for="teacher_name" class="form-label">Teacher Name</label>
@@ -31,9 +32,13 @@
               <div class="mb-3 col-lg-4">
                 <label for="teacher_designation" class="form-label">Designation</label>
                 <select id="teacher_designation" class="form-select" aria-describedby="teacher_designation_error">
+
                   <option value="" selected> Please select Designation</option>
-                  <option>ABC</option>
-                  <option>XYZ</option>
+                  {% for designation in designations %}
+
+                    <option value="{{designation.id}}"> {{designation.designationName}}</option>
+                  {% endfor %}
+
                 </select>
                 <div id="teacher_designation_error" class="form-text error_message"></div>
               </div>
@@ -53,8 +58,12 @@
               <div class="mb-3 col-lg-4">
                 <label for="teacher_subject" class="form-label">Subject</label>
                 <select id="teacher_subject" class="form-select" aria-describedby="teacher_subject_error" multiple>
-                  <option>Science</option>
-                  <option>Maths</option>
+   
+
+                  {% for subject in subjects %}
+
+                  <option value="{{subject.id}}"> {{subject.SubjectName}}</option>
+                {% endfor %}
                 </select>
                 <div id="teacher_subject_error" class="form-text error_message"></div>
               </div>
@@ -166,14 +175,49 @@
       return false;
     }
     else{
-      Swal.fire({
-        title: 'Successful !',
-        text: 'This is a SweetAlert dialog.',
-        icon: 'success',
-      }).then((result) => {
-        window.location.href = "/teacher_master";
 
+
+
+      var fd = new FormData();    
+      fd.append("Name",teacher_name);
+      fd.append("Email",teacher_email);
+      fd.append("Designation",teacher_designation);
+      fd.append("joiningDate",yyyy_mm_dd(teacher_joining_date));
+      fd.append("MobileNumber",teacher_contact);
+      fd.append("subjects",JSON.stringify(teacher_subject));
+      fd.append("teacher_address",teacher_address);
+      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+      $.ajax({
+        type: "POST",
+        url: frontendURL+"teacher_master/add_teacher",
+        data: fd,
+        processData: false,
+        contentType: false,
+        
+        success: function(response) {
+          if(response.response.n ==1){
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'success',
+            }).then((result) => {
+              window.location.href = "/teacher_master";
+      
+            });
+          }else{
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+          }
+
+    
+        },
       });
+
+
+
+
+
     }
   }
 </script>

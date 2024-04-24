@@ -21,14 +21,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('teacher_master/', include('teacher.urls')),
-    path('time_table_master/', include('time_table.urls')),
-    path('subject_master/', include('subject.urls')),
-    path('designation_master/', include('designation.urls')),
-    path('class_master/', include('class.urls')),
-    path('parent_student_master/', include('parent_student.urls')),
-    path('academic_calender/', include('academic_calender.urls')),
-    path('user/', include('user.urls')),
+    path('teacher_master/', include(('teacher.urls','teacher'),namespace='teacher')),
+    path('time_table_master/', include(('time_table.urls','time_table'),namespace='time_table')),
+    path('subject_master/', include(('subject.urls','subject'),namespace='subject')),
+    path('designation_master/', include(('designation.urls','designation'),namespace='designation')),
+    path('class_master/', include(('class.urls','class'),namespace='class')),
+    path('parent_student_master/', include(('parent_student.urls','parent_student'),namespace='parent_student')),
+    path('academic_calender/', include(('academic_calender.urls','academic_calender'),namespace='academic_calender')),
+    path('user/',include(('user.urls','user'),namespace='user')),
     path('',include(('school.urls', 'school'),namespace='school')),
 
     # backend

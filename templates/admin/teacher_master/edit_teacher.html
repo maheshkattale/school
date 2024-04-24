@@ -31,9 +31,11 @@
               <div class="mb-3 col-lg-4">
                 <label for="teacher_designation" class="form-label">Designation</label>
                 <select id="teacher_designation" class="form-select" value="" aria-describedby="teacher_designation_error">
-                  <option value="" selected> Please select Designation</option>
-                  <option>ABC</option>
-                  <option>XYZ</option>
+
+                  <option value="" > Please select Designation</option>
+                  {% for designation in designations %}
+                    <option value="{{designation.id}}"> {{designation.designationName}}</option>
+                  {% endfor %}
                 </select>
                 <div id="teacher_designation_error" class="form-text error_message"></div>
               </div>
