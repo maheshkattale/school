@@ -76,7 +76,7 @@
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontendURL+"teacher_master/delete_teacher",
+          url: frontend_url+"teacher_master/delete_teacher",
           data: fd,
           processData: false,
           contentType: false,

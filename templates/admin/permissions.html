@@ -257,7 +257,7 @@
         var html;
         $.ajax({
             type: "POST",
-            url: frontendURL + "getpermissionbyrole",
+            url: frontend_url + "getpermissionbyrole",
             data: {
                 'roleID': roleID,
                 csrfmiddlewaretoken: '{{ csrf_token }}',

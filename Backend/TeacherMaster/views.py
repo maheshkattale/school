@@ -47,7 +47,7 @@ class AddTeacher(GenericAPIView):
         else:
             teachercreate = User.objects.create(email=data['Email'],Username = data['Name'], school_code = schoolcode,role_id = 4,password = str(12345),textPassword = str(12345),designation_id=data['Designation'],mobileNumber=data['MobileNumber'],joiningDate=data['joiningDate'])
 
-            teacherobj = User.objects.filter(email=data['Email']).first()
+            teacherobj = User.objects.filter(email=data['Email'],isActive=True).first()
             if teacherobj is not None :
                 teacherid = teacherobj.id
 

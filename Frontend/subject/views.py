@@ -19,7 +19,6 @@ class subject_master(GenericAPIView):
             headers = {'Authorization':token}
             subject_list_request = requests.get(subject_list_url,headers=headers)
             subject_list_response = subject_list_request.json()
-            print("subject_list_response",subject_list_response)
             if subject_list_response['response']['n']==1:
                 return render(request, 'admin/subject_master/subject_master.html',{'subjects':subject_list_response['data']})
             else:
@@ -40,7 +39,6 @@ class add_subject(GenericAPIView):
             data=request.data.copy()
             subject_add_request = requests.post(subject_add_url,headers=headers,data=data)
             subject_add_response = subject_add_request.json()
-            print("subject_add_response",subject_add_response)
             return HttpResponse(json.dumps(subject_add_response), content_type="application/json")
 
            
@@ -54,7 +52,6 @@ class edit_subject(GenericAPIView):
             data=request.data.copy()
             subject_edit_request = requests.post(subject_edit_url,headers=headers,data=data)
             subject_edit_response = subject_edit_request.json()
-            print("subject_edit_response",subject_edit_response)
             return HttpResponse(json.dumps(subject_edit_response), content_type="application/json")
         
 class delete_subject(GenericAPIView):
@@ -66,5 +63,4 @@ class delete_subject(GenericAPIView):
             data=request.data.copy()
             subject_delete_request = requests.post(subject_delete_url,headers=headers,data=data)
             subject_delete_response = subject_delete_request.json()
-            print("subject_delete_response",subject_delete_response)
             return HttpResponse(json.dumps(subject_delete_response), content_type="application/json")

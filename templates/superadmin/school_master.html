@@ -76,7 +76,7 @@
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontendURL+"enable_school",
+          url: frontend_url+"enable_school",
           data: fd,
           processData: false,
           contentType: false,
@@ -127,7 +127,7 @@
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontendURL+"disable_school",
+          url: frontend_url+"disable_school",
           data: fd,
           processData: false,
           contentType: false,

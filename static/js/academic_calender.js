@@ -1054,7 +1054,7 @@
   
         if (sections) {
 
-            var frontendURL="http://127.0.0.1:8000/"
+            var frontend_url="http://127.0.0.1:8000/"
 
           el = $("<div class='fc-toolbar'/>")
           .append($('<div class="fc-center" id="leftsection"/>').append($('<div class="calender-heading"/>').append('<div class="icon-heading">  </div>').append((renderSection("center")))))
@@ -8043,11 +8043,11 @@
   ifmonthchanged=''
 
   function getevents(day,month,year,already_existdatelist){
-    var frontendURL="http://127.0.0.1:8000/"
+    var frontend_url="http://127.0.0.1:8000/"
 
     eventslist=[]
     $.ajax({
-    url: frontendURL +"academic_calender/get_academic_calender_events",
+    url: frontend_url +"academic_calender/get_academic_calender_events",
     type: 'POST',
     data:{
         'day':day,
@@ -8132,7 +8132,7 @@
               // Open Bootstrap modal and set event titlejoin
 
               $.ajax({
-                url: frontendURL +"get_sift_emp_attendance_and_task_by_date",
+                url: frontend_url +"get_sift_emp_attendance_and_task_by_date",
                 type: 'POST',
                 data:{
                     'my_date':event.date,

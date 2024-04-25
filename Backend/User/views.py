@@ -55,7 +55,6 @@ class login(GenericAPIView):
                     }}
                            )
         else:
-            print("userexist",userexist.email , "pass",userexist.password )
             # user = authenticate(email=email,password=password)
             p = check_password(Password,userexist.password)
             if p is False:
@@ -109,7 +108,6 @@ class logout(GenericAPIView):
     def post(self,request):
       
         auth_header = get_authorization_header(request)
-        # print("ss",auth_header)
         auth_data = auth_header.decode('utf-8')
         auth_token = auth_data.split(" ")
         token = auth_token[1]
@@ -273,11 +271,10 @@ class forgetpasswordmail(GenericAPIView):
         data={}
         data['Email']=request.data.get('Email')
         userdata = User.objects.filter(email=data['Email'],isActive=True,PasswordSet=True).first()
-        print("userdata",userdata)
         if userdata is not None:
             email =   data['Email']
             data2 = {'userId':userdata.id,'baseurl':frontend_url}
-            html_mail = render_to_string('mailpassword.html',data2)
+            html_mail = render_to_string('user/set_password.html',data2)
             
             mailMsg = EmailMessage(
                 'Forgot Password?',
@@ -297,6 +294,7 @@ class setnewpassword(GenericAPIView):
     def post(self,request):
         data={}
         data['id']=request.data.get('id')
+        print("id",data['id'])
         empdata = User.objects.filter(id=data['id'],isActive=True).first()
         if empdata is not None:
             data['Password']=request.data.get('Password')
@@ -305,7 +303,6 @@ class setnewpassword(GenericAPIView):
             if data['Password'] != data['cfpassword']:
                 return Response({"data":{},"response":{"n": 0 ,"msg":"Passwords do not match","status":"passwords do not match"}})
             else:
-                print("hii")
                 data['password']=make_password(userpassword)
                 data['textPassword'] = userpassword
                 data['PasswordSet'] = True
@@ -331,7 +328,6 @@ class resetpassword(GenericAPIView):
             if data['Password'] != data['cfpassword']:
                 return Response({"data":{},"response":{"n": 0 ,"msg":"Passwords do not match","status":"passwords do not match"}})
             else:
-                print("hii")
                 data['password']=make_password(userpassword)
                 data['textPassword'] = userpassword
                 serializer = UserSerializer(empdata,data=data,partial=True)

@@ -38,9 +38,7 @@ class AddParentStudent(GenericAPIView):
     def post(self,request):
         data = request.data.copy()
         data['isActive'] = True
-        print("datadatadatadata",data)
         studentlist = json.loads(data['studentlist'])
-        print("studentliststudentlist",studentlist)
         schoolcode = request.user.school_code
 
         schoolobj = School.objects.filter(school_code = schoolcode,isActive=True).first()
@@ -64,7 +62,6 @@ class AddParentStudent(GenericAPIView):
             if parentobj is not None :
                 parentid = parentobj.id
             
-                print("parentiiid",parentid)
                 for s in studentlist:
                     date_str = str(s['DateOfBirth'])
                     date_object = datetime.strptime(date_str, "%d-%m-%Y")
@@ -75,7 +72,6 @@ class AddParentStudent(GenericAPIView):
                     formattedjoin_date = date_object.strftime("%Y-%m-%d")
                     
                     newstudentcode = createstudentid(schoolcode)
-                    print("stucode",newstudentcode)
                     Students.objects.create(ParentId=parentid,StudentName=s['Studentname'],StudentClass_id=s['StudentClass'],DateOfBirth = formatteddob_date,DateofJoining=formattedjoin_date,school_code=schoolcode,StudentCode=newstudentcode,BloodGroup=s['BloodGroup'])
 
             

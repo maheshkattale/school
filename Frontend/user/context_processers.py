@@ -1,11 +1,10 @@
 import requests
-
-frontendURL = 'http://127.0.0.1:8000/'
+from school.static_info import frontend_url
 
 
 def getMenu(request):
     token = request.session.get('token')
     return {
             'token':token,
-            'frontendURL':frontendURL,
+            'frontend_url':frontend_url,
             }

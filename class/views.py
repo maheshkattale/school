@@ -19,7 +19,6 @@ class class_master(GenericAPIView):
             headers = {'Authorization':token}
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
-            print("class_list_response",class_list_response)
             if class_list_response['response']['n']==1:
                 return render(request, 'admin/class_master/class_master.html',{'classes':class_list_response['data']})
             else:
@@ -40,7 +39,6 @@ class add_class(GenericAPIView):
             data=request.data.copy()
             class_add_request = requests.post(class_add_url,headers=headers,data=data)
             class_add_response = class_add_request.json()
-            print("class_add_response",class_add_response)
             return HttpResponse(json.dumps(class_add_response), content_type="application/json")
 
            
@@ -54,7 +52,6 @@ class edit_class(GenericAPIView):
             data=request.data.copy()
             class_edit_request = requests.post(class_edit_url,headers=headers,data=data)
             class_edit_response = class_edit_request.json()
-            print("class_edit_response",class_edit_response)
             return HttpResponse(json.dumps(class_edit_response), content_type="application/json")
         
 class delete_class(GenericAPIView):
@@ -66,5 +63,4 @@ class delete_class(GenericAPIView):
             data=request.data.copy()
             class_delete_request = requests.post(class_delete_url,headers=headers,data=data)
             class_delete_response = class_delete_request.json()
-            print("class_delete_response",class_delete_response)
             return HttpResponse(json.dumps(class_delete_response), content_type="application/json")

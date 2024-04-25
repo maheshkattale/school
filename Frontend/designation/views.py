@@ -19,7 +19,6 @@ class designation_master(GenericAPIView):
             headers = {'Authorization':token}
             designation_list_request = requests.get(designation_list_url,headers=headers)
             designation_list_response = designation_list_request.json()
-            print("designation_list_response",designation_list_response)
             if designation_list_response['response']['n']==1:
                 return render(request, 'admin/designation_master/designation_master.html',{'designations':designation_list_response['data']})
             else:
@@ -40,7 +39,6 @@ class add_designation(GenericAPIView):
             data=request.data.copy()
             designation_add_request = requests.post(designation_add_url,headers=headers,data=data)
             designation_add_response = designation_add_request.json()
-            print("designation_add_response",designation_add_response)
             return HttpResponse(json.dumps(designation_add_response), content_type="application/json")
 
            
@@ -54,7 +52,6 @@ class edit_designation(GenericAPIView):
             data=request.data.copy()
             designation_edit_request = requests.post(designation_edit_url,headers=headers,data=data)
             designation_edit_response = designation_edit_request.json()
-            print("designation_edit_response",designation_edit_response)
             return HttpResponse(json.dumps(designation_edit_response), content_type="application/json")
         
 class delete_designation(GenericAPIView):
@@ -66,5 +63,4 @@ class delete_designation(GenericAPIView):
             data=request.data.copy()
             designation_delete_request = requests.post(designation_delete_url,headers=headers,data=data)
             designation_delete_response = designation_delete_request.json()
-            print("designation_delete_response",designation_delete_response)
             return HttpResponse(json.dumps(designation_delete_response), content_type="application/json")

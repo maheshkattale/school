@@ -21,7 +21,6 @@ class teacher_master(GenericAPIView):
             headers = {'Authorization':token}
             teacher_list_request = requests.get(teacher_list_url,headers=headers)
             teacher_list_response = teacher_list_request.json()
-            print("teacher_list_response",teacher_list_response)
             if teacher_list_response['response']['n']==1:
                 return render(request, 'admin/teacher_master/teacher_master.html',{'teachers':teacher_list_response['data']})
             else:
@@ -52,11 +51,9 @@ class add_teacher(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             
             teacher_add_request = requests.post(teacher_add_url,headers=headers,data=data)
             teacher_add_response = teacher_add_request.json()
-            print("teacher_add_response",teacher_add_response)
             return HttpResponse(json.dumps(teacher_add_response), content_type="application/json")
 
            
@@ -66,7 +63,6 @@ class edit_teacher(GenericAPIView):
 
         tok = request.session.get('token', False)
         if tok:
-            print("byy")
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             designation_list_request = requests.get(designation_list_url,headers=headers)
@@ -78,7 +74,6 @@ class edit_teacher(GenericAPIView):
             get_teacher_info_request = requests.post(get_teacher_info_url,headers=headers,data=data)
             get_teacher_info_response = get_teacher_info_request.json()
             
-            print("get_teacher_info_response",get_teacher_info_response)
             return render(request, 'admin/teacher_master/edit_teacher.html',{'designations':designation_list_response['data'],'subjects':subject_list_response['data'],'teacher':get_teacher_info_response['data'],'teacher_subjects':get_teacher_info_response['subjectidlist']})
     
 
@@ -89,11 +84,9 @@ class edit_teacher(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             
             teacher_edit_request = requests.post(teacher_edit_url,headers=headers,data=data)
             teacher_edit_response = teacher_edit_request.json()
-            print("teacher_edit_response",teacher_edit_response)
             return HttpResponse(json.dumps(teacher_edit_response), content_type="application/json")
 
            
@@ -107,5 +100,4 @@ class delete_teacher(GenericAPIView):
             data=request.data.copy()
             teacher_delete_request = requests.post(teacher_delete_url,headers=headers,data=data)
             teacher_delete_response = teacher_delete_request.json()
-            print("teacher_delete_response",teacher_delete_response)
             return HttpResponse(json.dumps(teacher_delete_response), content_type="application/json")

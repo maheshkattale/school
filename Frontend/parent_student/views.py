@@ -17,7 +17,6 @@ class parent_student_master(GenericAPIView):
             headers = {'Authorization':token}
             parent_list_request = requests.get(parent_list_url,headers=headers)
             parent_list_response = parent_list_request.json()
-            print("eeree",parent_list_response)
             return render(request, 'admin/parent_student_master/parent_student_master.html',{'parentlist':parent_list_response['data']})
         else:
             return redirect('school:login')

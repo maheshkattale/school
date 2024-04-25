@@ -51,7 +51,6 @@ class userJWTAuthentication(BaseAuthentication):
             email = payload['email']
             User_id = payload['id']
             source = payload['source']
-            print("decode email",email,User_id,source)
             Users = User.objects.get(id=User_id, email=email)
             if source == "Web":
                 userTok = UserToken.objects.filter(

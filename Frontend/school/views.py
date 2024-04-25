@@ -30,7 +30,6 @@ class login(GenericAPIView):
         
         login_request = requests.post(login_url, data=data)
         login_response = login_request.json()
-        print("login_response",login_response)
         if login_response['response']['n']==0:
             msg = login_response['response']['msg']
             messages.error(request, msg)
@@ -88,7 +87,6 @@ class school_master(GenericAPIView):
             headers = {'Authorization': t}
             school_list_request = requests.get(school_list_url, headers=headers)
             school_list_response = school_list_request.json()
-            print("school_list_response",school_list_response['data'])
             return render(request, 'superadmin/school_master.html',{'schools':school_list_response['data']})
         else:
             return redirect('school:login')
@@ -106,7 +104,6 @@ class add_school(GenericAPIView):
             data = request.data.copy()
             add_school_request = requests.post(add_school_url, data=data,headers=headers)
             add_school_response = add_school_request.json()
-            print("add_school_response",add_school_response)
             return HttpResponse(json.dumps(add_school_response), content_type="application/json")
 
         
@@ -117,7 +114,6 @@ class disable_school(GenericAPIView):
             t = 'Token {}'.format(tok)
             headers = {'Authorization': t}
             data = request.data.copy()
-            print("data",data)
             disable_school_request = requests.post(disable_school_url, data=data,headers=headers)
             disable_school_response = disable_school_request.json()
             return HttpResponse(json.dumps(disable_school_response), content_type="application/json")
@@ -143,7 +139,6 @@ class edit_school(GenericAPIView):
             data['id']=id
             get_school_info_request = requests.post(get_school_info_url,headers=headers,data=data)
             get_school_info_response = get_school_info_request.json()
-            print("get_school_info_response",get_school_info_response)
             return render(request, 'superadmin/edit_school.html',{'school':get_school_info_response['data']})
         
     def post(self,request,id):

@@ -158,7 +158,7 @@
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontendURL+"designation_master/add_designation",
+          url: frontend_url+"designation_master/add_designation",
           data: fd,
           processData: false,
           contentType: false,
@@ -208,7 +208,7 @@
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontendURL+"designation_master/edit_designation",
+          url: frontend_url+"designation_master/edit_designation",
           data: fd,
           processData: false,
           contentType: false,
@@ -254,7 +254,7 @@
           fd.append("csrfmiddlewaretoken","{{csrf_token}}");
           $.ajax({
             type: "POST",
-            url: frontendURL+"designation_master/delete_designation",
+            url: frontend_url+"designation_master/delete_designation",
             data: fd,
             processData: false,
             contentType: false,

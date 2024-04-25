@@ -172,7 +172,7 @@
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontendURL+"edit_school/"+"{{school.id}}",
+          url: frontend_url+"edit_school/"+"{{school.id}}",
           data: fd,
           processData: false,
           contentType: false,

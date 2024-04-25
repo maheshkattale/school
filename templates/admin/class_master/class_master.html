@@ -154,7 +154,7 @@
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontendURL+"class_master/add_class",
+          url: frontend_url+"class_master/add_class",
           data: fd,
           processData: false,
           contentType: false,
@@ -200,7 +200,7 @@
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontendURL+"class_master/edit_class",
+          url: frontend_url+"class_master/edit_class",
           data: fd,
           processData: false,
           contentType: false,
@@ -244,7 +244,7 @@
           fd.append("csrfmiddlewaretoken","{{csrf_token}}");
           $.ajax({
             type: "POST",
-            url: frontendURL+"class_master/delete_class",
+            url: frontend_url+"class_master/delete_class",
             data: fd,
             processData: false,
             contentType: false,
