@@ -9,12 +9,16 @@ from .static_info import frontend_url
 # Create your views here.
 login_url=frontend_url+"api/User/login"
 logout_url = frontend_url+'api/User/logout'
-
+school_list_url=frontend_url+'api/SchoolMaster/list'
+add_school_url=frontend_url+'api/SchoolMaster/Add'
+disable_school_url=frontend_url+'api/SchoolMaster/disable'
+enable_school_url=frontend_url+'api/SchoolMaster/enable'
+get_school_info_url=frontend_url+'api/SchoolMaster/getbyid'
+edit_school_url=frontend_url+'api/SchoolMaster/update'
 class login(GenericAPIView):
     def get(self,request):
         return render(request, 'login.html',{})
     def post(self,request):
-        print("hiiiii")
         email = request.POST['email']
         password = request.POST['password']
         source = request.POST['source']
@@ -77,16 +81,82 @@ class dashboard(GenericAPIView):
     
 class school_master(GenericAPIView):
     def get(self,request):
-        return render(request, 'superadmin/school_master.html',{})
-    
+        tok = request.session.get('token', False)
+        if tok:
+            
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            school_list_request = requests.get(school_list_url, headers=headers)
+            school_list_response = school_list_request.json()
+            print("school_list_response",school_list_response['data'])
+            return render(request, 'superadmin/school_master.html',{'schools':school_list_response['data']})
+        else:
+            return redirect('school:login')
+            
     
 class add_school(GenericAPIView):
     def get(self,request):
         return render(request, 'superadmin/add_school.html',{})
-    
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data = request.data.copy()
+            add_school_request = requests.post(add_school_url, data=data,headers=headers)
+            add_school_response = add_school_request.json()
+            print("add_school_response",add_school_response)
+            return HttpResponse(json.dumps(add_school_response), content_type="application/json")
+
+        
+class disable_school(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data = request.data.copy()
+            print("data",data)
+            disable_school_request = requests.post(disable_school_url, data=data,headers=headers)
+            disable_school_response = disable_school_request.json()
+            return HttpResponse(json.dumps(disable_school_response), content_type="application/json")
+        
+        
+class enable_school(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data = request.data.copy()
+            enable_school_request = requests.post(enable_school_url, data=data,headers=headers)
+            enable_school_response = enable_school_request.json()
+            return HttpResponse(json.dumps(enable_school_response), content_type="application/json")
 class edit_school(GenericAPIView):
-    def get(self,request):
-        return render(request, 'superadmin/edit_school.html',{})
+    def get(self,request,id):
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data={}
+            data['id']=id
+            get_school_info_request = requests.post(get_school_info_url,headers=headers,data=data)
+            get_school_info_response = get_school_info_request.json()
+            print("get_school_info_response",get_school_info_response)
+            return render(request, 'superadmin/edit_school.html',{'school':get_school_info_response['data']})
+        
+    def post(self,request,id):
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data = request.data.copy()
+            edit_school_request = requests.post(edit_school_url, data=data,headers=headers)
+            edit_school_response = edit_school_request.json()
+            return HttpResponse(json.dumps(edit_school_response), content_type="application/json")
+        
+        
 class mail(GenericAPIView):
     def get(self,request):
         return render(request, 'mails/school_registration.html',{'Admin_Name':'Mahesh Kattale','frontend_url':frontend_url})

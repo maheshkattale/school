@@ -112,7 +112,7 @@ class schoollist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
-        schoolobjs = School.objects.filter(isActive=True).order_by('-id')
+        schoolobjs = School.objects.all().order_by('Name')
         serializer = schoolSerializer(schoolobjs,many=True)
         return Response({"data":serializer.data,"response": {"n": 1, "msg": "school list found successfully","status": "success"}})
        
@@ -121,13 +121,13 @@ class getschoolbyid(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-            id = request.data.get('id')
-            schoolobj = School.objects.filter(id=id,isActive=True).first()
-            if schoolobj is not None:
-                serializer = schoolSerializer(schoolobj)
-                return Response({"data":serializer.data,"response": {"n": 1, "msg": "School found successfully","status": "success"}})
-            else:
-                return Response({"data":'',"response": {"n": 0, "msg": "School not found ","status": "failure"}})
+        id = request.data.get('id')
+        schoolobj = School.objects.filter(id=id).first()
+        if schoolobj is not None:
+            serializer = schoolSerializer(schoolobj)
+            return Response({"data":serializer.data,"response": {"n": 1, "msg": "School found successfully","status": "success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "School not found ","status": "failure"}})
             
 
 class updateSchool(GenericAPIView):

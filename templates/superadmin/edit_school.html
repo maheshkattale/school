@@ -24,33 +24,33 @@
             <div class="row">
               <div class="mb-3 col-lg-4">
                 <label for="school_name" class="form-label">School Name</label>
-                <input type="text" class="form-control" id="school_name" placeholder="Please enter school name" aria-describedby="school_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');">
+                <input type="text" class="form-control" id="school_name" value="{{school.Name}}" placeholder="Please enter school name" aria-describedby="school_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');">
                 <div id="school_name_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
                   <label for="school_email" class="form-label">School Email</label>
-                  <input type="text" class="form-control" id="school_email" placeholder="Please enter school email" aria-describedby="school_email_error" oninput="email_validate('school_email');">
+                  <input type="text" class="form-control" id="school_email" value="{{school.Email}}"  placeholder="Please enter school email" aria-describedby="school_email_error" oninput="email_validate('school_email');">
                   <div id="school_email_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
                   <label for="school_admin_email" class="form-label">Admin Email</label>
-                  <input type="text" class="form-control" id="school_admin_email" placeholder="Please enter school admin email" aria-describedby="school_admin_email_error" oninput="email_validate('school_admin_email');">
+                  <input type="text" class="form-control" id="school_admin_email" value="{{school.admin_Email}}"  placeholder="Please enter school admin email" aria-describedby="school_admin_email_error" oninput="email_validate('school_admin_email');">
                   <div id="school_admin_email_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
                   <label for="school_admin_name" class="form-label">Admin Name</label>
-                  <input type="text" class="form-control" id="school_admin_name" placeholder="Please enter school admin name" aria-describedby="school_admin_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');">
+                  <input type="text" class="form-control" id="school_admin_name" value="{{school.admin_Name}}" placeholder="Please enter school admin name" aria-describedby="school_admin_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');">
                   <div id="school_admin_name_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
                   <label for="school_contact" class="form-label">Contact No</label>
-                  <input type="text" class="form-control" id="school_contact" placeholder="Please enter school contact" aria-describedby="school_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');">
+                  <input type="text" class="form-control" id="school_contact" value="{{school.Contact}}"  placeholder="Please enter school contact" aria-describedby="school_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');">
                   <div id="school_contact_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-12">
                   <label for="school_address" class="form-label">School Address</label>
-                  <textarea  class="form-control"  name="school_address" id="school_address" cols="30" rows="5" aria-describedby="school_address_error"></textarea>
+                  <textarea  class="form-control"  name="school_address" id="school_address" cols="30" rows="5" aria-describedby="school_address_error">{{school.Location}}</textarea>
                   <div id="school_address_error" class="form-text error_message"></div>
               </div>
             </div>
@@ -153,7 +153,49 @@
       return false;
     }
     else{
-      window.location.href = "/school_master";
+
+
+
+
+        var fd = new FormData();    
+        fd.append("Name",school_name);
+        fd.append("Email",school_email);
+        fd.append("admin_Email",school_admin_email);
+        fd.append("admin_Name",school_admin_name);
+        fd.append("Contact",school_contact);
+        fd.append("Location",school_address);
+        fd.append("id",'{{school.id}}');
+
+
+
+        
+        fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+        $.ajax({
+          type: "POST",
+          url: frontendURL+"edit_school/"+"{{school.id}}",
+          data: fd,
+          processData: false,
+          contentType: false,
+          
+          success: function(response) {
+            if(response.response.n ==1){
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'success',
+              }).then((result) => {
+                window.location.href = "/school_master";
+        
+              });
+            }else{
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'error',
+              })
+            }
+  
+      
+          },
+        });
     }
   }
 </script>

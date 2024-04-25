@@ -26,142 +26,25 @@
           </tr>
       </thead>
       <tbody>
-          <tr>
-              <td>1</td>
-              <td>Tiger Nixon</td>
-              <td>System Architect</td>
-              <td>Edinburgh</td>
-              <td>abc@gmail.com</td>
-              <td>9911881177</td>
-                            <td>
-                <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete School" ><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-            
+        {% for school in schools  %}
+        <tr>
+          <td>{{forloop.counter}}</td>
+          <td>{{school.Name}}</td>
+          <td>{{school.Location}}</td>
+          <td>{{school.admin_Email}}</td>
+          <td>{{school.Email}}</td>
+          <td>{{school.Contact}}</td>
+              <td>
+              <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school/{{school.id}}"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+              {% if school.isActive == True %}
+                <a data-bs-toggle="tooltip" onclick="disable_school('{{school.id}}')" title="Disable School"><i class="fa-solid fa-eye mx-1"></i></a>
+              {% else %}
+                <a data-bs-toggle="tooltip" onclick="enable_school('{{school.id}}')" title="Enable School"><i class="fa-solid fa-eye-slash mx-1"></i></a>
 
-
-          </tr>
-          <tr>
-              <td>2</td>
-              <td>Tiger Nixon</td>
-              <td>System Architect</td>
-              <td>Edinburgh</td>
-              <td>abc@gmail.com</td>
-              <td>9911881177</td>
-                            <td>
-                <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete School"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          
-          <tr>
-            <td>3</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete School"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete School"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete School"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>6</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete School"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>7</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete School"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>8</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete School"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>9</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete School"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>10</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete School"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>11</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit School" href="/edit_school"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete School"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
+              {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
       </tbody>
 
   </table>
@@ -175,5 +58,109 @@
   $( document ).ready(function() {
     new DataTable('#example');  
   });  
+
+
+  function enable_school(id){
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to enable school!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Enable it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        var fd = new FormData();    
+        fd.append("id",id);
+        fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+        $.ajax({
+          type: "POST",
+          url: frontendURL+"enable_school",
+          data: fd,
+          processData: false,
+          contentType: false,
+          
+          success: function(response) {
+            console.log("delete",response)
+            if(response.response.n ==1){
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'success',
+              }).then((result) => {
+                window.location.href = "/school_master";
+        
+              });
+            }else{
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'error',
+              })
+            }
+
+      
+          },
+        });
+
+
+
+
+      }
+    });
+     
+
+  }
+
+  function disable_school(id){
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to disable school!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Disable it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        var fd = new FormData();    
+        fd.append("id",id);
+        fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+        $.ajax({
+          type: "POST",
+          url: frontendURL+"disable_school",
+          data: fd,
+          processData: false,
+          contentType: false,
+          
+          success: function(response) {
+            console.log("delete",response)
+            if(response.response.n ==1){
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'success',
+              }).then((result) => {
+                window.location.href = "/school_master";
+        
+              });
+            }else{
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'error',
+              })
+            }
+
+      
+          },
+        });
+
+
+
+
+      }
+    });
+     
+
+  }
+
 </script>
 {% endblock %}

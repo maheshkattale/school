@@ -47,14 +47,14 @@
                       <input type="text" class="form-control" id="school_contact" placeholder="Please enter school contact" aria-describedby="school_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');">
                       <div id="school_contact_error" class="form-text error_message"></div>
                   </div>
-                  <div class="mb-3 col-lg-4">
+                  {% comment %} <div class="mb-3 col-lg-4">
                     <label for="school_password" class="form-label">Password</label>
                     <input type="password" class="form-control" id="school_password" placeholder="Please enter school password"  aria-describedby="school_password_error" oninput="password_validate('school_password');">
                     <span toggle="#school_password" class="fa fa-fw fa-eye-slash field-icon toggle-password"></span>
 
 
                     <div id="school_password_error" class="form-text error_message"></div>
-                  </div>
+                  </div> {% endcomment %}
                   <div class="mb-3 col-lg-12">
                       <label for="school_address" class="form-label">School Address</label>
                       <textarea  class="form-control"  name="school_address" id="school_address" cols="30" rows="5" aria-describedby="school_address_error"></textarea>
@@ -150,6 +150,7 @@
       $('#school_contact').focus();
       return false;
     }
+    /*
     if(IsValid(school_password)){
       $('#school_password').html();
       $('#school_password_error').show().delay(3000).slideUp();
@@ -163,7 +164,7 @@
       $('#school_password_error').html('Please enter school valid password ');
       $('#school_password').focus();
       return false;
-    }
+    }*/
     if(IsValid(school_address)){
       $('#school_address').html();
       $('#school_address_error').show().delay(3000).slideUp();
@@ -172,7 +173,56 @@
       return false;
     }
     else{
-      window.location.href = "/school_master";
+    
+      
+
+
+      var fd = new FormData();    
+      fd.append("Name",school_name);
+      fd.append("Email",school_email);
+      fd.append("admin_Email",school_admin_email);
+      fd.append("admin_Name",school_admin_name);
+      fd.append("Contact",school_contact);
+      fd.append("Location",school_address);
+
+
+  
+
+      
+      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+      $.ajax({
+        type: "POST",
+        url: frontendURL+"add_school",
+        data: fd,
+        processData: false,
+        contentType: false,
+        
+        success: function(response) {
+          if(response.response.n ==1){
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'success',
+            }).then((result) => {
+              window.location.href = "/school_master";
+      
+            });
+          }else{
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+          }
+
+    
+        },
+      });
+
+
+
+
+
+
+
     }
   }
 </script>
