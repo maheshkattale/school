@@ -10,6 +10,7 @@ class Students(TrackingModel):
     StudentClass  = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
     DateOfBirth =  models.DateField(null=True)
     DateofJoining = models.DateField(null=True)
+    BloodGroup = models.CharField(max_length=150,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
    

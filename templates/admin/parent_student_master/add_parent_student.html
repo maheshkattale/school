@@ -36,7 +36,7 @@
 
               <div class="mb-3 col-lg-3">
                 <label for="children_count" class="form-label">No of Children</label>
-                <div><span class="quantity_Id" id="child_count">0</span><span class="quantitybtnspan"><button type="button" class="btn quantitybtn plus-btn" id="addquantity2" onclick="addchild()">+</button></span></div>
+                <div class="childddcount "><span class="quantity_Id ps-2" id="child_count">0</span><span class="quantitybtnspan"><button type="button" class="btn quantitybtn plus-btn" id="addquantity2" onclick="addchild()">+</button></span></div>
                 <div id="children_count_error" class="form-text error_message"></div>
               </div>
 
@@ -126,14 +126,14 @@ var counterlist = []
     var classOpt = ''
  
       trHTML+=`
-      <tr class="countchildren" id="rowd`+counter+`" style="height:100px;">
+      <tr class="countchildren" id="rowd`+counter+`" >
         <th scope="row" class="text-center srNumber">`+counter+`</th>
 
-        <td class="text-center"> <input type="text" class="form-control"  id="childname`+counter+`"  placeholder="Please enter children name" aria-describedby="childnameerror`+counter+`" />
+        <td class="text-center"> <input type="text" class="form-control childname"  id="childname`+counter+`"  placeholder="Please enter children name" aria-describedby="childnameerror`+counter+`" />
         <div id="childnameerror`+counter+`" class="form-text error_message"></div></td>
 
         <td class="text-center">
-          <select id="childclass`+counter+`" class="form-select" aria-describedby="childclasserror`+counter+`">
+          <select id="childclass`+counter+`" class="form-select childclass" aria-describedby="childclasserror`+counter+`">
           
         </select>
         <div id="childclasserror`+counter+`" class="form-text error_message"></div>
@@ -146,11 +146,13 @@ var counterlist = []
 
         <td class="text-center">
           <input type="text" class="form-control date_of_joining" id="child_dateofjoining`+counter+`"  placeholder="Please select children DOJ" aria-describedby="child_dateofjoiningerror`+counter+`" readonly/>
-        <div id="child_dateofjoiningerror`+counter+`"   class="form-text error_message"></div>
+        <div id="child_dateofjoiningerror`+counter+`" class="form-text error_message"></div>
           </td>
 
         <td class="text-center">
-          <select id="child_bloodgroup`+counter+`"   class="form-select" aria-describedby="child_bloodgrouperror`+counter+`" >
+          <select id="child_bloodgroup`+counter+`" class="form-select bloodgroup" aria-describedby="child_bloodgrouperror`+counter+`" >
+            
+          <option value="">Select Blood Group</option>
           <option value="A+">A+</option>
           <option value="A-">A-</option>
           <option value="B+">B+</option>
@@ -212,12 +214,12 @@ function studentlist(){
    var counter = 0;
     lengthtr=$('#child-table tbody tr').length;
     $(counterlist).each(function(o,i){
-      var childname= $('#childname'+i).text();
-      var childclass = $('#productValue'+i).text();
-      var dateofbirth = $('#Availquantity'+i).val();
-      var dateobjoining = $('#Requiredqty'+i).val();
-      var bloodgroup = $('#balanceqty'+i).val();
-      data = { 'childname': childname, 'childclass':childclass,'dateofbirth':dateofbirth,'dateobjoining': dateobjoining,'bloodgroup':bloodgroup}
+      var children_name=$("#childname"+i).val();
+      var children_class=$("#childclass"+i).val();
+      var children_date_of_birth=$("#child_dateofbirth"+i).val();
+      var children_blood_group=$("#child_bloodgroup"+i).val();
+      var children_date_of_joining=$("#child_dateofjoining"+i).val();
+      data = { 'childname': children_name, 'childclass':children_class,'dateofbirth':children_date_of_birth,'dateobjoining': children_date_of_joining,'bloodgroup':children_blood_group}
       studentlist.push(data)
     })
   }
@@ -228,6 +230,83 @@ function studentlist(){
     var parent_email=$('#parent_email').val();
     var parent_contact=$('#parent_contact').val();
     var address=$('#address').val();
+
+    var childnameArr = $(".childname");
+    var childname = true
+    for(var i = 0; i < childnameArr.length; i++){
+      childname_value = $(childnameArr[i]).val()
+        if (childname_value == ""){
+          childname = false
+          break;
+        }else{
+          childname = true
+        }
+        
+    }
+
+    var childclassArr = $(".childclass");
+    var childclass = true
+    for(var i = 0; i < childclassArr.length; i++){
+      childclass_value = $(childclassArr[i]).val()
+        if (childclass_value == ""){
+          childclass = false
+          break;
+        }else{
+          childclass = true
+        }
+        
+    }
+
+    var date_of_birthArr = $(".date_of_birth");
+    var date_of_birth = true
+    for(var i = 0; i < date_of_birthArr.length; i++){
+      date_of_birth_value = $(date_of_birthArr[i]).val()
+        if (date_of_birth_value == ""){
+          date_of_birth = false
+          break;
+        }else{
+          date_of_birth = true
+        }
+        
+    }
+
+  
+    var  date_of_joiningArr = $(".date_of_joining");
+    var  date_of_joining = true
+    for(var i = 0; i < date_of_joiningArr.length; i++){
+      date_of_joining_value = $(date_of_joiningArr[i]).val()
+        if (date_of_joining_value == ""){
+          date_of_joining = false
+          break;
+        }else{
+          date_of_joining = true
+        }
+        
+    }
+
+    var  date_of_joiningArr = $(".date_of_joining");
+    var  date_of_joining = true
+    for(var i = 0; i < date_of_joiningArr.length; i++){
+      date_of_joining_value = $(date_of_joiningArr[i]).val()
+        if (date_of_joining_value == ""){
+          date_of_joining = false
+          break;
+        }else{
+          date_of_joining = true
+        }  
+    }
+
+    var  bloodgroupArr = $(".bloodgroup");
+    var  bloodgroup = true
+    for(var i = 0; i < bloodgroupArr.length; i++){
+      bloodgroup_value = $(bloodgroupArr[i]).val()
+        if (bloodgroup_value == ""){
+          bloodgroup = false
+          break;
+        }else{
+          bloodgroup = true
+        }  
+    }
 
     if(IsValid(parent_name)){
       $('#parent_name').html();
@@ -264,9 +343,47 @@ function studentlist(){
       $('#parent_contact').focus();
       return false;
     }
-    if(validate_child() == false){
+
+    if(childname == false){
+      Swal.fire({
+                text: "Please enter child name",
+                icon: 'error',
+              })
       return false;
     }
+
+    if(childclass == false){
+      Swal.fire({
+                text: "Please select child class",
+                icon: 'error',
+              })
+      return false;
+    }
+
+    if(date_of_birth == false){
+      Swal.fire({
+                text: "Please enter child Date Of Birth",
+                icon: 'error',
+              })
+      return false;
+    }
+    
+    if(date_of_joining == false){
+      Swal.fire({
+                text: "Please enter child Date Of Joining",
+                icon: 'error',
+              })
+      return false;
+    }
+
+    if(bloodgroup == false){
+      Swal.fire({
+                text: "Please select blood group",
+                icon: 'error',
+              })
+      return false;
+    }
+
     if(IsValid(address)){
       $('#address').html();
       $('#address_error').show().delay(3000).slideUp();
@@ -274,75 +391,56 @@ function studentlist(){
       $('#address').focus();
       return false;
     }else{
-      Swal.fire({
-        title: 'Successful !',
-        text: 'This is a SweetAlert dialog.',
-        icon: 'success',
-      }).then((result) => {
-        window.location.href = "/parent_student_master";
+      var studentlist = []
+      $(counterlist).each(function(o,i){
+      var children_name=$("#childname"+i).val();
+      var children_class=$("#childclass"+i).val();
+      var children_date_of_birth=$("#child_dateofbirth"+i).val();
+      var children_blood_group=$("#child_bloodgroup"+i).val();
+      var children_date_of_joining=$("#child_dateofjoining"+i).val();
+      data = { 'Studentname': children_name, 'StudentClass':children_class,'DateOfBirth':children_date_of_birth,'DateofJoining': children_date_of_joining,'BloodGroup':children_blood_group}
+      studentlist.push(data)
+    })
+    t = 'Bearer {{token}}'
+    console.log("tttttttt",t)
+       var fd = new FormData();    
+       fd.append('Name', parent_name)
+       fd.append('Email', parent_email)
+       fd.append('MobileNumber', parent_contact)
+       fd.append('Address', address)
+        fd.append("studentlist",JSON.stringify(studentlist));
+        fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+        console.log("fd",fd)
+        $.ajax({
+          type: "POST",
+          url: frontendURL+"api/Parent_StudentMaster/Add",
+          headers:{'Authorization':t},
+          data: fd,
+          processData: false,
+          contentType: false,
+          
+          success: function(response) {
+            if(response.response.n ==1){
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'success',
+              }).then((result) => {
+                window.location.href = "/parent_student_master/";
+        
+              });
+            }else{
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'error',
+              })
+            }
 
-      });
+      
+          },
+        });
 
     }
   }
-  function validate_child(){
-    debugger
-    count=$('#child-table tbody tr').length;
-    console.log("count",count);
-    var status=true
-    for (var i = 0; i < count; i++) {
-      debugger;
-      var forcounter= i + 1
-
-      var children_name=$("#childname"+forcounter).val();
-      var children_class=$("#childclass"+forcounter).val();
-      var children_date_of_birth=$("#child_dateofbirth"+forcounter).val();
-      var children_blood_group=$("#child_bloodgroup"+forcounter).val();
-      var children_date_of_joining=$("#child_dateofjoining"+forcounter).val();
-
-  
-      if(IsValid(children_name)){
-        $('#childname'+forcounter).html();
-        $('#childnameerror'+forcounter).show().delay(3000).slideUp();
-        $('#childnameerror'+forcounter).html('Please enter children name');
-        $('#childname'+forcounter).focus();
-        status= false;
-        return false
-      }
-      if(IsValid(children_class)){
-        $('childclass'+forcounter).html();
-        $('childclasserror'+forcounter).show().delay(3000).slideUp();
-        $('childclasserror'+forcounter).html('Please select children class');
-        $('childclass'+forcounter).focus();
-        status= false;
-        return false
-      }
-      if(IsValid(children_date_of_birth)){
-        $('child_dateofbirth'+forcounter).html();
-        $('child_dateofbirtherror'+forcounter).show().delay(3000).slideUp();
-        $('child_dateofbirtherror'+forcounter).html('Please select children date of birth');
-        $('child_dateofbirth'+forcounter).focus();
-        status= false;
-        return false
-      }
-      if(IsValid(children_blood_group)){
-        $('child_bloodgroup'+forcounter).html();
-        $('child_bloodgrouperror'+forcounter).show().delay(3000).slideUp();
-        $('child_bloodgrouperror'+forcounter).html('Please select children blood group');
-        $('child_bloodgroup'+forcounter).focus();
-        status= false;
-        return false
-      }
-      if(IsValid(children_date_of_joining)){
-        $('child_dateofjoining'+forcounter).html();
-        $('child_dateofjoiningerror'+forcounter).show().delay(3000).slideUp();
-        $('child_dateofjoiningerror'+forcounter).html('Please select children date of joining');
-        $('child_dateofjoining'+forcounter).focus();
-        status= false;
-        return false
-      }
-    }
-    return status
-  }
+ 
 </script>
 {% endblock %}

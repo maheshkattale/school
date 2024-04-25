@@ -20,15 +20,19 @@
               <th>Parent Name</th>
               <th>Email</th>
               <th>Contact</th>
+              <th>Students</th>
               <th>Action</th>
           </tr>
       </thead>
       <tbody>
+        {% for i in parentlist %}
           <tr>
               <td>{{forloop.counter}}</td>
               <td>{{i.Username}}</td>
               <td>{{i.email}}</td>
               <td>{{i.mobileNumber}}</td>
+              <td><a href="javascript: void(0)" data-toggle="modal" onclick="studentlist('{{i.id}}')"
+                data-target="#studentsmodal" class="ml-5 btn btn-primary">View</a></td>
               <td>
                 <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
                 <a data-bs-toggle="tooltip" title="Delete Parent" ><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
@@ -37,133 +41,32 @@
 
 
           </tr>
-          <tr>
-              <td>2</td>
-              <td>Tiger Nixon</td>
-              <td>System Architect</td>
-              
-              <td>abc@gmail.com</td>
-              <td>9911881177</td>
-                            <td>
-                <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete Parent"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          
-          <tr>
-            <td>3</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete Parent"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete Parent"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete Parent"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>6</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete Parent"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>7</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete Parent"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>8</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete Parent"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>9</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete Parent"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>10</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete Parent"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
-          <tr>
-            <td>11</td>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            
-            <td>abc@gmail.com</td>
-            <td>9911881177</td>
-                          <td>
-                <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete Parent"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-          </tr>
+          {% endfor %}
+       
       </tbody>
 
   </table>
   </div> 
-  
-  
+
+
+  <div class="modal fade" id="studentsmodal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Students</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row" id="students"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 
 {% block script %}
@@ -171,5 +74,78 @@
   $( document ).ready(function() {
     new DataTable('#example');  
   });  
+
+  function studentlist(parentid){
+    var trhtml = ''
+    t = 'Bearer {{token}}'
+    var fd = new FormData();    
+      fd.append("parentid",parentid);
+      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+      $.ajax({
+        type: "POST",
+        headers:{'Authorization':t},
+        url: frontendURL+"api/Parent_StudentMaster/studentsbyparentlist",
+        data: fd,
+        processData: false,
+        contentType: false,
+        
+        success: function(response) {
+          if(response.response.n ==1){
+            $(response.data).each(function(o,i){
+          trhtml += `  <div class="col-lg-6">
+        <div class="student-card border-apply">
+            <div class="contact-grid">
+                <div class="profile-header bg-cyan">
+                    <div class="user-name">
+                        `+i.StudentName+`
+                    </div>
+                    <div class="name-center">
+                      `+i.classname+`
+                    </div>
+                </div>
+                <img src="https://www.einfosoft.com/templates/admin/smartangular/source/light/assets/images/user/usrbig2.jpg" class="user-img" alt="">
+              
+                <div class="p-3">
+                    <div class="row">
+                        <div class="col-lg-6 text-start py-2">
+                            <i class="fa-solid fa-id-card"></i> 
+                            `+i.StudentCode+`
+                        </div>
+                        <div class="col-lg-6 text-start py-2">
+                            <i class="fa-regular fa-id-card"></i>    DOJ `+i.DateofJoining+`
+                        </div>
+                        <div class="col-lg-6 text-start py-2">
+                            <i class="fa-solid fa-cake-candles"></i> DOB `+i.DateOfBirth+`
+                            
+                        </div>
+                        <div class="col-lg-6 text-start py-2">
+                            <i class="fa-solid fa-droplet"></i> `+i.BloodGroup+`
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    `
+  })
+  $('#students').html(trhtml)
+          }else{
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+          }
+
+    
+        },
+      });
+
+
+
+
+
+  }
 </script>
 {% endblock %}

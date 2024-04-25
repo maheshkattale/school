@@ -11,8 +11,11 @@ from django.contrib.auth import authenticate
 from .models import *
 from .serializers import *
 from .jwt import userJWTAuthentication
+from django.template.loader import get_template, render_to_string
+from django.core.mail import EmailMessage
+from SchoolErp.settings import EMAIL_HOST_USER
 from django.contrib.auth.hashers import make_password,check_password
-
+frontend_url = 'http://127.0.0.1:8000/'
 
 def createtoken(uuid,email,source):
     token = jwt.encode(
@@ -225,4 +228,117 @@ class savepermissions(GenericAPIView):
                 })
 
 
+class ChangePassword(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = {}
+        id = request.user.id
+        if id is not None:
+            userObject = User.objects.filter(id=id,isActive=True).first()
+        
+            if userObject:
+                password = request.POST.get('oldpassword')
+                currentPassword = check_password(password,userObject.password)
+            
+                if currentPassword==True:
+                    newpassword = request.POST.get('newpassword')
+                
+                    confirmpassword = request.POST.get('confirmpassword')
+                
+                    if newpassword==confirmpassword:
+                        data['password']= make_password(newpassword)
+                        data['textPassword'] = newpassword
+                        userSerializer = UserSerializer(userObject,data=data,partial=True)
+                        if userSerializer.is_valid():
+                            userSerializer.save()
 
+                            tokenfalse = UserToken.objects.filter(User=id,isActive=True).update(isActive=False)
+                           
+                            return Response({"data":'',"response": {"n": 1, "msg": "password updated successfully","status": "success"}})
+                        else:
+                            return Response({"data":'',"response": {"n": 0, "msg": "password not updated ","status": "failed"}})
+                    else:
+                        return Response({"data":'',"response": {"n": 0, "msg": "new and confirm password not matched ","status": "failed"}})
+                else:
+                    return Response({"data":'',"response": {"n": 0, "msg": "old password is wrong","status": "failed"}})
+
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Couldnt find id","status": "failed"}})
+
+
+
+class forgetpasswordmail(GenericAPIView):
+    def post(self,request):
+        data={}
+        data['Email']=request.data.get('Email')
+        userdata = User.objects.filter(email=data['Email'],isActive=True,PasswordSet=True).first()
+        print("userdata",userdata)
+        if userdata is not None:
+            email =   data['Email']
+            data2 = {'userId':userdata.id,'baseurl':frontend_url}
+            html_mail = render_to_string('mailpassword.html',data2)
+            
+            mailMsg = EmailMessage(
+                'Forgot Password?',
+                 html_mail,
+                'no-reply@onerooftech.com',
+                [email],
+                )
+            mailMsg.content_subtype ="html"
+            mailsend = mailMsg.send()
+           
+            return Response({"data":{},"response":{"n": 1,"msg":"Email Sent Successfully!", "status":"success" }})
+        else:
+            return Response({"data":{},"response":{"n": 0,"msg" : "User not found", "status":"error"}})
+
+
+class setnewpassword(GenericAPIView):
+    def post(self,request):
+        data={}
+        data['id']=request.data.get('id')
+        empdata = User.objects.filter(id=data['id'],isActive=True).first()
+        if empdata is not None:
+            data['Password']=request.data.get('Password')
+            data['cfpassword']=request.data.get('cfpassword')
+            userpassword = data['Password']
+            if data['Password'] != data['cfpassword']:
+                return Response({"data":{},"response":{"n": 0 ,"msg":"Passwords do not match","status":"passwords do not match"}})
+            else:
+                print("hii")
+                data['password']=make_password(userpassword)
+                data['textPassword'] = userpassword
+                data['PasswordSet'] = True
+                serializer = UserSerializer(empdata,data=data,partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"data" : serializer.data,"response":{"n":1,"msg":"Password set Successfully!","status":"success"}})
+                else:
+                    return Response({"data" : serializer.errors,"response":{"n":0,"msg":"serializer is not valid","status":"failure"}})
+        else:
+            return Response({ "data":{},"response":{"n":0,"msg":"user not found", "status":"failure"}})
+
+
+class resetpassword(GenericAPIView):
+    def post(self,request):
+        data={}
+        data['id']=request.data.get('id')
+        empdata = User.objects.filter(id=data['id'],isActive=True,PasswordSet=True).first()
+        if empdata is not None:
+            data['Password']=request.data.get('Password')
+            data['cfpassword']=request.data.get('cfpassword')
+            userpassword = data['Password']
+            if data['Password'] != data['cfpassword']:
+                return Response({"data":{},"response":{"n": 0 ,"msg":"Passwords do not match","status":"passwords do not match"}})
+            else:
+                print("hii")
+                data['password']=make_password(userpassword)
+                data['textPassword'] = userpassword
+                serializer = UserSerializer(empdata,data=data,partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"data" : serializer.data,"response":{"n":1,"msg":"Password Reset Successfully!","status":"success"}})
+                else:
+                    return Response({"data" : serializer.errors,"response":{"n":0,"msg":"serializer is not valid","status":"failure"}})
+        else:
+            return Response({ "data":{},"response":{"n":0,"msg":"user not found", "status":"failure"}})
