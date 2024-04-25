@@ -17,6 +17,7 @@ from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
 from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
+from datetime import datetime
 
 frontend_url = 'http://127.0.0.1:8000/'
 
@@ -31,15 +32,15 @@ def createstudentid(schoolcode):
         return f"{schoolcode}/{studentcount:04d}"
       
 
-
-
 class AddParentStudent(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
         data['isActive'] = True
+        print("datadatadatadata",data)
         studentlist = json.loads(data['studentlist'])
+        print("studentliststudentlist",studentlist)
         schoolcode = request.user.school_code
 
         schoolobj = School.objects.filter(school_code = schoolcode,isActive=True).first()
@@ -48,12 +49,16 @@ class AddParentStudent(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "School is Inactive .","status": "failure"}})
        
-        parentmailexist = User.objects.filter(email=data['Email'],isActive= True).first()
+        parentmailexist = User.objects.filter(email=data['Email'],isActive= True,school_code=schoolcode).first()
         if parentmailexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Email already exist","status": "failure"}})
         
+        parentmobileexist = User.objects.filter(mobileNumber=data['MobileNumber'],isActive= True,school_code=schoolcode).first()
+        if parentmobileexist is not None:
+            return Response({"data":'',"response": {"n": 0, "msg": "Mobile Number already exist","status": "failure"}})
+        
         else:
-            parentcreate = User.objects.create(email=data['Email'],Username = data['Name'], school_code = schoolcode,role_id = 5,password = str(12345),textPassword = str(12345),mobileNumber=data['MobileNumber'])
+            parentcreate = User.objects.create(email=data['Email'],Username = data['Name'], school_code = schoolcode,role_id = 5,password = str(12345),textPassword = str(12345),mobileNumber=data['MobileNumber'],Address = data['Address'])
             
             parentobj = User.objects.filter(email=data['Email']).first()
             if parentobj is not None :
@@ -61,10 +66,17 @@ class AddParentStudent(GenericAPIView):
             
                 print("parentiiid",parentid)
                 for s in studentlist:
-                    print("sssss",s)
+                    date_str = str(s['DateOfBirth'])
+                    date_object = datetime.strptime(date_str, "%d-%m-%Y")
+                    formatteddob_date = date_object.strftime("%Y-%m-%d")
+
+                    date_str2 = str(s['DateofJoining'])
+                    date_object2= datetime.strptime(date_str, "%d-%m-%Y")
+                    formattedjoin_date = date_object.strftime("%Y-%m-%d")
+                    
                     newstudentcode = createstudentid(schoolcode)
                     print("stucode",newstudentcode)
-                    Students.objects.create(ParentId=parentid,StudentName=s['Studentname'],StudentClass_id=s['StudentClass'],DateOfBirth = s['DateOfBirth'],DateofJoining=s['DateofJoining'],school_code=schoolcode,StudentCode=newstudentcode)
+                    Students.objects.create(ParentId=parentid,StudentName=s['Studentname'],StudentClass_id=s['StudentClass'],DateOfBirth = formatteddob_date,DateofJoining=formattedjoin_date,school_code=schoolcode,StudentCode=newstudentcode,BloodGroup=s['BloodGroup'])
 
             
                 #send mail
@@ -213,3 +225,19 @@ class studentsbyclasslist(GenericAPIView):
         ser = StudentSerializer(stuobj,many=True)
         return Response({"data":ser.data,"studentlist":ser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
       
+
+class studentsbyparentlist(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        parentid = request.data.get('parentid')
+        schoolcode = request.user.school_code
+        stuobj = Students.objects.filter(ParentId=parentid,isActive=True,school_code=schoolcode).order_by('id')
+        ser = StudentSerializer(stuobj,many=True)
+        for i in ser.data:
+            classobj = Class.objects.filter(id=i['StudentClass'],isActive=True).first()
+            if classobj is not None:
+                i['classname'] = classobj.ClassName
+            else:
+                i['classname'] = "--"
+        return Response({"data":ser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})

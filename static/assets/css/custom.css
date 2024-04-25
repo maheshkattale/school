@@ -1,0 +1,70 @@
+.childddcount{
+border: 1px solid lightgrey;
+border-radius: 6px;
+display: flex;
+justify-content: space-between;
+text-align: center;
+align-items: center;
+}
+.quantitybtnspan{
+    background: #2e121270;
+}
+
+
+.quantitybtn{
+    color: black;
+}
+
+.student-card {
+    background: #fff;
+    min-height: 50px;
+    position: relative;
+    margin-bottom: 24px;
+    border: 1px solid #f2f4f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #b7c0ce33;
+    -webkit-box-shadow: 0 0 10px 0 rgba(183, 192, 206, .2);
+}
+.border-apply {
+    box-shadow: 0 2px 10px #0003 !important;
+}
+.contact-grid {
+    float: left;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 2px 10px #0003 !important;
+
+}
+.profile-header {
+    min-height: 150px;
+    color: #fff;
+}
+.student-card .bg-red, .student-card .bg-pink, .student-card .bg-purple, .student-card .bg-indigo, .student-card .bg-blue, .student-card .bg-cyan, .student-card .bg-teal, .student-card .bg-green, .student-card .bg-yellow, .student-card .bg-orange, .student-card .bg-deep-orange, .student-card .bg-brown, .student-card .bg-grey, .student-card .bg-black {
+    border-bottom: none !important;
+    color: #fff !important;
+}
+.user-name {
+    padding: 10px 3px 3px;
+    font-size: 22px;
+    text-align: center;
+}
+.user-img {
+    border-radius: 10px;
+    max-width: 112px;
+    margin-top: -70px;
+    box-shadow: 0 10px 25px #0000004d;
+    margin-bottom: 20px;
+}
+.contact-grid .phone .material-icons {
+    font-size: 16px;
+    padding: 4px 7px 40px 0;
+    
+}
+.profile-userbuttons {
+    text-align: center;
+    margin: 30px;
+}
+.bg-cyan {
+    background-color: #00bcd4 !important;
+    color: #fff;
+}

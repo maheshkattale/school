@@ -8,4 +8,8 @@ urlpatterns = [
     path('userlist', Userlist.as_view(), name = 'Userlist'),
     path('getpermissions', getpermissions.as_view(), name = 'getpermissions'),
     path('savepermissions', savepermissions.as_view(), name = 'savepermissions'),
+    path('changepassword', ChangePassword.as_view(), name = 'changepassword'),
+    path('forgetpasswordmail', forgetpasswordmail.as_view(), name = 'forgetpasswordmail'),
+    path('setnewpassword', setnewpassword.as_view(), name = 'setnewpassword'),
+    path('resetpassword', resetpassword.as_view(), name = 'resetpassword'),
 ]
