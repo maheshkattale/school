@@ -11,5 +11,6 @@ urlpatterns = [
     path('studentlist', studentlist.as_view(), name = 'studentlist'),
     path('studentsbyclasslist', studentsbyclasslist.as_view(), name = 'studentsbyclasslist'),
     path('studentsbyparentlist', studentsbyparentlist.as_view(), name = 'studentsbyparentlist'),
+    path('bloodgrouplist', bloodgrouplist.as_view(), name = 'bloodgrouplist'),
 
 ]
