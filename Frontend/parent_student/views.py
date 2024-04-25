@@ -7,6 +7,8 @@ from school.static_info import frontend_url
 # Create your views here.
 class_list_url=frontend_url+'api/ClassMaster/List'
 parent_list_url = frontend_url+'api/Parent_StudentMaster/list'
+getparentinfourl = frontend_url+'api/Parent_StudentMaster/getbyid'
+bloodgrouplisturl = frontend_url+'api/Parent_StudentMaster/bloodgrouplist'
 
 
 class parent_student_master(GenericAPIView):
@@ -32,13 +34,32 @@ class add_parent_student(GenericAPIView):
             headers = {'Authorization':token}
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
-            return render(request, 'admin/parent_student_master/add_parent_student.html',{'classlist':class_list_response['data']})
+            get_blood_info_request = requests.get(bloodgrouplisturl,headers=headers)
+            bloodgresp = get_blood_info_request.json()
+            return render(request, 'admin/parent_student_master/add_parent_student.html',{'classlist':class_list_response['data'],'bloodgrplist':bloodgresp['data']})
         else:
             return redirect('school:login')
     
 class edit_parent_student(GenericAPIView):
-    def get(self,request):
-        return render(request, 'admin/parent_student_master/edit_parent_student.html',{})
+      def get(self,request,id):
+
+        tok = request.session.get('token', False)
+        if tok:
+            print("byy")
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            class_list_request = requests.get(class_list_url,headers=headers)
+            class_list_response = class_list_request.json()
+            data={}
+            data['id']=id
+            get_parent_info_request = requests.post(getparentinfourl,headers=headers,data=data)
+            parentresp = get_parent_info_request.json()
+            get_blood_info_request = requests.get(bloodgrouplisturl,headers=headers)
+            bloodgresp = get_blood_info_request.json()
+            
+            return render(request, 'admin/parent_student_master/edit_parent_student.html',{'classlist':class_list_response['data'],'parentsinfo':parentresp['data'],'bloodgrplist':bloodgresp['data']})
+
+   
 class student_list(GenericAPIView):
     def get(self,request):
         return render(request, 'admin/parent_student_master/student_cards.html',{})

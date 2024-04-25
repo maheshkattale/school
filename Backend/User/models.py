@@ -50,7 +50,7 @@ class User(AbstractBaseUser,TrackingModel):
     Username = models.CharField(max_length=255,null=True,blank=True)
     textPassword = models.CharField(max_length=255,null=True,blank=True)
     mobileNumber = models.BigIntegerField(null=True,blank=True)
-    email = models.EmailField(null=True,blank=True,unique=True)
+    email = models.EmailField(null=True,blank=True)
     role = models.ForeignKey(Role,on_delete=models.CASCADE,null=True,blank=True)
     designation = models.ForeignKey(Designation,on_delete=models.CASCADE,null=True,blank=True)
     joiningDate = models.DateField(null=True, blank=True)
