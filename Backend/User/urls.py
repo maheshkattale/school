@@ -12,4 +12,8 @@ urlpatterns = [
     path('forgetpasswordmail', forgetpasswordmail.as_view(), name = 'forgetpasswordmail'),
     path('setnewpassword', setnewpassword.as_view(), name = 'setnewpassword'),
     path('resetpassword', resetpassword.as_view(), name = 'resetpassword'),
+    path('menuitems', Menulist.as_view(), name = 'menuitems'),
+    path('getrole', getrole.as_view(), name = 'getrole'),
+    
+    
 ]

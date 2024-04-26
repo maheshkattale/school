@@ -9,6 +9,11 @@ from school.static_info import frontend_url
 forget_password_url=frontend_url+'api/User/forgetpasswordmail'
 set_password_url=frontend_url+'api/User/setnewpassword'
 reset_password_url=frontend_url+'api/User/resetpassword'
+change_password_url=frontend_url+'api/User/changepassword'
+    
+permission_url=frontend_url+'api/User/getpermissions'
+menuitems_url=frontend_url+'api/User/menuitems'
+role_url=frontend_url+'api/User/getrole'
 # Create your views here.
 
 
@@ -61,7 +66,39 @@ class forgot_password(GenericAPIView):
             messages.success(request, msg)
             return redirect('school:login')
             
+class change_password(GenericAPIView):
+    
+    def get(self,request,id):
+        return render(request, 'user/change_password.html',{})
 
+    def post(self,request,id):
+        
+        tok = request.session.get('token', False)
+        if tok:
+            
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data={}
+            data['id']=id
+            data['newpassword']=request.POST.get('newpassword')
+            data['confirmpassword']=request.POST.get('confirmpassword')
+            data['oldpassword']=request.POST.get('oldpassword')
+            change_password_request = requests.post(change_password_url,data=data,headers=headers)
+            change_password_response = change_password_request.json()
+            
+            
+            if change_password_response['response']['n']==0:
+                msg = change_password_response['response']['msg']
+                messages.error(request, msg)
+                return redirect('school:dashboard')
+            
+            else:
+    
+                msg = change_password_response['response']['msg']
+                messages.success(request, msg)
+                return redirect('school:login')
+            
+            
 class set_password(GenericAPIView):
     def get(self,request,id):
         print("id",id)
@@ -86,3 +123,49 @@ class set_password(GenericAPIView):
             messages.success(request, msg)
             return redirect('school:login')
         
+
+
+class permissions(GenericAPIView):
+    def get(self,request):
+
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+
+
+            menuitems_request = requests.get(menuitems_url,headers=headers)
+            menuitems_response = menuitems_request.json()
+
+            role_request = requests.get(role_url,headers=headers)
+            role_response = role_request.json()
+
+            context={
+                'menuitems':menuitems_response['data'],
+                'roles':role_response['data'],
+            }
+            return render(request, 'user/permissions.html',context)
+        else:
+            return redirect('users:login')
+        
+
+class get_permissions_by_role(GenericAPIView):
+    def post(self,request):
+
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data={}
+            data['roleid']=request.POST.get("roleID")
+            permission_request = requests.get(permission_url,headers=headers,data=data)
+            permission_response = permission_request.json()
+            return HttpResponse(json.dumps(permission_response), content_type="application/json")
+
+        else:
+            return redirect('school:login')
+        
+  
+  
+  
+  

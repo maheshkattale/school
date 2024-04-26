@@ -1,5 +1,5 @@
 
-from .models import User,MenuItem,permission
+from .models import User,MenuItem,permission,Role
 from rest_framework import serializers
 
 class UserSerializer(serializers.ModelSerializer):
@@ -23,4 +23,10 @@ class MenuItemSerializer(serializers.ModelSerializer):
 class permissionserializer(serializers.ModelSerializer):
     class Meta:
         model= permission
+        fields='__all__'
+        
+
+class Roleserializer(serializers.ModelSerializer):
+    class Meta:
+        model= Role
         fields='__all__'
