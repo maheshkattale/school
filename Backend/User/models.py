@@ -58,7 +58,6 @@ class User(AbstractBaseUser,TrackingModel):
     school_code = models.CharField(max_length=100,null=True, blank=True)
     PasswordSet = models.BooleanField(default=False)
     Address = models.TextField(null=True, blank=True)
-    
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
