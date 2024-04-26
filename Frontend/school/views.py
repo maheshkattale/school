@@ -39,6 +39,7 @@ class login(GenericAPIView):
             request.session['token'] = login_response['data']['token']
             request.session['schoolcode'] = login_response['data']['schoolcode']
             request.session['username'] = login_response['data']['username']
+            request.session['user_id'] = login_response['data']['user_id']
             msg = login_response['response']['msg']
             messages.success(request, msg)
             return redirect('school:dashboard')

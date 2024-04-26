@@ -113,20 +113,7 @@
     <div class="main-card mb-3 card">
       <form method="POST">
         {%csrf_token%}
-        {% if messages %}
-              <div class="row" style="justify-content: center;">
-                <div class="col-sm-6 col-sm-offset-3">
-                  {% for message in messages %}
-                  <div style="margin:15px 0px" class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                    <p style="margin-bottom: 0px;">{{ message }}</p>
-                  </div>
-                  {% endfor %}
-                </div>
-              </div>
-              {% endif %}
+
               <div id="snackbar"></div>
       <div class="card-body vender">
        <div class="form-row">
@@ -136,10 +123,11 @@
             <label for="roleID" class="">Select Role <span class="text-danger">*</span></label>
             <select onchange="getpermissionbyrole();" name="role" id="roleID" class="form-control">
               <option selected value="">Select Role</option>
-              {% for i in Rolelist%}
-                <option value="{{i.id}}" >{{i.Role}}</option>   
+              {% for i in roles %}
+                <option value="{{i.id}}" >{{i.RoleName}}</option>   
               {%endfor%} 
             </select>
+            <div id="roleID_error" class="my-2 form-text error_message"></div>
           </div>
       </div>
     </div>
@@ -159,8 +147,9 @@
       </thead>
       <tbody>
         
+        {% for i in menuitems  %}{% if i.ParentID == 0%}
         <tr>
-          <td scope="row">XYZ</td>
+          <td scope="row">{{i.MenuName}}</td>
           <td>
             <table class="mb-0 table">
               <thead>
@@ -172,20 +161,22 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>xyz</td>
+                  {% for j in menuitems  %}{% if i.MenuID == j.ParentID %}
+                  <td>{{j.MenuName}}</td>
                   <td class="text-center">
-                    <label class="label--checkbox">
-                      <input type="checkbox" class="Checkbox  check" id="check" name="menuItemCheck" value="">
-                    </label>
+                    <input type="checkbox" class="Checkbox  check {{j.ParentID}}" id="check{{j.MenuID}}" name="menuItemCheck" value="{{j.MenuID}}">
                   </td>
                 </tr>
+                {% endif %}{% endfor %}
               </tbody>
             </table>
           </td>
           <td class="text-center">
-            <input type="checkbox" class="Checkbox check" id="check" name="menuItemCheck" value="">
+            <input type="checkbox" class="Checkbox check" id="check{{i.MenuID}}" name="menuItemCheck" value="{{i.MenuID}}">
           </td>
+
         </tr>
+        {% endif %}{% endfor %}
 
        
         
@@ -193,14 +184,16 @@
 
        
 
+        {% for i in menuitems  %} {% if i.ParentID is None %}
         <tr>
-          <td scope="row">ABC</td>
+          <td scope="row">{{i.MenuName}}</td>
           <td></td>
           <td class="text-center">
-            <input type="checkbox" class="Checkbox  check  " id="check" name="menuItemCheck" value="">
+            <input type="checkbox" class="Checkbox  check {{i.MenuID}}{{i.MenuName}} " id="check{{i.MenuID}}" name="menuItemCheck" value="{{i.MenuID}}">
           </td>
           
         </tr>
+        {% endif %}{% endfor %}
       </tbody>
     </table>
 
@@ -233,21 +226,17 @@
 
 
   function permissionValidate(){
-    var x = document.getElementById("snackbar");
-    x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+
 
     var role = $("#roleID").val();
-    console.log("sds",role)
 
     if (IsValid(role)) {
-      $('#snackbar').html('');
-      $('#snackbar').html('Role field is required');
-      $('#roleID').focus();
-      return false;
-  }else{
-    $('#snackbar').addClass('validationBox')
-  }
+      $('#roleID').html()
+      $('#roleID_error').show().delay(3000).slideUp()
+      $('#roleID_error').html('Please select role')
+      $('#roleID').focus()
+      return false
+    }
   }
 
     function getpermissionbyrole() {
@@ -257,13 +246,13 @@
         var html;
         $.ajax({
             type: "POST",
-            url: frontend_url + "getpermissionbyrole",
+            url: frontend_url + "user/get_permissions_by_role",
             data: {
                 'roleID': roleID,
                 csrfmiddlewaretoken: '{{ csrf_token }}',
             },
             success: function (response) {  
-            console.log("rep",response.data)          
+            console.log("rep",response)          
                     $(response.data).each(function (i, o) {
                         $(o.permission).each(function (j, k) {
                             $('#check' + k).prop('checked', true)
@@ -275,15 +264,15 @@
     }
 
     $("#check8").click(function () {
-    $(".8").prop('checked', this.checked);
+      $(".8").prop('checked', this.checked);
     });
 
     $("#check1").click(function () {
-    $(".1").prop('checked', this.checked);
+      $(".1").prop('checked', this.checked);
     });
 
     $("#check28").click(function () {
-    $(".28").prop('checked', this.checked);
+      $(".28").prop('checked', this.checked);
     });
 
 

@@ -36,7 +36,7 @@ class login(GenericAPIView):
         if email is None or Password is None :
             return Response(
                                                 {
-                    "data" : {'token':'','username':'','schoolcode':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':''},
                     "response":{
                     "status":"error",
                     'msg': 'Please provide username and password',
@@ -47,7 +47,7 @@ class login(GenericAPIView):
         if userexist is None:
            return Response(
                     {
-                    "data" : {'token':'','username':'','schoolcode':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':''},
                     "response":{
                     "status":"error",
                     'msg': 'This user is not active',
@@ -61,7 +61,7 @@ class login(GenericAPIView):
                 return Response(
                                 
                     {
-                    "data" : {'token':'','username':'','schoolcode':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':''},
                     "response":{
                     "status":"error",
                     'msg': 'Invalid Credentials',
@@ -83,7 +83,7 @@ class login(GenericAPIView):
                     createmobiletoken = UserToken.objects.create(User=useruuid,MobileToken=Token,source=source)
                 else:
                     return Response({
-                    "data" : {'token':'','username':'','schoolcode':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':''},
                     "response":{
                     "status":"error",
                     'msg': 'Please Provide Source',
@@ -92,7 +92,7 @@ class login(GenericAPIView):
                 })
                 
                 return Response({
-                    "data" : {'token':Token,'username':username,'schoolcode':schoolcode},
+                    "data" : {'token':Token,'username':username,'user_id':useruuid,'schoolcode':schoolcode},
                     "response":{
                     "n": 1 ,
                     "msg" : "login successful",
@@ -136,7 +136,7 @@ class Userlist(GenericAPIView):
 class Menulist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
-    def get(request):
+    def get(self,request):
         schoolcode = request.user.school_code
         menu_list = MenuItem.objects.filter(school_code=schoolcode)
         serializer = MenuItemSerializer(menu_list,many=True)
@@ -154,7 +154,7 @@ class Menulist(GenericAPIView):
 class getpermissions(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
-    def get(request):
+    def get(self,request):
         roleid = request.data.get('roleid')
         schoolcode = request.user.school_code
         psdata = permission.objects.filter(Role_id=roleid,school_code=schoolcode)
@@ -169,6 +169,21 @@ class getpermissions(GenericAPIView):
         })
     
 
+class getrole(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        role_objs = Role.objects.all()
+        serializer = Roleserializer(role_objs,many=True)
+        return Response({
+            "data" : serializer.data,
+            "response":{
+                "n":1,
+                "msg":"Roles found Successfully",
+                "status":"success"
+                }
+        })
+    
     
 class savepermissions(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -273,8 +288,8 @@ class forgetpasswordmail(GenericAPIView):
         userdata = User.objects.filter(email=data['Email'],isActive=True,PasswordSet=True).first()
         if userdata is not None:
             email =   data['Email']
-            data2 = {'userId':userdata.id,'baseurl':frontend_url}
-            html_mail = render_to_string('user/set_password.html',data2)
+            data2 = {'user_id':userdata.id,'user_email':userdata.email,'frontend_url':frontend_url}
+            html_mail = render_to_string('mails/reset_password.html',data2)
             
             mailMsg = EmailMessage(
                 'Forgot Password?',
@@ -317,6 +332,7 @@ class setnewpassword(GenericAPIView):
 
 
 class resetpassword(GenericAPIView):
+    
     def post(self,request):
         data={}
         data['id']=request.data.get('id')
@@ -338,3 +354,15 @@ class resetpassword(GenericAPIView):
                     return Response({"data" : serializer.errors,"response":{"n":0,"msg":"serializer is not valid","status":"failure"}})
         else:
             return Response({ "data":{},"response":{"n":0,"msg":"user not found", "status":"failure"}})
+        
+        
+      
+        
+        
+        
+        
+        
+        
+        
+        
+        
