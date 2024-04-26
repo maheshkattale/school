@@ -120,29 +120,33 @@ class ParentStudentlist(GenericAPIView):
         return Response({"data":parentserializer.data,"response": {"n": 1, "msg": "Parents list found successfully","status": "success"}})
     
 
-class getParentStudentbyid(GenericAPIView):
-    authentication_classes=[userJWTAuthentication]
-    permission_classes = (permissions.IsAuthenticated,)
-    def post(self,request):
-        parentid = request.data.get('id')
-        schoolcode = request.user.school_code
-        Parentobj = User.objects.filter(id=parentid,isActive=True,school_code = schoolcode).first()
-        if Parentobj is not None:
-            serializer = UserSerializer(Parentobj)
-            studentlist = []
-            stuobj = Students.objects.filter(ParentId = Parentobj.id,isActive=True,school_code=schoolcode)
-            ser = StudentSerializer(stuobj,many=True)
-            return Response({"data":serializer.data,"studentlist":ser.data,"response": {"n": 1, "msg": "parent found successfully","status": "success"}})
-        else:
-            return Response({"data":'',"response": {"n": 0, "msg": "parent not found ","status": "failure"}})
+# class getParentStudentbyid(GenericAPIView):
+#     authentication_classes=[userJWTAuthentication]
+#     permission_classes = (permissions.IsAuthenticated,)
+#     def post(self,request):
+#         parentid = request.data.get('id')
+#         schoolcode = request.user.school_code
+#         Parentobj = User.objects.filter(id=parentid,isActive=True,school_code = schoolcode).first()
+#         if Parentobj is not None:
+#             serializer = UserSerializer(Parentobj)
+#             studentlist = []
+#             stuobj = Students.objects.filter(ParentId = Parentobj.id,isActive=True,school_code=schoolcode)
+#             ser = StudentSerializer(stuobj,many=True)
+#             return Response({"data":serializer.data,"studentlist":ser.data,"response": {"n": 1, "msg": "parent found successfully","status": "success"}})
+#         else:
+#             return Response({"data":'',"response": {"n": 0, "msg": "parent not found ","status": "failure"}})
 
 
 class updateParentStudent(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
+        print("ddatadataata",data)
         data['isActive'] = True
         parentid = data['id']
         studentlist = json.loads(data['studentlist'])
+        print("studentlist",studentlist)
         schoolcode = request.user.school_code
 
         schoolobj = School.objects.filter(school_code = schoolcode,isActive=True).first()
@@ -155,7 +159,7 @@ class updateParentStudent(GenericAPIView):
         if parentobj is None:
             return Response({"data":'',"response": {"n": 0, "msg": "Parent not found","status": "failure"}})
 
-        parentmailexist = User.objects.filter(email=data['Email'],isActive= True).exclude(id=parentid).first()
+        parentmailexist = User.objects.filter(email=data['email'],isActive= True).exclude(id=parentid).first()
         if parentmailexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Email already exist","status": "failure"}})
         
@@ -167,29 +171,37 @@ class updateParentStudent(GenericAPIView):
                 parentid = parentobj.id
 
                 for s in studentlist:
+                 
                     date_str = str(s['DateOfBirth'])
                     date_object = datetime.strptime(date_str, "%d-%m-%Y")
                     formatteddob_date = date_object.strftime("%Y-%m-%d")
                     s['DateOfBirth'] = formatteddob_date
 
-                    date_str2 = str(s['DateofJoining'])
-                    date_object2= datetime.strptime(date_str, "%d-%m-%Y")
-                    formattedjoin_date = date_object.strftime("%Y-%m-%d")
+                    date_str2 = str(s['DateofJoining']) 
+                    date_object2= datetime.strptime(date_str2, "%d-%m-%Y")
+                    formattedjoin_date = date_object2.strftime("%Y-%m-%d")
                     s['DateofJoining'] = formattedjoin_date
-                    
-                    studentcode = s['studentcode']
+                  
+                    studentcode = s['StudentCode']
                     if studentcode != '':
+                        print("snewiffffffffff",s)
                         stuobj = Students.objects.filter(StudentCode=studentcode,isActive=True).first()
+                        print()
+                        print("stuobj",stuobj)
                         if stuobj is not None :
+                            print("not none",stuobj)
                             stuserializer = StudentSerializer(stuobj,data=s,partial=True)
+                            print("initial data",stuserializer.initial_data)
                             if stuserializer.is_valid():
                                 stuserializer.save()
                             else:
-                                return Response({"data":stuserializer.errors,"response": {"n": 0, "msg": "Couldn't update student ! ","status": "failure"}})
+                                print("stuserializer.errors",stuserializer.errors)
+                                # return Response({"data":stuserializer.errors,"response": {"n": 0, "msg": "Couldn't update student ! ","status": "failure"}})
                     else:
+                        print("snewelse",s)
                         newstudentcode = createstudentid(schoolcode)
                         print("stucode",newstudentcode)
-                        Students.objects.create(ParentId=parentid,StudentName=s['Studentname'],StudentClass_id=s['StudentClass'],DateOfBirth = formatteddob_date,DateofJoining=formattedjoin_date,school_code=schoolcode,StudentCode=newstudentcode,BloodGroup=s['BloodGroup'])
+                        Students.objects.create(ParentId=parentid,StudentName=s['StudentName'],StudentClass_id=s['StudentClass'],DateOfBirth = formatteddob_date,DateofJoining=formattedjoin_date,school_code=schoolcode,StudentCode=newstudentcode,BloodGroup=s['BloodGroup'])
 
 
                 return Response({"data":'',"studentlist":'',"response": {"n": 1, "msg": "parent updated successfully","status": "success"}})
@@ -210,10 +222,21 @@ class getParentStudentbyid(GenericAPIView):
             serailizer_data = serializer.data
             stucount = Students.objects.filter(ParentId = Parentobj.id,isActive=True,school_code=schoolcode).count()
             serailizer_data.update({"count":stucount})
-           
+            
             studentlist = []
             stuobj = Students.objects.filter(ParentId = Parentobj.id,isActive=True,school_code=schoolcode)
             ser = StudentSerializer(stuobj,many=True)
+            for s in ser.data:
+                date_str = str(s['DateOfBirth'])
+                date_object = datetime.strptime(date_str, "%Y-%m-%d")
+                formatteddob_date = date_object.strftime("%d-%m-%Y")
+                s['DateOfBirth'] = formatteddob_date
+
+                date_str2 = str(s['DateofJoining']) 
+                date_object2= datetime.strptime(date_str2, "%Y-%m-%d")
+                formattedjoin_date = date_object2.strftime("%d-%m-%Y")
+                s['DateofJoining'] = formattedjoin_date
+
             serailizer_data.update({"studentlist":ser.data})
             return Response({"data":serailizer_data,"response": {"n": 1, "msg": "parent found successfully","status": "success"}})
         else:
@@ -269,3 +292,46 @@ class bloodgrouplist(GenericAPIView):
         
         return Response({"data":bloodserializer.data,"response": {"n": 1, "msg": "bloodgroup list found successfully","status": "success"}})
     
+
+class deleteParent(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        parentid = data['id']
+        parentobj = User.objects.filter(id=parentid,isActive=True).first()
+        if parentobj is not None:
+            data['isActive'] = False
+            serializer = UserSerializer(parentobj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+
+                studentsobj = Students.objects.filter(ParentId=parentid).update(isActive=False)
+                
+                return Response({"data":'',"response": {"n": 1, "msg": "Parent Deleted successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Delete Parent ! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Parent not found ","status": "failure"}})
+        
+
+
+class deleteStudent(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        print("apiiiiiiiiiiiiii")
+        data = request.data.copy()
+        studentcode = data['studentcode']
+        print("id",studentcode)
+        studentobj = Students.objects.filter(StudentCode=studentcode,isActive=True).first()
+        if studentobj is not None:
+            data['isActive'] = False
+            serializer = StudentSerializer(studentobj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":'',"response": {"n": 1, "msg": "student Deleted successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Delete student ! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "student not found ","status": "failure"}})

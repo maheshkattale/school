@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse,HttpResponseRedirect
 import requests
-
+import json
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from school.static_info import frontend_url
@@ -9,7 +9,8 @@ class_list_url=frontend_url+'api/ClassMaster/List'
 parent_list_url = frontend_url+'api/Parent_StudentMaster/list'
 getparentinfourl = frontend_url+'api/Parent_StudentMaster/getbyid'
 bloodgrouplisturl = frontend_url+'api/Parent_StudentMaster/bloodgrouplist'
-
+parent_delete_url = frontend_url+'api/Parent_StudentMaster/delete'
+student_delete_url = frontend_url+'api/Parent_StudentMaster/deleteStudent'
 
 class parent_student_master(GenericAPIView):
     def get(self,request):
@@ -62,3 +63,28 @@ class edit_parent_student(GenericAPIView):
 class student_list(GenericAPIView):
     def get(self,request):
         return render(request, 'admin/parent_student_master/student_cards.html',{})
+    
+
+class delete_parent(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            parent_delete_request = requests.post(parent_delete_url,headers=headers,data=data)
+            parent_delete_response = parent_delete_request.json()
+            return HttpResponse(json.dumps(parent_delete_response), content_type="application/json")
+        
+
+class delete_student(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            print("front")
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            student_delete_request = requests.post(student_delete_url,headers=headers,data=data)
+            student_delete_response = student_delete_request.json()
+            return HttpResponse(json.dumps(student_delete_response), content_type="application/json")
