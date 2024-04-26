@@ -67,7 +67,7 @@
               <tr class="countchildren" id="rowd{{forloop.counter}}">
                 <th scope="row" class="text-center srNumber">{{forloop.counter}}</th>
         
-                <td class="text-center"> <input type="text" class="form-control childname"  id="childname{{forloop.counter}}"  placeholder="Please enter children name" value ={{i.StudentName}} aria-describedby="childnameerror{{forloop.counter}}" />
+                <td class="text-center"> <input type="text" class="form-control childname"  id="childname{{forloop.counter}}"  placeholder="Please enter children name" value ="{{i.StudentName}} " aria-describedby="childnameerror{{forloop.counter}}" />
                 <div id="childnameerror{{forloop.counter}}" class="form-text error_message"></div></td>
         
                 <td class="d-none" id="stucode{{forloop.counter}}">{{i.StudentCode}}</td>
@@ -85,12 +85,12 @@
                 </td>
         
                 <td class="text-center">
-                  <input type="text" class="form-control date_of_birth" id="child_dateofbirth{{forloop.counter}}" placeholder="Please select children DOB" value={{i.DateOfBirth}} aria-describedby="child_dateofbirtherror{{forloop.counter}}"  readonly/>
+                  <input type="text" class="form-control date_of_birth" id="child_dateofbirth{{forloop.counter}}" placeholder="Please select children DOB" value="{{i.DateOfBirth}}" aria-describedby="child_dateofbirtherror{{forloop.counter}}"  readonly/>
                 <div id="child_dateofbirtherror{{forloop.counter}}"  class="form-text error_message"></div>
                   </td>
         
                 <td class="text-center">
-                  <input type="text" class="form-control date_of_joining" id="child_dateofjoining{{forloop.counter}}"  placeholder="Please select children DOJ" value={{i.DateofJoining}} aria-describedby="child_dateofjoiningerror{{forloop.counter}}" readonly/>
+                  <input type="text" class="form-control date_of_joining" id="child_dateofjoining{{forloop.counter}}"  placeholder="Please select children DOJ" value="{{i.DateofJoining}}" aria-describedby="child_dateofjoiningerror{{forloop.counter}}" readonly/>
                 <div id="child_dateofjoiningerror{{forloop.counter}}" class="form-text error_message"></div>
                   </td>
         
@@ -147,10 +147,11 @@
     $('#children1_class').select2();
     $('#children_count').select2();
     $('#children1_blood_group').select2();
-    flatpickr("#children1_date_of_birth", {
+
+    flatpickr(".date_of_birth", {
       dateFormat: "d-m-Y",
     });
-    flatpickr("#children1_date_of_joining", {
+    flatpickr(".date_of_joining", {
       dateFormat: "d-m-Y",
     });
 
@@ -256,26 +257,93 @@ function add_childern_feilds(){
     $('#child_count').text(lengthtr);
   }
 
+  function deleteChild(childid){
+    debugger;
+    var studentcode = $('#stucode'+childid).text();
+    console.log("studentcode",studentcode)
+    if (studentcode != ''){
 
-  function deleteChild(childid){  
-     debugger;
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          var fd = new FormData();    
+          fd.append("studentcode",studentcode);
+          fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+          $.ajax({
+            type: "POST",
+            url: frontend_url+"parent_student_master/delete_student",
+            data: fd,
+            processData: false,
+            contentType: false,
+            
+            success: function(response) {
+              console.log("delete",response)
+              if(response.response.n ==1){
+                Swal.fire({
+                  text: response.response.msg,
+                  icon: 'success',
+                }).then((result) => {
+                 location.reload();
+          
+                });
+              }else{
+                Swal.fire({
+                  text: response.response.msg,
+                  icon: 'error',
+                })
+              }
+            },
+          });
+        }
+      });
+    }else{
       var productRowCount = $(".countchildren").length
 
-      if ( productRowCount > 1){
-      counterlist.splice(counterlist.indexOf(childid),1)
-      $("#rowd"+childid).remove(); 
-      $('tbody').find('tr').each(function (index) {
-        var firstTDDomEl = $(this).find('th')[0];
-        var $firstTDJQObject = $(firstTDDomEl);
-        $firstTDJQObject.text(index + 1);
-      });
-       lengthtr=$('#child-table tbody tr').length;
-        $('#child_count').text(lengthtr);
-      }
-      else{
+        if ( productRowCount > 1){
+        counterlist.splice(counterlist.indexOf(childid),1)
+        $("#rowd"+childid).remove(); 
+        $('tbody').find('tr').each(function (index) {
+          var firstTDDomEl = $(this).find('th')[0];
+          var $firstTDJQObject = $(firstTDDomEl);
+          $firstTDJQObject.text(index + 1);
+        });
+        
+        }
+        else{
+
+        }
+    }
+    lengthtr=$('#child-table tbody tr').length;
+          $('#child_count').text(lengthtr);
+  }
+
+
+//   function deleteChild(childid){  
+//      debugger;
+//       var productRowCount = $(".countchildren").length
+
+//       if ( productRowCount > 1){
+//       counterlist.splice(counterlist.indexOf(childid),1)
+//       $("#rowd"+childid).remove(); 
+//       $('tbody').find('tr').each(function (index) {
+//         var firstTDDomEl = $(this).find('th')[0];
+//         var $firstTDJQObject = $(firstTDDomEl);
+//         $firstTDJQObject.text(index + 1);
+//       });
+//        lengthtr=$('#child-table tbody tr').length;
+//         $('#child_count').text(lengthtr);
+//       }
+//       else{
       
-      }
-}
+//       }
+// }
 
 
 
@@ -450,28 +518,28 @@ function validate_form(){
       var studentlist = []
       $(counterlist).each(function(o,i){
       var children_name=$("#childname"+i).val();
-      var studentcode=$("#stucode"+i).val();
+      var studentcode=$("#stucode"+i).text();
       var children_class=$("#childclass"+i).val();
       var children_date_of_birth=$("#child_dateofbirth"+i).val();
       var children_blood_group=$("#child_bloodgroup"+i).val();
       var children_date_of_joining=$("#child_dateofjoining"+i).val();
-      data = { 'Studentname': children_name, 'studentcode':studentcode,'StudentClass':children_class,'DateOfBirth':children_date_of_birth,'DateofJoining': children_date_of_joining,'BloodGroup':children_blood_group}
+      data = { 'StudentName': children_name, 'StudentCode':studentcode,'StudentClass':children_class,'DateOfBirth':children_date_of_birth,'DateofJoining': children_date_of_joining,'BloodGroup':children_blood_group}
       studentlist.push(data)
     })
     t = 'Bearer {{token}}'
     console.log("tttttttt",t)
        var fd = new FormData(); 
        fd.append('id', id)
-       fd.append('Name', parent_name)
-       fd.append('Email', parent_email)
-       fd.append('MobileNumber', parent_contact)
+       fd.append('Username', parent_name)
+       fd.append('email', parent_email)
+       fd.append('mobileNumber', parent_contact)
        fd.append('Address', address)
         fd.append("studentlist",JSON.stringify(studentlist));
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         console.log("fd",fd)
         $.ajax({
           type: "POST",
-          url: frontendURL+"api/Parent_StudentMaster/update",
+          url: frontend_url+"api/Parent_StudentMaster/update",
           headers:{'Authorization':t},
           data: fd,
           processData: false,

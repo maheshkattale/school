@@ -39,6 +39,8 @@ urlpatterns = [
     path('api/TeacherMaster/', include('TeacherMaster.urls')),
     path('api/Parent_StudentMaster/', include('Parent_StudentMaster.urls')),
     path('api/ClassMaster/', include('ClassMaster.urls')),
+    path('api/TimeTableMaster/', include('TimeTableMaster.urls')),
+    
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
