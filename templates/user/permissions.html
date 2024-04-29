@@ -120,14 +120,14 @@
 
         <div class="col-md-4 right-left">
           <div class="position-relative form-group">
-            <label for="roleID" class="">Select Role <span class="text-danger">*</span></label>
-            <select onchange="getpermissionbyrole();" name="role" id="roleID" class="form-control">
+            <label for="roleid" class="">Select Role <span class="text-danger">*</span></label>
+            <select onchange="getpermissionbyrole();" name="roleid" id="roleid" class="form-control">
               <option selected value="">Select Role</option>
               {% for i in roles %}
                 <option value="{{i.id}}" >{{i.RoleName}}</option>   
               {%endfor%} 
             </select>
-            <div id="roleID_error" class="my-2 form-text error_message"></div>
+            <div id="roleid_error" class="my-2 form-text error_message"></div>
           </div>
       </div>
     </div>
@@ -147,8 +147,9 @@
       </thead>
       <tbody>
         
-        {% for i in menuitems  %}{% if i.ParentID == 0%}
-        <tr>
+        {% for i in menuitems  %}
+        {% if i.ParentID == 0%}
+          <tr class="parent_tr">
           <td scope="row">{{i.MenuName}}</td>
           <td>
             <table class="mb-0 table">
@@ -160,23 +161,26 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  {% for j in menuitems  %}{% if i.MenuID == j.ParentID %}
-                  <td>{{j.MenuName}}</td>
-                  <td class="text-center">
-                    <input type="checkbox" class="Checkbox  check {{j.ParentID}}" id="check{{j.MenuID}}" name="menuItemCheck" value="{{j.MenuID}}">
-                  </td>
-                </tr>
-                {% endif %}{% endfor %}
+                <tr >
+                  {% for j in menuitems  %}
+                    {% if i.MenuID == j.ParentID %}
+                      <td>{{j.MenuName}}</td>
+                      <td class="text-center">
+                        <input type="checkbox" class="Checkbox child_checkbox check {{j.ParentID}}" id="check{{j.MenuID}}" name="permission" value="{{j.MenuID}}">
+                        </td>
+                      </tr>
+                    {% endif %}
+                  {% endfor %}
               </tbody>
             </table>
           </td>
-          <td class="text-center">
-            <input type="checkbox" class="Checkbox check" id="check{{i.MenuID}}" name="menuItemCheck" value="{{i.MenuID}}">
+          <td class="text-center parent_td">
+            <input type="checkbox" class="Checkbox check parent_checkbox" id="check{{i.MenuID}}" name="permission" value="{{i.MenuID}}">
           </td>
 
         </tr>
-        {% endif %}{% endfor %}
+        {% endif %}
+        {% endfor %}
 
        
         
@@ -184,16 +188,18 @@
 
        
 
-        {% for i in menuitems  %} {% if i.ParentID is None %}
-        <tr>
-          <td scope="row">{{i.MenuName}}</td>
-          <td></td>
-          <td class="text-center">
-            <input type="checkbox" class="Checkbox  check {{i.MenuID}}{{i.MenuName}} " id="check{{i.MenuID}}" name="menuItemCheck" value="{{i.MenuID}}">
-          </td>
-          
-        </tr>
-        {% endif %}{% endfor %}
+        {% for i in menuitems  %} 
+        
+          {% if i.ParentID is None %}
+          <tr class="parent_tr">
+            <td scope="row">{{i.MenuName}}</td>
+            <td></td>
+            <td class="text-center parent_td">
+              <input type="checkbox" class="parent_checkbox Checkbox  check {{i.MenuID}}{{i.MenuName}} " id="check{{i.MenuID}}" name="permission" value="{{i.MenuID}}">
+            </td>
+          </tr>
+          {% endif %}
+        {% endfor %}
       </tbody>
     </table>
 
@@ -218,9 +224,41 @@
 
 <script>
     $(document).ready(function () {
-        $('#roleID').select2()
-  
-  
+        $('#roleid').select2()
+        $('.parent_checkbox').click(function() {
+          // Find the closest <tr> element relative to the clicked checkbox
+          var currentTr = $(this).closest('tr');
+
+          // Find the previous <td> element from the same row
+          var previousTd = currentTr.find('td.parent_td').prev();
+          
+          // Get the content of the previous <td>
+          var checkboxes = previousTd.find('input[type="checkbox"]');
+          if ($(this).prop('checked')==true){ 
+            checkboxes.prop('checked', true);
+          }else{
+            checkboxes.prop('checked', false);
+          }
+          // Output the content (you can modify this part to suit your needs)
+        });
+        $('.child_checkbox').click(function() {
+          // Find the closest <tr> element relative to the clicked checkbox
+            var currentTr = $(this).closest('.parent_tr');
+            var parentTd = currentTr.find('td.parent_td');
+
+          // Find the previous <td> element from the same row
+            var childCheckboxes = currentTr.find('.child_checkbox');
+    
+            // Find the parent checkbox within the same row
+            var parentCheckbox = parentTd.find('input[type="checkbox"]');
+            
+            // Check if any child checkbox is checked
+            var anyChildChecked = childCheckboxes.is(':checked');
+            
+            // Set the state of the parent checkbox based on the state of child checkboxes
+            parentCheckbox.prop('checked', anyChildChecked);
+          // Output the content (you can modify this part to suit your needs)
+        });
       })
 
 
@@ -228,13 +266,13 @@
   function permissionValidate(){
 
 
-    var role = $("#roleID").val();
+    var role = $("#roleid").val();
 
     if (IsValid(role)) {
-      $('#roleID').html()
-      $('#roleID_error').show().delay(3000).slideUp()
-      $('#roleID_error').html('Please select role')
-      $('#roleID').focus()
+      $('#roleid').html()
+      $('#roleid_error').show().delay(3000).slideUp()
+      $('#roleid_error').html('Please select role')
+      $('#roleid').focus()
       return false
     }
   }
@@ -242,13 +280,14 @@
     function getpermissionbyrole() {
         
         $('.Checkbox').prop('checked', false)
-        var roleID = $('#roleID').val();
+        var roleid = $('#roleid').val();
         var html;
+        console.log("roleid",roleid)
         $.ajax({
             type: "POST",
             url: frontend_url + "user/get_permissions_by_role",
             data: {
-                'roleID': roleID,
+                'roleid': roleid,
                 csrfmiddlewaretoken: '{{ csrf_token }}',
             },
             success: function (response) {  
@@ -263,81 +302,18 @@
         });
     }
 
-    $("#check8").click(function () {
-      $(".8").prop('checked', this.checked);
-    });
-
-    $("#check1").click(function () {
-      $(".1").prop('checked', this.checked);
-    });
-
-    $("#check28").click(function () {
-      $(".28").prop('checked', this.checked);
-    });
 
 
 
-    $(".8").click(function () {
-    var totalCheckboxes = $('.8:checked').length;
-    if ( totalCheckboxes < 1){
-        $('#check8').prop('checked', false);
-    }else{
-        $('#check8').prop('checked', true);
-    }
-    });
 
-    $(".1").click(function () {
-    var secondCheckboxes = $('.1:checked').length;
-    if (secondCheckboxes < 1 ){
-        $('#check1').prop('checked', false);
-    }else {
-        $('#check1').prop('checked', true);
-    }
-    
-    });
 
-    $(".28").click(function () {
-    var secondCheckboxes = $('.28:checked').length;
-    if (secondCheckboxes < 1 ){
-        $('#check28').prop('checked', false);
-    }else {
-        $('#check28').prop('checked', true);
-    }
-    
-    });
 
-    $('.parentclass1').click(function(){
-    $(".childclass1").prop("checked", this.checked);
-    });
-    $('.childclass1').click(function() {
-        if ($('.childclass1:checked').length < 1) {
-        $('.parentclass1').prop('checked', false);
-        } else {
-        $('.parentclass1').prop('checked', true);
-        }
-    });
 
-    $('.parentclass4').click(function(){
-    $(".childclass4").prop("checked", this.checked);
-    });
-    $('.childclass4').click(function() {
-        if ($('.childclass4:checked').length < 1) {
-        $('.parentclass4').prop('checked', false);
-        } else {
-        $('.parentclass4').prop('checked', true);
-        }
-    });
 
-    $('.parentclass7').click(function(){
-    $(".childclass7").prop("checked", this.checked);
-    });
-    $('.childclass7').click(function() {
-    if ($('.childclass7:checked').length < 1) {
-      $('.parentclass7').prop('checked', false);
-    } else {
-      $('.parentclass7').prop('checked', true);
-    }
-  });
+
+
+
+ 
 
 </script>
 

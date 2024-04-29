@@ -36,10 +36,10 @@ class login(GenericAPIView):
         if email is None or Password is None :
             return Response(
                                                 {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':''},
                     "response":{
                     "status":"error",
-                    'msg': 'Please provide username and password',
+                    'msg': 'Please provide email and password',
                     'n':0
                     }})
         
@@ -47,24 +47,26 @@ class login(GenericAPIView):
         if userexist is None:
            return Response(
                     {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':''},
                     "response":{
                     "status":"error",
-                    'msg': 'This user is not active',
+                    'msg': 'This user is not found',
                     'n':0
                     }}
                            )
         else:
             # user = authenticate(email=email,password=password)
+            user_serializer=UserSerializer(userexist)
+            
             p = check_password(Password,userexist.password)
             if p is False:
                 return Response(
                                 
                     {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':''},
                     "response":{
                     "status":"error",
-                    'msg': 'Invalid Credentials',
+                    'msg': 'Please enter correct password',
                     'n':0
                     }}
                                 
@@ -72,9 +74,28 @@ class login(GenericAPIView):
             else:
                 useruuid = str(userexist.id)
                 role = userexist.role
+                role_id=user_serializer.data['role']
+                print("role",role)
+
                 username = userexist.Username
                 schoolcode = userexist.school_code
                 Token = createtoken(useruuid,email,source)
+
+
+                
+                psdata = permission.objects.filter(Role_id=role_id).first()
+                serializer = permissionserializer(psdata)
+               
+                menupath=[]
+                for i in serializer.data['permission']:
+                    menupath.append(i)
+             
+                permisionobj = MenuItem.objects.filter(MenuID__in = menupath).order_by('SortOrder')
+                perSer = MenuItemSerializer(permisionobj,many=True)
+                
+                
+                
+                
                 if source == "Web":
                     web_tokenexist = UserToken.objects.filter(User=useruuid,isActive=True,source=source).update(isActive=False)
                     createwebtoken = UserToken.objects.create(User=useruuid,WebToken=Token,source=source)
@@ -83,7 +104,7 @@ class login(GenericAPIView):
                     createmobiletoken = UserToken.objects.create(User=useruuid,MobileToken=Token,source=source)
                 else:
                     return Response({
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':''},
                     "response":{
                     "status":"error",
                     'msg': 'Please Provide Source',
@@ -92,7 +113,7 @@ class login(GenericAPIView):
                 })
                 
                 return Response({
-                    "data" : {'token':Token,'username':username,'user_id':useruuid,'schoolcode':schoolcode},
+                    "data" : {'token':Token,'username':username,'user_id':useruuid,'schoolcode':schoolcode,'Menu':perSer.data,'roleid':role_id},
                     "response":{
                     "n": 1 ,
                     "msg" : "login successful",
@@ -138,7 +159,7 @@ class Menulist(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
         schoolcode = request.user.school_code
-        menu_list = MenuItem.objects.filter(school_code=schoolcode)
+        menu_list = MenuItem.objects.all().order_by('SortOrder')
         serializer = MenuItemSerializer(menu_list,many=True)
         return Response({
                 "data" : serializer.data ,
@@ -159,6 +180,7 @@ class getpermissions(GenericAPIView):
         schoolcode = request.user.school_code
         psdata = permission.objects.filter(Role_id=roleid,school_code=schoolcode)
         serializer = permissionserializer(psdata,many=True)
+        print("serializer.data,",serializer.data)
         return Response({
             "data" : serializer.data,
             "response":{
@@ -188,10 +210,11 @@ class getrole(GenericAPIView):
 class savepermissions(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
-    def post(request):
-        roleid = request.data['roleid']
+    def post(self,request):
+        roleid = request.data.get('roleid')
         permissionlist = request.data.getlist('permission')
         schoolcode = request.user.school_code
+        print("data",request.data)
         permissiondata = permission.objects.filter(Role_id=roleid).first()
         data = {}
         data['Role_id'] = roleid

@@ -55,9 +55,10 @@ class User(AbstractBaseUser,TrackingModel):
     designation = models.ForeignKey(Designation,on_delete=models.CASCADE,null=True,blank=True)
     joiningDate = models.DateField(null=True, blank=True)
     source = models.CharField(max_length=255,null=True,blank=True)
-    school_code = models.CharField(max_length=100,null=True, blank=True)
+    school_code = models.CharField(max_length=101,null=True, blank=True)
     PasswordSet = models.BooleanField(default=False)
-    Address = models.TextField(null=True, blank=True)
+    Address = models.TextField(null=True, blank=True,default='')
+    
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
