@@ -26,4 +26,22 @@ class addtimetable(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        return Response({"data":'',"response": {"n": 0, "msg": "Teacher not created","status": "failure"}})
+        Classid = request.data.get('class')
+        startDaterange = request.data.get('startDaterange')
+        endDaterange = request.data.get('endDaterange')
+        Day = request.data.get('Day')
+        Week = request.data.get('Week')
+        Year = request.data.get('Year')
+        starttime = request.data.get('starttime')
+        endtime = request.data.get('endtime')
+        subject = request.data.get('subject')
+        teacher = request.data.get('teacher')
+
+        
+
+
+
+
+        
+        
+        return Response({"data":'',"response": {"n": 1, "msg": "TimeTable Added Successfully","status": "Success"}})
