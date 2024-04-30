@@ -10,8 +10,11 @@ $(".toggle-password").click(function () {
 });
 
 function IsValid(value) {
+  if ( value == undefined ){
+    return true;
+  }
   value=value.trim();
-  if (value == "" || value == null || value == undefined ) {
+  if (value == "" || value == null) {
     return true;
   } else {
     return false;

@@ -20,22 +20,24 @@
               <div class="mb-3 col-lg-4">
                 <label for="class_name" class="form-label">Class</label> 
                 <select id="class_name" class="form-select" aria-describedby="class_name_error">
-                  <option>ABC</option>
-                  <option>XYZ</option>
+                  <option value="">Please select class</option>
+
+                  {% for i in classes %}
+                  <option value="{{i.id}}">{{i.ClassName}}</option>
+                  {% endfor %}
                 </select>
                 <div id="class_name_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
                   <label for="daterange" class="form-label">Dates</label>
-
                     <span style="display:flex;">
                       <span id="daterange"  class="form-control">
                           <i class="fa fa-calendar"></i>&nbsp;
                       <span id="spandatechange"></span> <i class="fa fa-caret-down"></i>
                       </span>
                     </span>
-                    <div id="date_err" class="form-text error_message"></div>
+                    <div id="datesrange_error" class="form-text error_message"></div>
 
               </div>
 
@@ -47,13 +49,15 @@
               <div class="mb-3 col-lg-4">
                 <label for="day" class="form-label">Days</label>
                 <select id="day" class="form-select" aria-describedby="day_error">
-                  <option value="1">Monday</option>
-                  <option value="2">Tuesday</option>
-                  <option value="3">Wednesday</option>
-                  <option value="4">Thursday</option>
-                  <option value="5">Friday</option>
-                  <option value="6">Saturday</option>
-                  <option value="7">Sunday</option>
+                  <option value="">Please select Days</option>
+
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                  <option value="Sunday">Sunday</option>
                 </select>
                 <div id="day_error" class="form-text error_message"></div>
               </div>
@@ -73,8 +77,12 @@
               <div class="mb-3 col-lg-4">
                 <label for="subject" class="form-label">Subject</label>
                 <select id="subject" class="form-select" aria-describedby="subject_error">
-                  <option>Science</option>
-                  <option>Maths</option>
+                  <option value=""> Please select subject</option>
+
+                  {% for subject in subjects %}
+
+                    <option value="{{subject.id}}"> {{subject.SubjectName}}</option>
+                  {% endfor %}
                 </select>
                 <div id="subject_error" class="form-text error_message"></div>
               </div>
@@ -83,30 +91,337 @@
               <div class="mb-3 col-lg-4">
                 <label for="teacher" class="form-label">Teacher</label>
                 <select id="teacher" class="form-select" aria-describedby="teacher_error">
-                  <option>Jons Albert</option>
-                  <option>Suyag Fatol</option>
+                  <option value=""> Please select teacher</option>
+
+                  {% for teacher in teachers %}
+                    <option value="{{teacher.id}}"> {{teacher.Username}}</option>
+                  {% endfor %}
                 </select>
                 <div id="teacher_error" class="form-text error_message"></div>
               </div>
 
 
 
+
+            </div>
+            <div class="row">
+              <div class="d-flex justify-content-center" id="operations_btn">
+                <a id="addtimetableBtn" class="btn btn-primary">Add</a>
+                <a id="updatetimetableBtn" onclick="update_draft();" class="btn btn-primary d-none">Update</a>
+              </div>
             </div>
 
+            <div>
+              <table class="table">
+                <thead class="thead-dark">
+                  <th>Days</th>
+                  <th>Period Time</th>
+                  <th>Dates</th>
+                  <th>Class</th>
+                  <th>Subject</th>
+                  <th>Teacher</th>
+                  <th>Action</th>
+                </thead>
+                <tbody id="added_timetable">
+
+
+                </tbody>
+              </table>
+            </div>
             <div class="row">
               <div class="d-flex justify-content-center">
-                <a href="/time_table_master" class="btn btn-primary">Submit</a>
+                <a id="" onclick="save_timetable();" class="btn btn-primary">Save</a>
               </div>
             </div>
           </form>
+
+
         </div>
       </div>
     </div>
+  </div>
+  <div>
+    <table class="table">
+      <thead class="thead-dark">
+        <th>Days</th>
+        <th>Period Time</th>
+        <th>Dates</th>
+        <th>Class</th>
+        <th>Subject</th>
+        <th>Teacher</th>
+        <th>Action</th>
+      </thead>
+      <tbody >
+        <tr>
+          <td>Mondays</td>
+          <td>09Am to 10Am</td>
+          <td>1st April 24 to 1st May 24</td>
+          <td>1A</td>
+          <td>English</td>
+          <td>John Albert</td>
+          <td>            
+            <a data-bs-toggle="tooltip" title="Edit "><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete "><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+        <tr>
+          <td>Mondays</td>
+          <td>08Am to 09Am</td>
+          <td>1st April 24 to 1st May 24</td>
+          <td>1A</td>
+          <td>English</td>
+          <td>John Albert</td>
+          <td>            
+            <a data-bs-toggle="tooltip" title="Edit "><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete "><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 {% endblock %}
 
 {% block script %}
 <script>
+  var timetables = []; // Array to store timetables
+  var rowno = 1; // timetable number counter
+  var itemtobechange=''
+  function GetMonthName(monthname) {
+    var months = {
+      January: 01,
+      February: 02,
+      March: 03,
+      April: 04,
+      May: 05,
+      June: 06,
+      July: 07,
+      August: 08,
+      September: 09,
+      October: 10,
+      November: 11,
+      December: 12
+    }
+    var monthNumber = months[monthname]
+    if (monthNumber < 10){
+        monthString = monthNumber.toString();
+        monthNumber='0'+monthString
+      }
+    return monthNumber
+  }
+  function validate_form(){
+    var class_name=$('#class_name').val();
+    var day=$('#day').val();
+    var start_time=$('#start_time').val();
+    var end_time=$('#end_time').val();
+    var subject=$('#subject').val();
+    var teacher=$('#teacher').val();
+    var datesrange = $('#spandatechange').html()
+
+
+    if(IsValid(class_name)){
+      $('#class_name').html();
+      $('#class_name_error').show().delay(3000).slideUp();
+      $('#class_name_error').html('Please select class name');
+      $('#class_name').focus();
+      return false;
+    }
+
+    if(IsValid(datesrange)){
+      $('#spandatechange').html();
+      $('#datesrange_error').show().delay(3000).slideUp();
+      $('#datesrange_error').html('Please select dates');
+      $('#spandatechange').focus();
+      return false;
+    }
+    if(IsValid(day)){
+      $('#day').html();
+      $('#day_error').show().delay(3000).slideUp();
+      $('#day_error').html('Please select day');
+      $('#day').focus();
+      return false;
+    }
+    if(IsValid(start_time)){
+      $('#start_time').html();
+      $('#start_time_error').show().delay(3000).slideUp();
+      $('#start_time_error').html('Please select start time');
+      $('#start_time').focus();
+      return false;
+    }
+    if(IsValid(end_time)){
+      $('#end_time').html();
+      $('#end_time_error').show().delay(3000).slideUp();
+      $('#end_time_error').html('Please select end time');
+      $('#end_time').focus();
+      return false;
+    }
+    if(IsValid(subject)){
+      $('#subject').html();
+      $('#subject_error').show().delay(3000).slideUp();
+      $('#subject_error').html('Please select subject');
+      $('#subject').focus();
+      return false;
+    }
+    if(IsValid(teacher)){
+      $('#teacher').html();
+      $('#teacher_error').show().delay(3000).slideUp();
+      $('#teacher_error').html('Please select teacher');
+      $('#teacher').focus();
+      return false;
+    }else{
+      return true;
+
+    }
+  }
+  function getdates(datevalue) {
+
+    if (datevalue != '' && datevalue != null) {
+      var start_datestr = datevalue.split(' - ')[0]
+      var end_datestr = datevalue.split(' - ')[1]
+
+      var smonthstr = start_datestr.split(' ')[0]
+      var smonth = GetMonthName(smonthstr)
+
+      var emonthstr = end_datestr.split(' ')[0]
+      var emonth = GetMonthName(emonthstr)
+
+      var sdate = start_datestr.split(' ')[1].split(',')[0]
+      var edate = end_datestr.split(' ')[1].split(',')[0]
+
+      var syear = start_datestr.split(',')[1].split(' ')[1]
+      var eyear = end_datestr.split(',')[1].split(' ')[1]
+
+      var start_date = syear + '-' + smonth + '-' + sdate
+      var end_date = eyear + '-' + emonth + '-' + edate
+
+      return { start_date: start_date, end_date: end_date };
+    } else {
+      return { start_date: '', end_date: '' };
+    }
+  }
+
+  function deleterow(id){
+
+    var result=timetables.find(item => item.itemno === id)
+
+    const index = timetables.findIndex(item => item.itemno === id);
+
+
+    if (index !== -1) {
+        timetables.splice(index, 1)[0];
+    }
+    var rownoToRemove = $('.rowitem'+id);
+
+    rownoToRemove.remove();
+    $("#class_name").val("").trigger("change");
+    $('#day').val("").trigger("change");;
+    $('#subject').val("").trigger("change");;
+    $('#teacher').val("").trigger("change");;
+    $('#start_time').val(' ');
+    $('#end_time').val(' ');
+    $('#addtimetableBtn').removeClass('d-none')
+    $('#updatetimetableBtn').addClass('d-none')
+
+  };
+
+  function setDateRange(startDate, endDate) {
+    // Parse the input date strings into moment objects
+    var start = moment(startDate, 'YYYY-MM-DD');
+    var end = moment(endDate, 'YYYY-MM-DD');
+    
+    // Update the date range picker with the new dates
+    $('#daterange').data('daterangepicker').setStartDate(start);
+    $('#daterange').data('daterangepicker').setEndDate(end);
+  
+    // Update the displayed date range text
+    $('#daterange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+  }
+  function convertTo12HourFormat(time24) {
+    // Split the time string into hours and minutes
+    var parts = time24.split(':');
+    var hour = parseInt(parts[0]);
+    var minute = parseInt(parts[1]);
+
+    // Determine if it's AM or PM
+    var amPm = (hour >= 12) ? 'pm' : 'am';
+
+    // Convert hour to 12-hour format
+    hour = (hour % 12) || 12;
+
+    // Pad single digit hour or minute with leading zero
+    hour = hour < 10 ? '0' + hour : hour;
+    minute = minute < 10 ? '0' + minute : minute;
+
+    // Return the formatted time
+    return hour + ':' + minute + ' ' + amPm;
+  }
+
+  function editrow(itemNo){
+
+    var result=timetables.find(item => item.itemno === itemNo)
+    const index = timetables.findIndex(item => item.itemno === itemNo);
+
+
+    $('#addtimetableBtn').addClass('d-none')
+    $('#updatetimetableBtn').removeClass('d-none')
+    itemtobechange=itemNo
+    $("#class_name").val(result.class).trigger("change");
+    $('#day').val(result.day).trigger("change");;
+    $('#subject').val(result.subject).trigger("change");;
+    $('#teacher').val(result.teacher).trigger("change");;
+    $('#start_time').val(result.starttime);
+    $('#end_time').val(result.endtime);
+    setDateRange(result.startdate, result.enddate);
+
+
+
+  };
+  function update_draft(){
+    itemNo=itemtobechange
+    var class_name = $('#class_name option:selected').text();
+    var class_id = $('#class_name option:selected').val();
+    var day = $('#day option:selected').text();
+    var subject = $('#subject option:selected').text();
+    var subject_id = $('#subject option:selected').val();
+    var teacher = $('#teacher option:selected').text();
+    var teacher_id = $('#teacher option:selected').val();
+    var start_time=$('#start_time').val();
+    var end_time=$('#end_time').val();
+    var datesrange = $('#spandatechange').html()
+
+    $('.rowitem'+itemNo).html(`<td>`+day+`</td>    <td>`+convertTo12HourFormat(start_time) +` to `+ convertTo12HourFormat(end_time) + `</td>   <td>`+datesrange+`</td>    <td>`+class_name+`</td>    <td>`+subject+`</td>    <td>`+teacher+`</td>    <td>      <a onclick="editrow(`+itemNo+`);" data-bs-toggle="tooltip" title="Edit "><i class="fa-solid fa-pen-to-square mx-1"></i></a>      <a onclick="deleterow('`+itemNo+`');"  data-bs-toggle="tooltip" title="Delete "><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>    </td>`)
+
+
+
+    var dates = getdates($('#spandatechange').html());
+
+
+
+
+    var result=timetables.find(item => item.itemno === itemNo)
+    if (result) {
+      result.class =class_id;
+      result.day =day;
+      result.startdate =dates.start_date;
+      result.enddate = dates.end_date;
+      result.starttime = start_time;
+      result.endtime = end_time;
+      result.subject = subject_id;
+      result.teacher = teacher_id;
+    } 
+
+    $("#class_name").val("").trigger("change");
+    $('#day').val("").trigger("change");;
+    $('#subject').val("").trigger("change");;
+    $('#teacher').val("").trigger("change");;
+    $('#start_time').val(' ');
+    $('#end_time').val(' ');
+    $('#addtimetableBtn').removeClass('d-none')
+    $('#updatetimetableBtn').addClass('d-none')
+
+  };
+  function save_timetable(){
+    console.log('timetables save',timetables)
+  };
   $(document).ready(function() {
     $('#day').select2();
     $('#class_name').select2();
@@ -142,9 +457,85 @@
 
       // Use jQuery UI Datepicker for DOB input
       $('#spandatechange').on('DOMSubtreeModified', function () {
-          console.log('DOMSubtreeModified')
+          //console.log('DOMSubtreeModified',spandatechange)
       })
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Function to add a new timetable
+
+
+    $('#addtimetableBtn').on('click', function() {
+      if(validate_form() == true){
+        var class_name = $('#class_name option:selected').text();
+        var class_id = $('#class_name option:selected').val();
+        var day = $('#day option:selected').text();
+        var subject = $('#subject option:selected').text();
+        var subject_id = $('#subject option:selected').val();
+        var teacher = $('#teacher option:selected').text();
+        var teacher_id = $('#teacher option:selected').val();
+        var start_time=$('#start_time').val();
+        var end_time=$('#end_time').val();
+        var datesrange = $('#spandatechange').html()
+
+        $('#added_timetable').append(`
+              <tr class="rowitem`+rowno+`">
+                <td>`+day+`</td>
+                <td>`+convertTo12HourFormat(start_time) +` to `+ convertTo12HourFormat(end_time) + `</td>
+                <td>`+datesrange+`</td>
+                <td>`+class_name+`</td>
+                <td>`+subject+`</td>
+                <td>`+teacher+`</td>
+                <td>
+                  <a onclick="editrow(`+rowno+`);" data-bs-toggle="tooltip" title="Edit "><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+                  <a onclick="deleterow(`+rowno+`);"  data-bs-toggle="tooltip" title="Delete "><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+                </td>
+              </tr>
+        `);
+
+
+
+        $("#class_name").val("").trigger("change");
+        $('#day').val("").trigger("change");;
+        $('#subject').val("").trigger("change");;
+        $('#teacher').val("").trigger("change");;
+        $('#start_time').val(' ');
+        $('#end_time').val(' ');
+
+        var dates = getdates($('#spandatechange').html());
+
+
+
+        timetables.push({"itemno":rowno,"class":class_id,"day":day,"startdate":dates.start_date,"enddate":dates.end_date,"starttime":start_time ,"endtime":end_time, "subject":subject_id,"teacher":teacher_id});
+        rowno++;
+
+          //addtimetableToArray(timetable);
+            
+      }
+    });
+
   })
+
+
+
+
   });
+
+
+
 </script>
 {% endblock %}
