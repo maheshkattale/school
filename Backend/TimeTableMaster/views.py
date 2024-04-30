@@ -6,6 +6,8 @@ from rest_framework.response import Response
 import json
 from rest_framework.generics import GenericAPIView
 from SubjectMaster.models import Subject
+from TeacherMaster.models import TeacherSubject
+from TeacherMaster.serializers import *
 from SubjectMaster.serializers import SubjectSerializer
 from User.models import User
 from User.serializers import UserSerializer,UserlistSerializer
@@ -26,22 +28,49 @@ class addtimetable(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        Classid = request.data.get('class')
-        startDaterange = request.data.get('startDaterange')
-        endDaterange = request.data.get('endDaterange')
-        Day = request.data.get('Day')
-        Week = request.data.get('Week')
-        Year = request.data.get('Year')
-        starttime = request.data.get('starttime')
-        endtime = request.data.get('endtime')
-        subject = request.data.get('subject')
-        teacher = request.data.get('teacher')
+        print("res",request.POST)
+        if request.POST.get('timetablelist') != "":
+            timetablelist = json.loads(request.POST.get('timetablelist'))
+        else:
+            timetablelist = []
+        print("timetablelist",timetablelist)
+        schoolcode = request.user.school_code
 
+
+        if timetablelist != []:
+            for t in timetablelist :
+                TimeTable.objects.create(ClassId_id=t['class'],startdate = t['startdate'],enddate=t['enddate'],Day=t['day'],start_time=t['starttime'],end_time = t['endtime'],SubjectId_id=t['subject'],TeacherId = t['teacher'],school_code=schoolcode)
+
+            return Response({"data":'',"response": {"n": 1, "msg": "TimeTable Added Successfully","status": "Success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "TimeTable list is empty","status": "failed"}})
         
 
 
 
 
-        
-        
-        return Response({"data":'',"response": {"n": 1, "msg": "TimeTable Added Successfully","status": "Success"}})
+class getteachersfromsub(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        subjectid = request.data.get('subject')
+        teacherlist = []
+        schoolcode = request.user.school_code
+        if subjectid is not None or subjectid != '':
+            teacherobj = TeacherSubject.objects.filter(SubjectId_id = subjectid,isActive=True,school_code=schoolcode)
+            teachser = TeacherSubjectSerializer(teacherobj,many=True)
+            for t in teachser.data:
+                tobj = {}
+                teacherobj = User.objects.filter(id=t['id'],isActive=True).first()
+                if teacherobj is not None:
+                    tobj['teacherid'] = teacherobj.id
+                    tobj['teachername'] = teacherobj.Username
+
+                    teacherlist.append(tobj)
+
+            return Response({"data":teacherlist,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg": "sujectid not found","status": "failed"}})
+
+
+
