@@ -21,14 +21,14 @@
   <body>
 
 
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="mini-sidebar" data-sidebar-position="fixed" data-header-position="fixed">
       <!-- Sidebar Start -->
       <aside class="left-sidebar">
         <!-- Sidebar scroll -->
         <div>
           <div class="brand-logo d-flex align-items-center justify-content-between">
             <a href="/" class="text-nowrap logo-img"><img src="{% static 'assets/images/logos/black-ort_logo.png' %}" width="180" height="50" alt="" /></a>
-            <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+            <div class="close-btn d-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
               <i class="ti ti-x fs-8"></i>
             </div>
           </div>
@@ -178,6 +178,9 @@
           <nav class="navbar navbar-expand-lg navbar-light">
             <div class="navbar-collapse justify-content-between px-0" id="navbarNav">
               <ul class="navbar-nav flex-row align-items-center">
+                <li class="nav-item d-block">
+                  <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)"><i class="ti ti-menu-2"></i></a>
+                </li>
                 <li class="nav-item">
                   <a class="nav-link" href="javascript:void(0)">
                     {% block heading %}
@@ -188,9 +191,8 @@
               </ul>
 
               <ul class="navbar-nav flex-row align-items-center">
-                <li class="nav-item d-block d-xl-none">
-                  <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)"><i class="ti ti-menu-2"></i></a>
-                </li>
+
+
                 <li class="nav-item">
                   <a class="nav-link nav-icon-hover" href="javascript:void(0)">
                     <i class="ti ti-bell-ringing"></i>
@@ -214,6 +216,7 @@
                     </div>
                   </div>
                 </li>
+
               </ul>
             </div>
           </nav>
@@ -225,7 +228,7 @@
           {% endblock %}
         </div>
 
-        <footer>
+        <footer class="main-footer">
           <div class="py-6 px-6 text-center">
             <p class="mb-0 fs-4">
               Copyright © 2024 <a href="https://onerooftech.com/" target="_blank" class="pe-1 text-primary text-decoration-underline">OneRoof Technologies</a>LLP All rights reserved
