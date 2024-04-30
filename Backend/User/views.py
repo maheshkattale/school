@@ -55,9 +55,7 @@ class login(GenericAPIView):
                     }}
                            )
         else:
-            # user = authenticate(email=email,password=password)
             user_serializer=UserSerializer(userexist)
-            
             p = check_password(Password,userexist.password)
             if p is False:
                 return Response(
@@ -80,8 +78,6 @@ class login(GenericAPIView):
                 username = userexist.Username
                 schoolcode = userexist.school_code
                 Token = createtoken(useruuid,email,source)
-
-
                 
                 psdata = permission.objects.filter(Role_id=role_id).first()
                 serializer = permissionserializer(psdata)
@@ -92,9 +88,6 @@ class login(GenericAPIView):
              
                 permisionobj = MenuItem.objects.filter(MenuID__in = menupath).order_by('SortOrder')
                 perSer = MenuItemSerializer(permisionobj,many=True)
-                
-                
-                
                 
                 if source == "Web":
                     web_tokenexist = UserToken.objects.filter(User=useruuid,isActive=True,source=source).update(isActive=False)
