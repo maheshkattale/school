@@ -170,8 +170,9 @@ class getpermissions(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
         roleid = request.data.get('roleid')
+        print("roleid",roleid)
         schoolcode = request.user.school_code
-        psdata = permission.objects.filter(Role_id=roleid,school_code=schoolcode)
+        psdata = permission.objects.filter(Role_id=roleid)
         serializer = permissionserializer(psdata,many=True)
         print("serializer.data,",serializer.data)
         return Response({
