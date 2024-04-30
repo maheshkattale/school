@@ -115,7 +115,8 @@ class set_password(GenericAPIView):
  
             msg = set_password_response['response']['msg']
             messages.success(request, msg)
-            return redirect('school:login')       
+            return redirect('school:login')    
+           
 class permissions(GenericAPIView):
     def get(self,request):
 

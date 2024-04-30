@@ -74,3 +74,20 @@ class getteachersfromsub(GenericAPIView):
 
 
 
+class daterangelist(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        schoolcode = request.user.school_code
+        dateobjs = TimeTable.objects.filter(isActive=True,school_code=schoolcode)
+        dateser = TimeTableSerializer(dateobjs,many=True)
+        return Response({"data":dateser,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
+    
+class timetablelist(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        schoolcode = request.user.school_code
+        dateobjs = TimeTable.objects.filter(isActive=True,school_code=schoolcode)
+        dateser = TimeTableSerializer(dateobjs,many=True)
+        return Response({"data":dateser,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
