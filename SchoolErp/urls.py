@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/Parent_StudentMaster/', include('Parent_StudentMaster.urls')),
     path('api/ClassMaster/', include('ClassMaster.urls')),
     path('api/TimeTableMaster/', include('TimeTableMaster.urls')),
+    path('api/MarksheetMaster/', include('MarksheetMaster.urls')),
     
 
 
