@@ -19910,3 +19910,6 @@ ul {
     background: #fff;
     z-index: 100;
 }
+.select2-container{
+    width:100% !important;
+}

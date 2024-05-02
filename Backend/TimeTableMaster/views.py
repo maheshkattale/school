@@ -89,5 +89,7 @@ class timetablelist(GenericAPIView):
     def post(self,request):
         schoolcode = request.user.school_code
         dateobjs = TimeTable.objects.filter(isActive=True,school_code=schoolcode)
-        dateser = TimeTableSerializer(dateobjs,many=True)
-        return Response({"data":dateser,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
+        dateser = CustomTimeTableSerializer(dateobjs,many=True)
+        return Response({"data":dateser.data,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
+    
+    

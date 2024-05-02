@@ -1,294 +1,99 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block head %}
+<link rel="stylesheet" href="{% static 'css/time_table.css' %}"  />
 
 {% endblock %}
 {% block heading %}
   <span class="tab-title"><i class="fa-solid fa-users"></i> <span class="px-1">Time Table Master</span></span>
 {% endblock %}
 {% block body %}
-  <div class="d-flex justify-content-end">
+  <div class="d-flex justify-content-end py-2">
     <a href="/time_table_master/add_time_table" class="btn btn-primary">Add Time Table</a>
-{% comment %} 
-    <div id="add_time_table" class="modal">
-      <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Modal Heading</h4>
-            <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-          </div>
-          <div class="modal-body">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Add Time Table Forms</h5>
-              <div class="card">
-                <div class="card-body">
-                  <form>
-                    <div class="row">
-                      <div class="mb-3 col-lg-6">
-                        <label for="class_name" class="form-label">Class</label>
-                        <select id="class_name" class="form-select" aria-describedby="class_name_error">
-                          <option>ABC</option>
-                          <option>XYZ</option>
-                        </select>
-                        <div id="class_name_error" class="form-text error_message"></div>
-                      </div>
-
-                      <div class="mb-3 col-lg-6">
-                        <label for="daterange" class="form-label">Dates</label>
-
-                        <span style="display:flex;">
-                          <span id="daterange" class="form-control">
-                            <i class="fa fa-calendar"></i>&nbsp;
-                            <span id="spandatechange"></span> <i class="fa fa-caret-down"></i>
-                          </span>
-                        </span>
-                        <div id="date_err" class="form-text error_message"></div>
-                      </div>
-
-                      <div class="mb-3 col-lg-6">
-                        <label for="day" class="form-label">Days</label>
-                        <select id="day" class="form-select" aria-describedby="day_error" multiple>
-                          <option>Monday</option>
-                          <option>Tuesday</option>
-                          <option>Wednesday</option>
-                          <option>Thursday</option>
-                          <option>Friday</option>
-                          <option>Saturday</option>
-                          <option>Sunday</option>
-                        </select>
-                        <div id="day_error" class="form-text error_message"></div>
-                      </div>
-
-                      <div class="mb-3 col-lg-6">
-                        <label for="start_time" class="form-label">Start Time</label>
-                        <input type="time" class="form-control" id="start_time" aria-describedby="start_time_error" />
-                        <div id="start_time_error" class="form-text error_message"></div>
-                      </div>
-
-                      <div class="mb-3 col-lg-6">
-                        <label for="end_time" class="form-label">End Time</label>
-                        <input type="time" class="form-control" id="end_time" aria-describedby="end_time_error" />
-                        <div id="end_time_error" class="form-text error_message"></div>
-                      </div>
-
-                      <div class="mb-3 col-lg-6">
-                        <label for="subject" class="form-label">Subject</label>
-                        <select id="subject" class="form-select" aria-describedby="subject_error">
-                          <option>Science</option>
-                          <option>Maths</option>
-                        </select>
-                        <div id="subject_error" class="form-text error_message"></div>
-                      </div>
-
-                      <div class="mb-3 col-lg-6">
-                        <label for="teacher" class="form-label">Teacher</label>
-                        <select id="teacher" class="form-select" aria-describedby="teacher_error">
-                          <option>Jons Albert</option>
-                          <option>Suyag Fatol</option>
-                        </select>
-                        <div id="teacher_error" class="form-text error_message"></div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="d-flex justify-content-center">
-                        <a href="/time_table_master" class="btn btn-primary">Submit</a>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-          </div>
-        </div>
-      </div>
-    </div> {% endcomment %}
   </div>
+  
   <div class="row">
-    <table id="example" class="table table-striped table-bordered" style="width:100%">
-      <thead>
-        <tr>
-          <th>Sr No</th>
-          <th>Subject</th>
-          <th>Teacher</th>
-          <th>Time</th>
-          <th>Day</th>
-          <th>Date</th>
-          <th>Class</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>English</td>
-          <td>XYZ ABC</td>
-          <td>30 Min</td>
+    <div class="timetable border">
+      <div class="time-interval">
+        <div>monday</div>
+        <div>tuesday</div>
+        <div>wednesday</div>
+        <div>thursday</div>
+        <div>friday</div>
+        <div class="weekend">saturday</div>
+        <div class="weekend">sunday</div>
 
-          <td>Monday</td>
-          <td>1st May 24</td>
-          <th>IA</th>
+      </div>
+      <div class="week-names">
 
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit time table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete time table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>English</td>
-          <td>XYZ ABC</td>
-          <td>30 Min</td>
 
-          <td>Monday</td>
-          <td>1st May 24</td>
-          <th>IA</th>
 
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
+        <div>08:00 - 09:00</div>
+        <div>09:00 - 10:00</div>
+        <div>10:00 - 11:00</div>
+        <div>11:00 - 12:00</div>
+        <div>12:00 - 13:00</div>
+        <div>13:00 - 14:00</div>
+        <div>14:00 - 15:00</div>
+      </div>
 
-        <tr>
-          <td>3</td>
-          <td>English</td>
-          <td>XYZ ABC</td>
-          <td>30 Min</td>
-
-          <td>Monday</td>
-          <td>1st May 24</td>
-          <th>IA</th>
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>English</td>
-          <td>XYZ ABC</td>
-          <td>30 Min</td>
-
-          <td>Monday</td>
-          <td>1st May 24</td>
-          <th>IA</th>
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>English</td>
-          <td>XYZ ABC</td>
-          <td>30 Min</td>
-
-          <td>Monday</td>
-          <td>1st May 24</td>
-          <th>IA</th>
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>English</td>
-          <td>XYZ ABC</td>
-          <td>30 Min</td>
-
-          <td>Monday</td>
-          <td>1st May 24</td>
-          <th>IA</th>
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>English</td>
-          <td>XYZ ABC</td>
-          <td>30 Min</td>
-
-          <td>Monday</td>
-          <td>1st May 24</td>
-          <th>IA</th>
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>English</td>
-          <td>XYZ ABC</td>
-          <td>30 Min</td>
-
-          <td>Monday</td>
-          <td>1st May 24</td>
-          <th>IA</th>
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td>English</td>
-          <td>XYZ ABC</td>
-          <td>30 Min</td>
-
-          <td>Monday</td>
-          <td>1st May 24</td>
-          <th>IA</th>
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td>English</td>
-          <td>XYZ ABC</td>
-          <td>30 Min</td>
-
-          <td>Monday</td>
-          <td>1st May 24</td>
-          <th>IA</th>
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td>English</td>
-          <td>XYZ ABC</td>
-          <td>30 Min</td>
-
-          <td>Monday</td>
-          <td>1st May 24</td>
-          <th>IA</th>
-
-          <td>
-            <a data-bs-toggle="tooltip" title="Edit time_table" href="/time_table_master/edit_time_table"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete time_table"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <div class="content">
+        <div>
+          <div class="accent-orange-gradient"></div>
+        </div>
+        <div></div>
+        <div></div>
+        <div></div>
+            <div>
+          <div class="accent-green-gradient"></div>
+        </div>
+        <div class="weekend"></div>
+        <div class="weekend"></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div>
+          <div class="accent-cyan-gradient"></div>
+        </div>
+        <div></div>
+        <div class="weekend"></div>
+        <div class="weekend"></div>
+        <div>
+          <div class="accent-pink-gradient"></div>
+        </div>
+        <div></div>
+        <div>
+          <div class="accent-purple-gradient"></div>
+        </div>
+        <div></div>
+        <div></div>
+        <div class="weekend"></div>
+        <div class="weekend"></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div class="weekend"></div>
+        <div class="weekend"></div>
+        <div>
+          <div class="accent-purple-gradient"></div>
+        </div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div class="weekend"></div>
+        <div class="weekend"></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div class="weekend"></div>
+        <div class="weekend"></div>
+      </div>
+    </div>
   </div>
 {% endblock %}
 

@@ -140,8 +140,8 @@
       </div>
     </div>
   </div>
-  <div>
-    <table class="table">
+  <div class="row">
+    <table class="table w-100" id="timetable_table">
       <thead class="thead-dark">
         <th>Days</th>
         <th>Period Time</th>
@@ -152,30 +152,20 @@
         <th>Action</th>
       </thead>
       <tbody >
+        {% for i  in timetableslist %}
         <tr>
-          <td>Mondays</td>
-          <td>09Am to 10Am</td>
-          <td>1st April 24 to 1st May 24</td>
-          <td>1A</td>
-          <td>English</td>
-          <td>John Albert</td>
+          <td>{{i.Day}}</td>
+          <td>{{i.start_time}} to {{i.end_time}}</td>
+          <td>{{i.startdate}} to {{i.enddate}}</td>
+          <td>{{i.ClassId}}</td>
+          <td>{{i.SubjectId}}</td>
+          <td>{{i.teacher_name}}</td>
           <td>            
             <a data-bs-toggle="tooltip" title="Edit "><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete "><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Delete " onclick="delete_timetable('{{i.id}}');"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
           </td>
         </tr>
-        <tr>
-          <td>Mondays</td>
-          <td>08Am to 09Am</td>
-          <td>1st April 24 to 1st May 24</td>
-          <td>1A</td>
-          <td>English</td>
-          <td>John Albert</td>
-          <td>            
-            <a data-bs-toggle="tooltip" title="Edit "><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-            <a data-bs-toggle="tooltip" title="Delete "><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-          </td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>
@@ -298,7 +288,56 @@
       return { start_date: '', end_date: '' };
     }
   }
+  function delete_timetable(id){
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        var fd = new FormData();    
+        fd.append("id",id);
+        fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+        $.ajax({
+          type: "POST",
+          url: frontend_url+"time_table_master/delete_timetable",
+          data: fd,
+          processData: false,
+          contentType: false,
+          
+          success: function(response) {
+            console.log("delete",response)
+            if(response.response.n ==1){
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'success',
+              }).then((result) => {
+                window.location.href = "/time_table_master/add_time_table";
+        
+              });
+            }else{
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'error',
+              })
+            }
 
+      
+          },
+        });
+
+
+
+
+      }
+    });
+     
+
+  }
   function deleterow(id){
 
     var result=timetables.find(item => item.itemno === id)
@@ -420,13 +459,48 @@
 
   };
   function save_timetable(){
+
+
     console.log('timetables save',timetables)
+
+    var fd = new FormData();    
+
+    fd.append("timetablelist",JSON.stringify(timetables));
+    fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+    $.ajax({
+      type: "POST",
+      url: frontend_url+"/time_table_master/add_time_table",
+      data: fd,
+      processData: false,
+      contentType: false,
+      
+      success: function(response) {
+        if(response.response.n ==1){
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'success',
+          }).then((result) => {
+            window.location.href = "/time_table_master/add_time_table";
+    
+          });
+        }else{
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'error',
+          })
+        }
+
+  
+      },
+    });
+
   };
   $(document).ready(function() {
     $('#day').select2();
     $('#class_name').select2();
     $('#subject').select2();
     $('#teacher').select2();
+    $('#timetable_table').DataTable();
 
     jQuery(function ($) {
 
