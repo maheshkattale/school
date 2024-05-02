@@ -11,6 +11,7 @@ class_list_url=frontend_url+'api/ClassMaster/List'
 timetable_list_url=frontend_url+'api/TimeTableMaster/timetablelist'
 timetable_add_url=frontend_url+'api/TimeTableMaster/Add'
 timetable_delete_url=frontend_url+'api/TimeTableMaster/deletetimetable'
+timetable_by_id_url=frontend_url+'api/TimeTableMaster/get_ttbyid'
 
 class time_table_master(GenericAPIView):
     def get(self,request):
@@ -70,4 +71,16 @@ class delete_timetable(GenericAPIView):
             timetable_delete_request = requests.post(timetable_delete_url,headers=headers,data=data)
             timetable_delete_response = timetable_delete_request.json()
             return HttpResponse(json.dumps(timetable_delete_response), content_type="application/json")
-    
+class get_timetable_by_id(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            timetable_by_id_request = requests.post(timetable_by_id_url,headers=headers,data=data)
+            timetable_by_id_response = timetable_by_id_request.json()
+            return HttpResponse(json.dumps(timetable_by_id_response), content_type="application/json")
+        
+        
+        

@@ -161,7 +161,7 @@
           <td>{{i.SubjectId}}</td>
           <td>{{i.teacher_name}}</td>
           <td>            
-            <a data-bs-toggle="tooltip" title="Edit "><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="tooltip" title="Edit " onclick="get_timetable_info('{{i.id}}');"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
             <a data-bs-toggle="tooltip" title="Delete " onclick="delete_timetable('{{i.id}}');"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
           </td>
         </tr>
@@ -338,7 +338,66 @@
      
 
   }
+
+  function get_timetable_info(id){
+    var fd = new FormData();    
+    fd.append("id",id);
+    fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+    $.ajax({
+      type: "POST",
+      url: frontend_url+"time_table_master/get_timetable_by_id",
+      data: fd,
+      processData: false,
+      contentType: false,
+      
+      success: function(response) {
+        console.log("delete",response)
+        if(response.response.n ==1){
+          var d=response.data
+          console.log("good",d)
+          $('#addtimetableBtn').addClass('d-none')
+          $('#updatetimetableBtn').removeClass('d-none')
+          itemtobechange=id
+         
+          $("#class_name").val(d.ClassId).trigger("change");
+          $('#day').val(d.Day).trigger("change");;
+          $('#subject').val(d.SubjectId).trigger("change");;
+          $('#teacher').val(d.TeacherId).trigger("change");;
+          $('#start_time').val(d.start_time);
+          $('#end_time').val(d.end_time);
+          setDateRange(d.startdate, d.enddate);
+
+
+
+        }else{
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'error',
+          })
+        }
+
+  
+      },
+    });
+     
+
+  }
   function deleterow(id){
+
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+  
+  
+  
+  
 
     var result=timetables.find(item => item.itemno === id)
 
@@ -359,9 +418,9 @@
     $('#end_time').val(' ');
     $('#addtimetableBtn').removeClass('d-none')
     $('#updatetimetableBtn').addClass('d-none')
-
+      }
+    });
   };
-
   function setDateRange(startDate, endDate) {
     // Parse the input date strings into moment objects
     var start = moment(startDate, 'YYYY-MM-DD');
@@ -393,7 +452,6 @@
     // Return the formatted time
     return hour + ':' + minute + ' ' + amPm;
   }
-
   function editrow(itemNo){
 
     var result=timetables.find(item => item.itemno === itemNo)
@@ -463,36 +521,43 @@
 
     console.log('timetables save',timetables)
 
-    var fd = new FormData();    
+    if (timetables.length == 0){
+      Swal.fire({
+        text: "Please add time table in list",
+        icon: 'error',
+      })
+    }else{
+      var fd = new FormData();    
 
-    fd.append("timetablelist",JSON.stringify(timetables));
-    fd.append("csrfmiddlewaretoken","{{csrf_token}}");
-    $.ajax({
-      type: "POST",
-      url: frontend_url+"/time_table_master/add_time_table",
-      data: fd,
-      processData: false,
-      contentType: false,
+      fd.append("timetablelist",JSON.stringify(timetables));
+      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+      $.ajax({
+        type: "POST",
+        url: frontend_url+"/time_table_master/add_time_table",
+        data: fd,
+        processData: false,
+        contentType: false,
+        
+        success: function(response) {
+          if(response.response.n ==1){
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'success',
+            }).then((result) => {
+              window.location.href = "/time_table_master/add_time_table";
       
-      success: function(response) {
-        if(response.response.n ==1){
-          Swal.fire({
-            text: response.response.msg,
-            icon: 'success',
-          }).then((result) => {
-            window.location.href = "/time_table_master/add_time_table";
-    
-          });
-        }else{
-          Swal.fire({
-            text: response.response.msg,
-            icon: 'error',
-          })
-        }
-
+            });
+          }else{
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+          }
   
-      },
-    });
+    
+        },
+      });
+    }
 
   };
   $(document).ready(function() {

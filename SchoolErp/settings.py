@@ -72,7 +72,8 @@ INSTALLED_APPS = [
     'TeacherMaster',
     'Parent_StudentMaster',
     'ClassMaster',
-    'TimeTableMaster'
+    'TimeTableMaster',
+    'MarksheetMaster'
 ]
 
 MIDDLEWARE = [

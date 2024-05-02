@@ -83,13 +83,124 @@ class daterangelist(GenericAPIView):
         dateser = TimeTableSerializer(dateobjs,many=True)
         return Response({"data":dateser,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
     
+    
 class timetablelist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         schoolcode = request.user.school_code
+        startdate = request.data.get('startdate')
+        enddate = request.data.get('enddate')
         dateobjs = TimeTable.objects.filter(isActive=True,school_code=schoolcode)
+
+        if startdate is  not None and startdate !="" and enddate is  not None and enddate !="":
+            dateobjs = dateobjs.filter(startdate=startdate,enddate=enddate)
+            
         dateser = CustomTimeTableSerializer(dateobjs,many=True)
-        return Response({"data":dateser.data,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
-    
-    
+
+        return Response({"data":dateser.data,"response": {"n": 1, "msg": "time table found Successfully","status": "Success"}})
+
+
+
+class checkdaterange(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        schoolcode = request.user.school_code
+        newstartdate = request.data.get('startdate')
+        newenddate = request.data.get('enddate')
+        classid = request.data.get('classid')
+        day = request.data.get('day')
+        newstarttime =  request.data.get('starttime')
+        newendtime = request.data.get('endtime')
+        dateobjs = TimeTable.objects.filter(startdate__lte = newenddate, enddate__gte=newstartdate,ClassId=classid,isActive=True,school_code=schoolcode,start_time__lt = newendtime,Day=day,end_time__gt=newstarttime)
+        print("dateobjs",dateobjs)
+        if dateobjs.exists():
+            recordexist = True
+            return Response({"data":recordexist,"response": {"n": 1, "msg": "data found Successfully","status": "Success"}})
+        else:
+           recordexist = False
+           return Response({"data":recordexist,"response": {"n": 0, "msg": "data found","status": "failed"}})
+       
+        
+
+class edittimetable(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data={}
+        schoolcode = request.user.school_code
+        id = request.data.get('id')
+        newstartdate = request.data.get('startdate')
+        newenddate = request.data.get('enddate')
+        classid = request.data.get('classid')
+        day = request.data.get('day')
+        newstarttime =  request.data.get('starttime')
+        newendtime = request.data.get('endtime')
+        subject = request.data.get('subject')
+        teacherid = request.data.get('teacherid')
+
+        idexist = TimeTable.objects.filter(id=id,isActive=True).first()
+        if idexist is not None:
+            dateobjs = TimeTable.objects.filter(startdate__lte = newenddate, enddate__gte=newstartdate,ClassId=classid,isActive=True,school_code=schoolcode,start_time__lt = newendtime,Day=day,end_time__gt=newstarttime,SubjectId=subject,TeacherId=teacherid).exclude(id=id)
+            if dateobjs.exists():
+                return Response({"data":'',"response": {"n": 0, "msg": "record already exist","status": "failed"}})
+            else:
+                teacheralloted = TimeTable.objects.filter(startdate__lte = newenddate, enddate__gte=newstartdate,isActive=True,school_code=schoolcode,start_time__lt = newendtime,Day=day,end_time__gt=newstarttime,TeacherId=teacherid).exclude(id=id)
+                if teacheralloted.exists():
+                    return Response({"data":'',"response": {"n": 0, "msg": "Teacher has assigned another class","status": "failed"}})
+                else:
+                    data['startdate'] = newstartdate
+                    data['enddate'] = newenddate
+                    data['ClassId'] = classid
+                    data['start_time'] = newstarttime
+                    data['end_time'] = newendtime
+                    data['SubjectId'] = subject
+                    data['TeacherId'] = teacherid
+                    data['Day']=day
+                    dateser = TimeTableSerializer(idexist,data=data,partial=True)
+                    if dateser.is_valid():
+                        dateser.save()
+                        return Response({"data":dateser.data,"response": {"n": 1, "msg": "Timetable Updated Successfully","status": "Success"}})
+                    else:
+                        return Response({"data":dateser.errors,"response": {"n": 0, "msg": "Couldn't Update Timetable!","status": "failed"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "record not found","status": "failed"}})
+
+
+
+class deletetimetable(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data={}
+        schoolcode = request.user.school_code
+        id = request.data.get('id')
+        idexist = TimeTable.objects.filter(id=id,isActive=True,school_code=schoolcode).first()
+        if idexist is not None:
+            data['isActive'] = False
+            dateser = TimeTableSerializer(idexist,data=data,partial=True)
+            if dateser.is_valid():
+                dateser.save()
+                return Response({"data":dateser.data,"response": {"n": 1, "msg": "Timetable Record deleted Successfully","status": "Success"}})
+            else:
+                return Response({"data":dateser.errors,"response": {"n": 0, "msg": "Couldn't delete Timetable record!","status": "failed"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "record not found","status": "failed"}})
+
+
+class get_ttbyid(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data={}
+        schoolcode = request.user.school_code
+        id = request.data.get('id')
+        idexist = TimeTable.objects.filter(id=id,isActive=True,school_code=schoolcode).first()
+        if idexist is not None:
+            dateser = TimeTableSerializer(idexist)
+            return Response({"data":dateser.data,"response": {"n": 1, "msg": "Timetable Record found Successfully","status": "Success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "record not found","status": "failed"}})
+
+
