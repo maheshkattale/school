@@ -6,7 +6,7 @@ class ExamTypeSerializer(serializers.ModelSerializer):
         model= ExamType
         fields='__all__'
 
-# class ExamSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model= Exams
-#         fields='__all__'
+class ExamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Exams
+        fields='__all__'

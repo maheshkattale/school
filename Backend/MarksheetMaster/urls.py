@@ -11,6 +11,10 @@ urlpatterns = [
     path('delete', deleteExamType.as_view(), name = 'delete'),
 
     #exammaster
-    #  path('AddExam', AddExam.as_view(), name = 'Add'),
+    path('AddExam', AddExam.as_view(), name = 'AddExam'),
+    path('Examlist', Examlist.as_view(), name = 'Examlist'),
+    path('Exambyid', Exambyid.as_view(), name = 'Exambyid'),
+    path('updateexam', updateexam.as_view(), name = 'updateexam'),
+    path('deleteexam', deleteexam.as_view(), name = 'deleteexam'),
 
 ]
