@@ -24,6 +24,7 @@ urlpatterns = [
     path('teacher_master/', include(('teacher.urls','teacher'),namespace='teacher')),
     path('time_table_master/', include(('time_table.urls','time_table'),namespace='time_table')),
     path('subject_master/', include(('subject.urls','subject'),namespace='subject')),
+    path('exam/', include(('exam.urls','exam'),namespace='exam')),
     path('designation_master/', include(('designation.urls','designation'),namespace='designation')),
     path('class_master/', include(('class.urls','class'),namespace='class')),
     path('parent_student_master/', include(('parent_student.urls','parent_student'),namespace='parent_student')),

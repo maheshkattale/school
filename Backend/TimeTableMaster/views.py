@@ -57,12 +57,17 @@ class getteachersfromsub(GenericAPIView):
         teacherlist = []
         schoolcode = request.user.school_code
         if subjectid is not None or subjectid != '':
-            teacherobj = TeacherSubject.objects.filter(SubjectId_id = subjectid,isActive=True,school_code=schoolcode)
+            teacherobj = TeacherSubject.objects.filter(SubjectId = subjectid,isActive=True,school_code=schoolcode)
             teachser = TeacherSubjectSerializer(teacherobj,many=True)
+            
             for t in teachser.data:
+                print("teachser.data",t['id'],type(t['id']))
+
                 tobj = {}
-                teacherobj = User.objects.filter(id=t['id'],isActive=True).first()
+                teacherobj = User.objects.filter(id=t['TeacherId'],isActive=True).first()
                 if teacherobj is not None:
+                    print("teacherobj",teacherobj)
+
                     tobj['teacherid'] = teacherobj.id
                     tobj['teachername'] = teacherobj.Username
 
@@ -81,7 +86,7 @@ class daterangelist(GenericAPIView):
         schoolcode = request.user.school_code
         dateobjs = TimeTable.objects.filter(isActive=True,school_code=schoolcode)
         dateser = TimeTableSerializer(dateobjs,many=True)
-        return Response({"data":dateser,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
+        return Response({"data":dateser.data,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
     
     
 class timetablelist(GenericAPIView):

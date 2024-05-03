@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'designation',
     'class',
     'subject',
+    'exam',
     
     'user',
 

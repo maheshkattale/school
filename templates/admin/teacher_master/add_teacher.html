@@ -82,7 +82,6 @@
           </form>
         </div>
       </div>
-    var teacher_address=$('#teacher_address').val();
     </div>
   </div>
 {% endblock %}
@@ -107,6 +106,7 @@
     var teacher_joining_date=$('#teacher_joining_date').val();
     var teacher_contact=$('#teacher_contact').val();
     var teacher_subject=$('#teacher_subject').val();
+    var teacher_address=$('#teacher_address').val();
 
 
     if(IsValid(teacher_name)){
@@ -185,7 +185,7 @@
       fd.append("joiningDate",yyyy_mm_dd(teacher_joining_date));
       fd.append("MobileNumber",teacher_contact);
       fd.append("subjects",JSON.stringify(teacher_subject));
-      fd.append("teacher_address",teacher_address);
+      fd.append("Address",teacher_address);
       fd.append("csrfmiddlewaretoken","{{csrf_token}}");
       $.ajax({
         type: "POST",

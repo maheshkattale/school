@@ -93,9 +93,9 @@
                 <select id="teacher" class="form-select" aria-describedby="teacher_error">
                   <option value=""> Please select teacher</option>
 
-                  {% for teacher in teachers %}
+                  {% comment %} {% for teacher in teachers %}
                     <option value="{{teacher.id}}"> {{teacher.Username}}</option>
-                  {% endfor %}
+                  {% endfor %} {% endcomment %}
                 </select>
                 <div id="teacher_error" class="form-text error_message"></div>
               </div>
@@ -107,7 +107,8 @@
             <div class="row">
               <div class="d-flex justify-content-center" id="operations_btn">
                 <a id="addtimetableBtn" class="btn btn-primary">Add</a>
-                <a id="updatetimetableBtn" onclick="update_draft();" class="btn btn-primary d-none">Update</a>
+                <a id="updatedrafttimetableBtn" onclick="update_draft();" class="btn btn-primary d-none">Update</a>
+                <a id="updatenormaltimetableBtn" onclick="update_normal();" class="btn btn-primary d-none">Update</a>
               </div>
             </div>
 
@@ -141,6 +142,20 @@
     </div>
   </div>
   <div class="row">
+    {% comment %} <div class="row justify-content-end">
+      <div class="mb-3 col-lg-4">
+        <label for="timetable_daterange" class="form-label">Dates</label>
+        <select id="timetable_daterange" class="form-select" aria-describedby="timetable_daterange_error">
+          <option value="">Please select Dates</option>
+          {% for i in timetable_dates_ranges %}
+
+            <option value="{{i.startdate}} to {{i.enddate}}" >{{i.startdate}} to {{i.enddate}}</option>
+
+          {% endfor %}
+        </select>
+        <div id="timetable_daterange_error" class="form-text error_message"></div>
+      </div>
+    </div> {% endcomment %}
     <table class="table w-100" id="timetable_table">
       <thead class="thead-dark">
         <th>Days</th>
@@ -173,9 +188,11 @@
 
 {% block script %}
 <script>
+
   var timetables = []; // Array to store timetables
   var rowno = 1; // timetable number counter
   var itemtobechange=''
+
   function GetMonthName(monthname) {
     var months = {
       January: 01,
@@ -338,7 +355,6 @@
      
 
   }
-
   function get_timetable_info(id){
     var fd = new FormData();    
     fd.append("id",id);
@@ -356,7 +372,8 @@
           var d=response.data
           console.log("good",d)
           $('#addtimetableBtn').addClass('d-none')
-          $('#updatetimetableBtn').removeClass('d-none')
+          $('#updatedrafttimetableBtn').addClass('d-none')
+          $('#updatenormaltimetableBtn').removeClass('d-none')
           itemtobechange=id
          
           $("#class_name").val(d.ClassId).trigger("change");
@@ -417,7 +434,9 @@
     $('#start_time').val(' ');
     $('#end_time').val(' ');
     $('#addtimetableBtn').removeClass('d-none')
-    $('#updatetimetableBtn').addClass('d-none')
+    $('#updatedrafttimetableBtn').addClass('d-none')
+    $('#updatenormaltimetableBtn').addClass('d-none')
+
       }
     });
   };
@@ -459,7 +478,9 @@
 
 
     $('#addtimetableBtn').addClass('d-none')
-    $('#updatetimetableBtn').removeClass('d-none')
+    $('#updatedrafttimetableBtn').removeClass('d-none')
+    $('#updatenormaltimetableBtn').addClass('d-none')
+
     itemtobechange=itemNo
     $("#class_name").val(result.class).trigger("change");
     $('#day').val(result.day).trigger("change");;
@@ -473,6 +494,8 @@
 
   };
   function update_draft(){
+    if(validate_form() == true){
+
     itemNo=itemtobechange
     var class_name = $('#class_name option:selected').text();
     var class_id = $('#class_name option:selected').val();
@@ -513,7 +536,86 @@
     $('#start_time').val(' ');
     $('#end_time').val(' ');
     $('#addtimetableBtn').removeClass('d-none')
-    $('#updatetimetableBtn').addClass('d-none')
+    $('#updatedrafttimetableBtn').addClass('d-none')
+    $('#updatenormaltimetableBtn').addClass('d-none')
+    }
+
+  };
+  function update_normal(){
+    if(validate_form() == true){
+
+    itemNo=itemtobechange
+    var class_name = $('#class_name option:selected').text();
+    var class_id = $('#class_name option:selected').val();
+    var day = $('#day option:selected').text();
+    var subject = $('#subject option:selected').text();
+    var subject_id = $('#subject option:selected').val();
+    var teacher = $('#teacher option:selected').text();
+    var teacher_id = $('#teacher option:selected').val();
+    var start_time=$('#start_time').val();
+    var end_time=$('#end_time').val();
+    var dates = getdates($('#spandatechange').html());
+
+    var fd = new FormData();    
+    fd.append("id",itemNo);
+    fd.append("startdate",dates.start_date);
+    fd.append("enddate",dates.end_date);
+    fd.append("classid",class_id);
+    fd.append("day",day);
+    fd.append("starttime",start_time);
+    fd.append("endtime",end_time);
+    fd.append("teacherid",teacher_id);
+    fd.append("subject",subject_id);
+    fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+
+    $.ajax({
+      type: "POST",
+      url: frontend_url+"time_table_master/edit_timetable",
+      data: fd,
+      processData: false,
+      contentType: false,
+      
+      success: function(response) {
+        console.log("delete",response)
+        if(response.response.n ==1){
+
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'success',
+          }).then((result) => {
+            window.location.href = "/time_table_master/add_time_table";
+    
+          });
+
+
+
+
+        }else{
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'error',
+          })
+        }
+
+  
+      },
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    }
 
   };
   function save_timetable(){
@@ -566,6 +668,7 @@
     $('#subject').select2();
     $('#teacher').select2();
     $('#timetable_table').DataTable();
+    $('#timetable_daterange').select2();
 
     jQuery(function ($) {
 
@@ -666,6 +769,96 @@
             
       }
     });
+
+    $('#subject').change(function() {
+      // Your code here to handle the change event
+      var selectedSubject = $(this).val(); // Get the selected value
+      console.log("Selected Subject: " + selectedSubject);
+      var fd = new FormData();    
+      fd.append("subject",selectedSubject);
+      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+      $.ajax({
+        type: "POST",
+        url: frontend_url+"time_table_master/get_teacher_by_subject",
+        data: fd,
+        processData: false,
+        contentType: false,
+        
+        success: function(response) {
+          console.log("teacher",response)
+          if(response.response.n == 1){
+            var options=''
+            options += `<option value="">Please select teacher</option>        `
+
+            $.each(response.data,function(i,o){
+              options += `<option value="`+o.teacherid+`">`+o.teachername+`</option>        `
+            });
+            $('#teacher').html(options)
+  
+  
+  
+          }else{
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+          }
+  
+    
+        },
+      });
+      // You can perform further actions based on the selected subject
+    });
+
+    /*
+    $('#timetable_dates_ranges').change(function() {
+      // Your code here to handle the change event
+      var selected_range = $(this).val(); // Get the selected value
+      console.log("Selected Subject: " + selected_range);
+
+      var fd = new FormData();    
+      fd.append("subject",selected_range);
+      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+      $.ajax({
+        type: "POST",
+        url: frontend_url+"time_table_master/get_teacher_by_subject",
+        data: fd,
+        processData: false,
+        contentType: false,
+        
+        success: function(response) {
+          console.log("teacher",response)
+          if(response.response.n == 1){
+            var options=''
+            options += `<option value="">Please select teacher</option>        `
+
+            $.each(response.data,function(i,o){
+              options += `<option value="`+o.teacherid+`">`+o.teachername+`</option>        `
+            });
+            $('#teacher').html(options)
+  
+  
+  
+          }else{
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+          }
+  
+    
+        },
+      });
+      // You can perform further actions based on the selected subject
+    });
+    */
+
+
+
+
+
+
+
 
   })
 

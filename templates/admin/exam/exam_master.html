@@ -1,0 +1,113 @@
+{% extends "index.html" %}
+{% load static %} 
+{% block head %}
+{% endblock %}
+{% block heading %}
+<span class="tab-title">
+  <i class="fa-solid fa-users"></i> <span class="px-1"> Exam Master</span>
+</span>
+{% endblock %}
+{% block body %}
+    <div class="d-flex justify-content-end">
+        <a href="/exam/add_exam"  class="btn btn-primary">Add Exam</a>
+
+    </div>
+  <div class="row">
+    <table id="example" class="table table-striped table-bordered" style="width:100%">
+      <thead>
+          <tr>
+              <th>Sr No</th>
+              <th>exam Name</th>
+              <th>Email</th>
+              <th>Contact</th>
+              <th>Address</th>
+
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+
+        {% for i in exams %}
+          <tr>
+              <td>{{forloop.counter}}</td>
+              <td>{{i.Username}}</td>
+              <td>{{i.email}}</td>
+              <td>{{i.mobileNumber}}</td>
+              <td>{{i.Address}}</td>
+
+              <td>
+                <a data-bs-toggle="tooltip" title="Edit exam" href="/exam/edit_exam/{{i.id}}"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+                <a data-bs-toggle="tooltip" title="Delete exam" onclick="delete_exam('{{i.id}}')"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+              </td>
+            
+
+
+          </tr>
+          {% endfor %}
+
+      </tbody>
+
+  </table>
+  </div> 
+  
+  
+{% endblock %}
+
+{% block script %}
+<script>
+  $( document ).ready(function() {
+    new DataTable('#example');  
+  });  
+
+  function delete_exam(id){
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        var fd = new FormData();    
+        fd.append("id",id);
+        fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+        $.ajax({
+          type: "POST",
+          url: frontend_url+"exam/delete_exam",
+          data: fd,
+          processData: false,
+          contentType: false,
+          
+          success: function(response) {
+            console.log("delete",response)
+            if(response.response.n ==1){
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'success',
+              }).then((result) => {
+                window.location.href = "/exam";
+        
+              });
+            }else{
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'error',
+              })
+            }
+
+      
+          },
+        });
+
+
+
+
+      }
+    });
+     
+
+  }
+</script>
+{% endblock %}
