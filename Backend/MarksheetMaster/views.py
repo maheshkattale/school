@@ -11,7 +11,7 @@ from rest_framework.authentication import (BaseAuthentication,
                                            get_authorization_header)
 from rest_framework import permissions
 from User.jwt import userJWTAuthentication
-
+from datetime import datetime
 
 
 class AddExamType(GenericAPIView):
@@ -95,10 +95,140 @@ class deleteExamType(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "ExamType not found ","status": "failure"}})
 
+def has_duplicate_value(classlist, key):
+    seen = set()
+    for d in classlist:
+        value = d.get(key)
+        if value in seen:
+            return True
+        seen.add(value)
+    return False
 
-# class AddExam(GenericAPIView):
-#     authentication_classes=[userJWTAuthentication]
-#     permission_classes = (permissions.IsAuthenticated,)
-#     def post(self,request):
-#         data = request.data.copy()
-#         classlist = json.loads(data['classlist'])
+
+class AddExam(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        print("dattttta",data)
+        schoolcode = request.user.school_code
+        if request.POST.get('classlist') != "":
+            classlist = json.loads(request.POST.get('classlist'))
+        else:
+            classlist = []
+        
+        print("classlist",classlist)
+        Date = data['date']
+        Examstarttime = data['Examstarttime']
+        Examendtime = data['Examendtime']
+        SubjectId = data['SubjectId']
+        ExamType = data['ExamType']
+        totalMarks = data['totalMarks']
+        reportTime = data['reportTime']
+        Instructions = data['Instructions']
+
+        for i in classlist :
+            examobj = Exams.objects.filter(ClassId=i['ClassId'],Date=Date,Examstarttime__lt = Examendtime,Examendtime__gt=Examstarttime,school_code=schoolcode)
+            if examobj.exists():
+                return Response({"data":'',"response": {"n": 0, "msg": "Exam already exists ! ","status": "failure"}})
+
+        duplicateexist = has_duplicate_value(classlist, 'ClassId')
+
+        if duplicateexist == False:
+            for i in classlist:
+                Exams.objects.create(ClassId_id=i['ClassId'],Date=Date,Examstarttime=Examstarttime,Examendtime=Examendtime,SubjectId_id=SubjectId,ExamType_id=ExamType,totalMarks=totalMarks,reportTime=reportTime,RoomNo=i['RoomNo'],InvigilatorId=i['InvigilatorId'],Instructions=Instructions,school_code=schoolcode)
+
+            return Response({"data":'',"response": {"n": 1, "msg": "Exams created successfully","status": "success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Class repeated in list","status": "failed"}})
+    
+
+
+class Examlist(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        schoolcode = request.user.school_code
+        Examobjs = Exams.objects.filter(isActive=True,school_code=schoolcode).order_by('-id')
+        Examser = ExamSerializer(Examobjs,many=True)
+        for i in Examser.data:
+            start_time = i['Examstarttime']
+            end_time = i['Examendtime']
+
+            # convert time string to datetime
+            t1 = datetime.strptime(start_time, "%H:%M:%S")
+            print('Start time:', t1.time())
+
+            t2 = datetime.strptime(end_time, "%H:%M:%S")
+            print('End time:', t2.time())
+
+            # get difference
+            delta = t2 - t1
+            print("delta",delta)
+
+            i['totaltime'] = delta
+        return Response({"data":Examser.data,"response": {"n": 1, "msg": "Examslist found successfully","status": "success"}})
+    
+
+class Exambyid(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        id = request.data.get('id')
+        Examobj = Exams.objects.filter(id=id,isActive=True).first()
+        if Examobj is not None:
+            serializer = ExamSerializer(Examobj)
+            return Response({"data":serializer.data,"response": {"n": 1, "msg": "Exam found successfully","status": "success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Exam not found ","status": "failure"}})
+        
+
+class updateexam(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        id = request.data.get('id')
+        data = request.data.copy()
+        schoolcode = request.user.school_code
+        Examobj = Exams.objects.filter(id=id,isActive=True).first()
+        if Examobj is not None :
+            reqdata={}
+            reqdata['ClassId']  = data['ClassId']
+            reqdata['Date'] = data['Date']
+            reqdata['Examstarttime'] = data['Examstarttime']
+            reqdata['Examendtime'] = data['Examendtime']
+            reqdata['InvigilatorId'] = data['InvigilatorId']
+            reqdata['SubjectId'] = data['SubjectId']
+            reqdata['ExamType'] =  data['ExamType']
+            reqdata['totalMarks'] = data['totalMarks']
+            reqdata['reportTime'] =  data['reportTime']
+            reqdata['RoomNo'] = data['RoomNo']
+            reqdata['Instructions'] = data['Instructions']
+
+            serializer  = ExamSerializer(Examobj,data=reqdata,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "Exam updated successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't update Exam ! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Exam not found ","status": "failure"}})
+        
+
+class deleteexam(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        Examid = data['id']
+        Examobj = Exams.objects.filter(id=Examid,isActive=True).first()
+        if Examobj is not None:
+            data['isActive'] = False
+            serializer = ExamSerializer(Examobj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "Exam Deleted successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Delete Exam ! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Exam not found ","status": "failure"}})
