@@ -19,6 +19,7 @@ from django.core.mail import EmailMessage
 from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
 
+
 frontend_url = 'http://127.0.0.1:8000/'
 
 

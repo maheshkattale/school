@@ -17,4 +17,9 @@ urlpatterns = [
     path('updateexam', updateexam.as_view(), name = 'updateexam'),
     path('deleteexam', deleteexam.as_view(), name = 'deleteexam'),
 
+
+    path('uploadmarksheet', uploadmarksheet.as_view(), name = 'uploadmarksheet'),
+
+
+
 ]
