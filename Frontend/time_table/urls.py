@@ -6,9 +6,10 @@ from .views import *
 urlpatterns = [
     path('', time_table_master.as_view(), name = 'time_table_master'),
     path('add_time_table', add_time_table.as_view(), name = 'add_time_table'),
-    path('edit_time_table', edit_time_table.as_view(), name = 'edit_time_table'),
+    path('edit_timetable', edit_timetable.as_view(), name = 'edit_timetable'),
     path('delete_timetable', delete_timetable.as_view(), name = 'delete_timetable'),
     path('get_timetable_by_id', get_timetable_by_id.as_view(), name = 'get_timetable_by_id'),
+    path('get_teacher_by_subject', get_teacher_by_subject.as_view(), name = 'get_teacher_by_subject'),
     
     
 ]

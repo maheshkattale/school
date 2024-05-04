@@ -29,6 +29,7 @@ class AddTeacher(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
+        print("data",data)
         data['isActive'] = True
         subjects = json.loads(data['subjects'])
         schoolcode = request.user.school_code
@@ -45,14 +46,14 @@ class AddTeacher(GenericAPIView):
             return Response({"data":'',"response": {"n": 0, "msg": "Mobile Number already exist","status": "failure"}})
         
         else:
-            teachercreate = User.objects.create(email=data['Email'],Username = data['Name'], school_code = schoolcode,role_id = 4,password = str(12345),textPassword = str(12345),designation_id=data['Designation'],mobileNumber=data['MobileNumber'],joiningDate=data['joiningDate'])
+            teachercreate = User.objects.create(email=data['Email'],Username = data['Name'], school_code = schoolcode,role_id = 4,password = str(12345),textPassword = str(12345),designation_id=data['Designation'],mobileNumber=data['MobileNumber'],joiningDate=data['joiningDate'],Address=data['Address'])
 
             teacherobj = User.objects.filter(email=data['Email'],isActive=True).first()
             if teacherobj is not None :
                 teacherid = teacherobj.id
 
                 for s in subjects:
-                    TeacherSubject.objects.create(TeacherId=str(teacherid),SubjectId_id=s)
+                    TeacherSubject.objects.create(TeacherId=str(teacherid),SubjectId_id=s,school_code=schoolcode)
 
                 #send mail
                 subject = "Registration succesful"
