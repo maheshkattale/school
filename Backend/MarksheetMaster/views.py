@@ -12,6 +12,8 @@ from rest_framework.authentication import (BaseAuthentication,
 from rest_framework import permissions
 from User.jwt import userJWTAuthentication
 from datetime import datetime
+from tablib import Dataset
+from openpyxl import load_workbook
 
 
 class AddExamType(GenericAPIView):
@@ -156,24 +158,24 @@ class Examlist(GenericAPIView):
             end_time = i['Examendtime']
 
             # convert time string to datetime
-            t1 = datetime.strptime(start_time, "%H:%M:%S")
+            t1 = datetime.strptime(start_time, "%H:%M")
             print('Start time:', t1.time())
 
-            t2 = datetime.strptime(end_time, "%H:%M:%S")
+            t2 = datetime.strptime(end_time, "%H:%M")
             print('End time:', t2.time())
 
             # get difference
             delta = t2 - t1
             print("delta",delta)
 
-            i['totaltime'] = delta
+            i['totaltime'] = str(delta)+"hrs"
         return Response({"data":Examser.data,"response": {"n": 1, "msg": "Examslist found successfully","status": "success"}})
     
 
 class Exambyid(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
-    def get(self,request):
+    def post(self,request):
         id = request.data.get('id')
         Examobj = Exams.objects.filter(id=id,isActive=True).first()
         if Examobj is not None:
@@ -232,3 +234,53 @@ class deleteexam(GenericAPIView):
                 return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Delete Exam ! ","status": "failure"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Exam not found ","status": "failure"}})
+        
+
+
+class uploadmarksheet(GenericAPIView):
+    # authentication_classes=[userJWTAuthentication]
+    # permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        datafile = request.FILES.get("excelfile")
+        # dataframe = load_workbook(datafile)
+        # # imported_data = dataset.load(datafile.read(), format='xlsx')
+        # List_of_sheets = dataframe.sheetnames
+        # print("lllllllllllll",List_of_sheets) 
+        # for i in List_of_sheets:     
+        #     print("iiiiiii",i)
+        #     sheetOne = dataframe[i]
+        #     print("sheetOne",sheetOne)
+            
+        #     # Iterate the loop to read the cell values
+        #     for row in range(1, sheetOne.max_row):
+        #         for col in sheetOne.iter_cols(1, sheetOne.max_column):
+        #             print(col[row].value)
+        
+        # Path to your Excel file
+        excel_file_path = datafile
+
+        # Load the workbook
+        workbook = load_workbook(excel_file_path)
+
+        # Get all sheet names
+        sheet_names = workbook.sheetnames
+
+        # Dictionary to store data from all sheets
+        all_sheet_data = {}
+
+        # Loop through each sheet and extract data
+        for sheet_name in sheet_names:
+            sheet = workbook[sheet_name]
+            data = []
+            for row in sheet.iter_rows(values_only=True):
+                data.append(row)
+            all_sheet_data[sheet_name] = data
+
+        # Now all_sheet_data contains data from all sheets in the Excel file
+        # You can access each sheet's data using its name as key
+        for sheet_name, data in all_sheet_data.items():
+            print(f"Data from Sheet: {sheet_name}")
+            for row in data:
+                print("row",row)
+        
+        return Response({"data":'',"response": {"n": 0, "msg": "Exam not found ","status": "failure"}})
