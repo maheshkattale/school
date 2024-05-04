@@ -10,6 +10,8 @@ urlpatterns = [
     path('delete_timetable', delete_timetable.as_view(), name = 'delete_timetable'),
     path('get_timetable_by_id', get_timetable_by_id.as_view(), name = 'get_timetable_by_id'),
     path('get_teacher_by_subject', get_teacher_by_subject.as_view(), name = 'get_teacher_by_subject'),
+    path('time_table_list', time_table_list.as_view(), name = 'time_table_list'),
+    path('check_existing_timetable_entry', check_existing_timetable_entry.as_view(), name = 'check_existing_timetable_entry'),
     
     
 ]

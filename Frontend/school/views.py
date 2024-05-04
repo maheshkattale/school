@@ -157,7 +157,7 @@ class edit_school(GenericAPIView):
         
 class mail(GenericAPIView):
     def get(self,request):
-        return render(request, 'mails/school_registration.html',{'Admin_Name':'Mahesh Kattale','frontend_url':frontend_url})
+        return render(request, 'mails/parent_registration.html',{"Name": 'mahesh kattale',"email":'maheshkattale@gmail.com','userid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8','frontend_url':frontend_url,})
     
 class reset_password_mail(GenericAPIView):
     def get(self,request):

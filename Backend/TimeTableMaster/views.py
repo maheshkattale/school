@@ -118,6 +118,9 @@ class checkdaterange(GenericAPIView):
         day = request.data.get('day')
         newstarttime =  request.data.get('starttime')
         newendtime = request.data.get('endtime')
+        print("request.data",request.data)
+        
+        
         dateobjs = TimeTable.objects.filter(startdate__lte = newenddate, enddate__gte=newstartdate,ClassId=classid,isActive=True,school_code=schoolcode,start_time__lt = newendtime,Day=day,end_time__gt=newstarttime)
         print("dateobjs",dateobjs)
         if dateobjs.exists():

@@ -21,8 +21,8 @@ from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
 from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
+from Frontend.school.static_info import frontend_url
 
-frontend_url = 'http://127.0.0.1:8000/'
 
 class AddTeacher(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -57,8 +57,8 @@ class AddTeacher(GenericAPIView):
 
                 #send mail
                 subject = "Registration succesful"
-                data2 = {"Name": data['Name'],"email":data['Email'],'teacherid':teacherid,'frontend_url':frontend_url,
-                            "template": 'mails/school_registration.html'}
+                data2 = {"Name": data['Name'],"email":data['Email'],'userid':teacherid,'frontend_url':frontend_url,
+                            "template": 'mails/teacher_registration.html'}
                 message = render_to_string(
                         data2['template'], data2)
                 # send_mail(data2, message)

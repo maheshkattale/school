@@ -18,8 +18,7 @@ from django.core.mail import EmailMessage
 from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
 from datetime import datetime
-
-frontend_url = 'http://127.0.0.1:8000/'
+from Frontend.school.static_info import frontend_url
 
 
 def createstudentid(schoolcode):
@@ -77,8 +76,8 @@ class AddParentStudent(GenericAPIView):
             
                 #send mail
                 subject = "Registration succesful"
-                data2 = {"Name": data['Name'],"email":data['Email'],'parentid':parentid,'frontend_url':frontend_url,
-                            "template": 'mails/school_registration.html'}
+                data2 = {"Name": data['Name'],"email":data['Email'],'userid':parentid,'frontend_url':frontend_url,
+                            "template": 'mails/parent_registration.html'}
                 message = render_to_string(
                         data2['template'], data2)
                 # send_mail(data2, message)

@@ -17,26 +17,31 @@
           <form>
             <div class="row">
               <div class="mb-3 col-lg-4">
-                <label for="exam_class" class="form-label">Class</label>
-                <select id="exam_class" class="form-select" aria-describedby="exam_class_error">
-                  <option value="" selected>Please select class</option>
-                  {% for class in classs %}
-                    <option value="{{ class.id }}">{{ class.className }}</option>
+                <label for="exam_type" class="form-label">Exam Type</label>
+                <select id="exam_type" class="form-select" aria-describedby="exam_type_error">
+                  <option value="" selected>Please select type</option>
+                  {% for type in types %}
+                    <option value="{{ type.id }}">{{ type.typeName }}</option>
                   {% endfor %}
                 </select>
-                <div id="exam_class_error" class="form-text error_message"></div>
+                <div id="exam_type_error" class="form-text error_message"></div>
+              </div>
+              <div class="mb-3 col-lg-4">
+                <label for="exam_totalmarks" class="form-label">Exam Total Marks</label>
+                <input type="text" class="form-control" id="exam_totalmarks" placeholder="Please enter total marks" aria-describedby="exam_totalmarks_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                <div id="exam_totalmarks_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="exam_reporttime" class="form-label">Exam Report Time</label>
+                <input type="time" class="form-control" id="exam_reporttime" placeholder="Please enter report time" aria-describedby="exam_reporttime_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                <div id="exam_reporttime_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
                 <label for="exam_date" class="form-label">Date</label>
                 <input type="text" class="form-control" id="exam_date" placeholder="Please select date" aria-describedby="exam_date_error" readonly />
                 <div id="exam_date_error" class="form-text error_message"></div>
-              </div>
-
-              <div class="mb-3 col-lg-4">
-                <label for="exam_invigilator" class="form-label">Exam Invigilator</label>
-                <input type="text" class="form-control" id="exam_invigilator" placeholder="Please enter invigilator" aria-describedby="exam_invigilator_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
-                <div id="exam_invigilator_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
@@ -61,38 +66,76 @@
                 <div id="exam_subject_error" class="form-text error_message"></div>
               </div>
 
-              <div class="mb-3 col-lg-4">
-                <label for="exam_type" class="form-label">Exam Type</label>
-                <select id="exam_type" class="form-select" aria-describedby="exam_type_error">
-                  <option value="" selected>Please select type</option>
-                  {% for type in types %}
-                    <option value="{{ type.id }}">{{ type.typeName }}</option>
-                  {% endfor %}
-                </select>
-                <div id="exam_type_error" class="form-text error_message"></div>
-              </div>
-              <div class="mb-3 col-lg-4">
-                <label for="exam_totalmarks" class="form-label">Exam Total Marks</label>
-                <input type="text" class="form-control" id="exam_totalmarks" placeholder="Please enter total marks" aria-describedby="exam_totalmarks_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
-                <div id="exam_totalmarks_error" class="form-text error_message"></div>
-              </div>
-
-
-
-              <div class="mb-3 col-lg-4">
-                <label for="exam_reporttime" class="form-label">Exam Report Time</label>
-                <input type="time" class="form-control" id="exam_reporttime" placeholder="Please enter report time" aria-describedby="exam_reporttime_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
-                <div id="exam_reporttime_error" class="form-text error_message"></div>
-              </div>
-              <div class="mb-3 col-lg-4">
-                <label for="exam_roomno" class="form-label">Exam Room No</label>
-                <input type="text" class="form-control" id="exam_roomno" placeholder="Please enter room no" aria-describedby="exam_roomno_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
-                <div id="exam_roomno_error" class="form-text error_message"></div>
-              </div>
               <div class="mb-3 col-lg-12">
                 <label for="exam_instruction" class="form-label">Exam Instruction</label>
                 <textarea class="form-control" name="exam_instruction" id="exam_instruction" cols="30" rows="5" aria-describedby="exam_instruction_error"></textarea>
                 <div id="exam_instruction_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-3">
+                <label for="exam_class" class="form-label">Class</label>
+                <select id="exam_class" class="form-select" aria-describedby="exam_class_error">
+                  <option value="" selected>Please select class</option>
+                  {% for class in classs %}
+                    <option value="{{ class.id }}">{{ class.className }}</option>
+                  {% endfor %}
+                </select>
+                <div id="exam_class_error" class="form-text error_message"></div>
+              </div>
+              <div class="mb-3 col-lg-3">
+                <label for="exam_invigilator" class="form-label">Exam Invigilator</label>
+                <input type="text" class="form-control" id="exam_invigilator" placeholder="Please enter invigilator" aria-describedby="exam_invigilator_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                <div id="exam_invigilator_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-3">
+                <label for="exam_roomno" class="form-label">Exam Room No</label>
+                <input type="text" class="form-control" id="exam_roomno" placeholder="Please enter room no" aria-describedby="exam_roomno_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                <div id="exam_roomno_error" class="form-text error_message"></div>
+              </div>
+              <div class="col-lg-3 m-auto text-center">
+                <div class="">
+                  <a class="btn btn-primary" onclick="validate_form();">Add</a>
+                </div>
+              </div>
+
+              <div class="col-lg-12 mb-3">
+                <table class="table">
+                  <thead class="thead-dark">
+                    <th>Sr No</th>
+                    <th>Class</th>
+                    <th>Invigilator</th>
+                    <th>Exam Room No</th>
+                    <th>Action</th>
+                  </thead>
+                  <tbody id="table_body">
+                    <tr>
+                      <td>1</td>
+                      <td>1A</td>
+                      <td>Mahesh Kattale</td>
+                      <td>404</td>
+                      <td>
+
+                        <a data-bs-toggle="tooltip" title="Edit " onclick="get_timetable_info('{{i.id}}');"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+                        <a data-bs-toggle="tooltip" title="Delete " onclick="delete_timetable('{{i.id}}');"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+                      
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>2</td>
+                      <td>1B</td>
+                      <td>Sapna kanchar</td>
+                      <td>405</td>
+                      <td>
+
+                        <a data-bs-toggle="tooltip" title="Edit " onclick="get_timetable_info('{{i.id}}');"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+                        <a data-bs-toggle="tooltip" title="Delete " onclick="delete_timetable('{{i.id}}');"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+                      
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 
@@ -133,49 +176,6 @@
       var exam_reporttime = $('#exam_reporttime').val()
       var exam_roomno = $('#exam_roomno').val()
       var exam_instruction = $('#exam_instruction').val()
-    
-      if (IsValid(exam_class)) {
-        $('#exam_class').html()
-        $('#exam_class_error').show().delay(3000).slideUp()
-        $('#exam_class_error').html('Please select exam class')
-        $('#exam_class').focus()
-        return false
-      }
-      if (IsValid(exam_date)) {
-        $('#exam_date').html()
-        $('#exam_date_error').show().delay(3000).slideUp()
-        $('#exam_date_error').html('Please enter exam date')
-        $('#exam_date').focus()
-        return false
-      }
-      if (IsValid(exam_invigilator)) {
-        $('#exam_invigilator').html()
-        $('#exam_invigilator_error').show().delay(3000).slideUp()
-        $('#exam_invigilator_error').html('Please select exam invigilator')
-        $('#exam_invigilator').focus()
-        return false
-      }
-      if (IsValid(exam_starttime)) {
-        $('#exam_starttime').html()
-        $('#exam_starttime_error').show().delay(3000).slideUp()
-        $('#exam_starttime_error').html('Please select exam start time')
-        $('#exam_starttime').focus()
-        return false
-      }    
-      if (IsValid(exam_endtime)) {
-        $('#exam_endtime').html()
-        $('#exam_endtime_error').show().delay(3000).slideUp()
-        $('#exam_endtime_error').html('Please select exam end time')
-        $('#exam_endtime').focus()
-        return false
-      }
-      if (IsValid(exam_subject)) {
-        $('#exam_subject').html()
-        $('#exam_subject_error').show().delay(3000).slideUp()
-        $('#exam_subject_error').html('Please select exam subject')
-        $('#exam_subject').focus()
-        return false
-      }      
       if (IsValid(exam_type)) {
         $('#exam_type').html()
         $('#exam_type_error').show().delay(3000).slideUp()
@@ -197,11 +197,33 @@
         $('#exam_reporttime').focus()
         return false
       }
-      if (IsValid(exam_roomno)) {
-        $('#exam_roomno').html()
-        $('#exam_roomno_error').show().delay(3000).slideUp()
-        $('#exam_roomno_error').html('Please select exam room no')
-        $('#exam_roomno').focus()
+      if (IsValid(exam_date)) {
+        $('#exam_date').html()
+        $('#exam_date_error').show().delay(3000).slideUp()
+        $('#exam_date_error').html('Please enter exam date')
+        $('#exam_date').focus()
+        return false
+      }
+    
+      if (IsValid(exam_starttime)) {
+        $('#exam_starttime').html()
+        $('#exam_starttime_error').show().delay(3000).slideUp()
+        $('#exam_starttime_error').html('Please select exam start time')
+        $('#exam_starttime').focus()
+        return false
+      }
+      if (IsValid(exam_endtime)) {
+        $('#exam_endtime').html()
+        $('#exam_endtime_error').show().delay(3000).slideUp()
+        $('#exam_endtime_error').html('Please select exam end time')
+        $('#exam_endtime').focus()
+        return false
+      }
+      if (IsValid(exam_subject)) {
+        $('#exam_subject').html()
+        $('#exam_subject_error').show().delay(3000).slideUp()
+        $('#exam_subject_error').html('Please select exam subject')
+        $('#exam_subject').focus()
         return false
       }
       if (IsValid(exam_instruction)) {
@@ -212,7 +234,7 @@
         return false
       } else {
         var fd = new FormData()
-
+    
         fd.append('csrfmiddlewaretoken', '{{csrf_token}}')
         $.ajax({
           type: 'POST',

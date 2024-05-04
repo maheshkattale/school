@@ -16,7 +16,7 @@ timetable_by_id_url=frontend_url+'api/TimeTableMaster/get_ttbyid'
 timetable_edit_url=frontend_url+'api/TimeTableMaster/edittimetable'
 get_teacher_by_subject_url=frontend_url+'api/TimeTableMaster/getteachersfromsub'
 timetable_dates_ranges_url=frontend_url+'api/TimeTableMaster/daterangelist'
-
+check_existing_timetable_entry_url=frontend_url+'api/TimeTableMaster/checkdaterange'
 
 class time_table_master(GenericAPIView):
     def get(self,request):
@@ -108,5 +108,38 @@ class get_teacher_by_subject(GenericAPIView):
             get_teacher_by_subject_request = requests.post(get_teacher_by_subject_url,headers=headers,data=data)
             get_teacher_by_subject_response = get_teacher_by_subject_request.json()
             return HttpResponse(json.dumps(get_teacher_by_subject_response), content_type="application/json")
+class time_table_list(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            time_table_list_request = requests.post(timetable_list_url,headers=headers,data=data)
+            time_table_list_response = time_table_list_request.json()
+            return HttpResponse(json.dumps(time_table_list_response), content_type="application/json")
+class check_existing_timetable_entry(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            check_existing_timetable_entry_request = requests.post(check_existing_timetable_entry_url,headers=headers,data=data)
+            check_existing_timetable_entry_response = check_existing_timetable_entry_request.json()
+            return HttpResponse(json.dumps(check_existing_timetable_entry_response), content_type="application/json")
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         

@@ -15,7 +15,7 @@ from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
 from SchoolErp.settings import EMAIL_HOST_USER
 from django.contrib.auth.hashers import make_password,check_password
-frontend_url = 'http://127.0.0.1:8000/'
+from Frontend.school.static_info import frontend_url
 
 def createtoken(uuid,email,source):
     token = jwt.encode(

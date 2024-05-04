@@ -18,8 +18,8 @@ from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
 from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
+from Frontend.school.static_info import frontend_url
 
-frontend_url = 'http://127.0.0.1:8000/'
 
 
 def schoolUniqueCode(schoolname):
