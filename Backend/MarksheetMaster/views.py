@@ -98,6 +98,23 @@ class deleteExamType(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "ExamType not found ","status": "failure"}})
 
+
+class examscorelist(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        ExamTypeid = data['id']
+        ExamTypeobj = ExamType.objects.filter(id=ExamTypeid,isActive=True)
+        if ExamTypeobj.exists():
+            exammarkser =  ExamTypeSerializer(ExamTypeobj,many=True)
+            return Response({"data":exammarkser.data,"response": {"n": 1, "msg": "ExamType marks found successfully","status": "success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "ExamType not found ","status": "failure"}})
+
+
+
+
 def has_duplicate_value(classlist, key):
     seen = set()
     for d in classlist:
