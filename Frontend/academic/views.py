@@ -5,7 +5,7 @@ from rest_framework.response import Response
 import json
 from rest_framework.generics import GenericAPIView
 from school.static_info import frontend_url
-add_academic_dates_url=frontend_url+''
+add_academic_dates_url=frontend_url+'api/SchoolMaster/AddAcademicYear'
 
 class academic_master(GenericAPIView):
     def get(self,request):
