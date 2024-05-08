@@ -77,6 +77,9 @@ class AddParentStudent(GenericAPIView):
                 #send mail
                 subject = "Registration succesful"
                 data2 = {"Name": data['Name'],"email":data['Email'],'userid':parentid,'frontend_url':frontend_url,
+                         'bestregard_from':'School ERP','phone_no':'0201-890890','school_name':schoolname,
+                         
+                         
                             "template": 'mails/parent_registration.html'}
                 message = render_to_string(
                         data2['template'], data2)

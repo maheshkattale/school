@@ -80,8 +80,10 @@ class AddSchool(GenericAPIView):
 
                     #send mail
                     subject = "School Registration succesful"
-                    data2 = {"adminname": data['admin_Name'],"email":data['Email'],'adminid':adminid, "Name":data['Name'],'frontend_url':frontend_url,
-                                "template": 'mails/school_registration.html'}
+                    data2 = {"adminname": data['admin_Name'],"email":data['Email'],'adminid':adminid, "Name":data['Name'],'frontend_url':frontend_url,'bestregard_from':'School ERP','phone_no':'0201-890890',
+                                "template": 'mails/school_registration.html',}
+                    
+                    
                     message = render_to_string(
                             data2['template'], data2)
                     try:

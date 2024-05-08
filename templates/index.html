@@ -282,22 +282,22 @@
       })
     </script>
     {% if messages %}
-    <div class="alert admin-alert">
-      {% for message in messages %}
+      <div class="alert admin-alert">
+        {% for message in messages %}
 
-        <script>
-          var m = "{{ message }}";
-          var ic="{{message.tags}}";
-          Swal.fire({
-            icon: ic,
-            text: m,
-          });
-        </script>
+          <script>
+            var m = "{{ message }}";
+            var ic="{{message.tags}}";
+            Swal.fire({
+              icon: ic,
+              text: m,
+            });
+          </script>
 
 
 
-      {% endfor %}
-    </div>
-  {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
   </body>
 </html>

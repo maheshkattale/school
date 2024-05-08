@@ -36,7 +36,7 @@ class login(GenericAPIView):
         if email is None or Password is None :
             return Response(
                                                 {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'',},
                     "response":{
                     "status":"error",
                     'msg': 'Please provide email and password',
@@ -47,7 +47,7 @@ class login(GenericAPIView):
         if userexist is None:
            return Response(
                     {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'',},
                     "response":{
                     "status":"error",
                     'msg': 'This user is not found',
@@ -61,7 +61,7 @@ class login(GenericAPIView):
                 return Response(
                                 
                     {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'',},
                     "response":{
                     "status":"error",
                     'msg': 'Please enter correct password',
@@ -97,7 +97,7 @@ class login(GenericAPIView):
                     createmobiletoken = UserToken.objects.create(User=useruuid,MobileToken=Token,source=source)
                 else:
                     return Response({
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'',},
                     "response":{
                     "status":"error",
                     'msg': 'Please Provide Source',
@@ -106,7 +106,7 @@ class login(GenericAPIView):
                 })
                 
                 return Response({
-                    "data" : {'token':Token,'username':username,'user_id':useruuid,'schoolcode':schoolcode,'Menu':perSer.data,'roleid':role_id},
+                    "data" : {'token':Token,'username':username,'user_id':useruuid,'schoolcode':schoolcode,'Menu':perSer.data,'roleid':role_id,'Address':user_serializer.data['Address'],'mobileNumber':user_serializer.data['mobileNumber'],'email':user_serializer.data['email'],},
                     "response":{
                     "n": 1 ,
                     "msg" : "login successful",

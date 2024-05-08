@@ -18,7 +18,7 @@
             <div class="row">
               <div class="mb-3 col-lg-4">
                 <label for="exam_class" class="form-label">Class</label>
-                <select id="exam_class" class="form-select" aria-describedby="exam_class_error">
+                <select id="exam_class" class="form-select select2" aria-describedby="exam_class_error">
                   <option value="" selected>Please select class</option>
                   {% for class in classs %}
                     <option value="{{ class.id }}">{{ class.className }}</option>
@@ -29,7 +29,7 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="exam_date" class="form-label">Date</label>
-                <input type="text" class="form-control" id="exam_date" placeholder="Please select date" aria-describedby="exam_date_error" readonly />
+                <input type="text" class="form-control date_picker" id="exam_date" placeholder="Please select date" aria-describedby="exam_date_error" readonly />
                 <div id="exam_date_error" class="form-text error_message"></div>
               </div>
 
@@ -52,7 +52,7 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="exam_subject" class="form-label">Subject</label>
-                <select id="exam_subject" class="form-select" aria-describedby="exam_subject_error">
+                <select id="exam_subject" class="form-select select2" aria-describedby="exam_subject_error">
                   <option value="" selected>Please select subject</option>
                   {% for subject in subjects %}
                     <option value="{{ subject.id }}">{{ subject.subjectName }}</option>
@@ -63,7 +63,7 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="exam_type" class="form-label">Exam Type</label>
-                <select id="exam_type" class="form-select" aria-describedby="exam_type_error">
+                <select id="exam_type" class="form-select select2" aria-describedby="exam_type_error">
                   <option value="" selected>Please select type</option>
                   {% for type in types %}
                     <option value="{{ type.id }}">{{ type.typeName }}</option>
@@ -111,13 +111,8 @@
 {% block script %}
   <script>
     $(document).ready(function () {
-      $('#exam_subject').select2()
-      $('#exam_type').select2()
-      $('#exam_class').select2()
-      flatpickr('#exam_date', {
-        dateFormat: 'd-m-Y' // Customize date format if needed
-        // You can add more configuration options here
-      })
+
+
     })
     
     function validate_form() {

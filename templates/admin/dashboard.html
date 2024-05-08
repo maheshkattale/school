@@ -1,145 +1,424 @@
-{% extends "index.html" %}
-{% load static %} 
+{% extends 'index.html' %}
+{% load static %}
 {% block head %}
+<style>
+  .calendar-container {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 15px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 0 5px grey;
+    border-radius: 10px;
+  }
+  
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .calendar-header h2 {
+    margin: 0;
+  }
+  
+  .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+  
+  .calendar-day {
+    text-align: center;
+    padding: 10px;
+    /* border-bottom: 1px solid #ccc; */
+    cursor: pointer;
+  }
+  
+  .calendar-day:last-child {
+    border-bottom: none;
+  }
+  
+  .today {
+    border-radius: 56px;
+    background-image: linear-gradient(to right, #a900ff, #f279ff);
+    color: white;
+    }
+  
+  .selected {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .calendar-header>button{
+    color: #ff7800;
+    background: transparent;
+    border: none;
+    border: 1px solid #ff7800;
+    padding: 4px;
+    border-radius: 50%;
+    width: 32px;
+    height: 30px;
+    font-size: 16px;
+
+  }
+  .notice-row{
+    box-shadow: 0 0 5px grey;
+    margin: 16px 0px !important;
+    border-radius: 10px;
+
+  }
+  .notice-div{
+    padding: 15px;
+  }
+  .imgdiv{
+    padding: 15px 0 15px 15px;
+    }
+  .imgclass{
+    border-radius: 10px;
+  }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-************" crossorigin="anonymous">
+
+{% endblock %}
+
+{% block heading %}
+  <span class="tab-title"><i class="fa-solid fa-user"></i> <span class="px-1">Dashboard</span></span>
 {% endblock %}
 
 {% block body %}
-
   <div class="row">
-    <table id="example" class="table table-striped table-bordered" style="width:100%">
-      <thead>
-          <tr>
-              <th>Sr No</th>
-              <th>Name</th>
-              <th>Position</th>
-              <th>Office</th>
-              <th>Age</th>
-              <th>Start date</th>
-              <th>Salary</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr>
-              <td>1</td>
-              <td>Tiger Nixon</td>
-              <td>System Architect</td>
-              <td>Edinburgh</td>
-              <td>61</td>
-              <td>2011-04-25</td>
-              <td>$320,800</td>
-          </tr>
-          <tr>
-              <td>2</td>
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="d-flex justify-content-between">
+            <div class="bg-lg-blue dashboard_count_cards">
+              <img src="{% static 'assets/images/backgrounds/courses.PNG' %}" alt="" width="100" height="100" />
+              <div class="dashboard_count_heading">Total Courses</div>
+              <div class="dashboard_count_numbers">102</div>
+            </div>
+            <div class="bg-lg-purple dashboard_count_cards">
+              <img src="{% static 'assets/images/backgrounds/students.PNG ' %}" alt="" width="100" height="100" />
+              <div class="dashboard_count_heading">Total Students</div>
+              <div class="dashboard_count_numbers">1020</div>
+            </div>
+            <div class="bg-lg-pink dashboard_count_cards">
+              <img src="{% static 'assets/images/backgrounds/teachers.PNG ' %}" alt="" width="100" height="100" />
+              <div class="dashboard_count_heading">Total Teachers</div>
+              <div class="dashboard_count_numbers">150</div>
+            </div>
+            <div class="bg-lg-skin dashboard_count_cards">
+              <img src="{% static 'assets/images/backgrounds/rooms.PNG ' %}" alt="" width="100" height="100" />
+              <div class="dashboard_count_heading">Faculty Rooms</div>
+              <div class="dashboard_count_numbers">80</div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div class="w-68 chart-container">
+              <canvas id="myChart"></canvas>
+            </div>
+            <div class="w-30 chart-container">
+              <canvas id="myPieChart"></canvas>
+            </div>
+          </div>
+          <div class="table_div">
+            <table id="" class="table">
+              <thead>
+                <tr>
+                  <th>Column 1</th>
+                  <th>Column 2</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Row 1 Data 1</td>
+                  <td>Row 1 Data 2</td>
+                </tr> <tr>
+                  <td>Row 1 Data 1</td>
+                  <td>Row 1 Data 2</td>
+                </tr> <tr>
+                  <td>Row 1 Data 1</td>
+                  <td>Row 1 Data 2</td>
+                </tr> <tr>
+                  <td>Row 1 Data 1</td>
+                  <td>Row 1 Data 2</td>
+                </tr> <tr>
+                  <td>Row 1 Data 1</td>
+                  <td>Row 1 Data 2</td>
+                </tr> <tr>
+                  <td>Row 1 Data 1</td>
+                  <td>Row 1 Data 2</td>
+                </tr> <tr>
+                  <td>Row 1 Data 1</td>
+                  <td>Row 1 Data 2</td>
+                </tr> <tr>
+                  <td>Row 1 Data 1</td>
+                  <td>Row 1 Data 2</td>
+                </tr> <tr>
+                  <td>Row 1 Data 1</td>
+                  <td>Row 1 Data 2</td>
+                </tr>
+                <tr>
+                  <td>Row 2 Data 1</td>
+                  <td>Row 2 Data 2</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="row">
+            <div class="col-lg-12">
+              <div id="calendarContainer" class="calendar-container"></div>
 
-              <td>Garrett Winters</td>
-              <td>Accountant</td>
-              <td>Tokyo</td>
-              <td>63</td>
-              <td>2011-07-25</td>
-              <td>$170,750</td>
-          </tr>
-          <tr>
-            <td>3</td>
+            </div>
+            <div class="col-lg-12">
+              <div>
+                <div class="pt-2">
+                  <h5>Notice Board</h5>
+                </div>
+                <div class="notice-row row">
+                  <div class="col-lg-4 p-0">
+                    <div class="imgdiv">
+                    <img class="w-100 imgclass" src="{%static 'assets/images/products/s1.JPG ' %}" alt="">
+                  </div>
+                  </div>
+                  <div class="col-lg-8">
+                    <div class="notice-div">
+                      <div class="notice-title">Contributions in the form of tips, code snippets and suggestions for the above material are very welcome. </div>
+                    <div class="notice-by pt-2">By- Shri Kumar</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="notice-row row">
+                  <div class="col-lg-4 p-0">
+                    <div class="imgdiv">
+                    <img class="w-100 imgclass" src="{%static 'assets/images/products/s4.JPG ' %}" alt="">
+                  </div>
+                  </div>
+                  <div class="col-lg-8">
+                    <div class="notice-div">
+                      <div class="notice-title">Contributions in the form of tips, code snippets and suggestions for the above material are very welcome. </div>
+                    <div class="notice-by pt-2">By- Shri Kumar</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="notice-row row">
+                  <div class="col-lg-4 p-0">
+                    <div class="imgdiv">
+                    <img class="w-100 imgclass" src="{%static 'assets/images/products/s5.JPG ' %}" alt="">
+                  </div>
+                  </div>
+                  <div class="col-lg-8">
+                    <div class="notice-div">
+                      <div class="notice-title">Contributions in the form of tips, code snippets and suggestions for the above material are very welcome. </div>
+                    <div class="notice-by pt-2">By- Shri Kumar</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="notice-row row">
+                  <div class="col-lg-4 p-0">
+                    <div class="imgdiv">
+                    <img class="w-100 imgclass" src="{%static 'assets/images/products/s7.JPG ' %}" alt="">
+                  </div>
+                  </div>
+                  <div class="col-lg-8">
+                    <div class="notice-div">
+                      <div class="notice-title">Contributions in the form of tips, code snippets and suggestions for the above material are very welcome. </div>
+                    <div class="notice-by pt-2">By- Shri Kumar</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-              <td>Ashton Cox</td>
-              <td>Junior Technical Author</td>
-              <td>San Francisco</td>
-              <td>66</td>
-              <td>2009-01-12</td>
-              <td>$86,000</td>
-          </tr>
-          <tr>
-            <td>4</td>
-
-              <td>Cedric Kelly</td>
-              <td>Senior Javascript Developer</td>
-              <td>Edinburgh</td>
-              <td>22</td>
-              <td>2012-03-29</td>
-              <td>$433,060</td>
-          </tr>
-          <tr>
-            <td>5</td>
-
-              <td>Airi Satou</td>
-              <td>Accountant</td>
-              <td>Tokyo</td>
-              <td>33</td>
-              <td>2008-11-28</td>
-              <td>$162,700</td>
-          </tr>
-          <tr>
-            <td>6</td>
-
-              <td>Brielle Williamson</td>
-              <td>Integration Specialist</td>
-              <td>New York</td>
-              <td>61</td>
-              <td>2012-12-02</td>
-              <td>$372,000</td>
-          </tr>
-          <tr>
-            <td>7</td>
-
-              <td>Herrod Chandler</td>
-              <td>Sales Assistant</td>
-              <td>San Francisco</td>
-              <td>59</td>
-              <td>2012-08-06</td>
-              <td>$137,500</td>
-          </tr>
-          <tr>
-            <td>8</td>
-
-              <td>Rhona Davidson</td>
-              <td>Integration Specialist</td>
-              <td>Tokyo</td>
-              <td>55</td>
-              <td>2010-10-14</td>
-              <td>$327,900</td>
-          </tr>
-          <tr>
-            <td>9</td>
-
-              <td>Colleen Hurst</td>
-              <td>Javascript Developer</td>
-              <td>San Francisco</td>
-              <td>39</td>
-              <td>2009-09-15</td>
-              <td>$205,500</td>
-          </tr>
-          <tr>
-            <td>10</td>
-
-              <td>Colleen Hurst</td>
-              <td>Javascript Developer</td>
-              <td>San Francisco</td>
-              <td>39</td>
-              <td>2009-09-15</td>
-              <td>$205,500</td>
-          </tr>
-          <tr>
-            <td>11</td>
-
-              <td>Colleen Hurst</td>
-              <td>Javascript Developer</td>
-              <td>San Francisco</td>
-              <td>39</td>
-              <td>2009-09-15</td>
-              <td>$205,500</td>
-          </tr>
-      </tbody>
-
-  </table>
-  </div> 
-  
-  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 
 {% block script %}
-<script>
-  $( document ).ready(function() {
-    new DataTable('#example');  
-  });  
-</script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    $(document).ready(function () {})
+    // Data
+    const categories = ['2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024']
+    const values = [80, 70, 30, 90, 80, 70, 60, 100]
+    
+    // Create bar chart
+    const ctx = document.getElementById('myChart').getContext('2d')
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400) // Create gradient from top to bottom
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)') // Start color
+    gradient.addColorStop(1, 'rgba(224, 224, 224, 1)') // End color
+    
+    const myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: categories,
+        datasets: [
+          {
+            label: 'Values',
+            data: values,
+            backgroundColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)'],
+            borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)'],
+            borderWidth: 1,
+            borderSkipped: 'bottom' // Only apply border to the bottom of the bars
+          }
+        ]
+      },
+      options: {
+        animation: {
+          duration: 2000,
+          easing: 'easeInOutQuad'
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 5
+            }
+          }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'School Statistics',
+            font: {
+              size: 18
+            }
+          },
+          legend: {
+            display: false
+          },
+          // Add linear gradient background
+          background: {
+            color: gradient
+          }
+        }
+      }
+    })
+  </script>
+  <script>
+    // Data
+    const labels = ['Category A', 'Category B', 'Category C', 'Category D']
+    const data = [30, 20, 40, 10]
+    const backgroundColors = ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)']
+    
+    // Create pie chart
+    const pieCtx = document.getElementById('myPieChart').getContext('2d')
+    const myPieChart = new Chart(pieCtx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            data: data,
+            backgroundColor: backgroundColors,
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        animation: {
+          duration: 2000,
+          easing: 'easeInOutQuad'
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Course Activities',
+            font: {
+              size: 18
+            }
+          },
+          legend: {
+            position: 'right'
+          }
+        }
+      }
+    })
+  </script>
+
+  <script>
+    function createCalendar(containerId, year, month) {
+      const container = document.getElementById(containerId);
+      const currentDate = new Date(year, month - 1); // month is 0-based
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const startingDay = new Date(year, month - 1, 1).getDay(); // 0-based index
+    
+      // Clear container
+      container.innerHTML = '';
+    
+      // Create header
+      const header = document.createElement('div');
+      header.classList.add('calendar-header');
+      container.appendChild(header);
+    
+      const prevMonthBtn = document.createElement('button');
+      prevMonthBtn.innerHTML  = '<i class="fa-solid fa-arrow-left"></i>';
+      prevMonthBtn.addEventListener('click', () => {
+        createCalendar(containerId, currentDate.getFullYear(), currentDate.getMonth());
+      });
+      header.appendChild(prevMonthBtn);
+    
+      const headerTitle = document.createElement('h2');
+      headerTitle.textContent = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+      header.appendChild(headerTitle);
+    
+      const nextMonthBtn = document.createElement('button');
+      nextMonthBtn.innerHTML  = '<i class="fa-solid fa-arrow-right"></i>';
+      nextMonthBtn.addEventListener('click', () => {
+        createCalendar(containerId, currentDate.getFullYear(), currentDate.getMonth() + 2);
+      });
+      header.appendChild(nextMonthBtn);
+    
+      // Create days
+      const daysContainer = document.createElement('div');
+      daysContainer.classList.add('calendar-days');
+      container.appendChild(daysContainer);
+    
+      // Add day names
+      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      dayNames.forEach(day => {
+        const dayElement = document.createElement('div');
+        dayElement.classList.add('calendar-day');
+        dayElement.textContent = day;
+        daysContainer.appendChild(dayElement);
+      });
+    
+      // Add empty cells for the starting day
+      for (let i = 0; i < startingDay; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.classList.add('calendar-day');
+        daysContainer.appendChild(emptyCell);
+      }
+    
+      // Add days
+      for (let i = 1; i <= daysInMonth; i++) {
+        const dayElement = document.createElement('div');
+        dayElement.classList.add('calendar-day');
+        dayElement.textContent = i;
+        if (currentDate.getDate() === i) {
+          dayElement.classList.add('today');
+        }
+        dayElement.addEventListener('click', () => {
+          const selectedDay = new Date(year, month - 1, i);
+          selectDate(selectedDay);
+        });
+        daysContainer.appendChild(dayElement);
+      }
+    }
+    
+    function selectDate(date) {
+      const selectedDate = date.toLocaleDateString('default', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      alert(`Selected date: ${selectedDate}`);
+    }
+    
+    // Usage
+    const currentDate = new Date();
+    createCalendar('calendarContainer', currentDate.getFullYear(), currentDate.getMonth() + 1); // Current year, Current month
+    
+  </script>
 {% endblock %}

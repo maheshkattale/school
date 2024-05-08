@@ -17,10 +17,14 @@
       <thead>
           <tr>
               <th>Sr No</th>
-              <th>exam Name</th>
-              <th>Email</th>
-              <th>Contact</th>
-              <th>Address</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Marks</th>
+              <th>Class</th>
+              <th>Subject</th>
+              <th>ExamType</th>
+              <th>totaltime</th>
+       
 
               <th>Action</th>
           </tr>
@@ -30,11 +34,14 @@
         {% for i in exams %}
           <tr>
               <td>{{forloop.counter}}</td>
-              <td>{{i.Username}}</td>
-              <td>{{i.email}}</td>
-              <td>{{i.mobileNumber}}</td>
-              <td>{{i.Address}}</td>
-
+              <td>{{i.Date}}</td>
+              <td>{{i.Examstarttime}} - {{i.Examendtime}}</td>
+              <td>{{i.totalMarks}}</td>
+              <td>{{i.ClassId}}</td>
+              <td>{{i.SubjectId}}</td>
+              <td>{{i.ExamType}}</td>
+              <td>{{i.totaltime}}</td>
+ 
               <td>
                 <a data-bs-toggle="tooltip" title="Edit exam" href="/exam/edit_exam/{{i.id}}"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
                 <a data-bs-toggle="tooltip" title="Delete exam" onclick="delete_exam('{{i.id}}')"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>

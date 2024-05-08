@@ -89,7 +89,6 @@ class change_password(GenericAPIView):
                 return redirect('school:dashboard')
             
             else:
-    
                 msg = change_password_response['response']['msg']
                 messages.success(request, msg)
                 return redirect('school:login')

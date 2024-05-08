@@ -39,11 +39,14 @@ class login(GenericAPIView):
             request.session['token'] = login_response['data']['token']
             request.session['schoolcode'] = login_response['data']['schoolcode']
             request.session['username'] = login_response['data']['username']
-            request.session['user_id'] = login_response['data']['Menu']
+            request.session['user_id'] = login_response['data']['user_id']
             request.session['Menu'] = login_response['data']['Menu']
-
+            request.session['email'] = login_response['data']['email']
+            request.session['mobileNumber'] = login_response['data']['mobileNumber']
+            request.session['Address'] = login_response['data']['Address']
+            print("res",login_response['data'])
             msg = login_response['response']['msg']
-            messages.success(request, msg)
+            # messages.success(request, msg)
             return redirect('school:dashboard')
 
 
@@ -157,7 +160,7 @@ class edit_school(GenericAPIView):
         
 class mail(GenericAPIView):
     def get(self,request):
-        return render(request, 'mails/parent_registration.html',{"Name": 'mahesh kattale',"email":'maheshkattale@gmail.com','userid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8','frontend_url':frontend_url,})
+        return render(request, 'mails/teacher_registration.html',{"Name": 'mahesh kattale',"email":'maheshkattale@gmail.com','userid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8','frontend_url':frontend_url,'school_name':'Shri Vidya Bhavan School',"adminname": 'mahesh kattale','adminid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8', 'bestregard_from':'School ERP','phone_no':'0201-890890',})
     
 class reset_password_mail(GenericAPIView):
     def get(self,request):

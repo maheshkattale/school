@@ -77,7 +77,7 @@
                 <input data-file_types="jpg|jpeg|png|ico|bmp" name="photo" id="profileimage" type="file" class="file-upload" onchange="document.getElementById('idProofPreview').src = window.URL.createObjectURL(this.files[0])" />
               </div>
 
-              <div class="mb-1 username">Mahesh Kattale</div>
+              <div class="mb-1 username">{{username}}</div>
               <div class="small font-italic text-muted mb-2"></div>
             </div>
           </div>
@@ -91,33 +91,25 @@
                 <div class="p-3">
                   <div class="row mb-3">
                     <div class="mb-3 col-lg-4">
-                      <label for="user_first_name" class="form-label">First Name</label>
-                      <input type="text" class="form-control" id="user_first_name" aria-describedby="user_first_name_error" placeholder="Enter First Name"/>
-                      <div id="user_first_name_error" class="form-text error_message"></div>
+                      <label for="name" class="form-label"> Name</label>
+                      <input type="text" class="form-control" id="name" aria-describedby="name_error" value="{{username}}" placeholder="Enter First Name"/>
+                      <div id="name_error" class="form-text error_message"></div>
                     </div>
 
-                    <div class="mb-3 col-lg-4">
-                        <label for="user_last_name" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="user_last_name" aria-describedby="user_last_name_error" placeholder="Enter Last Name"/>
-                        <div id="user_last_name_error" class="form-text error_message"></div>
-                      </div>
+
                       
                     <div class="mb-3 col-lg-4">
                         <label for="phone_number" class="form-label">Phone Number</label>
-                        <input type="text" class="form-control" id="phone_number" aria-describedby="phone_number_error" placeholder="Enter Phone Name"/>
+                        <input type="text" class="form-control" id="phone_number" aria-describedby="phone_number_error"  value="{{mobileNumber}}" placeholder="Enter Phone Name"/>
                         <div id="phone_number_error" class="form-text error_message"></div>
                       </div>
                       <div class="mb-3 col-lg-4">
-                        <label for="email" class="form-label">Official Email</label>
-                        <input type="text" class="form-control" id="email" aria-describedby="email_error" placeholder="Enter Official Email"/>
+                        <label for="email" class="form-label"> Email</label>
+                        <input type="text" class="form-control" id="email" aria-describedby="email_error" placeholder="Enter Official Email"  value="{{email}}"/>
                         <div id="email_error" class="form-text error_message"></div>
                       </div>
 
-                      <div class="mb-3 col-lg-4">
-                        <label for="alternate_email" class="form-label">Alternate Email</label>
-                        <input type="text" class="form-control" id="alternate_email" aria-describedby="alternate_email_error" placeholder="Enter Alternate Email"/>
-                        <div id="alternate_email_error" class="form-text error_message"></div>
-                      </div>
+
 
                       <div class="mb-3 col-lg-4">
                         <label for="date_of_birth" class="form-label">Birth Date</label>
@@ -125,93 +117,34 @@
                         <div id="date_of_birth_error" class="form-text error_message"></div>
                       </div>
 
-                    <div class="mb-3 col-lg-6">
-                        Residential Address
-                    </div>
-                    <div class="mb-3 col-lg-6">
 
-                        Permanant Address
-                    </div>
-                      <div class="mb-3 col-lg-6">
-                        <label for="residential_addressline1" class="form-label">Address Line 1</label>
-                        <input type="text" class="form-control" id="residential_addressline1" aria-describedby="residential_addressline1_error" readonly placeholder="Please Enter Address "/>
-                        <div id="residential_addressline1_error" class="form-text error_message"></div>
+
+                      <div class="mb-3 col-lg-8">
+
                       </div>
 
-                      <div class="mb-3 col-lg-6">
-                        <label for="permanaent_addressline1" class="form-label">Address Line 1</label>
-                        <input type="text" class="form-control" id="permanaent_addressline1" aria-describedby="permanaent_addressline1_error" readonly placeholder="Please Enter Address "/>
+                      <div class="mb-3 col-lg-12">
+                        <label for="permanaent_addressline1" class="form-label">Address</label>
+                        <textarea class="form-control" name="address" id="address" rows="10">{{Address}}</textarea>
                         <div id="permanaent_addressline1_error" class="form-text error_message"></div>
                       </div>
 
-                      <div class="mb-3 col-lg-6">
-                        <label for="residential_addressline2" class="form-label">Address Line 2</label>
-                        <input type="text" class="form-control" id="residential_addressline2" aria-describedby="residential_addressline2_error" readonly placeholder="Please Enter Address "/>
-                        <div id="residential_addressline2_error" class="form-text error_message"></div>
-                      </div>
-
-                      <div class="mb-3 col-lg-6">
-                        <label for="permanaent_addressline2" class="form-label">Address Line 2</label>
-                        <input type="text" class="form-control" id="permanaent_addressline2" aria-describedby="permanaent_addressline2_error" readonly placeholder="Please Enter Address "/>
-                        <div id="permanaent_addressline2_error" class="form-text error_message"></div>
-                      </div>
-
-
-                      <div class="mb-3 col-lg-3">
-                        <label for="residential_city" class="form-label">City</label>
-                        <input type="text" class="form-control" id="residential_city" aria-describedby="residential_city_error" readonly placeholder="Please Enter Address "/>
-                        <div id="residential_city_error" class="form-text error_message"></div>
-                      </div>
-                      <div class="mb-3 col-lg-3">
-                        <label for="residential_pincode" class="form-label"> Pincode</label>
-                        <input type="text" class="form-control" id="residential_pincode" aria-describedby="residential_pincode_error" readonly placeholder="Please Enter Address "/>
-                        <div id="residential_pincode_error" class="form-text error_message"></div>
-                      </div>
 
 
 
-                      <div class="mb-3 col-lg-3">
-                        <label for="residential_city" class="form-label">City</label>
-                        <input type="text" class="form-control" id="residential_city" aria-describedby="residential_city_error" readonly placeholder="Please Enter Address "/>
-                        <div id="residential_city_error" class="form-text error_message"></div>
-                      </div>
-                      <div class="mb-3 col-lg-3">
-                        <label for="residential_pincode" class="form-label"> Pincode</label>
-                        <input type="text" class="form-control" id="residential_pincode" aria-describedby="residential_pincode_error" readonly placeholder="Please Enter Address "/>
-                        <div id="residential_pincode_error" class="form-text error_message"></div>
-                      </div>
-
-                      <div class="mb-3 col-lg-3">
-                        <label for="permanaent_state" class="form-label">State</label>
-                        <input type="text" class="form-control" id="permanaent_state" aria-describedby="permanaent_state_error" readonly placeholder="Please Enter Address "/>
-                        <div id="permanaent_state_error" class="form-text error_message"></div>
-                      </div>
-                      
-                      <div class="mb-3 col-lg-3">
-                        <label for="permanaent_country" class="form-label"> Country</label>
-                        <input type="text" class="form-control" id="permanaent_country" aria-describedby="permanaent_country_error" readonly placeholder="Please Enter Address "/>
-                        <div id="permanaent_country_error" class="form-text error_message"></div>
-                      </div>
 
 
 
-                      <div class="mb-3 col-lg-3">
-                        <label for="permanaent_state" class="form-label">State</label>
-                        <input type="text" class="form-control" id="permanaent_state" aria-describedby="permanaent_state_error" readonly placeholder="Please Enter Address "/>
-                        <div id="permanaent_state_error" class="form-text error_message"></div>
-                      </div>
+  
 
-                      <div class="mb-3 col-lg-3">
-                        <label for="permanaent_country" class="form-label"> Country</label>
-                        <input type="text" class="form-control" id="permanaent_country" aria-describedby="permanaent_country_error" readonly placeholder="Please Enter Address "/>
-                        <div id="permanaent_country_error" class="form-text error_message"></div>
-                      </div>
+
+
                   </div>
 
                   <div class="row">
-                    <div class="submitbutton d-flex justify-content-center">
+                    {% comment %} <div class="submitbutton d-flex justify-content-center">
                       <span class="btn btn-primary">Submit</span>
-                    </div>
+                    </div> {% endcomment %}
                   </div>
                 </div>
               </div>
@@ -227,10 +160,7 @@
   <script>
     $(document).ready(function() {
 
-        flatpickr("#date_of_birth", {
-          dateFormat: "d-m-Y", // Customize date format if needed
-          // You can add more configuration options here
-        });
+
       });
   </script>
 {% endblock %}

@@ -19,7 +19,7 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="class_name" class="form-label">Class</label> 
-                <select id="class_name" class="form-select" aria-describedby="class_name_error">
+                <select id="class_name" class="form-select select2" aria-describedby="class_name_error">
                   <option>ABC</option>
                   <option>XYZ</option>
                 </select>
@@ -46,7 +46,7 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="day" class="form-label">Days</label>
-                <select id="day" class="form-select" aria-describedby="day_error" multiple>
+                <select id="day" class="form-select select2" aria-describedby="day_error" multiple>
                   <option>Monday</option>
                   <option>Tuesday</option>
                   <option>Wednesday</option>
@@ -72,7 +72,7 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="subject" class="form-label">Subject</label>
-                <select id="subject" class="form-select" aria-describedby="subject_error">
+                <select id="subject" class="form-select select2" aria-describedby="subject_error">
                   <option>Science</option>
                   <option>Maths</option>
                 </select>
@@ -82,7 +82,7 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher" class="form-label">Teacher</label>
-                <select id="teacher" class="form-select" aria-describedby="teacher_error">
+                <select id="teacher" class="form-select select2" aria-describedby="teacher_error">
                   <option>Jons Albert</option>
                   <option>Suyag Fatol</option>
                 </select>
@@ -108,10 +108,7 @@
 {% block script %}
 <script>
   $(document).ready(function() {
-    $('#day').select2();
-    $('#class_name').select2();
-    $('#subject').select2();
-    $('#teacher').select2();
+
 
     jQuery(function ($) {
 

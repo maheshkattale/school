@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'class',
     'subject',
     'exam',
+    'academic',
     
     'user',
 

@@ -94,3 +94,16 @@ function yyyy_mm_dd(dateString) {
   var parts = dateString.split("-");
   return parts[2] + "-" + parts[1] + "-" + parts[0];
 }
+flatpickr(".date_picker", {
+  dateFormat: "d-m-Y", // Customize date format if needed
+  // You can add more configuration options here
+
+});
+
+flatpickr(".date_picker_upto_today", {
+  dateFormat: "d-m-Y", // Customize date format if needed
+  // You can add more configuration options here
+  maxDate: "today" // Disable future dates
+
+});
+$('.select2').select2()

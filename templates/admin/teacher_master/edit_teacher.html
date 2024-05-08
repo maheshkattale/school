@@ -31,7 +31,7 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_designation" class="form-label">Designation</label>
-                <select id="teacher_designation" class="form-select" value="" aria-describedby="teacher_designation_error">
+                <select id="teacher_designation" class="form-select select2" value="" aria-describedby="teacher_designation_error">
                   <option value="">Please select Designation</option>
                   {% for designation in designations %}
                     {% if teacher.designation == designation.id %}
@@ -46,7 +46,7 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="teacher_joining_date" class="form-label">Joining Date</label>
-                <input type="text" class="form-control" id="teacher_joining_date" placeholder="Please select joining date" value="{{ teacher.joiningDate }}" aria-describedby="teacher_joining_date_error" readonly />
+                <input type="text" class="form-control date_picker_upto_today" id="teacher_joining_date" placeholder="Please select joining date" value="{{ teacher.joiningDate }}" aria-describedby="teacher_joining_date_error" readonly />
                 <div id="teacher_joining_date_error" class="form-text error_message"></div>
               </div>
 
@@ -57,7 +57,7 @@
               </div>
               <div class="mb-3 col-lg-4">
                 <label for="teacher_subject" class="form-label">Subject</label>
-                <select id="teacher_subject" class="form-select" value="" aria-describedby="teacher_subject_error" multiple>
+                <select id="teacher_subject" class="form-select select2" value="" aria-describedby="teacher_subject_error" multiple>
                   {% for subject in subjects %}
                     {% if subject.id in teacher_subjects %}
                       <option value="{{ subject.id }}" selected>{{ subject.SubjectName }}</option>
@@ -90,12 +90,7 @@
 {% block script %}
   <script>
     $(document).ready(function () {
-      $('#teacher_subject').select2()
-      $('#teacher_designation').select2()
-      flatpickr('#teacher_joining_date', {
-        dateFormat: 'd-m-Y' // Customize date format if needed
-        // You can add more configuration options here
-      })
+
     })
     
     function validate_form() {
@@ -181,7 +176,7 @@
         fd.append("joiningDate",yyyy_mm_dd(teacher_joining_date));
         fd.append("mobileNumber",teacher_contact);
         fd.append("subjects",JSON.stringify(teacher_subject));
-        fd.append("teacher_address",teacher_address);
+        fd.append("Address",teacher_address);
         fd.append("id",'{{teacher.id}}');
 
 

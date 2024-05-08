@@ -4,36 +4,38 @@
 
 {% endblock %}
 {% block heading %}
-  <span class="tab-title"><i class="fa-solid fa-users"></i> <span class="px-1">Exam Type Master</span></span>
+  <span class="tab-title"><i class="fa-solid fa-users"></i> <span class="px-1">Academic Master</span></span>
 {% endblock %}
 {% block body %}
   <div class="d-flex justify-content-end">
-    <a data-bs-toggle="modal" data-bs-target="#add_examtype" class="btn btn-primary">Add Exam Type</a>
+    <a data-bs-toggle="modal" data-bs-target="#add_academic" class="btn btn-primary">Add Academic Session</a>
  
-    <div id="add_examtype" class="modal">
+    <div id="add_academic" class="modal">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
           <div class="modal-body">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Add Exam Type Forms</h5>
+              <h5 class="card-title fw-semibold mb-4">Add Academic Forms</h5>
               <div class="card">
                 <div class="card-body">
                   <form>
                     <div class="row">
 
-                      <div class="mb-3 col-lg-6">
-                        <label for="examtype_name" class="form-label">Exam Type </label>
-                        <input type="text" class="form-control" id="examtype_name" placeholder="Please enter exam type " aria-describedby="examtype_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
-                        <div id="examtype_name_error" class="form-text error_message"></div>
-                      </div>
-                      <div class="mb-3 col-lg-6">
-                        <label for="totalmarks" class="form-label">Total marks</label>
-                        <input type="text" class="form-control" id="totalmarks" placeholder="Please enter marks" aria-describedby="totalmarks_error" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"/>
-                        <div id="totalmarks_error" class="form-text error_message"></div>
-                      </div>
 
+               
+
+                      <div class="mb-3 col-lg-6">
+                        <label for="academic_start_date" class="form-label">Start Date</label>
+                        <input type="text" class="form-control date_picker" id="academic_start_date" placeholder="Please select start date" aria-describedby="academic_start_date_error" readonly/>
+                        <div id="academic_start_date_error" class="form-text error_message"></div>
+                      </div>
+                      <div class="mb-3 col-lg-6">
+                        <label for="academic_end_date" class="form-label">End Date</label>
+                        <input type="text" class="form-control date_picker" id="academic_end_date" placeholder="Please select end date" aria-describedby="academic_end_date_error" readonly/>
+                        <div id="academic_end_date_error" class="form-text error_message"></div>
+                      </div>
                     </div>
 
                     <div class="row">
@@ -56,55 +58,48 @@
       <thead>
         <tr>
           <th>Sr No</th>
-          <th>Exam Type</th>
-          <th>Marks</th>
+          <th>academic</th>
+          <td>Duration</td>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>       
-         {% for i  in exam_types %}
+         {% comment %} {% for i  in academics %} {% endcomment %}
         <tr>
-          <td>{{forloop.counter}}</td>
-          <td>{{i.TypeName}}</td>
-          <td>{{i.Marks}}</td>
+          <td>1</td>
+          <td>Summer</td>
+          <td>2023-2024</td>
 
           <td>
-            <a data-bs-toggle="modal" data-bs-target="#edit_examtype{{i.id}}"  ><i data-bs-toggle="tooltip"  title="Edit examtype" class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a data-bs-toggle="modal" data-bs-target="#edit_academic{{i.id}}"  ><i data-bs-toggle="tooltip"  title="Edit academic" class="fa-solid fa-pen-to-square mx-1"></i></a>
 
-            <div id="edit_examtype{{i.id}}" class="modal">
+            <div id="edit_academic{{i.id}}" class="modal">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
         
                   <div class="modal-body">
                   <div class="card">
                     <div class="card-body">
-                      <h5 class="card-title fw-semibold mb-4">Edit examtype Forms</h5>
+                      <h5 class="card-title fw-semibold mb-4">Edit Academic Forms</h5>
                       <div class="card">
                         <div class="card-body">
                           <form>
                             <div class="row">
-        
-        
-        
-        
-        
-             
-        
-        
-        
-                              <div class="mb-3 col-lg-6">
-                                <label for="examtype_name{{i.id}}" class="form-label">Exam Type Name</label>
-                                <input type="text" class="form-control" id="examtype_name{{i.id}}" value="{{i.TypeName}}" placeholder="Please enter class name" aria-describedby="examtype_name_error{{i.id}}" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
-                                <div id="examtype_name_error{{i.id}}" class="form-text error_message"></div>
-                              </div>
-                              <div class="mb-3 col-lg-6">
-                                <label for="totalmarks{{i.id}}" class="form-label">Total Marks</label>
-                                <input type="text" class="form-control" id="totalmarks{{i.id}}" value="{{i.Marks}}" placeholder="Please enter class name" aria-describedby="totalmarks_error{{i.id}}" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"/>
-                                <div id="totalmarks_error{{i.id}}" class="form-text error_message"></div>
-                              </div>
-        
 
-                            </div>
+
+                  
+          
+                                <div class="mb-3 col-lg-6">
+                                  <label for="academic_start_date{{i.id}}" class="form-label">Start Date</label>
+                                  <input type="text" class="form-control" id="academic_start_date{{i.id}}" placeholder="Please select start date" aria-describedby="academic_start_date_error" readonly/>
+                                  <div id="academic_start_date_error{{i.id}}" class="form-text error_message"></div>
+                                </div>
+                                <div class="mb-3 col-lg-6">
+                                  <label for="academic_end_date{{i.id}}" class="form-label">End Date</label>
+                                  <input type="text" class="form-control" id="academic_end_date{{i.id}}" placeholder="Please select end date" aria-describedby="academic_end_date_error" readonly/>
+                                  <div id="academic_end_date_error{{i.id}}" class="form-text error_message"></div>
+                                </div>
+                              </div>
         
                             <div class="row">
                               <div class="d-flex justify-content-center">
@@ -122,10 +117,10 @@
             </div>
 
 
-            <a data-bs-toggle="tooltip" onclick="delete_examtype({{i.id}});" title="Delete examtype"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+            <a data-bs-toggle="tooltip" onclick="delete_academic({{i.id}});" title="Delete academic"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
           </td>
         </tr>
-        {% endfor %}
+        {% comment %} {% endfor %} {% endcomment %}
       </tbody>
     </table>
   </div>
@@ -141,33 +136,35 @@
     })
     function validate_add_form(){
       debugger
-      var examtype_name=$('#examtype_name').val()
-      var totalmarks=$('#totalmarks').val()
+      var academic_name=$('#academic_name').val()
+      var academic_start_date=$('#academic_start_date').val()
+      var academic_end_date=$('#academic_end_date').val()
 
-      if(IsValid(examtype_name)){
-        $('#examtype_name').html();
-        $('#examtype_name_error').show().delay(3000).slideUp();
-        $('#examtype_name_error').html('Please enter exam type name');
-        $('#examtype_name').focus();
+
+      if(IsValid(academic_start_date)){
+        $('#academic_start_date').html();
+        $('#academic_start_date_error').show().delay(3000).slideUp();
+        $('#academic_start_date_error').html('Please select academic start date');
+        $('#academic_start_date').focus();
         return false;
-      }      
-      if(IsValid(totalmarks)){
-        $('#totalmarks').html();
-        $('#totalmarks_error').show().delay(3000).slideUp();
-        $('#totalmarks_error').html('Please enter total marks');
-        $('#totalmarks').focus();
+      }
+      if(IsValid(academic_end_date)){
+        $('#academic_end_date').html();
+        $('#academic_end_date_error').show().delay(3000).slideUp();
+        $('#academic_end_date_error').html('Please select academic end date');
+        $('#academic_end_date').focus();
         return false;
       }
       else{
 
 
         var fd = new FormData();    
-        fd.append("TypeName",examtype_name);
-        fd.append("Marks",totalmarks);
+        fd.append("academic_start_date",academic_start_date);
+        fd.append("academic_end_date",academic_end_date);
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontend_url+"exam/add_exam_type",
+          url: frontend_url+"academic",
           data: fd,
           processData: false,
           contentType: false,
@@ -178,7 +175,7 @@
                 text: response.response.msg,
                 icon: 'success',
               }).then((result) => {
-                window.location.href = "/exam/exam_type";
+                window.location.href = "/academic";
         
               });
             }else{
@@ -198,32 +195,35 @@
     }
     function validate_edit_form(id){
       debugger
-      var examtype_name=$('#examtype_name'+id).val()
-      var totalmarks=$('#totalmarks'+id).val()
+      var academic_name=$('#academic_name').val()
+      var academic_start_date=$('#academic_start_date').val()
+      var academic_end_date=$('#academic_end_date').val()
 
-      if(IsValid(examtype_name)){
-        $('#examtype_name'+id).html();
-        $('#examtype_name_error'+id).show().delay(3000).slideUp();
-        $('#examtype_name_error'+id).html('Please enter exam type name');
-        $('#examtype_name'+id).focus();
+
+      if(IsValid(academic_start_date)){
+        $('#academic_start_date'+id).html();
+        $('#academic_start_date_error'+id).show().delay(3000).slideUp();
+        $('#academic_start_date_error'+id).html('Please select academic start date');
+        $('#academic_start_date'+id).focus();
         return false;
       }
-      if(IsValid(totalmarks)){
-        $('#totalmarks'+id).html();
-        $('#totalmarks_error'+id).show().delay(3000).slideUp();
-        $('#totalmarks_error'+id).html('Please enter total marks');
-        $('#totalmarks'+id).focus();
+      if(IsValid(academic_end_date)){
+        $('#academic_end_date'+id).html();
+        $('#academic_end_date_error'+id).show().delay(3000).slideUp();
+        $('#academic_end_date_error'+id).html('Please select academic end date');
+        $('#academic_end_date'+id).focus();
         return false;
       }
       else{
         var fd = new FormData();    
-        fd.append("TypeName",examtype_name);
-        fd.append("Marks",totalmarks);
+        fd.append("academicName",academic_name);
+        fd.append("academic_start_date",academic_start_date);
+        fd.append("academic_end_date",academic_end_date);
         fd.append("id",id);
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontend_url+"exam/edit_exam_type",
+          url: frontend_url+"academic_master/edit_academic",
           data: fd,
           processData: false,
           contentType: false,
@@ -235,7 +235,7 @@
                 text: response.response.msg,
                 icon: 'success',
               }).then((result) => {
-                window.location.href = "/exam/exam_type";
+                window.location.href = "/academic_master";
         
               });
             }else{
@@ -251,7 +251,7 @@
       }
     }
 
-    function delete_examtype(id){
+    function delete_academic(id){
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -267,7 +267,7 @@
           fd.append("csrfmiddlewaretoken","{{csrf_token}}");
           $.ajax({
             type: "POST",
-            url: frontend_url+"exam/delete_exam_type",
+            url: frontend_url+"academic_master/delete_academic",
             data: fd,
             processData: false,
             contentType: false,
@@ -279,7 +279,7 @@
                   text: response.response.msg,
                   icon: 'success',
                 }).then((result) => {
-                  window.location.href = "/exam/exam_type";
+                  window.location.href = "/academic_master";
           
                 });
               }else{

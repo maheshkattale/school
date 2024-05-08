@@ -6,17 +6,23 @@ from rest_framework.generics import GenericAPIView
 from school.static_info import frontend_url
 # Create your views here.
 class_list_url=frontend_url+'api/ClassMaster/List'
-
-
+exam_type_list_url=frontend_url+'api/MarksheetMaster/List'
+add_exam_type_url=frontend_url+'api/MarksheetMaster/Add'
+edit_exam_type_url=frontend_url+'api/MarksheetMaster/update'
+delete_exam_type_url=frontend_url+'api/MarksheetMaster/delete'
+exam_list_url=frontend_url+'api/MarksheetMaster/Examlist'
+delete_exam_list_url=frontend_url+'api/MarksheetMaster/deleteexam'
+teacher_list_url=frontend_url+'api/TeacherMaster/list'
+subject_list_url=frontend_url+'api/SubjectMaster/List'
 class exam(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
-            # exam_request = requests.get(exam_url,headers=headers)
-            # exam_response = exam_request.json()
-            return render(request, 'admin/exam/exam_master.html',{})
+            exam_list_request = requests.get(exam_list_url,headers=headers)
+            exam_list_response = exam_list_request.json()
+            return render(request, 'admin/exam/exam_master.html',{'exams':exam_list_response['data']})
         else:
             return redirect('school:login')
         
@@ -26,8 +32,7 @@ class edit_exam(GenericAPIView):
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
-            # exam_request = requests.get(exam_url,headers=headers)
-            # exam_response = exam_request.json()
+
             return render(request, 'admin/exam/edit_exam.html',{})
         else:
             return redirect('school:login')
@@ -38,9 +43,19 @@ class add_exam(GenericAPIView):
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
-            # exam_request = requests.get(exam_url,headers=headers)
-            # exam_response = exam_request.json()
-            return render(request, 'admin/exam/add_exam.html',{})
+            exam_type_list_request = requests.get(exam_type_list_url,headers=headers)
+            exam_type_list_response = exam_type_list_request.json()
+            
+            class_list_request = requests.get(class_list_url,headers=headers)
+            class_list_response = class_list_request.json()
+            
+            
+            teacher_list_request = requests.get(teacher_list_url,headers=headers)
+            teacher_list_response = teacher_list_request.json()
+            subject_list_request = requests.get(subject_list_url,headers=headers)
+            subject_list_response = subject_list_request.json()
+            
+            return render(request, 'admin/exam/add_exam.html',{'exam_types':exam_type_list_response['data'],'classes':class_list_response['data'],'teachers':teacher_list_response['data'],'subjects':subject_list_response['data']})
         else:
             return redirect('school:login')
         
@@ -55,12 +70,68 @@ class exam_type(GenericAPIView):
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
-
-            return render(request, 'admin/exam_type/exam_type_master.html',{})
+            exam_type_list_request = requests.get(exam_type_list_url,headers=headers)
+            exam_type_list_response = exam_type_list_request.json()
+            return render(request, 'admin/exam_type/exam_type_master.html',{'exam_types':exam_type_list_response['data']})
+        else:
+            return redirect('school:login')
+        
+class add_exam_type(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            print("data",data)
+            add_exam_type_list_request = requests.post(add_exam_type_url,data=data,headers=headers)
+            add_exam_type_list_response = add_exam_type_list_request.json()
+            return HttpResponse(json.dumps(add_exam_type_list_response), content_type="application/json")
+        else:
+            return redirect('school:login')
+class edit_exam_type(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            print("data",data)
+            edit_exam_type_list_request = requests.post(edit_exam_type_url,data=data,headers=headers)
+            edit_exam_type_list_response = edit_exam_type_list_request.json()
+            return HttpResponse(json.dumps(edit_exam_type_list_response), content_type="application/json")
+        else:
+            return redirect('school:login')
+class delete_exam_type(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            print("data",data)
+            delete_exam_type_list_request = requests.post(delete_exam_type_url,data=data,headers=headers)
+            delete_exam_type_list_response = delete_exam_type_list_request.json()
+            return HttpResponse(json.dumps(delete_exam_type_list_response), content_type="application/json")
+        else:
+            return redirect('school:login')
+class delete_exam(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            print("data",data)
+            delete_exam_list_request = requests.post(delete_exam_list_url,data=data,headers=headers)
+            delete_exam_list_response = delete_exam_list_request.json()
+            return HttpResponse(json.dumps(delete_exam_list_response), content_type="application/json")
         else:
             return redirect('school:login')
         
         
         
+        
+                
         
         

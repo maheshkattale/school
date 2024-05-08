@@ -104,9 +104,12 @@
     $('#children1_blood_group').select2();
     flatpickr(".date_of_birth", {
       dateFormat: "d-m-Y",
+
     });
     flatpickr(".date_of_joining", {
       dateFormat: "d-m-Y",
+    maxDate: "today" // Disable future dates
+
     });
 
   });
@@ -188,6 +191,8 @@ var counterlist = []
     });
     flatpickr(".date_of_joining", {
       dateFormat: "d-m-Y",
+      maxDate: "today" // Disable future dates
+
     });
     lengthtr=$('#child-table tbody tr').length;
     $('#child_count').text(lengthtr);

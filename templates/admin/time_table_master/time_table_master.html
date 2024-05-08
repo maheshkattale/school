@@ -100,11 +100,7 @@
 {% block script %}
   <script>
     $(document).ready(function () {
-      $('#day').select2()
-      $('#class_name').select2()
-      $('#subject').select2()
-      $('#teacher').select2()
-    
+
       jQuery(function ($) {
         var start = moment().subtract(0, 'days')
         var end = moment()

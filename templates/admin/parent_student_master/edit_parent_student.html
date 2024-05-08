@@ -153,6 +153,8 @@
     });
     flatpickr(".date_of_joining", {
       dateFormat: "d-m-Y",
+      maxDate: "today" // Disable future dates
+
     });
 
     var count =  $('#listlength').text();
@@ -252,6 +254,8 @@ function add_childern_feilds(){
     });
     flatpickr(".date_of_joining", {
       dateFormat: "d-m-Y",
+      maxDate: "today" // Disable future dates
+
     });
     lengthtr=$('#child-table tbody tr').length;
     $('#child_count').text(lengthtr);

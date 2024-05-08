@@ -18,10 +18,10 @@
             <div class="row">
               <div class="mb-3 col-lg-4">
                 <label for="exam_type" class="form-label">Exam Type</label>
-                <select id="exam_type" class="form-select" aria-describedby="exam_type_error">
+                <select id="exam_type" class="form-select select2" aria-describedby="exam_type_error">
                   <option value="" selected>Please select type</option>
-                  {% for type in types %}
-                    <option value="{{ type.id }}">{{ type.typeName }}</option>
+                  {% for type in exam_types %}
+                    <option value="{{ type.id }}">{{ type.TypeName }}</option>
                   {% endfor %}
                 </select>
                 <div id="exam_type_error" class="form-text error_message"></div>
@@ -40,7 +40,7 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="exam_date" class="form-label">Date</label>
-                <input type="text" class="form-control" id="exam_date" placeholder="Please select date" aria-describedby="exam_date_error" readonly />
+                <input type="text" class="form-control date_picker" id="exam_date" placeholder="Please select date" aria-describedby="exam_date_error" readonly />
                 <div id="exam_date_error" class="form-text error_message"></div>
               </div>
 
@@ -57,14 +57,27 @@
 
               <div class="mb-3 col-lg-4">
                 <label for="exam_subject" class="form-label">Subject</label>
-                <select id="exam_subject" class="form-select" aria-describedby="exam_subject_error">
+                <select id="exam_subject" class="form-select select2" aria-describedby="exam_subject_error">
                   <option value="" selected>Please select subject</option>
                   {% for subject in subjects %}
-                    <option value="{{ subject.id }}">{{ subject.subjectName }}</option>
+                    <option value="{{ subject.id }}">{{ subject.SubjectName }}</option>
                   {% endfor %}
                 </select>
                 <div id="exam_subject_error" class="form-text error_message"></div>
               </div>
+
+
+              <div class="mb-3 col-lg-4">
+                <label for="exam_academic" class="form-label">Academic</label>
+                <select id="exam_academic" class="form-select select2" aria-describedby="exam_academic_error">
+                  <option value="" selected>Please select academic</option>
+                  {% for academic in academics %}
+                    <option value="{{ academic.id }}">{{ academic.academicName }}</option>
+                  {% endfor %}
+                </select>
+                <div id="exam_academic_error" class="form-text error_message"></div>
+              </div>
+
 
               <div class="mb-3 col-lg-12">
                 <label for="exam_instruction" class="form-label">Exam Instruction</label>
@@ -74,28 +87,34 @@
 
               <div class="mb-3 col-lg-3">
                 <label for="exam_class" class="form-label">Class</label>
-                <select id="exam_class" class="form-select" aria-describedby="exam_class_error">
+                <select id="exam_class" class="form-select select2" aria-describedby="exam_class_error">
                   <option value="" selected>Please select class</option>
-                  {% for class in classs %}
-                    <option value="{{ class.id }}">{{ class.className }}</option>
+                  {% for class in classes %}
+                    <option value="{{ class.id }}">{{ class.ClassName }}</option>
                   {% endfor %}
                 </select>
                 <div id="exam_class_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-3">
                 <label for="exam_invigilator" class="form-label">Exam Invigilator</label>
-                <input type="text" class="form-control" id="exam_invigilator" placeholder="Please enter invigilator" aria-describedby="exam_invigilator_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                <select id="exam_invigilator" class="form-select select2" aria-describedby="exam_invigilator_error">
+                  <option value="" selected>Please select invigilator</option>
+                  {% for class in teachers %}
+                    <option value="{{ class.id }}">{{ class.Username }}</option>
+                  {% endfor %}
+                </select>
                 <div id="exam_invigilator_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-3">
                 <label for="exam_roomno" class="form-label">Exam Room No</label>
-                <input type="text" class="form-control" id="exam_roomno" placeholder="Please enter room no" aria-describedby="exam_roomno_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                <input type="text" class="form-control" id="exam_roomno" placeholder="Please enter room no" aria-describedby="exam_roomno_error"  />
                 <div id="exam_roomno_error" class="form-text error_message"></div>
               </div>
               <div class="col-lg-3 m-auto text-center">
                 <div class="">
-                  <a class="btn btn-primary" onclick="validate_form();">Add</a>
+                  <a class="btn btn-primary" id="addbtn">Add</a>
+                  <a id="updatedraftBtn" onclick="update_draft();" class="btn btn-primary d-none">Update</a>
                 </div>
               </div>
 
@@ -109,31 +128,7 @@
                     <th>Action</th>
                   </thead>
                   <tbody id="table_body">
-                    <tr>
-                      <td>1</td>
-                      <td>1A</td>
-                      <td>Mahesh Kattale</td>
-                      <td>404</td>
-                      <td>
 
-                        <a data-bs-toggle="tooltip" title="Edit " onclick="get_timetable_info('{{i.id}}');"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                        <a data-bs-toggle="tooltip" title="Delete " onclick="delete_timetable('{{i.id}}');"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-                      
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>2</td>
-                      <td>1B</td>
-                      <td>Sapna kanchar</td>
-                      <td>405</td>
-                      <td>
-
-                        <a data-bs-toggle="tooltip" title="Edit " onclick="get_timetable_info('{{i.id}}');"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                        <a data-bs-toggle="tooltip" title="Delete " onclick="delete_timetable('{{i.id}}');"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-                      
-                      </td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -153,16 +148,147 @@
 
 {% block script %}
   <script>
+    var classlist = [] // Array to store classlist
+    var rowno = 1 //  number counter
+    var itemtobechange = ''
+    
     $(document).ready(function () {
-      $('#exam_subject').select2()
-      $('#exam_type').select2()
-      $('#exam_class').select2()
-      flatpickr('#exam_date', {
-        dateFormat: 'd-m-Y' // Customize date format if needed
-        // You can add more configuration options here
+      $('#addbtn').on('click', function () {
+        if (validate_mini_form() == true) {
+          var exam_class = $('#exam_class').val()
+          var exam_invigilator = $('#exam_invigilator').val()
+          var exam_roomno = $('#exam_roomno').val()
+          var exam_classname = $('#exam_class option:selected').text();
+          var exam_invigilatorname = $('#exam_invigilator option:selected').text();
+
+          $('#table_body').append(
+            `
+                      <tr class="rowitem` +
+              rowno +
+              `">
+                        <td>` +
+              rowno +
+              `</td>
+                        <td>` +
+                          exam_classname +
+              `</td>
+                        <td>` +
+                          exam_invigilatorname +
+              `</td>
+                        <td>` +
+              exam_roomno +
+              `</td>
+          
+                        <td>
+                          <a onclick="editrow(` +
+              rowno +
+              `);" data-bs-toggle="tooltip" title="Edit "><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+                          <a onclick="deleterow(` +
+              rowno +
+              `);"  data-bs-toggle="tooltip" title="Delete "><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+                        </td>
+                      </tr>
+                `
+          )
+    
+
+
+          $('#exam_class').val('').trigger('change')
+          $('#exam_invigilator').val('').trigger('change')
+          $('#exam_roomno').val('')
+    
+          classlist.push({ itemno: rowno, ClassId: exam_class, ClassName: exam_classname, RoomNo: exam_roomno, InvigilatorId: exam_invigilator })
+          rowno++
+          console.log('add classlist', classlist)
+
+          Swal.fire({
+            text: "Added Successfully",
+            icon: 'success',
+          })
+          //addToArray();
+        }
       })
     })
+    function update_draft(){
+      if(validate_mini_form() == true){
+  
+      itemNo=itemtobechange
+      var exam_class = $('#exam_class').val()
+      var exam_invigilator = $('#exam_invigilator').val()
+      var exam_roomno = $('#exam_roomno').val()
+      var exam_classname = $('#exam_class option:selected').text();
+      var exam_invigilatorname =$('#exam_invigilator option:selected').text();
+
+      $('.rowitem'+itemNo).html(`<td>`+itemNo+`</td>      <td>`+exam_classname+`</td>  <td>`+exam_invigilatorname+`</td>  <td>`+exam_roomno+`</td>  <td>      <a onclick="editrow(`+itemNo+`);" data-bs-toggle="tooltip" title="Edit "><i class="fa-solid fa-pen-to-square mx-1"></i></a>      <a onclick="deleterow('`+itemNo+`');"  data-bs-toggle="tooltip" title="Delete "><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>    </td>`)
+  
+  
+  
+   
+  
+  
+  
+  
+      var result=classlist.find(item => item.itemno === itemNo)
+      if (result) {
+        result.ClassName =exam_classname;
+        result.ClassId =exam_class;
+        result.InvigilatorId =exam_invigilator;
+        result.RoomNo = exam_roomno;
+
+      } 
+  
+      var exam_class = $('#exam_class').val('').trigger('change');
+      var exam_invigilator = $('#exam_invigilator').val('').trigger('change');
+      var exam_roomno = $('#exam_roomno').val('');
+
+
+      $('#addbtn').removeClass('d-none');
+      $('#updatedraftBtn').addClass('d-none');
+      console.log('updatea classlist', classlist)
+      Swal.fire({
+        text: "Updated Successfully",
+        icon: 'success',
+      })
+      }
+  
+    };
+    function deleterow(id) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          var result = classlist.find((item) => item.itemno === id)
     
+          const index = classlist.findIndex((item) => item.itemno === id)
+    
+          if (index !== -1) {
+            classlist.splice(index, 1)[0]
+          }
+          var rownoToRemove = $('.rowitem' + id)
+    
+          rownoToRemove.remove()
+    
+          $('#exam_class').val('').trigger('change')
+          $('#exam_invigilator').val('').trigger('change')
+          $('#exam_roomno').val('')
+    
+          $('#addbtn').removeClass('d-none')
+          $('#updatedraftBtn').addClass('d-none')
+          console.log('delete classlist', classlist)
+
+          Swal.fire({
+            text: "Deleted Successfully",
+            icon: 'success',
+          })
+        }
+      })
+    }
     function validate_form() {
       debugger
       var exam_class = $('#exam_class').val()
@@ -261,5 +387,57 @@
         })
       }
     }
+    function validate_mini_form() {
+      debugger
+      var exam_class = $('#exam_class').val()
+      var exam_invigilator = $('#exam_invigilator').val()
+      var exam_roomno = $('#exam_roomno').val()
+      if (IsValid(exam_class)) {
+        $('#exam_class').html()
+        $('#exam_class_error').show().delay(3000).slideUp()
+        $('#exam_class_error').html('Please select class')
+        $('#exam_class').focus()
+        return false
+      }
+      if (IsValid(exam_invigilator)) {
+        $('#exam_invigilator').html()
+        $('#exam_invigilator_error').show().delay(3000).slideUp()
+        $('#exam_invigilator_error').html('Please select exam invigilator ')
+        $('#exam_invigilator').focus()
+        return false
+      }
+      if (IsValid(exam_roomno)) {
+        $('#exam_roomno').html()
+        $('#exam_roomno_error').show().delay(3000).slideUp()
+        $('#exam_roomno_error').html('Please enter room number')
+        $('#exam_roomno').focus()
+        return false
+      } else {
+        return true
+      }
+    }
+    function editrow(itemNo){
+
+      var result=classlist.find(item => item.itemno === itemNo)
+      const index = classlist.findIndex(item => item.itemno === itemNo);
+  
+  
+      $('#addbtn').addClass('d-none')
+      $('#updatedraftBtn').removeClass('d-none')
+  
+      itemtobechange=itemNo
+
+
+
+      $('#exam_class').val(result.ClassId).trigger('change')
+      $('#exam_invigilator').val(result.InvigilatorId).trigger('change')
+      $('#exam_roomno').val(result.RoomNo)
+
+
+  
+  
+  
+    };
+
   </script>
 {% endblock %}

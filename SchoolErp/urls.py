@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('teacher_master/', include(('teacher.urls','teacher'),namespace='teacher')),
+    path('academic/', include(('academic.urls','academic'),namespace='academic')),
     path('time_table_master/', include(('time_table.urls','time_table'),namespace='time_table')),
     path('subject_master/', include(('subject.urls','subject'),namespace='subject')),
     path('exam/', include(('exam.urls','exam'),namespace='exam')),

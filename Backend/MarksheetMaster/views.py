@@ -22,16 +22,17 @@ class AddExamType(GenericAPIView):
     def post(self,request):
         data = request.data.copy()
         data['isActive'] = True
+        print("backend ",data)
         examtypeexist = ExamType.objects.filter(TypeName=data['TypeName'],Marks=data['Marks'],isActive= True).first()
         if examtypeexist is not None:
-            return Response({"data":'',"response": {"n": 0, "msg": "TypeName with marks already exist","status": "failure"}})
+            return Response({"data":'',"response": {"n": 0, "msg": "Type Name with marks already exist","status": "failure"}})
         else:
             serializer = ExamTypeSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"data":serializer.data,"response": {"n": 1, "msg": "ExamType added successfully","status": "success"}})
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "Exam Type added successfully","status": "success"}})
             else:
-                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "ExamType not added ","status": "failure"}})
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Exam Type not added ","status": "failure"}})
 
         
 class ExamTypelist(GenericAPIView):

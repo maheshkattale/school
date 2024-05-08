@@ -121,7 +121,7 @@
         <div class="col-md-4 right-left">
           <div class="position-relative form-group">
             <label for="roleid" class="">Select Role <span class="text-danger">*</span></label>
-            <select onchange="getpermissionbyrole();" name="roleid" id="roleid" class="form-control">
+            <select onchange="getpermissionbyrole();" name="roleid" id="roleid" class="form-control select2">
               <option selected value="">Select Role</option>
               {% for i in roles %}
                 <option value="{{i.id}}" >{{i.RoleName}}</option>   
@@ -224,7 +224,6 @@
 
 <script>
     $(document).ready(function () {
-        $('#roleid').select2()
         $('.parent_checkbox').click(function() {
           // Find the closest <tr> element relative to the clicked checkbox
           var currentTr = $(this).closest('tr');

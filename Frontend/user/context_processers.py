@@ -6,12 +6,20 @@ def getMenu(request):
     token = request.session.get('token')
     user_id = request.session.get('user_id')
     Menu = request.session.get('Menu')
+    username = request.session.get('username')
+    mobileNumber = request.session.get('mobileNumber')
+    Address = request.session.get('Address')
+    email = request.session.get('email')
     return {
         
             'user_id':user_id,
             'token':token,
             'frontend_url':frontend_url,
             'Menu':Menu,
+            'email':email,
+            'mobileNumber':mobileNumber,
+            'Address':Address,
+            'username':username,
             
             
             }
