@@ -4,10 +4,10 @@ from django.shortcuts import render
 from rest_framework.response import Response
 import json
 from rest_framework.generics import GenericAPIView
-from SchoolMaster.models import School
+from SchoolMaster.models import School,AcademicYear
 from User.models import User,Role
 from User.serializers import UserSerializer
-from SchoolMaster.serializers import schoolSerializer
+from SchoolMaster.serializers import schoolSerializer,AcademicYearSerializer
 from SchoolMaster.common import createschooladmin
 from django.template.loader import get_template, render_to_string
 from rest_framework.authentication import (BaseAuthentication,
@@ -227,3 +227,108 @@ class enableSchool(GenericAPIView):
                 return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Activate School ! ","status": "failure"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "School not found ","status": "failure"}})
+
+
+
+
+
+class AddAcademicYear(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        userdata = {}
+        data = request.data.copy()
+        schoolcode = request.user.school_code
+        data['Isdeleted'] = False
+        data['school_code'] = schoolcode
+        data['isActive'] = False
+        schoolobj = School.objects.filter(school_code=schoolcode).first()
+        if schoolobj is not None:
+            schoolid = schoolobj.id
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "School not found ","status": "failure"}})
+        
+        data['SchoolId'] = schoolid
+        newstartdate = data['startdate']
+        newenddate = data['enddate']
+        yearexist = AcademicYear.objects.filter(startdate=newstartdate,enddate=newenddate,Isdeleted=False).first()
+        if yearexist is not None:
+            serializer = AcademicYearSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic year added successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't add Academic year ! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Academic year already present ","status": "failure"}})
+
+
+
+class AcademicYearlist(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        schoolcode = request.user.school_code
+        yearexist = AcademicYear.objects.filter(school_code=schoolcode,Isdeleted=False)
+        serializer = AcademicYearSerializer(yearexist)
+        return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic year list found successfully","status": "success"}})
+    
+
+class AcademicYearbyid(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        schoolcode = request.user.school_code
+        id = request.data.get('id')
+        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
+        if yearobj is not None:
+            serializer = AcademicYearSerializer(yearobj)
+            return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic Year found successfully","status": "success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Academic Year not found ","status": "failure"}})
+            
+
+
+class updateAcademicYear(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        schoolcode = request.user.school_code
+        data = request.data.copy()
+        yearid = data['id']
+        updatedstartdate = data['startdate']
+        updatedenddate = data['enddate']
+        yearobjexist = AcademicYear.objects.filter(id=yearid,Isdeleted=False).first()
+        if yearobjexist is not None:
+            duplicateyearobj = AcademicYear.objects.filter(startdate=updatedstartdate,enddate=updatedenddate,id=yearid,Isdeleted=False).exclude(id=yearid)
+            if duplicateyearobj is None:
+                serializer = AcademicYearSerializer(yearobjexist,data=data,partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic year updated successfully","status": "success"}})
+                else:
+                    return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't update Academic year ! ","status": "failure"}})
+            else:
+                return Response({"data":'',"response": {"n": 0, "msg": "Academic year already exist ! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Academic year not found ! ","status": "failure"}})
+        
+
+class deleteAcademicYear(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        schoolcode = request.user.school_code
+        id = request.data.get('id')
+        data={}
+        data['Isdeleted'] = True
+        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
+        if yearobj is not None:
+            serializer = AcademicYearSerializer(yearobj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic Year deleted successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't delete Academic year ! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Academic Year not found ","status": "failure"}})

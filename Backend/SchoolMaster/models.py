@@ -11,5 +11,13 @@ class School(TrackingModel):
     admin_Email = models.EmailField(null=True,blank=True)
     school_code = models.CharField(max_length=255,null=True,blank=True)
    
-   
+
+
+class AcademicYear(TrackingModel):
+    startdate = models.DateField()
+    enddate = models.DateField()
+    Isdeleted  = models.BooleanField(default=False,blank=True,null=True)
+    SchoolId = models.ForeignKey(School,on_delete=models.CASCADE,null=True,blank=True)
+    school_code = models.CharField(max_length=255,null=True,blank=True)
+
 

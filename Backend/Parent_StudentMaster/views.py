@@ -18,7 +18,7 @@ from django.core.mail import EmailMessage
 from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
 from datetime import datetime
-from Frontend.school.static_info import frontend_url
+from Frontend.school.static_info import frontend_url,image_url
 
 
 def createstudentid(schoolcode):
@@ -71,7 +71,7 @@ class AddParentStudent(GenericAPIView):
                     formattedjoin_date = date_object.strftime("%Y-%m-%d")
                     
                     newstudentcode = createstudentid(schoolcode)
-                    Students.objects.create(ParentId=parentid,StudentName=s['Studentname'],StudentClass_id=s['StudentClass'],DateOfBirth = formatteddob_date,DateofJoining=formattedjoin_date,school_code=schoolcode,StudentCode=newstudentcode,BloodGroup=s['BloodGroup'])
+                    Students.objects.create(ParentId=parentid,StudentName=s['Studentname'],StudentClass_id=s['StudentClass'],DateOfBirth = formatteddob_date,DateofJoining=formattedjoin_date,school_code=schoolcode,StudentCode=newstudentcode,BloodGroup=s['BloodGroup'],photo=s['photo'])
 
             
                 #send mail
@@ -117,6 +117,11 @@ class ParentStudentlist(GenericAPIView):
             
             studentobj = Students.objects.filter(ParentId = p['id'],isActive=True,school_code=schoolcode)
             studentser =  StudentSerializer(studentobj,many=True)
+            for s in studentser.data:
+                if s['Photo'] != "" and s['Photo'] is not None:
+                    s['stdimage'] = image_url + str(s['Photo'])
+                else:
+                    s['stdimage'] = image_url + "/static/assets/images/profile.png"
            
             p['Studentslist'] = studentser.data
         return Response({"data":parentserializer.data,"response": {"n": 1, "msg": "Parents list found successfully","status": "success"}})
@@ -191,7 +196,10 @@ class updateParentStudent(GenericAPIView):
                         print()
                         print("stuobj",stuobj)
                         if stuobj is not None :
-                            print("not none",stuobj)
+                            if s['Photo'] != "" and s['Photo'] is not None:
+                                s['Photo'] = s['Photo']
+                            else:
+                                s['Photo'] = stuobj.Photo
                             stuserializer = StudentSerializer(stuobj,data=s,partial=True)
                             print("initial data",stuserializer.initial_data)
                             if stuserializer.is_valid():
@@ -203,7 +211,7 @@ class updateParentStudent(GenericAPIView):
                         print("snewelse",s)
                         newstudentcode = createstudentid(schoolcode)
                         print("stucode",newstudentcode)
-                        Students.objects.create(ParentId=parentid,StudentName=s['StudentName'],StudentClass_id=s['StudentClass'],DateOfBirth = formatteddob_date,DateofJoining=formattedjoin_date,school_code=schoolcode,StudentCode=newstudentcode,BloodGroup=s['BloodGroup'])
+                        Students.objects.create(ParentId=parentid,StudentName=s['StudentName'],StudentClass_id=s['StudentClass'],DateOfBirth = formatteddob_date,DateofJoining=formattedjoin_date,school_code=schoolcode,StudentCode=newstudentcode,BloodGroup=s['BloodGroup'],Photo=s['Photo'])
 
 
                 return Response({"data":'',"studentlist":'',"response": {"n": 1, "msg": "parent updated successfully","status": "success"}})
@@ -239,6 +247,12 @@ class getParentStudentbyid(GenericAPIView):
                 formattedjoin_date = date_object2.strftime("%d-%m-%Y")
                 s['DateofJoining'] = formattedjoin_date
 
+                
+                if s['Photo'] != "" and s['Photo'] is not None:
+                    s['Photo'] = image_url + str(s['Photo'])
+                else:
+                    s['Photo'] = ""
+
             serailizer_data.update({"studentlist":ser.data})
             return Response({"data":serailizer_data,"response": {"n": 1, "msg": "parent found successfully","status": "success"}})
         else:
@@ -253,6 +267,11 @@ class studentlist(GenericAPIView):
         schoolcode = request.user.school_code
         studentobj = Students.objects.filter(isActive=True,school_code=schoolcode).order_by('id')
         studentser =  StudentSerializer(studentobj,many=True)
+        for s in studentser.data:
+            if s['Photo'] != "" and s['Photo'] is not None:
+                s['Photo'] = image_url + str(s['Photo'])
+            else:
+                s['Photo'] = image_url + "/static/assets/images/profile.png"
         return Response({"data":studentser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
     
 
@@ -264,6 +283,11 @@ class studentsbyclasslist(GenericAPIView):
         schoolcode = request.user.school_code
         stuobj = Students.objects.filter(StudentClass=classname,isActive=True,school_code=schoolcode)
         ser = StudentSerializer(stuobj,many=True)
+        for s in ser.data:
+            if s['Photo'] != "" and s['Photo'] is not None:
+                s['Photo'] = image_url + str(s['Photo'])
+            else:
+                s['Photo'] = image_url + "/static/assets/images/profile.png"
         return Response({"data":ser.data,"studentlist":ser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
       
 
@@ -281,6 +305,11 @@ class studentsbyparentlist(GenericAPIView):
                 i['classname'] = classobj.ClassName
             else:
                 i['classname'] = "--"
+
+            if i['Photo'] != "" and i['Photo'] is not None:
+                i['Photo'] = image_url + str(i['Photo'])
+            else:
+                i['Photo'] = ""
         return Response({"data":ser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
     
 

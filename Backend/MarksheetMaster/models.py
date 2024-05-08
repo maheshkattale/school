@@ -3,6 +3,7 @@ from helpers.models import TrackingModel
 from ClassMaster.models import Class
 from SubjectMaster.models import Subject
 from Parent_StudentMaster.models import Students
+from SchoolMaster.models import AcademicYear
 # Create your models here.
 
 
@@ -25,6 +26,7 @@ class Exams(TrackingModel):
     reportTime =  models.CharField(max_length=255,null=True,blank=True)
     RoomNo = models.CharField(max_length=255,null=True,blank=True)
     Instructions = models.TextField(null=True,blank=True)
+    AcademicYearId = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
 
