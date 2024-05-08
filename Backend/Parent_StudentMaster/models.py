@@ -1,6 +1,7 @@
 from django.db import models
 from helpers.models import TrackingModel
 from ClassMaster.models import Class
+from SchoolMaster.models import AcademicYear
 
 # Create your models here.
 class Students(TrackingModel):
@@ -11,8 +12,19 @@ class Students(TrackingModel):
     DateOfBirth =  models.DateField(null=True)
     DateofJoining = models.DateField(null=True)
     BloodGroup = models.IntegerField(null=True,blank=True)
+    photo = models.ImageField(upload_to='StudentImages/', blank=True, null=True,verbose_name='Student Photo')
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
-   
+
+class studentclassLog(TrackingModel):
+    AcademicyearId = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
+    studentId =  models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)
+    StudentCode = models.CharField(max_length=150,null=True,blank=True)
+    classid = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
+    school_code = models.CharField(max_length=150,null=True,blank=True)
+
+
+
+
 class BloodGroup(TrackingModel):
     Groupname = models.CharField(max_length=150,null=True,blank=True)
