@@ -13,6 +13,7 @@ from rest_framework import permissions
 from .models import *
 from .serializers import *
 from SchoolMaster.models import *
+from SchoolMaster.serializers import *
 from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
 from rest_framework.response import Response
@@ -368,8 +369,72 @@ class deleteStudent(GenericAPIView):
             return Response({"data":'',"response": {"n": 0, "msg": "student not found ","status": "failure"}})
         
 
-class studentidcard(GenericAPIView):
+class getstudentlist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        return Response({"data":'',"response": {"n": 0, "msg": "student not found ","status": "failure"}})
+        data = request.data.copy()
+        class_id = data['class']
+        ac_yearid = data['yearid']
+        schoolcode = request.user.school_code
+        studentlist = []
+
+        studentclassLogobj = studentclassLog.objects.filter(AcademicyearId=ac_yearid,classid=class_id,school_code=schoolcode)
+        if studentclassLogobj.exists():
+            studentclassser = studentclassLogserializer(studentclassLogobj,many=True)
+            for s in studentclassser.data:
+                stuobj = Students.objects.filter(id=s['studentId'],StudentCode=s['StudentCode'],school_code=schoolcode,isActive=True).first()
+                if stuobj is not None:
+                    stuser = StudentSerializer(stuobj) 
+                    studentlist.append(stuser.data)
+        return Response({"data":studentlist,"response": {"n": 1, "msg": "student list found ","status": "success"}})
+       
+
+class getstudentidcards(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        idcardlist = []
+        data = request.data.copy()
+        classid = data['classid']
+        ac_year = data['year']
+        schoolcode = request.user.school_code
+        # studentidlist = json.loads(data['studentlist'])
+        if request.POST.get('studentidlist') != "":
+            studentidlist = json.loads(request.POST.get('studentidlist'))
+        else:
+            studentidlist = []
+
+        if studentidlist != "" and  studentidlist != []:
+            for i in studentidlist:
+                icardobj={}
+                studobj = Students.objects.filter(id=i,isActive=True,school_code=schoolcode).first()
+                if studobj is not None:
+                    icardobj['academic_year'] = ac_year
+                    icardobj['studentname'] = studobj.StudentName
+
+                    classobj = Class.objects.filter(id=class_id,school_code=schoolcode).first()
+                    icardobj['classname'] = classobj.ClassName
+
+                    if studobj.photo != "" and studobj.photo is not None:
+                        icardobj['photo'] = image_url + str(studobj.photo)
+                    else:
+                        icardobj['photo'] = ""
+
+                    icardobj['StudentCode'] = studobj.StudentCode
+                    icardobj['DateOfBirth'] = studobj.DateOfBirth
+
+                    schoolobj = School.objects.filter(school_code=schoolcode).first()
+                    schoolser = schoolSerializer(schoolobj)
+                    icardobj['schooldata'] = schoolser.data
+
+                    parentobj = User.objects.filter(id=studobj.ParentId).first()
+                    parentser = UserlistSerializer(parentobj)
+                    icardobj['parentinfo'] = parentser.data
+
+                    idcardlist.append(icardobj)
+
+            return Response({"data":idcardlist,"response": {"n": 1, "msg": "student card info found successfully","status": "success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "student list is empty ","status": "failed"}})
+
