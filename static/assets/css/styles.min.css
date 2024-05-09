@@ -7554,13 +7554,15 @@ fieldset:disabled .btn {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: var(--bs-modal-zindex);
+    z-index: var(--bs-modal-zindex);   
+    z-index: 1051;
     display: none;
     width: 100%;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
     outline: 0
+    
 }
 
 .modal-dialog {
@@ -20030,3 +20032,7 @@ ul {
 #sidebarnav{
     margin-bottom: 0px;
 }
+/* .card{
+    border: none;
+    box-shadow: 0 0 5px grey;
+} */

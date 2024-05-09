@@ -17,8 +17,19 @@
           <form>
             <div class="row">
               <div class="mb-3 col-lg-4">
+                <label for="exam_academic" class="form-label">Academic Year</label>
+                <select id="exam_academic" class="form-select select2" aria-describedby="exam_academic_error">
+                  <option value="" selected>Please select academic</option>
+                  {% for academic in academics %}
+                    <option value="{{ academic.id }}">{{ academic.startdate }} to {{ academic.enddate }}</option>
+                  {% endfor %}
+                </select>
+                <div id="exam_academic_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
                 <label for="exam_type" class="form-label">Exam Type</label>
-                <select id="exam_type" class="form-select select2" aria-describedby="exam_type_error">
+                <select id="exam_type" class="form-select select2" aria-describedby="exam_type_error" onchange="get_marks()">
                   <option value="" selected>Please select type</option>
                   {% for type in exam_types %}
                     <option value="{{ type.id }}">{{ type.TypeName }}</option>
@@ -28,19 +39,15 @@
               </div>
               <div class="mb-3 col-lg-4">
                 <label for="exam_totalmarks" class="form-label">Exam Total Marks</label>
-                <input type="text" class="form-control" id="exam_totalmarks" placeholder="Please enter total marks" aria-describedby="exam_totalmarks_error" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                
+                <select id="exam_totalmarks" class="form-select select2" aria-describedby="exam_totalmarks_error" >
+                  <option value="" selected>Please select exam type first</option>
+
+                </select>
+                
                 <div id="exam_totalmarks_error" class="form-text error_message"></div>
               </div>
-              <div class="mb-3 col-lg-4">
-                <label for="exam_academic" class="form-label">Academic</label>
-                <select id="exam_academic" class="form-select select2" aria-describedby="exam_academic_error">
-                  <option value="" selected>Please select academic</option>
-                  {% for academic in academics %}
-                    <option value="{{ academic.id }}">{{ academic.startdate }} to {{ academic.enddate }}</option>
-                  {% endfor %}
-                </select>
-                <div id="exam_academic_error" class="form-text error_message"></div>
-              </div>
+
 
 
 
@@ -309,7 +316,13 @@
       var exam_subject = $('#exam_subject').val()
       var exam_instruction = $('#exam_instruction').val()
 
-
+      if (IsValid(exam_academic)) {
+        $('#exam_academic').html()
+        $('#exam_academic_error').show().delay(3000).slideUp()
+        $('#exam_academic_error').html('Please select exam academic year')
+        $('#exam_academic').focus()
+        return false
+      }
       if (IsValid(exam_type)) {
         $('#exam_type').html()
         $('#exam_type_error').show().delay(3000).slideUp()
@@ -324,13 +337,7 @@
         $('#exam_totalmarks').focus()
         return false
       }
-      if (IsValid(exam_academic)) {
-        $('#exam_academic').html()
-        $('#exam_academic_error').show().delay(3000).slideUp()
-        $('#exam_academic_error').html('Please select exam academic')
-        $('#exam_academic').focus()
-        return false
-      }
+
       if (IsValid(exam_starttime)) {
         $('#exam_starttime').html()
         $('#exam_starttime_error').show().delay(3000).slideUp()
@@ -396,6 +403,7 @@
         fd.append('reportTime', exam_reporttime)
         fd.append('Instructions', exam_instruction)
         fd.append('classlist', JSON.stringify(classlist))
+        fd.append('AcademicYearId', exam_academic)
   
         fd.append('csrfmiddlewaretoken', '{{csrf_token}}')
         $.ajax({
@@ -474,6 +482,42 @@
   
   
     };
+    function get_marks(){
+      var exam_type = $('#exam_type').val()
+      var fd = new FormData()
+      fd.append('id', exam_type)
 
+
+      fd.append('csrfmiddlewaretoken', '{{csrf_token}}')
+      $.ajax({
+        type: 'POST',
+        url: frontend_url + 'exam/get_marks_by_exam_type',
+        data: fd,
+        processData: false,
+        contentType: false,
+  
+        success: function (response) {
+          console.log("ExamTypMarkseobj",response)
+          if (response.response.n == 1) {
+
+
+            var options=''
+
+              options += `<option value="">Please Select Marks</option>`;
+              $.each(response.data, function(index, value){  
+                options += `<option value="` + value.Marks + `">` + value.Marks + `</option>`;           
+              });
+              $("#exam_totalmarks").html(options);
+
+
+          } else {
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error'
+            })
+          }
+        }
+      }) 
+    }
   </script>
 {% endblock %}

@@ -112,6 +112,93 @@ class examscorelist(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "ExamType not found ","status": "failure"}})
 
+class AddExamTypeMarks(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        data['isActive'] = True
+        print("backend ",data)
+        examtypeexist = ExamTypeMarks.objects.filter(Typeid=data['Typeid'],Marks=data['Marks'],isActive= True).first()
+        if examtypeexist is not None:
+            return Response({"data":'',"response": {"n": 0, "msg": "Type  with marks already exist","status": "failure"}})
+        else:
+            serializer = ExamTypeMarksSerializer1(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "Exam Type Marks added successfully","status": "success"}})
+            else:
+                print("serializer.errors",serializer.errors)
+                first_key, first_value = next(iter(serializer.errors.items()))
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": first_value[0],"status": "failure"}})
+
+class exam_type_marks_list(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        ExamTypeobjs = ExamTypeMarks.objects.filter(isActive=True).order_by('-id')
+        serializer = ExamTypeMarksSerializer(ExamTypeobjs,many=True)
+        return Response({"data":serializer.data,"response": {"n": 1, "msg": "Exam Type Marks list found successfully","status": "success"}})
+      
+class delete_exam_type_marks(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        ExamTypeMarksid = data['id']
+        ExamTypeMarksobj = ExamTypeMarks.objects.filter(id=ExamTypeMarksid,isActive=True).first()
+        if ExamTypeMarksobj is not None:
+            data['isActive'] = False
+            serializer = ExamTypeMarksSerializer(ExamTypeMarksobj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "ExamTypeMarks Deleted successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Delete ExamTypeMarks ! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "ExamTypeMarks not found ","status": "failure"}})
+
+
+class edit_exam_type_marks(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        ExamTypeMarksid = data['id']
+        ExamTypeMarksobj = ExamTypeMarks.objects.filter(id=ExamTypeMarksid,isActive=True).first()
+        if ExamTypeMarksobj is not None:
+            ExamTypeMarksexist = ExamTypeMarks.objects.filter(Typeid=data['Typeid'],Marks=data['Marks'],isActive= True).exclude(id=ExamTypeMarksid).first()
+            if ExamTypeMarksexist is not None:
+                return Response({"data":'',"response": {"n": 0, "msg": "ExamTypeMarks already exist","status": "failure"}})
+            else:
+                serializer = ExamTypeMarksSerializer1(ExamTypeMarksobj,data=data,partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"data":serializer.data,"response": {"n": 1, "msg": "ExamTypeMarks Updated successfully","status": "success"}})
+                else:
+                    return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Update ExamTypeMarks ! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "ExamTypeMarks not found ","status": "failure"}})
+
+class get_marks_by_exam_type(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        ExamTypeid = data['id']
+        if ExamTypeid is not None and ExamTypeid !='':
+            
+            ExamTypeobj = ExamType.objects.filter(id=ExamTypeid,isActive=True).first()
+            if ExamTypeobj is not None:
+                ExamTypMarkseobj = ExamTypeMarks.objects.filter(Typeid=ExamTypeobj.id)
+                exammarkser =  ExamTypeMarksSerializer(ExamTypMarkseobj,many=True)
+                return Response({"data":exammarkser.data,"response": {"n": 1, "msg": "Exam Type marks found successfully","status": "success"}})
+            else:
+                return Response({"data":[],"response": {"n": 0, "msg": "Exam Type not found ","status": "failure"}})
+
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg": "Exam Type required","status": "failure"}})
+            
 
 
 
@@ -130,7 +217,6 @@ class AddExam(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
-        print("dattttta",data)
         schoolcode = request.user.school_code
         if request.POST.get('classlist') != "":
             classlist = json.loads(request.POST.get('classlist'))
@@ -146,6 +232,13 @@ class AddExam(GenericAPIView):
         totalMarks = data['totalMarks']
         reportTime = data['reportTime']
         Instructions = data['Instructions']
+        AcademicYearId = int(data['AcademicYearId'])
+        academic_obj = AcademicYear.objects.filter(id=AcademicYearId,Isdeleted=False).first()
+        if academic_obj is None:
+            return Response({"data":'',"response": {"n": 0, "msg": "Academic year not found ","status": "failure"}})
+            
+            
+        print("dattttta",data)
 
         for i in classlist :
             examobj = Exams.objects.filter(ClassId=i['ClassId'],Date=Date,Examstarttime__lt = Examendtime,Examendtime__gt=Examstarttime,school_code=schoolcode)
@@ -156,7 +249,7 @@ class AddExam(GenericAPIView):
 
         if duplicateexist == False:
             for i in classlist:
-                Exams.objects.create(ClassId_id=i['ClassId'],Date=Date,Examstarttime=Examstarttime,Examendtime=Examendtime,SubjectId_id=SubjectId,ExamType_id=ExamType,totalMarks=totalMarks,reportTime=reportTime,RoomNo=i['RoomNo'],InvigilatorId=i['InvigilatorId'],Instructions=Instructions,school_code=schoolcode)
+                Exams.objects.create(ClassId_id=i['ClassId'],Date=Date,Examstarttime=Examstarttime,Examendtime=Examendtime,SubjectId_id=SubjectId,ExamType_id=ExamType,totalMarks=totalMarks,reportTime=reportTime,RoomNo=i['RoomNo'],InvigilatorId=i['InvigilatorId'],Instructions=Instructions,school_code=schoolcode,AcademicYearId=academic_obj)
 
             return Response({"data":'',"response": {"n": 1, "msg": "Exams created successfully","status": "success"}})
         else:
@@ -170,7 +263,7 @@ class Examlist(GenericAPIView):
     def get(self,request):
         schoolcode = request.user.school_code
         Examobjs = Exams.objects.filter(isActive=True,school_code=schoolcode).order_by('-id')
-        Examser = ExamSerializer(Examobjs,many=True)
+        Examser = CustomExamSerializer(Examobjs,many=True)
         for i in Examser.data:
             start_time = i['Examstarttime']
             end_time = i['Examendtime']

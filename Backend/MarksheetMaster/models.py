@@ -9,10 +9,14 @@ from SchoolMaster.models import AcademicYear
 
 class ExamType(TrackingModel):
     TypeName = models.CharField(max_length=150,null=True,blank=True)
+    school_code = models.CharField(max_length=150,null=True,blank=True)
+    def __str__(self):
+        return self.TypeName
+
+class ExamTypeMarks(TrackingModel):
+    Typeid =models.ForeignKey(ExamType,on_delete=models.CASCADE,null=True,blank=True)
     Marks =  models.CharField(max_length=150,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
-    
-
 
 class Exams(TrackingModel):
     ClassId = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)

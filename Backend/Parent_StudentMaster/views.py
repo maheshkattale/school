@@ -413,7 +413,7 @@ class getstudentidcards(GenericAPIView):
                     icardobj['academic_year'] = ac_year
                     icardobj['studentname'] = studobj.StudentName
 
-                    classobj = Class.objects.filter(id=class_id,school_code=schoolcode).first()
+                    classobj = Class.objects.filter(id=classid,school_code=schoolcode).first()
                     icardobj['classname'] = classobj.ClassName
 
                     if studobj.photo != "" and studobj.photo is not None:
