@@ -16,6 +16,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
     <link href="{% static 'assets/css/custom.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-************" crossorigin="anonymous">
+
   </head>
 
   <body>
@@ -34,11 +36,10 @@
           </div>
           <!-- Sidebar navigation -->
 
-          <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+          {% comment %} <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
             <ul id="sidebarnav">
 
               {% for i in Menu %} 
-        
                 {% if i.ParentID is None %}
                   <li class="sidebar-item">
                     <a class="sidebar-link" href="{{i.MenuPath}}" aria-expanded="false">
@@ -70,93 +71,7 @@
                 {% endif %}
               {% endfor %}
 
-{% comment %} 
-              <li class="nav-small-cap">
-                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                <span class="hide-menu">Home</span>
-              </li>
 
-
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/dashboard" aria-expanded="false">
-                  <span><i class="ti ti-layout-dashboard"></i></span>
-                  <span class="hide-menu">Dashboard</span>
-                </a>
-              </li>
-              <li class="nav-small-cap">
-                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                <span class="hide-menu">Masters</span>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/school_master" aria-expanded="false">
-                  <span><i class="ti ti-home"></i></span>
-                  <span class="hide-menu">School Master</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/teacher_master/" aria-expanded="false">
-                  <span><i class="ti ti-user"></i></span>
-                  <span class="hide-menu">Teacher Master</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/parent_student_master/" aria-expanded="false">
-                  <span><i class="ti ti-users"></i></span>
-                  <span class="hide-menu">Parents/ Student Master</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/time_table_master/" aria-expanded="false">
-                  <span><i class="ti ti-cards"></i></span>
-                  <span class="hide-menu">Time Table Master</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/academic_calender/" aria-expanded="false">
-                  <span><i class="ti ti-calendar"></i></span>
-                  <span class="hide-menu">Academic Calendar</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/marksheet" aria-expanded="false">
-                  <span><i class="ti ti-clipboard"></i></span>
-                  <span class="hide-menu">Marksheet</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/class_master/" aria-expanded="false">
-                  <span><i class="ti ti-pencil"></i></span>
-                  <span class="hide-menu">Class Master</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/subject_master/" aria-expanded="false">
-                  <span><i class="ti ti-book"></i></span>
-                  <span class="hide-menu">Subject Master</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/designation_master/" aria-expanded="false">
-                  <span><i class="ti ti-pin"></i></span>
-                  <span class="hide-menu">Designation Master</span>
-                </a>
-              </li>
-              <li class="nav-small-cap">
-                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                <span class="hide-menu">AUTH</span>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/login" aria-expanded="false">
-                  <span><i class="ti ti-login"></i></span>
-                  <span class="hide-menu">Login</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="/user/permissions" aria-expanded="false">
-                  <span><i class="ti ti-settings"></i></span>
-                  <span class="hide-menu">Permissions</span>
-                </a>
-              </li> {% endcomment %}
 
 
 
@@ -165,7 +80,74 @@
               
 
             </ul>
+          </nav> {% endcomment %}
+
+
+
+
+          
+          <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+            <div class="accordion">
+              <ul id="sidebarnav">
+
+                {% for i in Menu %} 
+                  {% if i.ParentID is None %}
+                  <li class="sidebar-item pagenav">
+                    <h4 class="sidebar-h4">
+                      <a class="sidebar-link" href="{{i.MenuPath}}" aria-expanded="false">
+                        <span>{{i.MenuIcon|safe}}</span>
+                        <span class="hide-menu">{{i.MenuName}}</span>
+                      </a>
+
+      </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+
+
+ 
+              <ul id="sidebarnav">
+
+                {% for i in Menu %} 
+                  {% if i.ParentID == 0 %}
+                  <li class="sidebar-item pagenav">
+                    <h4 class="sidebar-h4 cursor-pointer">
+                      <a class="sidebar-link"  aria-expanded="false">
+                        <span>{{i.MenuIcon|safe}}</span>
+                        <span class="hide-menu">{{i.MenuName}}</span>
+                      </a>
+                      <i class="fa fa-angle-right"></i></h4>
+                    <ul>
+                      {% for j in Menu  %}
+                    {% if i.MenuID == j.ParentID %}
+                    <li class="sidebar-item page_item">
+                      <h4 class="sidebar-h4 cursor-pointer">
+                      <a class="sidebar-link justify-content-start px-2" href="{{j.MenuPath}}" aria-expanded="false">
+                        <span>{{j.MenuIcon|safe}}</span>
+                        <span class="hide-menu">{{j.MenuName}}</span>
+                      </a>
+                      </h4>
+                    </li>
+                    {% endif %}
+                  {% endfor %}
+                    </ul>
+                  </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+
+
+            </div>
           </nav>
+
+
+
+
+
+
+
+
+
           <!-- End Sidebar navigation -->
         </div>
         <!-- End Sidebar scroll -->
@@ -177,6 +159,7 @@
         <header class="app-header">
           <nav class="navbar navbar-expand-lg navbar-light">
             <div class="navbar-collapse justify-content-between px-0" id="navbarNav">
+
               <ul class="navbar-nav flex-row align-items-center">
                 <li class="nav-item d-block">
                   <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)"><i class="ti ti-menu-2"></i></a>
@@ -200,7 +183,15 @@
                   </a>
                 </li>
                 <li class="nav-item dropdown">
-                  <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false"><img src="{% static 'assets/images/profile/user-1.jpg' %}" alt="" width="35" height="35" class="rounded-circle" /></a>
+                  <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
+
+                    {% if profile_image is not None and profile_image != "" %}
+                      <img src="{{frontend_url}}{{profile_image}}" alt="" width="35" height="35" class="rounded-circle" />
+                    {% else %}
+                      <img src="{% static 'assets/images/profile/profile.jpg' %}" alt="" width="35" height="35" class="rounded-circle" />
+                    
+                    {% endif %}
+                  </a>
                   <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                     <div class="message-body">
                       <a href="/user/profile" class="d-flex align-items-center gap-2 dropdown-item">
@@ -218,6 +209,7 @@
                 </li>
 
               </ul>
+
             </div>
           </nav>
         </header>

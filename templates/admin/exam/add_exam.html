@@ -28,31 +28,47 @@
               </div>
               <div class="mb-3 col-lg-4">
                 <label for="exam_totalmarks" class="form-label">Exam Total Marks</label>
-                <input type="text" class="form-control" id="exam_totalmarks" placeholder="Please enter total marks" aria-describedby="exam_totalmarks_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                <input type="text" class="form-control" id="exam_totalmarks" placeholder="Please enter total marks" aria-describedby="exam_totalmarks_error" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');" />
                 <div id="exam_totalmarks_error" class="form-text error_message"></div>
               </div>
-
               <div class="mb-3 col-lg-4">
-                <label for="exam_reporttime" class="form-label">Exam Report Time</label>
-                <input type="time" class="form-control" id="exam_reporttime" placeholder="Please enter report time" aria-describedby="exam_reporttime_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
-                <div id="exam_reporttime_error" class="form-text error_message"></div>
+                <label for="exam_academic" class="form-label">Academic</label>
+                <select id="exam_academic" class="form-select select2" aria-describedby="exam_academic_error">
+                  <option value="" selected>Please select academic</option>
+                  {% for academic in academics %}
+                    <option value="{{ academic.id }}">{{ academic.startdate }} to {{ academic.enddate }}</option>
+                  {% endfor %}
+                </select>
+                <div id="exam_academic_error" class="form-text error_message"></div>
               </div>
 
-              <div class="mb-3 col-lg-4">
-                <label for="exam_date" class="form-label">Date</label>
-                <input type="text" class="form-control date_picker" id="exam_date" placeholder="Please select date" aria-describedby="exam_date_error" readonly />
-                <div id="exam_date_error" class="form-text error_message"></div>
-              </div>
+
+
+
+
+
 
               <div class="mb-3 col-lg-4">
                 <label for="exam_starttime" class="form-label">Exam Start Time</label>
-                <input type="time" class="form-control" id="exam_starttime" placeholder="Please enter starttime" aria-describedby="exam_starttime_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                <input type="time" class="form-control" id="exam_starttime" placeholder="Please enter starttime" aria-describedby="exam_starttime_error"  />
                 <div id="exam_starttime_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
                 <label for="exam_endtime" class="form-label">Exam End Time</label>
-                <input type="time" class="form-control" id="exam_endtime" placeholder="Please enter endtime" aria-describedby="exam_endtime_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                <input type="time" class="form-control" id="exam_endtime" placeholder="Please enter endtime" aria-describedby="exam_endtime_error"  />
                 <div id="exam_endtime_error" class="form-text error_message"></div>
+              </div>
+
+
+              <div class="mb-3 col-lg-4">
+                <label for="exam_reporttime" class="form-label">Exam Report Time</label>
+                <input type="time" class="form-control" id="exam_reporttime" placeholder="Please enter report time" aria-describedby="exam_reporttime_error"  />
+                <div id="exam_reporttime_error" class="form-text error_message"></div>
+              </div>
+              <div class="mb-3 col-lg-4">
+                <label for="exam_date" class="form-label">Date</label>
+                <input type="text" class="form-control date_picker" id="exam_date" placeholder="Please select date" aria-describedby="exam_date_error" readonly />
+                <div id="exam_date_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
@@ -67,16 +83,8 @@
               </div>
 
 
-              <div class="mb-3 col-lg-4">
-                <label for="exam_academic" class="form-label">Academic</label>
-                <select id="exam_academic" class="form-select select2" aria-describedby="exam_academic_error">
-                  <option value="" selected>Please select academic</option>
-                  {% for academic in academics %}
-                    <option value="{{ academic.id }}">{{ academic.academicName }}</option>
-                  {% endfor %}
-                </select>
-                <div id="exam_academic_error" class="form-text error_message"></div>
-              </div>
+
+
 
 
               <div class="mb-3 col-lg-12">
@@ -291,17 +299,17 @@
     }
     function validate_form() {
       debugger
-      var exam_class = $('#exam_class').val()
-      var exam_date = $('#exam_date').val()
-      var exam_invigilator = $('#exam_invigilator').val()
-      var exam_starttime = $('#exam_starttime').val()
-      var exam_endtime = $('#exam_endtime').val()
-      var exam_subject = $('#exam_subject').val()
       var exam_type = $('#exam_type').val()
       var exam_totalmarks = $('#exam_totalmarks').val()
+      var exam_academic = $('#exam_academic').val()
+      var exam_starttime = $('#exam_starttime').val()
+      var exam_endtime = $('#exam_endtime').val()
       var exam_reporttime = $('#exam_reporttime').val()
-      var exam_roomno = $('#exam_roomno').val()
+      var exam_date = $('#exam_date').val()
+      var exam_subject = $('#exam_subject').val()
       var exam_instruction = $('#exam_instruction').val()
+
+
       if (IsValid(exam_type)) {
         $('#exam_type').html()
         $('#exam_type_error').show().delay(3000).slideUp()
@@ -314,6 +322,27 @@
         $('#exam_totalmarks_error').show().delay(3000).slideUp()
         $('#exam_totalmarks_error').html('Please add exam total marks')
         $('#exam_totalmarks').focus()
+        return false
+      }
+      if (IsValid(exam_academic)) {
+        $('#exam_academic').html()
+        $('#exam_academic_error').show().delay(3000).slideUp()
+        $('#exam_academic_error').html('Please select exam academic')
+        $('#exam_academic').focus()
+        return false
+      }
+      if (IsValid(exam_starttime)) {
+        $('#exam_starttime').html()
+        $('#exam_starttime_error').show().delay(3000).slideUp()
+        $('#exam_starttime_error').html('Please select exam start time')
+        $('#exam_starttime').focus()
+        return false
+      }
+      if (IsValid(exam_endtime)) {
+        $('#exam_endtime').html()
+        $('#exam_endtime_error').show().delay(3000).slideUp()
+        $('#exam_endtime_error').html('Please select exam end time')
+        $('#exam_endtime').focus()
         return false
       }
       if (IsValid(exam_reporttime)) {
@@ -330,21 +359,6 @@
         $('#exam_date').focus()
         return false
       }
-    
-      if (IsValid(exam_starttime)) {
-        $('#exam_starttime').html()
-        $('#exam_starttime_error').show().delay(3000).slideUp()
-        $('#exam_starttime_error').html('Please select exam start time')
-        $('#exam_starttime').focus()
-        return false
-      }
-      if (IsValid(exam_endtime)) {
-        $('#exam_endtime').html()
-        $('#exam_endtime_error').show().delay(3000).slideUp()
-        $('#exam_endtime_error').html('Please select exam end time')
-        $('#exam_endtime').focus()
-        return false
-      }
       if (IsValid(exam_subject)) {
         $('#exam_subject').html()
         $('#exam_subject_error').show().delay(3000).slideUp()
@@ -358,13 +372,35 @@
         $('#exam_instruction_error').html('Please enter exam instruction ')
         $('#exam_instruction').focus()
         return false
-      } else {
+      }
+      if(classlist.length == 0){
+        validate_mini_form()
+        Swal.fire({
+          text: 'Please add class list',
+          icon: 'error'
+        })
+        return false
+        
+
+
+      }
+      else {
         var fd = new FormData()
     
+        fd.append('date', yyyy_mm_dd(exam_date))
+        fd.append('Examstarttime', exam_starttime)
+        fd.append('Examendtime', exam_endtime)
+        fd.append('SubjectId', exam_subject)
+        fd.append('ExamType', exam_type)
+        fd.append('totalMarks', exam_totalmarks)
+        fd.append('reportTime', exam_reporttime)
+        fd.append('Instructions', exam_instruction)
+        fd.append('classlist', JSON.stringify(classlist))
+  
         fd.append('csrfmiddlewaretoken', '{{csrf_token}}')
         $.ajax({
           type: 'POST',
-          url: frontend_url + '',
+          url: frontend_url + 'exam/add_exam',
           data: fd,
           processData: false,
           contentType: false,

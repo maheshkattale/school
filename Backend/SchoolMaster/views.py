@@ -7,7 +7,7 @@ from rest_framework.generics import GenericAPIView
 from SchoolMaster.models import School,AcademicYear
 from User.models import User,Role
 from User.serializers import UserSerializer
-from SchoolMaster.serializers import schoolSerializer,AcademicYearSerializer
+from SchoolMaster.serializers import schoolSerializer,AcademicYearSerializer,AcademicYearSerializer1
 from SchoolMaster.common import createschooladmin
 from django.template.loader import get_template, render_to_string
 from rest_framework.authentication import (BaseAuthentication,
@@ -252,7 +252,7 @@ class AddAcademicYear(GenericAPIView):
         newstartdate = data['startdate']
         newenddate = data['enddate']
         yearexist = AcademicYear.objects.filter(startdate=newstartdate,enddate=newenddate,Isdeleted=False).first()
-        if yearexist is not None:
+        if yearexist is None:
             serializer = AcademicYearSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
@@ -270,7 +270,7 @@ class AcademicYearlist(GenericAPIView):
     def get(self,request):
         schoolcode = request.user.school_code
         yearexist = AcademicYear.objects.filter(school_code=schoolcode,Isdeleted=False)
-        serializer = AcademicYearSerializer(yearexist)
+        serializer = AcademicYearSerializer1(yearexist,many=True)
         return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic year list found successfully","status": "success"}})
     
 
@@ -300,7 +300,7 @@ class updateAcademicYear(GenericAPIView):
         updatedenddate = data['enddate']
         yearobjexist = AcademicYear.objects.filter(id=yearid,Isdeleted=False).first()
         if yearobjexist is not None:
-            duplicateyearobj = AcademicYear.objects.filter(startdate=updatedstartdate,enddate=updatedenddate,id=yearid,Isdeleted=False).exclude(id=yearid)
+            duplicateyearobj = AcademicYear.objects.filter(startdate=updatedstartdate,enddate=updatedenddate,Isdeleted=False).exclude(id=yearid).first()
             if duplicateyearobj is None:
                 serializer = AcademicYearSerializer(yearobjexist,data=data,partial=True)
                 if serializer.is_valid():

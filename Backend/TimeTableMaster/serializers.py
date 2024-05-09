@@ -6,6 +6,8 @@ class TimeTableSerializer(serializers.ModelSerializer):
     class Meta:
         model= TimeTable
         fields='__all__'
+        
+        
 class CustomDateFormatField(serializers.Field):
     def to_representation(self, value):
         date_format = DateFormat(value)

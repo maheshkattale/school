@@ -70,7 +70,17 @@
             <div class="proheading d-none">My Profile</div>
             <div class="py-2 text-center">
               <div class="mb-2">
-                <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{% static 'assets/images/profile/profile.jpg' %}" alt="" />
+
+
+                {% if profile_image is not None and profile_image != "" %}
+                <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{{frontend_url}}{{profile_image}}" alt="" />
+
+              {% else %}
+              <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{% static 'assets/images/profile/profile.jpg' %}" alt="" />
+              
+              {% endif %}
+
+
               </div>
               <div class="p-image">
                 <i class="fa fa-camera upload-button"></i>

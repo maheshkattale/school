@@ -59,16 +59,16 @@
         <tr>
           <th>Sr No</th>
           <th>academic</th>
-          <td>Duration</td>
+          
           <th>Action</th>
         </tr>
       </thead>
       <tbody>       
-         {% comment %} {% for i  in academics %} {% endcomment %}
+         {% for i  in academics %}
         <tr>
-          <td>1</td>
-          <td>Summer</td>
-          <td>2023-2024</td>
+          <td>{{forloop.counter}}</td>
+          
+          <td>{{i.startdate}} -{{i.enddate}}</td>
 
           <td>
             <a data-bs-toggle="modal" data-bs-target="#edit_academic{{i.id}}"  ><i data-bs-toggle="tooltip"  title="Edit academic" class="fa-solid fa-pen-to-square mx-1"></i></a>
@@ -86,17 +86,17 @@
                           <form>
                             <div class="row">
 
-
+                                
                   
           
                                 <div class="mb-3 col-lg-6">
                                   <label for="academic_start_date{{i.id}}" class="form-label">Start Date</label>
-                                  <input type="text" class="form-control" id="academic_start_date{{i.id}}" placeholder="Please select start date" aria-describedby="academic_start_date_error" readonly/>
+                                  <input type="text" class="form-control date_picker" id="academic_start_date{{i.id}}" value="{{i.startdate}}" placeholder="Please select start date" aria-describedby="academic_start_date_error" readonly/>
                                   <div id="academic_start_date_error{{i.id}}" class="form-text error_message"></div>
                                 </div>
                                 <div class="mb-3 col-lg-6">
                                   <label for="academic_end_date{{i.id}}" class="form-label">End Date</label>
-                                  <input type="text" class="form-control" id="academic_end_date{{i.id}}" placeholder="Please select end date" aria-describedby="academic_end_date_error" readonly/>
+                                  <input type="text" class="form-control date_picker" id="academic_end_date{{i.id}}" value="{{i.enddate}}" placeholder="Please select end date" aria-describedby="academic_end_date_error" readonly/>
                                   <div id="academic_end_date_error{{i.id}}" class="form-text error_message"></div>
                                 </div>
                               </div>
@@ -120,7 +120,7 @@
             <a data-bs-toggle="tooltip" onclick="delete_academic({{i.id}});" title="Delete academic"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
           </td>
         </tr>
-        {% comment %} {% endfor %} {% endcomment %}
+        {% endfor %}
       </tbody>
     </table>
   </div>
@@ -136,7 +136,6 @@
     })
     function validate_add_form(){
       debugger
-      var academic_name=$('#academic_name').val()
       var academic_start_date=$('#academic_start_date').val()
       var academic_end_date=$('#academic_end_date').val()
 
@@ -159,12 +158,12 @@
 
 
         var fd = new FormData();    
-        fd.append("academic_start_date",academic_start_date);
-        fd.append("academic_end_date",academic_end_date);
+        fd.append("startdate",yyyy_mm_dd(academic_start_date));
+        fd.append("enddate",yyyy_mm_dd(academic_end_date));
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontend_url+"academic",
+          url: frontend_url+"academic/",
           data: fd,
           processData: false,
           contentType: false,
@@ -195,9 +194,8 @@
     }
     function validate_edit_form(id){
       debugger
-      var academic_name=$('#academic_name').val()
-      var academic_start_date=$('#academic_start_date').val()
-      var academic_end_date=$('#academic_end_date').val()
+      var academic_start_date=$('#academic_start_date'+id).val()
+      var academic_end_date=$('#academic_end_date'+id).val()
 
 
       if(IsValid(academic_start_date)){
@@ -216,14 +214,13 @@
       }
       else{
         var fd = new FormData();    
-        fd.append("academicName",academic_name);
-        fd.append("academic_start_date",academic_start_date);
-        fd.append("academic_end_date",academic_end_date);
+        fd.append("startdate",yyyy_mm_dd(academic_start_date));
+        fd.append("enddate",yyyy_mm_dd(academic_end_date));
         fd.append("id",id);
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontend_url+"academic_master/edit_academic",
+          url: frontend_url+"academic/edit_academic",
           data: fd,
           processData: false,
           contentType: false,
@@ -235,7 +232,7 @@
                 text: response.response.msg,
                 icon: 'success',
               }).then((result) => {
-                window.location.href = "/academic_master";
+                window.location.href = "/academic";
         
               });
             }else{
@@ -267,7 +264,7 @@
           fd.append("csrfmiddlewaretoken","{{csrf_token}}");
           $.ajax({
             type: "POST",
-            url: frontend_url+"academic_master/delete_academic",
+            url: frontend_url+"academic/delete_academic",
             data: fd,
             processData: false,
             contentType: false,
@@ -279,7 +276,7 @@
                   text: response.response.msg,
                   icon: 'success',
                 }).then((result) => {
-                  window.location.href = "/academic_master";
+                  window.location.href = "/academic";
           
                 });
               }else{

@@ -68,3 +68,33 @@ align-items: center;
     background-color: #00bcd4 !important;
     color: #fff;
 }
+
+  
+ 
+
+  
+
+  
+  .accordion .pagenav ul {
+    display: none; /* hides all ul content by default (see exceptions in JS) */
+    padding: 5px;
+    margin: 0;
+  }
+  
+
+  
+
+  .accordion .pagenav h4 i {
+    font-size: 16px;
+    line-height: 20px;
+    transition: .2s;
+    -webkit-transition: .2s;
+    -ms-transition: .2s;
+  }
+  
+  .accordion .pagenav.open h4 .fa-angle-right {
+    transform: rotate(90deg);
+  }
+  
+
+  

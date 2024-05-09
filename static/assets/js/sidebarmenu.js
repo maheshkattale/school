@@ -22,15 +22,16 @@ $(function () {
     $('#sidebarnav li').each(function(index, element) {
       // Find the <a> tag within the current <li> element
       var anchor = $(element).find('a');
-      
+      var heading = $(element).find('h4');
+
       // Get the URL from the href attribute of the <a> tag
       var url = anchor.attr('href');
       //console.log("URL for item " + (index + 1) + ":", url);
       // Check if the current URL matches the URL of the anchor tag
       if (path === url) {
           // If they match, add the class "selected" to the anchor tag
-          anchor.addClass('selected');
-          anchor.addClass('active');
+          heading.addClass('selected');
+          heading.addClass('active');
       }
     });
 

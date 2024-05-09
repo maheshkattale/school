@@ -6,11 +6,19 @@ import json
 from rest_framework.generics import GenericAPIView
 from school.static_info import frontend_url
 add_academic_dates_url=frontend_url+'api/SchoolMaster/AddAcademicYear'
+edit_academic_dates_url=frontend_url+'api/SchoolMaster/updateAcademicYear'
+academic_list_url=frontend_url+'api/SchoolMaster/AcademicYearlist'
+delete_academic_dates_url=frontend_url+'api/SchoolMaster/deleteAcademicYear'
 
 class academic_master(GenericAPIView):
     def get(self,request):
-        print("id",id)
-        return render(request, 'admin/academic/academic_master.html',{})
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            academic_list_request = requests.get(academic_list_url,headers=headers)
+            academic_list_response = academic_list_request.json()
+            return render(request, 'admin/academic/academic_master.html',{'academics':academic_list_response['data']})
     
     def post(self,request):
         tok = request.session.get('token', False)
@@ -25,3 +33,36 @@ class academic_master(GenericAPIView):
         else:
             return redirect('school:login')
         
+        
+        
+class edit_academic(GenericAPIView):
+
+    
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            print("data",data)
+            edit_academic_dates_request = requests.post(edit_academic_dates_url,data=data,headers=headers)
+            edit_academic_dates_response = edit_academic_dates_request.json()
+            return HttpResponse(json.dumps(edit_academic_dates_response), content_type="application/json")
+        else:
+            return redirect('school:login')
+
+class delete_academic(GenericAPIView):
+
+    
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            print("data",data)
+            delete_academic_dates_request = requests.post(delete_academic_dates_url,data=data,headers=headers)
+            delete_academic_dates_response = delete_academic_dates_request.json()
+            return HttpResponse(json.dumps(delete_academic_dates_response), content_type="application/json")
+        else:
+            return redirect('school:login')
