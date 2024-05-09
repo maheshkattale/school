@@ -13,6 +13,7 @@ from rest_framework import permissions
 from .models import *
 from .serializers import *
 from SchoolMaster.models import *
+from SchoolMaster.serializers import *
 from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
 from rest_framework.response import Response
@@ -118,8 +119,8 @@ class ParentStudentlist(GenericAPIView):
             studentobj = Students.objects.filter(ParentId = p['id'],isActive=True,school_code=schoolcode)
             studentser =  StudentSerializer(studentobj,many=True)
             for s in studentser.data:
-                if s['Photo'] != "" and s['Photo'] is not None:
-                    s['stdimage'] = image_url + str(s['Photo'])
+                if s['photo'] != "" and s['photo'] is not None:
+                    s['stdimage'] = image_url + str(s['photo'])
                 else:
                     s['stdimage'] = image_url + "/static/assets/images/profile.png"
            
@@ -196,10 +197,10 @@ class updateParentStudent(GenericAPIView):
                         print()
                         print("stuobj",stuobj)
                         if stuobj is not None :
-                            if s['Photo'] != "" and s['Photo'] is not None:
-                                s['Photo'] = s['Photo']
+                            if s['photo'] != "" and s['photo'] is not None:
+                                s['photo'] = s['photo']
                             else:
-                                s['Photo'] = stuobj.Photo
+                                s['photo'] = stuobj.photo
                             stuserializer = StudentSerializer(stuobj,data=s,partial=True)
                             print("initial data",stuserializer.initial_data)
                             if stuserializer.is_valid():
@@ -211,7 +212,7 @@ class updateParentStudent(GenericAPIView):
                         print("snewelse",s)
                         newstudentcode = createstudentid(schoolcode)
                         print("stucode",newstudentcode)
-                        Students.objects.create(ParentId=parentid,StudentName=s['StudentName'],StudentClass_id=s['StudentClass'],DateOfBirth = formatteddob_date,DateofJoining=formattedjoin_date,school_code=schoolcode,StudentCode=newstudentcode,BloodGroup=s['BloodGroup'],Photo=s['Photo'])
+                        Students.objects.create(ParentId=parentid,StudentName=s['StudentName'],StudentClass_id=s['StudentClass'],DateOfBirth = formatteddob_date,DateofJoining=formattedjoin_date,school_code=schoolcode,StudentCode=newstudentcode,BloodGroup=s['BloodGroup'],photo=s['photo'])
 
 
                 return Response({"data":'',"studentlist":'',"response": {"n": 1, "msg": "parent updated successfully","status": "success"}})
@@ -248,10 +249,10 @@ class getParentStudentbyid(GenericAPIView):
                 s['DateofJoining'] = formattedjoin_date
 
                 
-                if s['Photo'] != "" and s['Photo'] is not None:
-                    s['Photo'] = image_url + str(s['Photo'])
+                if s['photo'] != "" and s['photo'] is not None:
+                    s['photo'] = image_url + str(s['photo'])
                 else:
-                    s['Photo'] = ""
+                    s['photo'] = ""
 
             serailizer_data.update({"studentlist":ser.data})
             return Response({"data":serailizer_data,"response": {"n": 1, "msg": "parent found successfully","status": "success"}})
@@ -268,10 +269,10 @@ class studentlist(GenericAPIView):
         studentobj = Students.objects.filter(isActive=True,school_code=schoolcode).order_by('id')
         studentser =  StudentSerializer(studentobj,many=True)
         for s in studentser.data:
-            if s['Photo'] != "" and s['Photo'] is not None:
-                s['Photo'] = image_url + str(s['Photo'])
+            if s['photo'] != "" and s['photo'] is not None:
+                s['photo'] = image_url + str(s['photo'])
             else:
-                s['Photo'] = image_url + "/static/assets/images/profile.png"
+                s['photo'] = image_url + "/static/assets/images/profile.png"
         return Response({"data":studentser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
     
 
@@ -284,10 +285,10 @@ class studentsbyclasslist(GenericAPIView):
         stuobj = Students.objects.filter(StudentClass=classname,isActive=True,school_code=schoolcode)
         ser = StudentSerializer(stuobj,many=True)
         for s in ser.data:
-            if s['Photo'] != "" and s['Photo'] is not None:
-                s['Photo'] = image_url + str(s['Photo'])
+            if s['photo'] != "" and s['photo'] is not None:
+                s['photo'] = image_url + str(s['photo'])
             else:
-                s['Photo'] = image_url + "/static/assets/images/profile.png"
+                s['photo'] = image_url + "/static/assets/images/profile.png"
         return Response({"data":ser.data,"studentlist":ser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
       
 
@@ -306,10 +307,10 @@ class studentsbyparentlist(GenericAPIView):
             else:
                 i['classname'] = "--"
 
-            if i['Photo'] != "" and i['Photo'] is not None:
-                i['Photo'] = image_url + str(i['Photo'])
+            if i['photo'] != "" and i['photo'] is not None:
+                i['photo'] = image_url + str(i['photo'])
             else:
-                i['Photo'] = ""
+                i['photo'] = ""
         return Response({"data":ser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
     
 
@@ -366,3 +367,74 @@ class deleteStudent(GenericAPIView):
                 return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Delete student ! ","status": "failure"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "student not found ","status": "failure"}})
+        
+
+class getstudentlist(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        class_id = data['class']
+        ac_yearid = data['yearid']
+        schoolcode = request.user.school_code
+        studentlist = []
+
+        studentclassLogobj = studentclassLog.objects.filter(AcademicyearId=ac_yearid,classid=class_id,school_code=schoolcode)
+        if studentclassLogobj.exists():
+            studentclassser = studentclassLogserializer(studentclassLogobj,many=True)
+            for s in studentclassser.data:
+                stuobj = Students.objects.filter(id=s['studentId'],StudentCode=s['StudentCode'],school_code=schoolcode,isActive=True).first()
+                if stuobj is not None:
+                    stuser = StudentSerializer(stuobj) 
+                    studentlist.append(stuser.data)
+        return Response({"data":studentlist,"response": {"n": 1, "msg": "student list found ","status": "success"}})
+       
+
+class getstudentidcards(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        idcardlist = []
+        data = request.data.copy()
+        classid = data['classid']
+        ac_year = data['year']
+        schoolcode = request.user.school_code
+        # studentidlist = json.loads(data['studentlist'])
+        if request.POST.get('studentidlist') != "":
+            studentidlist = json.loads(request.POST.get('studentidlist'))
+        else:
+            studentidlist = []
+
+        if studentidlist != "" and  studentidlist != []:
+            for i in studentidlist:
+                icardobj={}
+                studobj = Students.objects.filter(id=i,isActive=True,school_code=schoolcode).first()
+                if studobj is not None:
+                    icardobj['academic_year'] = ac_year
+                    icardobj['studentname'] = studobj.StudentName
+
+                    classobj = Class.objects.filter(id=class_id,school_code=schoolcode).first()
+                    icardobj['classname'] = classobj.ClassName
+
+                    if studobj.photo != "" and studobj.photo is not None:
+                        icardobj['photo'] = image_url + str(studobj.photo)
+                    else:
+                        icardobj['photo'] = ""
+
+                    icardobj['StudentCode'] = studobj.StudentCode
+                    icardobj['DateOfBirth'] = studobj.DateOfBirth
+
+                    schoolobj = School.objects.filter(school_code=schoolcode).first()
+                    schoolser = schoolSerializer(schoolobj)
+                    icardobj['schooldata'] = schoolser.data
+
+                    parentobj = User.objects.filter(id=studobj.ParentId).first()
+                    parentser = UserlistSerializer(parentobj)
+                    icardobj['parentinfo'] = parentser.data
+
+                    idcardlist.append(icardobj)
+
+            return Response({"data":idcardlist,"response": {"n": 1, "msg": "student card info found successfully","status": "success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "student list is empty ","status": "failed"}})
+

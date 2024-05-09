@@ -10,3 +10,9 @@ class BloodGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model= BloodGroup
         fields='__all__'
+
+
+class studentclassLogserializer(serializers.ModelSerializer):
+    class Meta:
+        model= studentclassLog
+        fields='__all__'
