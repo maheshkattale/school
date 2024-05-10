@@ -58,7 +58,6 @@ class edit_exam(GenericAPIView):
             exam_info_request = requests.post(exam_info_url,headers=headers,data=data)
             exam_info_response = exam_info_request.json()
             
-            print("exam_info_response",exam_info_response)
             return render(request, 'admin/exam/edit_exam.html',{'exam_types':exam_type_list_response['data'],'classes':class_list_response['data'],'teachers':teacher_list_response['data'],'subjects':subject_list_response['data'],'academics':academic_list_response['data'],'exam':exam_info_response['data']})
         else:
             return redirect('school:login')
@@ -70,10 +69,8 @@ class edit_exam(GenericAPIView):
             headers = {'Authorization':token}
             data=request.data.copy()
             data['id']=id
-            print("data",data)
             edit_exam_list_request = requests.post(edit_exam_url,data=data,headers=headers)
             edit_exam_list_response = edit_exam_list_request.json()
-            print("edit_exam_list_response",edit_exam_list_response)
             return HttpResponse(json.dumps(edit_exam_list_response), content_type="application/json")
         
         
@@ -107,7 +104,6 @@ class add_exam(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             add_exam_list_request = requests.post(add_exam_url,data=data,headers=headers)
             add_exam_list_response = add_exam_list_request.json()
             return HttpResponse(json.dumps(add_exam_list_response), content_type="application/json")
@@ -137,7 +133,6 @@ class add_exam_type_marks(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             add_exam_type_marks_list_request = requests.post(add_exam_type_marks_url,data=data,headers=headers)
             add_exam_type_marks_list_response = add_exam_type_marks_list_request.json()
             return HttpResponse(json.dumps(add_exam_type_marks_list_response), content_type="application/json")
@@ -150,7 +145,6 @@ class edit_exam_type_marks(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             edit_exam_type_marks_list_request = requests.post(edit_exam_type_marks_url,data=data,headers=headers)
             edit_exam_type_marks_list_response = edit_exam_type_marks_list_request.json()
             return HttpResponse(json.dumps(edit_exam_type_marks_list_response), content_type="application/json")
@@ -163,7 +157,6 @@ class delete_exam_type_marks(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             delete_exam_type_marks_list_request = requests.post(delete_exam_type_marks_url,data=data,headers=headers)
             delete_exam_type_marks_list_response = delete_exam_type_marks_list_request.json()
             return HttpResponse(json.dumps(delete_exam_type_marks_list_response), content_type="application/json")
@@ -176,7 +169,6 @@ class delete_exam(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             delete_exam_list_request = requests.post(delete_exam_list_url,data=data,headers=headers)
             delete_exam_list_response = delete_exam_list_request.json()
             return HttpResponse(json.dumps(delete_exam_list_response), content_type="application/json")
@@ -190,7 +182,6 @@ class get_marks_by_exam_type(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             get_marks_by_exam_type_request = requests.post(get_marks_by_exam_type_url,data=data,headers=headers)
             get_marks_by_exam_type_response = get_marks_by_exam_type_request.json()
             return HttpResponse(json.dumps(get_marks_by_exam_type_response), content_type="application/json")

@@ -39,7 +39,6 @@ class add_time_table(GenericAPIView):
             timetable_dates_ranges_response = timetable_dates_ranges_request.json()
             timetable_list_request = requests.post(timetable_list_url,headers=headers)
             timetable_list_response = timetable_list_request.json()
-            print("timetable_list_response",timetable_list_response)
             
             context={
                 'subjects':subject_list_response['data'],
@@ -74,7 +73,6 @@ class edit_timetable(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             timetable_edit_request = requests.post(timetable_edit_url,headers=headers,data=data)
             timetable_edit_response = timetable_edit_request.json()
             return HttpResponse(json.dumps(timetable_edit_response), content_type="application/json")

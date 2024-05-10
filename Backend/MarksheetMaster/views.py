@@ -22,7 +22,6 @@ class AddExamType(GenericAPIView):
     def post(self,request):
         data = request.data.copy()
         data['isActive'] = True
-        print("backend ",data)
         examtypeexist = ExamType.objects.filter(TypeName=data['TypeName'],Marks=data['Marks'],isActive= True).first()
         if examtypeexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Type Name with marks already exist","status": "failure"}})
@@ -118,7 +117,6 @@ class AddExamTypeMarks(GenericAPIView):
     def post(self,request):
         data = request.data.copy()
         data['isActive'] = True
-        print("backend ",data)
         examtypeexist = ExamTypeMarks.objects.filter(Typeid=data['Typeid'],Marks=data['Marks'],isActive= True).first()
         if examtypeexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Type  with marks already exist","status": "failure"}})
@@ -128,7 +126,6 @@ class AddExamTypeMarks(GenericAPIView):
                 serializer.save()
                 return Response({"data":serializer.data,"response": {"n": 1, "msg": "Exam Type Marks added successfully","status": "success"}})
             else:
-                print("serializer.errors",serializer.errors)
                 first_key, first_value = next(iter(serializer.errors.items()))
                 return Response({"data":serializer.errors,"response": {"n": 0, "msg": first_value[0],"status": "failure"}})
 
@@ -223,7 +220,6 @@ class AddExam(GenericAPIView):
         else:
             classlist = []
         
-        print("classlist",classlist)
         Date = data['date']
         Examstarttime = data['Examstarttime']
         Examendtime = data['Examendtime']
@@ -238,7 +234,6 @@ class AddExam(GenericAPIView):
             return Response({"data":'',"response": {"n": 0, "msg": "Academic year not found ","status": "failure"}})
             
             
-        print("dattttta",data)
 
         for i in classlist :
             examobj = Exams.objects.filter(ClassId=i['ClassId'],Date=Date,Examstarttime__lt = Examendtime,Examendtime__gt=Examstarttime,school_code=schoolcode)
@@ -277,7 +272,6 @@ class Examlist(GenericAPIView):
 
             # get difference
             delta = t2 - t1
-            print("delta",delta)
 
             i['totaltime'] = str(delta)+"hrs"
         return Response({"data":Examser.data,"response": {"n": 1, "msg": "Examslist found successfully","status": "success"}})
@@ -356,11 +350,8 @@ class uploadmarksheet(GenericAPIView):
         # dataframe = load_workbook(datafile)
         # # imported_data = dataset.load(datafile.read(), format='xlsx')
         # List_of_sheets = dataframe.sheetnames
-        # print("lllllllllllll",List_of_sheets) 
         # for i in List_of_sheets:     
-        #     print("iiiiiii",i)
         #     sheetOne = dataframe[i]
-        #     print("sheetOne",sheetOne)
             
         #     # Iterate the loop to read the cell values
         #     for row in range(1, sheetOne.max_row):

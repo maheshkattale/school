@@ -1,0 +1,92 @@
+<html>
+  {% load static %}
+  <head>
+    <style>
+      .card {
+        border: 1px solid aliceblue;
+        border-radius: 35px;
+        padding: 15px 20px;
+        {% comment %} background: aliceblue; {% endcomment %}
+        box-shadow: 0 0 5px grey;
+      }
+      * {
+        font-weight: 600;
+        font-family: math;
+      }
+      .school_name {
+        font-size: 28px;
+        color: #082e68;
+      }
+      
+      .card_heading {
+        color: #082e68;
+      }
+    </style>
+  </head>
+  <body>
+    <table class="card">
+      <tr>
+        <td style="padding-right: 15px;">
+          <div style="text-align: center;">
+            <img src="{% static 'assets/images/logos/school_logo.JPG' %}" alt="" />
+          </div>
+        </td>
+
+        <td style="    border-bottom: 2px solid #082e68;        ">
+          <table style="text-align: center;">
+            <tr>
+              <td class="school_name">C.K.G High School</td>
+            </tr>
+
+            <tr>
+              <td>(CBSC AFFILITED)</td>
+            </tr>
+
+            <tr>
+              <td>Govali ,Ta.jaghadia , Dist.Bhuruch.</td>
+            </tr>
+
+            <tr>
+              <td>PH.023-0345670276 , E-Mail : ckgschool@gmail.com</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding-right: 15px;">
+          <img src="{% static 'assets/images/profile/profile.png' %}" alt="" width="140" />
+        </td>
+        <td>
+          <table>
+            <tr>
+              <td class="card_heading">Name :</td>
+              <td>Mahesh Kattale</td>
+            </tr>
+            <tr>
+              <td class="card_heading">Class :</td>
+              <td>VI</td>
+            </tr>
+            <tr>
+              <td class="card_heading">DOB :</td>
+              <td>21 April 2000</td>
+            </tr>
+            <tr>
+              <td class="card_heading">Address :</td>
+              <td>Soniupath jalna ,Pune Dist kolhaprty</td>
+            </tr>
+            <tr>
+              <td class="card_heading">Phone :</td>
+              <td>7766327669</td>
+            </tr>
+            <tr>
+              <td class="card_heading">Mobile :</td>
+              <td>7658893652</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+    </table>
+  </body>
+</html>

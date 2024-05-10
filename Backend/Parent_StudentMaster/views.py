@@ -150,11 +150,9 @@ class updateParentStudent(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
-        print("ddatadataata",data)
         data['isActive'] = True
         parentid = data['id']
         studentlist = json.loads(data['studentlist'])
-        print("studentlist",studentlist)
         schoolcode = request.user.school_code
 
         schoolobj = School.objects.filter(school_code = schoolcode,isActive=True).first()
@@ -192,26 +190,21 @@ class updateParentStudent(GenericAPIView):
                   
                     studentcode = s['StudentCode']
                     if studentcode != '':
-                        print("snewiffffffffff",s)
                         stuobj = Students.objects.filter(StudentCode=studentcode,isActive=True).first()
                         print()
-                        print("stuobj",stuobj)
                         if stuobj is not None :
                             if s['photo'] != "" and s['photo'] is not None:
                                 s['photo'] = s['photo']
                             else:
                                 s['photo'] = stuobj.photo
                             stuserializer = StudentSerializer(stuobj,data=s,partial=True)
-                            print("initial data",stuserializer.initial_data)
                             if stuserializer.is_valid():
                                 stuserializer.save()
                             else:
                                 print("stuserializer.errors",stuserializer.errors)
                                 # return Response({"data":stuserializer.errors,"response": {"n": 0, "msg": "Couldn't update student ! ","status": "failure"}})
                     else:
-                        print("snewelse",s)
                         newstudentcode = createstudentid(schoolcode)
-                        print("stucode",newstudentcode)
                         Students.objects.create(ParentId=parentid,StudentName=s['StudentName'],StudentClass_id=s['StudentClass'],DateOfBirth = formatteddob_date,DateofJoining=formattedjoin_date,school_code=schoolcode,StudentCode=newstudentcode,BloodGroup=s['BloodGroup'],photo=s['photo'])
 
 
@@ -352,10 +345,8 @@ class deleteStudent(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        print("apiiiiiiiiiiiiii")
         data = request.data.copy()
         studentcode = data['studentcode']
-        print("id",studentcode)
         studentobj = Students.objects.filter(StudentCode=studentcode,isActive=True).first()
         if studentobj is not None:
             data['isActive'] = False

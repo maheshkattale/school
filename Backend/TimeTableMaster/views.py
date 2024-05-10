@@ -28,15 +28,11 @@ class addtimetable(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        print("res",request.POST)
         if request.POST.get('timetablelist') != "":
             timetablelist = json.loads(request.POST.get('timetablelist'))
         else:
             timetablelist = []
-        print("timetablelist",timetablelist)
         schoolcode = request.user.school_code
-
-
         if timetablelist != []:
             for t in timetablelist :
                 TimeTable.objects.create(ClassId_id=t['class'],startdate = t['startdate'],enddate=t['enddate'],Day=t['day'],start_time=t['starttime'],end_time = t['endtime'],SubjectId_id=t['subject'],TeacherId = t['teacher'],school_code=schoolcode)
@@ -56,17 +52,16 @@ class getteachersfromsub(GenericAPIView):
         subjectid = request.data.get('subject')
         teacherlist = []
         schoolcode = request.user.school_code
+        
         if subjectid is not None or subjectid != '':
             teacherobj = TeacherSubject.objects.filter(SubjectId = subjectid,isActive=True,school_code=schoolcode)
             teachser = TeacherSubjectSerializer(teacherobj,many=True)
             
             for t in teachser.data:
-                print("teachser.data",t['id'],type(t['id']))
 
                 tobj = {}
                 teacherobj = User.objects.filter(id=t['TeacherId'],isActive=True).first()
                 if teacherobj is not None:
-                    print("teacherobj",teacherobj)
 
                     tobj['teacherid'] = teacherobj.id
                     tobj['teachername'] = teacherobj.Username
@@ -118,11 +113,9 @@ class checkdaterange(GenericAPIView):
         day = request.data.get('day')
         newstarttime =  request.data.get('starttime')
         newendtime = request.data.get('endtime')
-        print("request.data",request.data)
         
         
         dateobjs = TimeTable.objects.filter(startdate__lte = newenddate, enddate__gte=newstartdate,ClassId=classid,isActive=True,school_code=schoolcode,start_time__lt = newendtime,Day=day,end_time__gt=newstarttime)
-        print("dateobjs",dateobjs)
         if dateobjs.exists():
             recordexist = True
             return Response({"data":recordexist,"response": {"n": 1, "msg": "data found Successfully","status": "Success"}})

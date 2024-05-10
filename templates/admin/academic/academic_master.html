@@ -4,11 +4,11 @@
 
 {% endblock %}
 {% block heading %}
-  <span class="tab-title"><i class="fa-solid fa-users"></i> <span class="px-1">Academic Master</span></span>
+  <span class="tab-title"><span class="px-1">Academic Year Master</span></span>
 {% endblock %}
 {% block body %}
   <div class="d-flex justify-content-end">
-    <a data-bs-toggle="modal" data-bs-target="#add_academic" class="btn btn-primary">Add Academic Session</a>
+    <a data-bs-toggle="modal" data-bs-target="#add_academic" class="btn btn-primary">Add Academic Year</a>
  
     <div id="add_academic" class="modal">
       <div class="modal-dialog modal-lg">
@@ -58,7 +58,7 @@
       <thead>
         <tr>
           <th>Sr No</th>
-          <th>academic</th>
+          <th>Academic Year</th>
           
           <th>Action</th>
         </tr>
@@ -68,7 +68,7 @@
         <tr>
           <td>{{forloop.counter}}</td>
           
-          <td>{{i.startdate}} -{{i.enddate}}</td>
+          <td>{{i.startdate_month_yyyy}} to {{i.enddate_month_yyyy}}</td>
 
           <td>
             <a data-bs-toggle="modal" data-bs-target="#edit_academic{{i.id}}"  ><i data-bs-toggle="tooltip"  title="Edit academic" class="fa-solid fa-pen-to-square mx-1"></i></a>
@@ -91,12 +91,12 @@
           
                                 <div class="mb-3 col-lg-6">
                                   <label for="academic_start_date{{i.id}}" class="form-label">Start Date</label>
-                                  <input type="text" class="form-control date_picker" id="academic_start_date{{i.id}}" value="{{i.startdate}}" placeholder="Please select start date" aria-describedby="academic_start_date_error" readonly/>
+                                  <input type="text" class="form-control date_picker" id="academic_start_date{{i.id}}" value="{{i.startdate_dd_mm_yyyy}}" placeholder="Please select start date" aria-describedby="academic_start_date_error" readonly/>
                                   <div id="academic_start_date_error{{i.id}}" class="form-text error_message"></div>
                                 </div>
                                 <div class="mb-3 col-lg-6">
                                   <label for="academic_end_date{{i.id}}" class="form-label">End Date</label>
-                                  <input type="text" class="form-control date_picker" id="academic_end_date{{i.id}}" value="{{i.enddate}}" placeholder="Please select end date" aria-describedby="academic_end_date_error" readonly/>
+                                  <input type="text" class="form-control date_picker" id="academic_end_date{{i.id}}" value="{{i.enddate_dd_mm_yyyy}}" placeholder="Please select end date" aria-describedby="academic_end_date_error" readonly/>
                                   <div id="academic_end_date_error{{i.id}}" class="form-text error_message"></div>
                                 </div>
                               </div>
@@ -118,6 +118,13 @@
 
 
             <a data-bs-toggle="tooltip" onclick="delete_academic({{i.id}});" title="Delete academic"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+         
+            {% if i.Isdeleted == True %}
+                <a data-bs-toggle="tooltip"  title="In Active"><i class="fa fa-solid fa-xl fa-toggle-off cursor-pointer text-warning"></i></a>
+
+            {% else %}
+                <a data-bs-toggle="tooltip"  title=" Active"><i class="fa-solid fa-xl fa-toggle-on cursor-pointer text-primary"></i></a>
+            {% endif %}
           </td>
         </tr>
         {% endfor %}

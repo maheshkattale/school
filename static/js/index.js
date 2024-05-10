@@ -109,6 +109,7 @@ flatpickr(".date_picker_upto_today", {
 $('.select2').select2()
 // In this function every menu which has an active link opens if a link is active. Its ul parent opens itself and adds the class 'open' to its parent (the arrow) so it turns 90 degrees
 $('.pagenav li').each(function(i, el) {
+
   if ($(el).hasClass('selected')) {
     $(el).parent().show().parent().addClass('open');
   };

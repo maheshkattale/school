@@ -26,7 +26,6 @@ class academic_master(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             add_academic_dates_request = requests.post(add_academic_dates_url,data=data,headers=headers)
             add_academic_dates_response = add_academic_dates_request.json()
             return HttpResponse(json.dumps(add_academic_dates_response), content_type="application/json")
@@ -44,7 +43,6 @@ class edit_academic(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             edit_academic_dates_request = requests.post(edit_academic_dates_url,data=data,headers=headers)
             edit_academic_dates_response = edit_academic_dates_request.json()
             return HttpResponse(json.dumps(edit_academic_dates_response), content_type="application/json")
@@ -60,7 +58,6 @@ class delete_academic(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             delete_academic_dates_request = requests.post(delete_academic_dates_url,data=data,headers=headers)
             delete_academic_dates_response = delete_academic_dates_request.json()
             return HttpResponse(json.dumps(delete_academic_dates_response), content_type="application/json")

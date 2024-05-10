@@ -45,7 +45,6 @@ class edit_parent_student(GenericAPIView):
 
         tok = request.session.get('token', False)
         if tok:
-            print("byy")
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             class_list_request = requests.get(class_list_url,headers=headers)
@@ -81,7 +80,6 @@ class delete_student(GenericAPIView):
     def post(self,request):
         tok = request.session.get('token', False)
         if tok:
-            print("front")
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()

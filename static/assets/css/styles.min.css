@@ -19347,12 +19347,17 @@ fieldset:disabled .btn {
     margin: 0px 0px 2px;
     border-radius: 7px;
     gap: 15px;
-    font-weight: 400
+    font-weight: 400;
+    padding:0 10px 0 0 ;
 }
 .sidebar-nav ul .sidebar-item .link-disabled {
     opacity: 0.38
 }
+/* .sidebar-link >span */
 
+.menu-icon{
+    width: 10px;
+}
 
 
 .sidebar-nav .sidebar-list .sidebar-list-item {

@@ -58,14 +58,13 @@ INSTALLED_APPS = [
     'teacher',
     'parent_student',
     'time_table',
-    'SchoolMaster',
     'academic_calender',
     'designation',
     'class',
     'subject',
     'exam',
     'academic',
-    
+    'student',
     'user',
 
     'User',
@@ -75,7 +74,9 @@ INSTALLED_APPS = [
     'Parent_StudentMaster',
     'ClassMaster',
     'TimeTableMaster',
-    'MarksheetMaster'
+    'MarksheetMaster',
+    'SchoolMaster',
+
 ]
 
 MIDDLEWARE = [
@@ -86,6 +87,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'Frontend.school.middleware.Custom404Middleware',
+
 ]
 
 ROOT_URLCONF = 'SchoolErp.urls'

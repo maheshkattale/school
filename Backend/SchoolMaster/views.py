@@ -269,7 +269,7 @@ class AcademicYearlist(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
         schoolcode = request.user.school_code
-        yearexist = AcademicYear.objects.filter(school_code=schoolcode,Isdeleted=False)
+        yearexist = AcademicYear.objects.filter(school_code=schoolcode,Isdeleted=False).order_by('startdate')
         serializer = AcademicYearSerializer1(yearexist,many=True)
         return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic year list found successfully","status": "success"}})
     
