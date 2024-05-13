@@ -19235,7 +19235,7 @@ fieldset:disabled .btn {
     -webkit-transition: 0.2s ease-in;
     transition: 0.2s ease-in;
     height: 100%;
-    z-index: 11;
+    z-index: 1052;
     border-right: 1px solid rgb(229, 234, 239)
 }
 
@@ -20041,3 +20041,10 @@ ul {
     border: none;
     box-shadow: 0 0 5px grey;
 } */
+.modal_close_btn{
+    background: transparent;
+    border: none;
+    font-size: 23px;
+    color: grey;
+
+}

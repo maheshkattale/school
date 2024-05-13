@@ -155,9 +155,7 @@ var counterlist = []
 
         <td class="text-center">
           <select id="child_bloodgroup`+counter+`" class="form-select bloodgroup" aria-describedby="child_bloodgrouperror`+counter+`" >
-            
-          
-        </select>
+          </select>
         <div id="child_bloodgrouperror`+counter+`" class="form-text error_message"></div>
           </td>
 
@@ -178,6 +176,8 @@ var counterlist = []
             $("#childclass"+counter).html(classOpt);
 
       var bloodgropOpt = '<option value="">select Blood Group</option>';
+      //bloodgropOpt += `<option value="o">o</option>`;           
+
       $.each(bloodgrplist, function(index, value){  
         bloodgropOpt += `<option value="` + value.id + `">` + value.Groupname + `</option>`;           
             });

@@ -9,6 +9,9 @@ add_academic_dates_url=frontend_url+'api/SchoolMaster/AddAcademicYear'
 edit_academic_dates_url=frontend_url+'api/SchoolMaster/updateAcademicYear'
 academic_list_url=frontend_url+'api/SchoolMaster/AcademicYearlist'
 delete_academic_dates_url=frontend_url+'api/SchoolMaster/deleteAcademicYear'
+toggleAcademicYear_url=frontend_url+'api/SchoolMaster/toggleAcademicYear'
+enableAcademicYear_url=frontend_url+'api/SchoolMaster/enableAcademicYear'
+
 
 class academic_master(GenericAPIView):
     def get(self,request):
@@ -63,3 +66,43 @@ class delete_academic(GenericAPIView):
             return HttpResponse(json.dumps(delete_academic_dates_response), content_type="application/json")
         else:
             return redirect('school:login')
+        
+class toggleAcademicYear(GenericAPIView):
+
+    
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            
+            toggleAcademicYear_request = requests.post(toggleAcademicYear_url,headers=headers,data=data)
+            toggleAcademicYear_response = toggleAcademicYear_request.json()
+            return HttpResponse(json.dumps(toggleAcademicYear_response), content_type="application/json")
+        else:
+            return redirect('school:login')
+        
+class enableAcademicYear(GenericAPIView):
+
+    
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            
+            enableAcademicYear_request = requests.post(enableAcademicYear_url,headers=headers,data=data)
+            enableAcademicYear_response = enableAcademicYear_request.json()
+            return HttpResponse(json.dumps(enableAcademicYear_response), content_type="application/json")
+        else:
+            return redirect('school:login')
+        
+        
+        
+        
+        
+        
+        
+        

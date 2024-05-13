@@ -16,6 +16,7 @@ class Students(TrackingModel):
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
 
+
 class studentclassLog(TrackingModel):
     AcademicyearId = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
     studentId =  models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)

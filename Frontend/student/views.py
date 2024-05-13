@@ -6,8 +6,11 @@ import json
 from rest_framework.generics import GenericAPIView
 from school.static_info import frontend_url
 # Create your views here.
-student_list_url=frontend_url+''
-
+student_list_url=frontend_url+'api/Parent_StudentMaster/getstudentlist'
+class_list_url=frontend_url+'api/ClassMaster/List'
+academic_list_url=frontend_url+'api/SchoolMaster/AcademicYearlist'
+delete_student_url=frontend_url+'api/Parent_StudentMaster/deleteStudent'
+student_id_cards_url=frontend_url+'api/Parent_StudentMaster/getstudentidcards'
 
 class student_list(GenericAPIView):
     def get(self,request):
@@ -15,19 +18,32 @@ class student_list(GenericAPIView):
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
-            # student_list_request = requests.get(student_list_url,headers=headers)
-            # student_list_response = student_list_request.json()
-            # if student_list_response['response']['n']==1:
-            #     return render(request, 'admin/student_master/student_master.html',{'students':student_list_response['data']})
-            # else:
-            #     messages.error(request, student_list_response['response']['msg'])
-            #     return redirect('school:login') 
+            student_list_request = requests.post(student_list_url,headers=headers)
+            student_list_response = student_list_request.json()
             
-            return render(request, 'admin/student_master/studentlist.html',{'students':[]})
+            class_list_request = requests.get(class_list_url,headers=headers)
+            class_list_response = class_list_request.json()
+            academic_list_request = requests.get(academic_list_url,headers=headers)
+            academic_list_response = academic_list_request.json()
+            
+            
+            return render(request, 'admin/student_master/studentlist.html',{'students':student_list_response['data'],
+                                                                            'classes':class_list_response['data'],
+                                                                            'academic_years':academic_list_response['data'],})
 
         else:
             return redirect('school:login')
-        
+
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data = request.data.copy()
+            print("data",data)
+            student_list_request = requests.post(student_list_url,headers=headers,data=data)
+            student_list_response = student_list_request.json()
+            return HttpResponse(json.dumps(student_list_response), content_type="application/json")
         
 class student_id_cards(GenericAPIView):
     def get(self,request):
@@ -35,16 +51,69 @@ class student_id_cards(GenericAPIView):
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
-            # student_list_request = requests.get(student_list_url,headers=headers)
-            # student_list_response = student_list_request.json()
-            # if student_list_response['response']['n']==1:
-            #     return render(request, 'admin/student_master/student_master.html',{'students':student_list_response['data']})
-            # else:
-            #     messages.error(request, student_list_response['response']['msg'])
-            #     return redirect('school:login') 
+
+            student_list_request = requests.post(student_list_url,headers=headers)
+            student_list_response = student_list_request.json()
             
-            return render(request, 'admin/student_master/studentcards.html',{'students':[]})
+            class_list_request = requests.get(class_list_url,headers=headers)
+            class_list_response = class_list_request.json()
+            academic_list_request = requests.get(academic_list_url,headers=headers)
+            academic_list_response = academic_list_request.json()
+            return render(request, 'admin/student_master/studentcards.html',{'students':student_list_response['data'],
+                                                                            'classes':class_list_response['data'],
+                                                                            'academic_years':academic_list_response['data'],})
 
         else:
-            # messages.error(request, student_list_response['response']['msg'])
             return redirect('school:login')
+
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data = request.data.copy()
+            print("data",data)
+            student_id_cards_request = requests.post(student_id_cards_url,headers=headers,data=data)
+            student_id_cards_response = student_id_cards_request.json()
+            return HttpResponse(json.dumps(student_id_cards_response), content_type="application/json")
+        
+class delete_student(GenericAPIView):
+
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data = request.data.copy()
+            delete_student_request = requests.post(delete_student_url, data=data,headers=headers)
+            delete_student_response = delete_student_request.json()
+            return HttpResponse(json.dumps(delete_student_response), content_type="application/json")
+        
+  
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
