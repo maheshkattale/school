@@ -5,13 +5,16 @@
 {% endblock %}
 
 {% block heading %}
-  <span class="tab-title"><i class="fa-solid fa-user"></i> <span class="px-1">Add Time Table</span></span>
+  <span class="tab-title"> <span class="px-1">Time Table</span></span>
 {% endblock %}
 
 {% block body %}
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title fw-semibold mb-4">Add Time Table Forms</h5>
+      <div class="d-flex justify-content-between">
+        <h5 class="card-title fw-semibold mb-4">Add Time Table Forms </h5>
+        <h5 class="card-title fw-semibold mb-4">({{academic_year.startdate_month_yyyy}} To {{academic_year.enddate_month_yyyy}})</h5>
+      </div>
       <div class="card">
         <div class="card-body">
           <form>
@@ -347,10 +350,10 @@
       var sdate = start_datestr.split(' ')[1].split(',')[0]
       var edate = end_datestr.split(' ')[1].split(',')[0]
 
-      if (sdate >10){
+      if (parseInt(sdate) < 10){
         sdate='0'+sdate
       }
-      if (edate >10){
+      if (parseInt(edate) < 10){
         edate='0'+edate
       }
       var syear = start_datestr.split(',')[1].split(' ')[1]
@@ -727,52 +730,47 @@
     $('#timetable_table').DataTable();
     $('#timetable_daterange').select2();
 
+
+
+
     jQuery(function ($) {
 
-      var start = moment().subtract(0, 'days')
-      var end = moment()
-  
+      var startDate = moment('{{academic_year.startdate}}');
+      var endDate = moment('{{academic_year.enddate}}');
+    
       function cb(start, end) {
-      $('#daterange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+        $('#daterange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
       }
-  
-      $('#daterange').daterangepicker(
-      {
-          startDate: start,
-          endDate: end,
-          ranges: {
+    
+      $('#daterange').daterangepicker({
+        startDate: startDate,
+        endDate: endDate,
+        minDate: startDate,
+        maxDate: endDate,
+        isInvalidDate: function (date) {
+          return !(date >= startDate && date <= endDate);
+        },
+        ranges: {
+          '{{academic_year.startdate_month_yyyy}} to {{academic_year.enddate_month_yyyy}}': [startDate, endDate],
+
           Today: [moment(), moment()],
           Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
           'This Month': [moment().startOf('month'), moment().endOf('month')],
           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-          }
-      },
-      cb
-      )
-  
-      cb(start, end)
-
+          
+        }
+      }, cb);
+    
+      cb(startDate, endDate);
+    
       // Use jQuery UI Datepicker for DOB input
       $('#spandatechange').on('DOMSubtreeModified', function () {
-          //console.log('DOMSubtreeModified',spandatechange)
-      })
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //console.log('DOMSubtreeModified',spandatechange)
+      });
+    
+    });
 
 
     // Function to add a new timetable
@@ -940,7 +938,7 @@
 
 
 
-  })
+
 
 
 

@@ -278,6 +278,8 @@ class AddAcademicYear(GenericAPIView):
         if yearexist is None:
             serializer = AcademicYearSerializer(data=data)
             if serializer.is_valid():
+                AcademicYear.objects.all().update(isActive=False)
+
                 serializer.save()
                 return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic year added successfully","status": "success"}})
             else:
@@ -292,7 +294,7 @@ class AcademicYearlist(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
         schoolcode = request.user.school_code
-        yearexist = AcademicYear.objects.filter(school_code=schoolcode,Isdeleted=False)
+        yearexist = AcademicYear.objects.filter(school_code=schoolcode,Isdeleted=False).order_by('startdate')
         serializer = AcademicYearSerializer1(yearexist,many=True)
         return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic year list found successfully","status": "success"}})
     
@@ -306,6 +308,19 @@ class AcademicYearbyid(GenericAPIView):
         yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
         if yearobj is not None:
             serializer = AcademicYearSerializer(yearobj)
+            return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic Year found successfully","status": "success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Academic Year not found ","status": "failure"}})
+            
+class get_current_academic_year(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        school_code = request.user.school_code
+        
+        yearobj = AcademicYear.objects.filter(Isdeleted=False,isActive=True,school_code=school_code).first()
+        if yearobj is not None:
+            serializer = AcademicYearSerializer1(yearobj)
             return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic Year found successfully","status": "success"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Academic Year not found ","status": "failure"}})
@@ -327,6 +342,7 @@ class updateAcademicYear(GenericAPIView):
             if duplicateyearobj is None:
                 serializer = AcademicYearSerializer(yearobjexist,data=data,partial=True)
                 if serializer.is_valid():
+                    AcademicYear.objects.all().update(isActive=False)
                     serializer.save()
                     return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic year updated successfully","status": "success"}})
                 else:
@@ -353,5 +369,83 @@ class deleteAcademicYear(GenericAPIView):
                 return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic Year deleted successfully","status": "success"}})
             else:
                 return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't delete Academic year ! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Academic Year not found ","status": "failure"}})
+        
+        
+class enableAcademicYear(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        schoolcode = request.user.school_code
+        id = request.data.get('id')
+        data={}
+        data['isActive'] = True
+        print("id",id)
+        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
+        if yearobj is not None:
+            if yearobj.isActive == False:
+                serializer = AcademicYearSerializer(yearobj,data=data,partial=True)
+                if serializer.is_valid():
+                    AcademicYear.objects.all().update(isActive=False)
+                    serializer.save()
+                    return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic Year enable successfully","status": "success"}})
+                else:
+                    return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't enable Academic year ! ","status": "failure"}})
+            else:
+                return Response({"data":'',"response": {"n": 0, "msg": "Academic Year is already enabled ","status": "failure"}})
+                
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Academic Year not found ","status": "failure"}})
+
+
+class toggleAcademicYear(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        schoolcode = request.user.school_code
+        id = request.data.get('id')
+        data={}
+        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
+        if yearobj is not None:
+            if yearobj.isActive == True:
+                data['isActive'] = False
+                status="disable"
+            else:
+                data['isActive'] = True
+                status="enable"
+                
+            serializer = AcademicYearSerializer(yearobj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic Year "+status+" successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't "+status+" Academic year ! ","status": "failure"}})
+           
+                
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Academic Year not found ","status": "failure"}})
+
+
+class disableAcademicYear(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        schoolcode = request.user.school_code
+        id = request.data.get('id')
+        data={}
+        data['isActive'] = False
+        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
+        if yearobj is not None:
+            if yearobj.isActive == True:
+                serializer = AcademicYearSerializer(yearobj,data=data,partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic Year disable successfully","status": "success"}})
+                else:
+                    return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't disable Academic year ! ","status": "failure"}})
+            else:
+                return Response({"data":'',"response": {"n": 0, "msg": "Academic Year is already disabled ","status": "failure"}})
+                
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Academic Year not found ","status": "failure"}})

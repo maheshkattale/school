@@ -32,7 +32,6 @@ class reset_password(GenericAPIView):
         
         reset_password_request = requests.post(reset_password_url,data=data)
         reset_password_response = reset_password_request.json()
-        print("reset_password_response['response']['n']",reset_password_response)
         if reset_password_response['response']['n']==0:
             msg = reset_password_response['response']['msg']
             messages.error(request, msg)
@@ -94,7 +93,6 @@ class change_password(GenericAPIView):
                 return redirect('school:login')
 class set_password(GenericAPIView):
     def get(self,request,id):
-        print("id",id)
         return render(request, 'user/set_password.html',{})
     def post(self,request,id):
         data={}
@@ -104,7 +102,6 @@ class set_password(GenericAPIView):
         
         set_password_request = requests.post(set_password_url,data=data)
         set_password_response = set_password_request.json()
-        print("set_password_response['response']['n']",set_password_response)
         if set_password_response['response']['n']==0:
             msg = set_password_response['response']['msg']
             messages.error(request, msg)
@@ -148,7 +145,6 @@ class permissions(GenericAPIView):
             data={}
             data['roleid'] = request.data.get('roleid')
             data['permission'] = request.data.getlist('permission')            
-            print("data1",data)
             save_permissions_request = requests.post(save_permissions_url,headers=headers,data=data)
             save_permissions_response = save_permissions_request.json()
             if save_permissions_response['response']['n']==1:
@@ -169,7 +165,6 @@ class get_permissions_by_role(GenericAPIView):
             headers = {'Authorization': t}
             data={}
             data['roleid']=request.POST.get("roleid")
-            print("data",request.POST)
             permission_request = requests.get(permission_url,headers=headers,data=data)
             permission_response = permission_request.json()
             return HttpResponse(json.dumps(permission_response), content_type="application/json")

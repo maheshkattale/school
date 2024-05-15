@@ -73,7 +73,6 @@ class login(GenericAPIView):
                 useruuid = str(userexist.id)
                 role = userexist.role
                 role_id=user_serializer.data['role']
-                print("role",role)
 
                 username = userexist.Username
                 schoolcode = userexist.school_code
@@ -170,11 +169,9 @@ class getpermissions(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
         roleid = request.data.get('roleid')
-        print("roleid",roleid)
         schoolcode = request.user.school_code
         psdata = permission.objects.filter(Role_id=roleid)
         serializer = permissionserializer(psdata,many=True)
-        print("serializer.data,",serializer.data)
         return Response({
             "data" : serializer.data,
             "response":{
@@ -208,7 +205,6 @@ class savepermissions(GenericAPIView):
         roleid = request.data.get('roleid')
         permissionlist = request.data.getlist('permission')
         schoolcode = request.user.school_code
-        print("data",request.data)
         permissiondata = permission.objects.filter(Role_id=roleid).first()
         data = {}
         data['Role_id'] = roleid
@@ -326,7 +322,6 @@ class setnewpassword(GenericAPIView):
     def post(self,request):
         data={}
         data['id']=request.data.get('id')
-        print("id",data['id'])
         empdata = User.objects.filter(id=data['id'],isActive=True).first()
         if empdata is not None:
             data['Password']=request.data.get('Password')

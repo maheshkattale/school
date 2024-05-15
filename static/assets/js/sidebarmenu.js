@@ -32,6 +32,9 @@ $(function () {
           // If they match, add the class "selected" to the anchor tag
           heading.addClass('selected');
           heading.addClass('active');
+          heading.parent().parent().css('display','block');
+          heading.parent().parent().parent().addClass('open');
+
       }
     });
 

@@ -29,7 +29,6 @@ class AddTeacher(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
-        print("data",data)
         data['isActive'] = True
         subjects = json.loads(data['subjects'])
         schoolcode = request.user.school_code
@@ -182,7 +181,7 @@ class UpdateTeacher(GenericAPIView):
                     serializer.save()
                     delete_subject=TeacherSubject.objects.filter(TeacherId=str(serializer.data['id'])).delete()
                     for s in subjects:
-                        subject_obj=TeacherSubject.objects.create(TeacherId=str(serializer.data['id']),SubjectId_id=s)
+                        subject_obj=TeacherSubject.objects.create(TeacherId=str(serializer.data['id']),SubjectId_id=s,school_code=schoolcode)
                             
                     return Response({"data":'',"response": {"n": 1, "msg": "Teacher updated successfully","status": "success"}})
                 else:

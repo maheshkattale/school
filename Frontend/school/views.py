@@ -44,7 +44,6 @@ class login(GenericAPIView):
             request.session['email'] = login_response['data']['email']
             request.session['mobileNumber'] = login_response['data']['mobileNumber']
             request.session['Address'] = login_response['data']['Address']
-            print("res",login_response['data'])
             msg = login_response['response']['msg']
             # messages.success(request, msg)
             return redirect('school:dashboard')
@@ -162,6 +161,9 @@ class edit_school(GenericAPIView):
 class mail(GenericAPIView):
     def get(self,request):
         return render(request, 'mails/teacher_registration.html',{"Name": 'mahesh kattale',"email":'maheshkattale@gmail.com','userid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8','frontend_url':frontend_url,'school_name':'Shri Vidya Bhavan School',"adminname": 'mahesh kattale','adminid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8', 'bestregard_from':'School ERP','phone_no':'0201-890890',})
+class template_render(GenericAPIView):
+    def get(self,request):
+        return render(request, 'admin/student_master/student_id_cards_pdf.html',{"Name": 'mahesh kattale',"email":'maheshkattale@gmail.com','userid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8','frontend_url':frontend_url,'school_name':'Shri Vidya Bhavan School',"adminname": 'mahesh kattale','adminid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8', 'bestregard_from':'School ERP','phone_no':'0201-890890',})
     
 class reset_password_mail(GenericAPIView):
     def get(self,request):
@@ -174,3 +176,6 @@ class marksheet(GenericAPIView):
 class permissions(GenericAPIView):
     def get(self,request):
         return render(request, 'admin/permissions.html',{})
+    
+def custom_404_view(request, exception):
+    return render(request, '404.html', status=404)

@@ -17,7 +17,7 @@ timetable_edit_url=frontend_url+'api/TimeTableMaster/edittimetable'
 get_teacher_by_subject_url=frontend_url+'api/TimeTableMaster/getteachersfromsub'
 timetable_dates_ranges_url=frontend_url+'api/TimeTableMaster/daterangelist'
 check_existing_timetable_entry_url=frontend_url+'api/TimeTableMaster/checkdaterange'
-
+get_current_academic_year_url=frontend_url+'api/SchoolMaster/get_current_academic_year'
 class time_table_master(GenericAPIView):
     def get(self,request):
         return render(request, 'admin/time_table_master/time_table_master.html',{})
@@ -39,14 +39,17 @@ class add_time_table(GenericAPIView):
             timetable_dates_ranges_response = timetable_dates_ranges_request.json()
             timetable_list_request = requests.post(timetable_list_url,headers=headers)
             timetable_list_response = timetable_list_request.json()
-            print("timetable_list_response",timetable_list_response)
             
+            get_current_academic_year_request = requests.post(get_current_academic_year_url,headers=headers)
+            get_current_academic_year_response = get_current_academic_year_request.json()
             context={
                 'subjects':subject_list_response['data'],
                 'teachers':teacher_list_response['data'],
                 'timetable_dates_ranges':timetable_dates_ranges_response['data'],
                 'classes':class_list_response['data'],
                 'timetableslist':timetable_list_response['data'],
+                'academic_year':get_current_academic_year_response['data'],
+                
             }
             return render(request, 'admin/time_table_master/add_time_table.html',context)
         else:
@@ -74,7 +77,6 @@ class edit_timetable(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            print("data",data)
             timetable_edit_request = requests.post(timetable_edit_url,headers=headers,data=data)
             timetable_edit_response = timetable_edit_request.json()
             return HttpResponse(json.dumps(timetable_edit_response), content_type="application/json")

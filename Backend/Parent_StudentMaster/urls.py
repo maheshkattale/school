@@ -16,5 +16,6 @@ urlpatterns = [
     path('deleteStudent', deleteStudent.as_view(), name = 'deleteStudent'),
 
     path('getstudentlist', getstudentlist.as_view(), name = 'getstudentlist'),
+    path('getstudentidcards', getstudentidcards.as_view(), name = 'getstudentidcards'),
 
 ]

@@ -19235,7 +19235,7 @@ fieldset:disabled .btn {
     -webkit-transition: 0.2s ease-in;
     transition: 0.2s ease-in;
     height: 100%;
-    z-index: 11;
+    z-index: 1052;
     border-right: 1px solid rgb(229, 234, 239)
 }
 
@@ -19347,12 +19347,17 @@ fieldset:disabled .btn {
     margin: 0px 0px 2px;
     border-radius: 7px;
     gap: 15px;
-    font-weight: 400
+    font-weight: 400;
+    padding:0 10px 0 0 ;
 }
 .sidebar-nav ul .sidebar-item .link-disabled {
     opacity: 0.38
 }
+/* .sidebar-link >span */
 
+.menu-icon{
+    width: 10px;
+}
 
 
 .sidebar-nav .sidebar-list .sidebar-list-item {
@@ -20036,3 +20041,10 @@ ul {
     border: none;
     box-shadow: 0 0 5px grey;
 } */
+.modal_close_btn{
+    background: transparent;
+    border: none;
+    font-size: 23px;
+    color: grey;
+
+}

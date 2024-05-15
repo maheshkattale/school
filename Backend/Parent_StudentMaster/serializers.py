@@ -6,6 +6,13 @@ class StudentSerializer(serializers.ModelSerializer):
         model= Students
         fields='__all__'
 
+class StudentSerializer1(serializers.ModelSerializer):
+    StudentClass=serializers.StringRelatedField()
+
+    class Meta:
+        model= Students
+        fields='__all__'
+
 class BloodGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model= BloodGroup
