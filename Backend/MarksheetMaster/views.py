@@ -22,7 +22,7 @@ class AddExamType(GenericAPIView):
     def post(self,request):
         data = request.data.copy()
         data['isActive'] = True
-        examtypeexist = ExamType.objects.filter(TypeName=data['TypeName'],Marks=data['Marks'],isActive= True).first()
+        examtypeexist = ExamType.objects.filter(TypeName=data['TypeName'],isActive= True).first()
         if examtypeexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Type Name with marks already exist","status": "failure"}})
         else:
@@ -65,7 +65,7 @@ class updateExamType(GenericAPIView):
         ExamTypeid = data['id']
         ExamTypeobj = ExamType.objects.filter(id=ExamTypeid,isActive=True).first()
         if ExamTypeobj is not None:
-            ExamTypeexist = ExamType.objects.filter(TypeName=data['TypeName'],Marks=data['Marks'],isActive= True).exclude(id=ExamTypeid).first()
+            ExamTypeexist = ExamType.objects.filter(TypeName=data['TypeName'],isActive= True).exclude(id=ExamTypeid).first()
             if ExamTypeexist is not None:
                 return Response({"data":'',"response": {"n": 0, "msg": "ExamType already exist","status": "failure"}})
             else:

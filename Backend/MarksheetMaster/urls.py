@@ -10,6 +10,7 @@ urlpatterns = [
     path('getbyid',ExamTypebyid.as_view(), name = 'getbyid'),
     path('update', updateExamType.as_view(), name = 'update'),
     path('delete', deleteExamType.as_view(), name = 'delete'),
+    
     path('examscorelist', examscorelist.as_view(), name = 'examscorelist'),
     path('add_exam_type_marks', AddExamTypeMarks.as_view(), name = 'add_exam_type_marks'),
     path('exam_type_marks_list', exam_type_marks_list.as_view(), name = 'exam_type_marks_list'),

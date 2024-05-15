@@ -18,7 +18,7 @@ from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
 from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
-from Frontend.school.static_info import frontend_url
+from Frontend.school.static_info import frontend_url,image_url
 
 
 
@@ -116,6 +116,12 @@ class schoollist(GenericAPIView):
     def get(self,request):
         schoolobjs = School.objects.all().order_by('Name')
         serializer = schoolSerializer(schoolobjs,many=True)
+        for s in serializer.data:
+            school_logo = s['school_logo']
+            if school_logo != "" and school_logo is not None:
+                s['school_logo'] = image_url + str(s['photo'])
+            else:
+                s['school_logo'] = image_url + "/static/assets/images/profile.png"
         return Response({"data":serializer.data,"response": {"n": 1, "msg": "school list found successfully","status": "success"}})
        
 
@@ -124,9 +130,18 @@ class getschoolbyid(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         id = request.data.get('id')
+        print("idddddddddddd",id)
         schoolobj = School.objects.filter(id=id).first()
+        print("schoolobjschoolobj",schoolobj)
         if schoolobj is not None:
             serializer = schoolSerializer(schoolobj)
+            for s in [serializer.data]:
+                school_logo = s['school_logo']
+                if school_logo != "" and school_logo is not None:
+                    s['school_logo'] = image_url + str(s['photo'])
+                else:
+                    s['school_logo'] = image_url + "/static/assets/images/profile.png"
+
             return Response({"data":serializer.data,"response": {"n": 1, "msg": "School found successfully","status": "success"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "School not found ","status": "failure"}})
@@ -137,6 +152,7 @@ class updateSchool(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
+        print("dataaaa",data)
         schoolid = data['id']
         schoolobj = School.objects.filter(id=schoolid,isActive=True).first()
         if schoolobj is not None:
@@ -162,7 +178,13 @@ class updateSchool(GenericAPIView):
                 return Response({"data":'',"response": {"n": 0, "msg": "School Admin Email already exist","status": "failure"}})
 
             else:
+                if data['school_logo'] != "" and data['school_logo'] is not None:
+                    data['school_logo'] = data['school_logo'] 
+                else:
+                    data['school_logo'] = schoolobj.school_logo
+
                 serializer = schoolSerializer(schoolobj,data=data,partial=True)
+             
                 if serializer.is_valid():
                     serializer.save()
 
@@ -182,6 +204,7 @@ class updateSchool(GenericAPIView):
                     else:
                         return Response({"data":'',"response": {"n": 0, "msg": "Couldn't find admin email to update ! ","status": "failure"}})
                 else:
+                    print("serializer.errors",serializer.errors)
                     return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Update School ! ","status": "failure"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "School is not Active ","status": "failure"}})
