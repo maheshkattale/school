@@ -298,7 +298,7 @@ function generate_student_id_card(){
 
     var classid = $('#classid').val();
 
-    var yearid = $('#academic_year option:selected').text();
+    var yearid = $('#academic_year option:').text();
 
     var fd = new FormData();    
     fd.append("classid",classid);
