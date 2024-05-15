@@ -9,6 +9,7 @@ class School(TrackingModel):
     Email =  models.EmailField(null=True,blank=True)
     admin_Name = models.CharField(max_length=255,null=True,blank=True)
     admin_Email = models.EmailField(null=True,blank=True)
+    school_logo = models.ImageField(upload_to='Schoollogos/', blank=True, null=True,verbose_name='school logo')
     school_code = models.CharField(max_length=255,null=True,blank=True)
    
 

@@ -2,6 +2,7 @@ from django.db import models
 from helpers.models import TrackingModel
 from ClassMaster.models import Class
 from SubjectMaster.models import Subject
+from SchoolMaster.models import AcademicYear
 
 class Days(TrackingModel):
     DayName = models.CharField(max_length=255,null=True,blank=True)  
@@ -20,6 +21,7 @@ class Days(TrackingModel):
 
 
 class TimeTable(TrackingModel):
+    AcademicYear = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
     startdate = models.DateField(null=True, blank=True)
     enddate = models.DateField(null=True, blank=True)
     # daterangeid =  models.ForeignKey(TimeTabledaterange,on_delete=models.CASCADE,null=True,blank=True)

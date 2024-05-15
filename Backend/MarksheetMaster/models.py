@@ -14,7 +14,7 @@ class ExamType(TrackingModel):
         return self.TypeName
 
 class ExamTypeMarks(TrackingModel):
-    Typeid =models.ForeignKey(ExamType,on_delete=models.CASCADE,null=True,blank=True)
+    Typeid = models.ForeignKey(ExamType,on_delete=models.CASCADE,null=True,blank=True)
     Marks =  models.CharField(max_length=150,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
 

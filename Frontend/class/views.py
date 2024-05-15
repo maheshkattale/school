@@ -27,11 +27,9 @@ class class_master(GenericAPIView):
         else:
             messages.error(request, class_list_response['response']['msg'])
             return redirect('school:login')
-        
+              
 class add_class(GenericAPIView):
     def post(self,request):
-        
-
         tok = request.session.get('token', False)
         if tok:
             token = 'Bearer {}'.format(tok)

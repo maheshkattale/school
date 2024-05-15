@@ -9,4 +9,6 @@ urlpatterns = [
     path('update', updateclass.as_view(), name = 'update'),
     path('delete', deleteclass.as_view(), name = 'delete'),
 
+    path('classdatabyexcel', classdatabyexcel.as_view(), name = 'classdatabyexcel'),
+
 ]

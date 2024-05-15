@@ -21,6 +21,8 @@ from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
 from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
+from datetime import datetime, timedelta
+from Parent_StudentMaster.models import Students,studentclassLog
 
 
 
@@ -39,7 +41,8 @@ class addtimetable(GenericAPIView):
 
         if timetablelist != []:
             for t in timetablelist :
-                TimeTable.objects.create(ClassId_id=t['class'],startdate = t['startdate'],enddate=t['enddate'],Day=t['day'],start_time=t['starttime'],end_time = t['endtime'],SubjectId_id=t['subject'],TeacherId = t['teacher'],school_code=schoolcode)
+                
+                TimeTable.objects.create(ClassId_id=t['class'],startdate = t['startdate'],enddate=t['enddate'],Day=t['day'],start_time=t['starttime'],end_time = t['endtime'],SubjectId_id=t['subject'],TeacherId = t['teacher'],school_code=schoolcode,AcademicYear_id = t['AcademicYear'])
 
             return Response({"data":'',"response": {"n": 1, "msg": "TimeTable Added Successfully","status": "Success"}})
         else:
@@ -210,5 +213,53 @@ class get_ttbyid(GenericAPIView):
             return Response({"data":dateser.data,"response": {"n": 1, "msg": "Timetable Record found Successfully","status": "Success"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "record not found","status": "failed"}})
+
+
+
+# class getttbystudentid(GenericAPIView):
+#     authentication_classes=[userJWTAuthentication]
+#     permission_classes = (permissions.IsAuthenticated,)
+#     def post(self,request):
+#         data={}
+#         schoolcode = request.user.school_code
+#         stuid = request.data.get('stuid')
+#         week = request.data.get('week')
+#         year = request.data.get('year')
+
+#         startdate = datetime.date.fromisocalendar(year, week, 1)
+#         dates = []
+#         for i in range(7):
+#             day = startdate + datetime.timedelta(days=i)
+#             dates.append(day)
+
+#         print("dates",dates)
+#         return Response({"data":dates,"response": {"n": 1, "msg": "Timetable Record found Successfully","status": "Success"}})
+
+
+class getttbystudentid(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data={}
+        schoolcode = request.user.school_code
+        stuid = request.data.get('stuid')
+        date = request.data.get('date')
+
+        Academicyearobj = AcademicYear.objects.filter(isActive=True,school_code=schoolcode).first()
+        if Academicyearobj is not None:
+            academicyearid = Academicyearobj.id
+            stuobj = studentclassLog.objects.filter(studentId=stuid,AcademicyearId=academicyearid,school_code=schoolcode).first()
+            if stuobj is not None:
+                studentclass = stuobj.classid
+                ttobjs = TimeTable.objects.filter(ClassId=studentclass,startdate_lte = date ,enddate_gte = date,school_code=schoolcode,isActive=True)
+                ttser = CustomTimeTableSerializer(ttobjs,many=True)
+                return Response({"data":ttser.data,"response": {"n": 1, "msg": "Timetable Record found Successfully","status": "Success"}})
+            else:
+                return Response({"data":'',"response": {"n": 0, "msg": "student class not found","status": "failed"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "AcademicYear is not active","status": "failed"}})
+
+
+
 
 

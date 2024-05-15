@@ -143,6 +143,7 @@ class edit_school(GenericAPIView):
             headers = {'Authorization': t}
             data={}
             data['id']=id
+            print("frontid",id)
             get_school_info_request = requests.post(get_school_info_url,headers=headers,data=data)
             get_school_info_response = get_school_info_request.json()
             return render(request, 'superadmin/edit_school.html',{'school':get_school_info_response['data']})
@@ -156,7 +157,7 @@ class edit_school(GenericAPIView):
             edit_school_request = requests.post(edit_school_url, data=data,headers=headers)
             edit_school_response = edit_school_request.json()
             return HttpResponse(json.dumps(edit_school_response), content_type="application/json")
-        
+
         
 class mail(GenericAPIView):
     def get(self,request):
