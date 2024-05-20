@@ -13,7 +13,7 @@
     <div class="card-body">
       <div class="d-flex justify-content-between">
         <h5 class="card-title fw-semibold mb-4">Add Time Table Forms </h5>
-        <h5 class="card-title fw-semibold mb-4">({{academic_year.startdate_month_yyyy}} To {{academic_year.enddate_month_yyyy}})</h5>
+        <h5 class="card-title fw-semibold mb-4"> ({{academic_year.startdate_month_yyyy}} To {{academic_year.enddate_month_yyyy}})</h5>
       </div>
       <div class="card">
         <div class="card-body">
@@ -821,7 +821,7 @@
 
 
 
-          timetables.push({"itemno":rowno,"class":class_id,"day":day,"startdate":dates.start_date,"enddate":dates.end_date,"starttime":start_time ,"endtime":end_time, "subject":subject_id,"teacher":teacher_id});
+          timetables.push({"itemno":rowno,"class":class_id,"day":day,"startdate":dates.start_date,"enddate":dates.end_date,"starttime":start_time ,"endtime":end_time, "subject":subject_id,"teacher":teacher_id,'AcademicYear':'{{academic_year.id}}'});
           rowno++;
 
             //addtimetableToArray(timetable);

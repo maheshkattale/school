@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'class',
     'subject',
     'exam',
+    'message',
     'academic',
     'student',
     'user',
@@ -75,6 +76,7 @@ INSTALLED_APPS = [
     'ClassMaster',
     'TimeTableMaster',
     'MarksheetMaster',
+    'MessageMaster',
     'SchoolMaster',
 
 ]

@@ -1,0 +1,308 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+<style>
+    .message-tabs {
+
+        padding: 10px;
+        width: 49%;
+        text-align: center;
+        border: 1px solid #995dff;
+    border-radius: 5px;
+    }
+    ul>li>a{
+        color: #995dff;
+        font-weight: 600;
+        font-size: 24px;
+        padding-bottom: 5px;
+
+    }
+
+    li > a.active {
+        border-bottom: 3px solid #995dff;
+    }
+    .nav-pills{
+        margin: 18px 0px;
+    }
+    .message-profile-image{
+        border-radius:50% ;
+    }
+    .message_box{
+        box-shadow: 0 0 2px grey;
+        border-radius: 15px;
+        padding: 5px;
+        margin: 10px 0px;
+    
+    }
+    .message_username{
+        color: black;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+</style>
+{% endblock %}
+{% block heading %}
+  <span class="tab-title"><span class="px-1">Messages</span></span>
+{% endblock %}
+{% block body %}
+  <div class="d-flex justify-content-end">
+    <a data-bs-toggle="modal" data-bs-target="#add_message" class="btn btn-primary">Send Message</a>
+    <div id="add_message" class="modal">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+  
+            <div class="modal-body">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title fw-semibold mb-4">Message Box</h5>
+                <div class="card">
+                  <div class="card-body">
+                    <form>
+                      <div class="row">
+  
+                        <div class="mb-3 col-lg-12">
+                          <label for="recipient" class="form-label">Recipient </label>
+                          <select id="recipient" class="form-select select2" aria-describedby="recipient_error">
+
+                            <option value="" selected> Please select recipient</option>
+                            {% for recipient in recipients %}
+                              <option value="{{recipient.id}}"> {{recipient.Username}}</option>
+                            {% endfor %}
+          
+                          </select>
+                          
+                          <div id="recipient_error" class="form-text error_message"></div>
+                        </div>
+
+
+                        <div class="mb-3 col-lg-12">
+                            <label for="subject" class="form-label">Subject </label>
+                            <input type="text" class="form-control" id="subject" placeholder="Please enter subject" aria-describedby="subject_error" />
+                            <div id="subject_error" class="form-text error_message"></div>
+                          </div>
+
+
+                          <div class="mb-3 col-lg-12">
+                            <label for="message" class="form-label">message </label>
+                            <textarea class="form-control" rows="5" id="message" >Please enter message</textarea>
+                            <div id="message_error" class="form-text error_message"></div>
+                          </div>
+                      </div>
+  
+                      <div class="row">
+                        <div class="d-flex justify-content-center">
+                          <a onclick="validate_add_form();" class="btn btn-primary">Submit</a>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="row card pb-5 my-2">
+    <ul class="nav nav-pills justify-content-evenly my-2" role="tablist">
+        <li class="message-tabs"><a data-bs-toggle="pill" href="#Recived" class="active">Recived Messages</a></li>
+        <li class="message-tabs"><a data-bs-toggle="pill" href="#Send">Sent Messages</a></li>
+      </ul>
+      
+      <div class="tab-content">
+        <div id="Recived" class="tab-pane fade in active show">
+          {% for i  in recived_messages  %}
+
+            <div class="d-flex message_box">
+                <div class="">
+                    <div class="m-2">
+                        <img class="message-profile-image" src="{% static 'assets/images/profile/profile.png' %}" alt="" width="50px">
+                    </div>
+                </div>
+                <div class="w-100 me-2">
+                    <div class="d-flex justify-content-between"><span class="message_username">{{i.from_user_str}}</span><span>{{i.date_str}}</span></div>
+                    <div><span>message : </span> {{i.short_message}}</div>
+                    <div><span>Message : </span>{{i.message}}</div>
+                </div>
+            </div>
+          {% endfor %}
+            <div class="d-flex message_box">
+                <div class="">
+                    <div class="m-2">
+                        <img class="message-profile-image" src="{% static 'assets/images/profile/profile.png' %}" alt="" width="50px">
+                    </div>
+                </div>
+                <div class="w-100 me-2">
+                    <div class="d-flex justify-content-between"><span class="message_username">Mahesh Kattale</span><span>2nd April 2024</span></div>
+                    <div><span>Subject : </span> Thanks for your support</div>
+                    <div><span>Message : </span> Some content in this message has been blocked because the sender isn't in your Safe senders list.</div>
+                </div>
+            </div>
+        </div>
+        <div id="Send" class="tab-pane fade">
+            <div class="d-flex message_box">
+              <div class="">
+                  <div class="m-2">
+                      <img class="message-profile-image" src="{% static 'assets/images/profile/profile.png' %}" alt="" width="50px">
+                  </div>
+              </div>
+              <div class="w-100 me-2">
+                  <div class="d-flex justify-content-between"><span class="message_username">Mahesh Kattale</span><span>2nd April 2024</span></div>
+                  <div><span>Subject : </span> Thanks for your support</div>
+                  <div><span>Message : </span> Some content in this message has been blocked because the sender isn't in your Safe senders list.</div>
+              </div>
+            </div>
+            {% for i  in send_messages  %}
+
+            <div class="d-flex message_box">
+                <div class="">
+                    <div class="m-2">
+                        <img class="message-profile-image" src="{% static 'assets/images/profile/profile.png' %}" alt="" width="50px">
+                    </div>
+                </div>
+                <div class="w-100 me-2">
+                    <div class="d-flex justify-content-between"><span class="message_username">{{i.to_user_str}}</span><span>{{i.date_str}}</span></div>
+                    <div><span>Subject : </span> {{i.short_message}}</div>
+                    <div><span>Message : </span>{{i.message}}</div>
+                </div>
+            </div>
+          {% endfor %}
+
+        </div>
+
+      </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script>
+
+    function validate_add_form(){
+      debugger
+      var recipient=$('#recipient').val()
+      var subject=$('#subject').val()
+      var message=$('#message').val()
+      var fd = new FormData();    
+
+        if('{{roleid}}' == 5){
+            var logined_student=$('#logined_children').val()
+            fd.append("StudentCode",logined_student);
+        }
+
+      if(IsValid(recipient)){
+        $('#recipient').html();
+        $('#recipient_error').show().delay(3000).slideUp();
+        $('#recipient_error').html('Please select recipient');
+        $('#recipient').focus();
+        return false;
+      }
+      if(IsValid(subject)){
+        $('#subject').html();
+        $('#subject_error').show().delay(3000).slideUp();
+        $('#subject_error').html('Please enter subject');
+        $('#subject').focus();
+        return false;
+      }
+      if(IsValid(message)){
+        $('#message').html();
+        $('#message_error').show().delay(3000).slideUp();
+        $('#message_error').html('Please enter message');
+        $('#message').focus();
+        return false;
+      }
+      else{
+
+
+        fd.append("to_user_id",recipient);
+        fd.append("subject",subject);
+        fd.append("from_user_id",'{{user_id}}');
+        fd.append("message",message);
+        fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+        $.ajax({
+          type: "POST",
+          url: frontend_url+"messages/add_message",
+          data: fd,
+          processData: false,
+          contentType: false,
+          
+          success: function(response) {
+            if(response.response.n ==1){
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'success',
+              }).then((result) => {
+                window.location.href = "/messages/";
+    
+              });
+            }else{
+              Swal.fire({
+                text: response.response.msg,
+                icon: 'error',
+              })
+            }
+
+      
+          },
+        });
+
+
+
+      }
+    }
+
+
+    function delete_message(id){
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          var fd = new FormData();    
+          fd.append("id",id);
+          fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+          $.ajax({
+            type: "POST",
+            url: frontend_url+"subject_master/delete_subject",
+            data: fd,
+            processData: false,
+            contentType: false,
+            
+            success: function(response) {
+              console.log("delete",response)
+              if(response.response.n ==1){
+                Swal.fire({
+                  text: response.response.msg,
+                  icon: 'success',
+                }).then((result) => {
+                  window.location.href = "/subject_master";
+          
+                });
+              }else{
+                Swal.fire({
+                  text: response.response.msg,
+                  icon: 'error',
+                })
+              }
+  
+        
+            },
+          });
+
+
+
+
+        }
+      });
+       
+
+    }
+
+  </script>
+{% endblock %}

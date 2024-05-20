@@ -14,7 +14,7 @@ class Students(TrackingModel):
     BloodGroup = models.IntegerField(null=True,blank=True)
     photo = models.ImageField(upload_to='StudentImages/', blank=True, null=True,verbose_name='Student Photo')
     school_code = models.CharField(max_length=150,null=True,blank=True)
-
+    primary_student=models.BooleanField(default=False)
 
 
 class studentclassLog(TrackingModel):
@@ -24,6 +24,11 @@ class studentclassLog(TrackingModel):
     classid = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
+
+# class Primary_Student(TrackingModel):
+#     ParentId = models.CharField(max_length=150,null=True,blank=True)
+#     StudentCode = models.CharField(max_length=150,null=True,blank=True)
+#     school_code = models.CharField(max_length=150,null=True,blank=True)
 
 
 

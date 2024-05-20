@@ -36,54 +36,6 @@
           </div>
           <!-- Sidebar navigation -->
 
-          {% comment %} <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-            <ul id="sidebarnav">
-
-              {% for i in Menu %} 
-                {% if i.ParentID is None %}
-                  <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{i.MenuPath}}" aria-expanded="false">
-                      <span>{{i.MenuIcon|safe}}</span>
-                      <span class="hide-menu">{{i.MenuName}}</span>
-                    </a>
-                  </li>
-                {% endif %}
-              {% endfor %}
-
-
-
-              {% for i in Menu  %}
-                {% if i.ParentID == 0%}
-                <li class="nav-small-cap">
-                  {{j.MenuIcon|safe}}
-                  <span class="hide-menu">{{i.MenuName}}</span>
-                </li>
-                  {% for j in Menu  %}
-                    {% if i.MenuID == j.ParentID %}
-                    <li class="sidebar-item">
-                      <a class="sidebar-link" href="{{j.MenuPath}}" aria-expanded="false">
-                        <span>{{j.MenuIcon|safe}}</span>
-                        <span class="hide-menu">{{j.MenuName}}</span>
-                      </a>
-                    </li>
-                    {% endif %}
-                  {% endfor %}
-                {% endif %}
-              {% endfor %}
-
-
-
-
-
-
-
-              
-
-            </ul>
-          </nav> {% endcomment %}
-
-
-
 
           
           <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
@@ -175,13 +127,30 @@
 
               <ul class="navbar-nav flex-row align-items-center">
 
+                <li class="nav-item">
 
+                  {% if roleid == 5 %}
+                    <select class="select2" name="logined_children" id="logined_children" onchange="set_primary_student()">
+                      {% for children in children_list %}
+                        {% if children.StudentCode == PrimaryStudentCode %}
+                          <option value="{{children.StudentCode}}" selected>{{children.StudentName}}</option>
+                        {% else %}
+                          <option value="{{children.StudentCode}}">{{children.StudentName}}</option>
+
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                  {% endif %}
+
+                </li>
                 <li class="nav-item">
                   <a class="nav-link nav-icon-hover" href="javascript:void(0)">
                     <i class="ti ti-bell-ringing"></i>
                     <div class="notification bg-primary rounded-circle"></div>
                   </a>
                 </li>
+
+
                 <li class="nav-item dropdown">
                   <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
 
@@ -272,6 +241,38 @@
       var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
       })
+
+
+      function set_primary_student(){
+        var StudentCode=$('#logined_children').val();
+
+        $.ajax({
+          type: "POST",
+          url: frontend_url + "parent_student_master/set_primary_student",
+          data: {
+              'StudentCode': StudentCode,
+         },
+          success: function (response) {  
+          console.log("rep",response)          
+          if(response.response.n ==1){
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'success',
+            }).then((result) => {
+              window.location.href =          window.location.href;
+            });
+          }else{
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+          }
+
+              
+          }
+      });
+
+      }
     </script>
     {% if messages %}
       <div class="alert admin-alert">

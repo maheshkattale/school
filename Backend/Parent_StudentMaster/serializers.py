@@ -23,3 +23,17 @@ class studentclassLogserializer(serializers.ModelSerializer):
     class Meta:
         model= studentclassLog
         fields='__all__'
+        
+        
+        
+# class Primary_Studentserializer(serializers.ModelSerializer):
+#     class Meta:
+#         model= Primary_Student
+#         fields='__all__'
+        
+        
+        
+        
+        
+        
+        

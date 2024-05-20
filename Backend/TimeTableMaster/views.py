@@ -37,7 +37,7 @@ class addtimetable(GenericAPIView):
         schoolcode = request.user.school_code
         if timetablelist != []:
             for t in timetablelist :
-                
+                print("t",t)
                 TimeTable.objects.create(ClassId_id=t['class'],startdate = t['startdate'],enddate=t['enddate'],Day=t['day'],start_time=t['starttime'],end_time = t['endtime'],SubjectId_id=t['subject'],TeacherId = t['teacher'],school_code=schoolcode,AcademicYear_id = t['AcademicYear'])
 
             return Response({"data":'',"response": {"n": 1, "msg": "TimeTable Added Successfully","status": "Success"}})
@@ -252,7 +252,40 @@ class getttbystudentid(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "AcademicYear is not active","status": "failed"}})
 
+class get_recipient(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        print("request.data",request.data)
+        if str(request.user.role) == "Parent":
+            print("hii")
+            schoolcode = request.user.school_code
+            stuid = request.data.get('stuid')
+            Academicyearobj = AcademicYear.objects.filter(isActive=True,school_code=schoolcode).first()
+            if Academicyearobj is not None:
+                academicyearid = Academicyearobj.id
+                stuobj = studentclassLog.objects.filter(studentId=stuid,AcademicyearId=academicyearid,school_code=schoolcode).first()
+                if stuobj is not None:
+                    studentclass = stuobj.classid                
+                    ttobjs = TimeTable.objects.filter(ClassId=studentclass,school_code=schoolcode,isActive=True)
+                    ttser = CustomTimeTableSerializer(ttobjs,many=True)
+                    userlist=[]
+                    for i in ttser.data:
+                        j={}
+                        j['id']=i['TeacherId']
+                        j['Username']=i['teacher_name']
+                        userlist.append(j)
 
-
-
-
+                    return Response({"data":userlist,"response": {"n": 1, "msg": "Timetable Record found Successfully","status": "Success"}})
+                else:
+                    return Response({"data":'',"response": {"n": 0, "msg": "student class not found","status": "failed"}})
+            else:
+                return Response({"data":'',"response": {"n": 0, "msg": "AcademicYear is not active","status": "failed"}})
+        else:
+            print("byy")
+            
+            
+            user_objs=User.objects.filter(isActive=True,)
+            serializers=UserlistSerializer(user_objs,many=True)
+            
+            return Response({"data":serializers.data,"response": {"n": 1, "msg": "user found successfully","status": "Success"}})

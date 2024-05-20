@@ -13,4 +13,20 @@ class month_yyyy(serializers.Field):
 class dd_month_yyyy(serializers.Field):
     def to_representation(self, value):
         return value.strftime('%d %B %Y')
+class CustomDateFormatField(serializers.Field):
+    def to_representation(self, value):
+        date_format = DateFormat(value)
+        return date_format.format('d F Y')
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     

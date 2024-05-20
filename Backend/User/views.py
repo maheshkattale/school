@@ -10,6 +10,10 @@ from rest_framework.generics import GenericAPIView
 from django.contrib.auth import authenticate
 from .models import *
 from .serializers import *
+
+from Parent_StudentMaster.models import *
+from Parent_StudentMaster.serializers import *
+
 from .jwt import userJWTAuthentication
 from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
@@ -36,7 +40,7 @@ class login(GenericAPIView):
         if email is None or Password is None :
             return Response(
                                                 {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'',},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':''},
                     "response":{
                     "status":"error",
                     'msg': 'Please provide email and password',
@@ -47,7 +51,7 @@ class login(GenericAPIView):
         if userexist is None:
            return Response(
                     {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'',},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':''},
                     "response":{
                     "status":"error",
                     'msg': 'This user is not found',
@@ -59,9 +63,8 @@ class login(GenericAPIView):
             p = check_password(Password,userexist.password)
             if p is False:
                 return Response(
-                                
                     {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'',},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':''},
                     "response":{
                     "status":"error",
                     'msg': 'Please enter correct password',
@@ -72,6 +75,7 @@ class login(GenericAPIView):
             else:
                 useruuid = str(userexist.id)
                 role = userexist.role
+
                 role_id=user_serializer.data['role']
 
                 username = userexist.Username
@@ -96,20 +100,34 @@ class login(GenericAPIView):
                     createmobiletoken = UserToken.objects.create(User=useruuid,MobileToken=Token,source=source)
                 else:
                     return Response({
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'',},
-                    "response":{
-                    "status":"error",
-                    'msg': 'Please Provide Source',
-                    'n':0
+                        "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':''},
+                        "response":{
+                        "status":"error",
+                        'msg': 'Please Provide Source',
+                        'n':0
                     }
                 })
                 
+                children_list=[]
+                PrimaryStudentId = ''
+                PrimaryStudentCode =''
+                print("user_serializer.data['role']",user_serializer.data['role'])
+                if user_serializer.data['role'] == 5:
+                    student_objs=Students.objects.filter(ParentId=user_serializer.data['id'],isActive=True,school_code=user_serializer.data['school_code'])
+                    children_serializer=StudentSerializer(student_objs,many=True)
+                    children_list=children_serializer.data
+
+                    primary_student_objs=Students.objects.filter(ParentId=user_serializer.data['id'],isActive=True,school_code=user_serializer.data['school_code'],primary_student=True).first()
+                    if primary_student_objs is not None:
+                        PrimaryStudentId = primary_student_objs.id
+                        PrimaryStudentCode = primary_student_objs.StudentCode
+                        
                 return Response({
-                    "data" : {'token':Token,'username':username,'user_id':useruuid,'schoolcode':schoolcode,'Menu':perSer.data,'roleid':role_id,'Address':user_serializer.data['Address'],'mobileNumber':user_serializer.data['mobileNumber'],'email':user_serializer.data['email'],},
+                    "data" : {'token':Token,'username':username,'user_id':useruuid,'schoolcode':schoolcode,'Menu':perSer.data,'roleid':role_id,'Address':user_serializer.data['Address'],'mobileNumber':user_serializer.data['mobileNumber'],'email':user_serializer.data['email'],'children_list':children_list,'PrimaryStudentCode':PrimaryStudentCode,'PrimaryStudentId':PrimaryStudentId},
                     "response":{
-                    "n": 1 ,
-                    "msg" : "login successful",
-                    "status":"success"
+                        "n": 1 ,
+                        "msg" : "login successful",
+                        "status":"success"
                     }
                 })
             

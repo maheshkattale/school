@@ -10,5 +10,6 @@ urlpatterns = [
     path('student_list', student_list.as_view(), name = 'student_list'),
     path('delete_parent', delete_parent.as_view(), name = 'delete_parent'),
     path('delete_student', delete_student.as_view(), name = 'delete_student'),
-    
+    path('set_primary_student', set_primary_student.as_view(), name = 'set_primary_student'),
+
 ]
