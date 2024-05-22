@@ -33,11 +33,13 @@ urlpatterns = [
     path('parent_student_master/', include(('parent_student.urls','parent_student'),namespace='parent_student')),
     path('academic_calender/', include(('academic_calender.urls','academic_calender'),namespace='academic_calender')),
     path('user/',include(('user.urls','user'),namespace='user')),
+    path('fees/',include(('fees.urls','fees'),namespace='fees')),
     path('',include(('school.urls', 'school'),namespace='school')),
 
     # backend
     path('api/User/', include('User.urls')),
     path('api/SchoolMaster/', include('SchoolMaster.urls')),
+    path('api/FeesMaster/', include('FeesMaster.urls')),
     path('api/DesignationMaster/', include('DesignationMaster.urls')),
     path('api/SubjectMaster/', include('SubjectMaster.urls')),
     path('api/TeacherMaster/', include('TeacherMaster.urls')),

@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'academic',
     'student',
     'user',
+    'fees',
 
     'User',
     'DesignationMaster',
@@ -74,6 +75,7 @@ INSTALLED_APPS = [
     'TeacherMaster',
     'Parent_StudentMaster',
     'ClassMaster',
+    'FeesMaster',
     'TimeTableMaster',
     'MarksheetMaster',
     'MessageMaster',
