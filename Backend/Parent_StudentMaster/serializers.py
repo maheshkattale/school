@@ -8,7 +8,6 @@ class StudentSerializer(serializers.ModelSerializer):
 
 class StudentSerializer1(serializers.ModelSerializer):
     StudentClass=serializers.StringRelatedField()
-
     class Meta:
         model= Students
         fields='__all__'
@@ -22,6 +21,12 @@ class BloodGroupSerializer(serializers.ModelSerializer):
 class studentclassLogserializer(serializers.ModelSerializer):
     class Meta:
         model= studentclassLog
+        fields='__all__'
+
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Announcements
         fields='__all__'
         
         

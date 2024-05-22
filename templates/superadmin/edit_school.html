@@ -54,7 +54,7 @@
 
                 <img id="school_logoPreview" src="{%static 'assets/img/dummy-image.png'%}" class="preview-img mt-1">
                 {%else%}
-                <input name="school_logo" id="school_logo" type="file" class="form-control-file" onchange="document.getElementById('school_logoPreview').src = window.URL.createObjectURL(this.files[0])" data-file_types="jpg|jpeg|png|ico|bmp">
+                <input name="school_logo"  id="school_logo" type="file" class="form-control-file" onchange="document.getElementById('school_logoPreview').src = window.URL.createObjectURL(this.files[0])" data-file_types="jpg|jpeg|png|ico|bmp">
 
                 <img id="school_logoPreview" src="{{school.school_logo}}" class="preview-img mt-1">
 
@@ -98,7 +98,7 @@
     var school_admin_email=$('#school_admin_email').val();
     var school_admin_name=$('#school_admin_name').val();
     var school_contact=$('#school_contact').val();
-    var school_logo=$('#school_logo').val();
+    var school_logo=$('#school_logo')[0].files[0];
     var school_address=$('#school_address').val();
 
 
@@ -158,13 +158,13 @@
       $('#school_contact').focus();
       return false;
     }
-    if(IsValid(school_logo)){
-      $('#school_logo').html();
-      $('#school_logo_error').show().delay(3000).slideUp();
-      $('#school_logo_error').html('Please submit school logo');
-      $('#school_logo').focus();
-      return false;
-    }
+    // if(IsValid(school_logo)){
+    //   $('#school_logo').html();
+    //   $('#school_logo_error').show().delay(3000).slideUp();
+    //   $('#school_logo_error').html('Please submit school logo');
+    //   $('#school_logo').focus();
+    //   return false;
+    // }
 
     if(IsValid(school_address)){
       $('#school_address').html();

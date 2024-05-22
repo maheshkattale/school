@@ -110,11 +110,14 @@ class add_school(GenericAPIView):
     def post(self,request):
         tok = request.session.get('token', False)
         if tok:
-            
+            files={}
             t = 'Token {}'.format(tok)
             headers = {'Authorization': t}
             data = request.data.copy()
-            add_school_request = requests.post(add_school_url, data=data,headers=headers)
+            files['school_logo'] = request.FILES.get('school_logo')
+
+            print("front",data,files)
+            add_school_request = requests.post(add_school_url, data=data,files=files, headers=headers)
             add_school_response = add_school_request.json()
             return HttpResponse(json.dumps(add_school_response), content_type="application/json")
 
@@ -141,6 +144,8 @@ class enable_school(GenericAPIView):
             enable_school_request = requests.post(enable_school_url, data=data,headers=headers)
             enable_school_response = enable_school_request.json()
             return HttpResponse(json.dumps(enable_school_response), content_type="application/json")
+        
+
 class edit_school(GenericAPIView):
     def get(self,request,id):
         tok = request.session.get('token', False)
@@ -157,10 +162,12 @@ class edit_school(GenericAPIView):
     def post(self,request,id):
         tok = request.session.get('token', False)
         if tok:
+            files={}
             t = 'Token {}'.format(tok)
             headers = {'Authorization': t}
             data = request.data.copy()
-            edit_school_request = requests.post(edit_school_url, data=data,headers=headers)
+            files['school_logo'] = request.FILES.get('school_logo')
+            edit_school_request = requests.post(edit_school_url, data=data,files=files,headers=headers)
             edit_school_response = edit_school_request.json()
             return HttpResponse(json.dumps(edit_school_response), content_type="application/json")
 

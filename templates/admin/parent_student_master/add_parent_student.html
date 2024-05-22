@@ -56,10 +56,11 @@
                 <tr>
                  <th class="text-center">S.N.</th>
                  <th class="text-center">Student Name</th>
-                 <th class="text-center">Student Class</th>
+                 <th class="text-center" style="width:12%">Class</th>
                   <th class="text-center">Date of Birth</th>
                   <th class="text-center">Date of Joining</th>
-                  <th class="text-center">Blood Group</th>
+                  <th class="text-center" style="width:10%">Roll No</th>
+                  <th class="text-center" style="width:10%">Blood Group</th>
                   <th></th>
                </tr>
              </thead>
@@ -152,6 +153,10 @@ var counterlist = []
           <input type="text" class="form-control date_of_joining" id="child_dateofjoining`+counter+`"  placeholder="Please select children DOJ" aria-describedby="child_dateofjoiningerror`+counter+`" readonly/>
         <div id="child_dateofjoiningerror`+counter+`" class="form-text error_message"></div>
           </td>
+
+          <td class="text-center"> 
+            <input type="text" class="form-control childrollno"  id="childrollno`+counter+`"  placeholder="Please enter children roll no" aria-describedby="childrollnoerror`+counter+`" />
+        <div id="childrollnoerror`+counter+`" class="form-text error_message"></div></td>
 
         <td class="text-center">
           <select id="child_bloodgroup`+counter+`" class="form-select bloodgroup" aria-describedby="child_bloodgrouperror`+counter+`" >

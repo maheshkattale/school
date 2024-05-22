@@ -14,6 +14,9 @@ urlpatterns = [
     path('resetpassword', resetpassword.as_view(), name = 'resetpassword'),
     path('menuitems', Menulist.as_view(), name = 'menuitems'),
     path('getrole', getrole.as_view(), name = 'getrole'),
+
+    #Announcements
+    
     
     
 ]

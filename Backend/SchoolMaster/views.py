@@ -45,6 +45,7 @@ class AddSchool(GenericAPIView):
     def post(self,request):
         userdata = {}
         data = request.data.copy()
+        data['school_logo']= request.FILES.get('school_logo')
         data['isActive'] = True
         schoolexist = School.objects.filter(Name=data['Name'],isActive= True).first()
         if schoolexist is not None:
@@ -119,7 +120,7 @@ class schoollist(GenericAPIView):
         for s in serializer.data:
             school_logo = s['school_logo']
             if school_logo != "" and school_logo is not None:
-                s['school_logo'] = image_url + str(s['photo'])
+                s['school_logo'] = image_url + str(s['school_logo'])
             else:
                 s['school_logo'] = image_url + "/static/assets/images/profile.png"
         return Response({"data":serializer.data,"response": {"n": 1, "msg": "school list found successfully","status": "success"}})
@@ -138,7 +139,7 @@ class getschoolbyid(GenericAPIView):
             for s in [serializer.data]:
                 school_logo = s['school_logo']
                 if school_logo != "" and school_logo is not None:
-                    s['school_logo'] = image_url + str(s['photo'])
+                    s['school_logo'] = image_url + str(s['school_logo'])
                 else:
                     s['school_logo'] = image_url + "/static/assets/images/profile.png"
 
@@ -152,6 +153,7 @@ class updateSchool(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
+        data['school_logo'] = request.FILES.get('school_logo')
         print("dataaaa",data)
         schoolid = data['id']
         schoolobj = School.objects.filter(id=schoolid,isActive=True).first()
