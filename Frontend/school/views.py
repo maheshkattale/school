@@ -44,7 +44,14 @@ class login(GenericAPIView):
             request.session['email'] = login_response['data']['email']
             request.session['mobileNumber'] = login_response['data']['mobileNumber']
             request.session['Address'] = login_response['data']['Address']
-            msg = login_response['response']['msg']
+            request.session['roleid'] = login_response['data']['roleid']
+            request.session['children_list'] = login_response['data']['children_list']
+            request.session['PrimaryStudentId'] = login_response['data']['PrimaryStudentId']
+            request.session['PrimaryStudentCode'] = login_response['data']['PrimaryStudentCode']
+                                 
+            # print("login_response children_list",login_response['data']['children_list'])
+            # print("login_response roleid",login_response['data']['roleid'])
+            # msg = login_response['response']['msg']
             # messages.success(request, msg)
             return redirect('school:dashboard')
 

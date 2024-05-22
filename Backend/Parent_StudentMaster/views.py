@@ -42,7 +42,7 @@ class AddParentStudent(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
-        print("data",data)
+        # print("data",data)
         data['isActive'] = True
         studentlist = json.loads(data['studentlist'])
         schoolcode = request.user.school_code
@@ -93,6 +93,9 @@ class AddParentStudent(GenericAPIView):
                     student_serializer=StudentSerializer(data=s)
                     if student_serializer.is_valid():
                         student_serializer.save()
+                        
+                                
+                            
                         AcademicYear_obj = AcademicYear.objects.filter(Isdeleted=False,isActive=True,school_code=schoolcode).first()
                         if AcademicYear_obj is not None:
                             class_data={}
@@ -526,6 +529,9 @@ class getstudentlist(GenericAPIView):
         #     stuobj = Students.objects.filter(school_code=schoolcode,isActive=True)
         #     stuser = StudentSerializer1(stuobj,many=True) 
         #     studentlist=stuser.data
+        
+        
+        
         return Response({"data":studentlist,"response": {"n": 1, "msg": "student list found ","status": "success"}})
 
 
@@ -583,17 +589,43 @@ class getstudentidcards(GenericAPIView):
 
 
 #Announcements-------------------------------------------------------------------------------------
-class addannouncement(GenericAPIView):
+
+class set_primary_student(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
-        print("data",data)
-        data['isActive'] = True
-        classlist = json.loads(data['classlist'])
-        print("clad",classlist)
-        schoolcode = request.user.school_code
-        return Response({"data":'',"response": {"n": 1, "msg": "info added successfully","status": "success"}})
+        data['school_code']=request.user.school_code
+        data['ParentId']=str(request.user.id)
+        parent_obj=User.objects.filter(id=data['ParentId'],isActive=True,school_code=data['school_code']).first()
+        if parent_obj is not None:
+            data['StudentCode']=str(data['StudentCode'])
+            student_obj=Students.objects.filter(StudentCode=data['StudentCode'],ParentId=data['ParentId'],school_code=data['school_code']).first()
+            if student_obj is not None:
+                data['primary_student']=True
+                Primary_Student_Serializer=StudentSerializer(student_obj,data=data,partial=True)
+                if Primary_Student_Serializer.is_valid():
+                    Primary_Student_Serializer.save()
+                    return Response({"data":Primary_Student_Serializer.data,"response": {"n": 1, "msg": "Student set as a primary student ","status": "success"}})
+                else:
+                    first_key, first_value = next(iter(Primary_Student_Serializer.errors.items()))
+                    return Response({"data":Primary_Student_Serializer.errors,"response": {"n": 0, "msg":str(first_key) +' : '+str(first_value[0]),"status": "failure"}})
+            else:
+                student_obj=Students.objects.filter(ParentId=data['ParentId'],school_code=data['school_code'])
+                student_serializers=StudentSerializer(student_obj,many=True)
+                
+                return Response({"data":student_serializers.data,"response": {"n": 0, "msg":"student with this student code not found,available options are given below","status": "failure"}})
+        return Response({"data":[],"response": {"n": 0, "msg":"parent with this parent id not found","status": "failure"}})
+            
 
 
-       
+
+
+
+
+
+
+
+
+
+

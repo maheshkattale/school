@@ -265,10 +265,10 @@ class Examlist(GenericAPIView):
 
             # convert time string to datetime
             t1 = datetime.strptime(start_time, "%H:%M")
-            print('Start time:', t1.time())
+            # print('Start time:', t1.time())
 
             t2 = datetime.strptime(end_time, "%H:%M")
-            print('End time:', t2.time())
+            # print('End time:', t2.time())
 
             # get difference
             delta = t2 - t1
@@ -381,7 +381,7 @@ class uploadmarksheet(GenericAPIView):
         # Now all_sheet_data contains data from all sheets in the Excel file
         # You can access each sheet's data using its name as key
         for sheet_name, data in all_sheet_data.items():
-            print(f"Data from Sheet: {sheet_name}")
+            # print(f"Data from Sheet: {sheet_name}")
             for row in data:
                 print("row",row)
         

@@ -10,6 +10,12 @@ def getMenu(request):
     mobileNumber = request.session.get('mobileNumber')
     Address = request.session.get('Address')
     email = request.session.get('email')
+    roleid = request.session.get('roleid')
+    children_list = request.session.get('children_list')
+    PrimaryStudentId = request.session.get('PrimaryStudentId')
+    PrimaryStudentCode = request.session.get('PrimaryStudentCode')
+    
+
     return {
         
             'user_id':user_id,
@@ -19,6 +25,10 @@ def getMenu(request):
             'email':email,
             'mobileNumber':mobileNumber,
             'Address':Address,
+            'roleid':roleid,
+            'children_list':children_list,
+            'PrimaryStudentId':PrimaryStudentId,
+            'PrimaryStudentCode':PrimaryStudentCode,
             'username':username,
             
             

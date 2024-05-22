@@ -11,6 +11,7 @@ getparentinfourl = frontend_url+'api/Parent_StudentMaster/getbyid'
 bloodgrouplisturl = frontend_url+'api/Parent_StudentMaster/bloodgrouplist'
 parent_delete_url = frontend_url+'api/Parent_StudentMaster/delete'
 student_delete_url = frontend_url+'api/Parent_StudentMaster/deleteStudent'
+set_primary_student_url = frontend_url+'api/Parent_StudentMaster/set_primary_student'
 
 class parent_student_master(GenericAPIView):
     def get(self,request):
@@ -86,3 +87,37 @@ class delete_student(GenericAPIView):
             student_delete_request = requests.post(student_delete_url,headers=headers,data=data)
             student_delete_response = student_delete_request.json()
             return HttpResponse(json.dumps(student_delete_response), content_type="application/json")
+        
+        
+class set_primary_student(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            set_primary_student_request = requests.post(set_primary_student_url,headers=headers,data=data)
+            set_primary_student_response = set_primary_student_request.json()
+            if set_primary_student_response['response']['n']==1:
+                request.session['PrimaryStudentId'] = set_primary_student_response['data']['id']
+                request.session['PrimaryStudentCode'] = set_primary_student_response['data']['StudentCode']
+                
+            return HttpResponse(json.dumps(set_primary_student_response), content_type="application/json")
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

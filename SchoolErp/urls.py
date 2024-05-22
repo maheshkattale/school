@@ -27,6 +27,7 @@ urlpatterns = [
     path('time_table_master/', include(('time_table.urls','time_table'),namespace='time_table')),
     path('subject_master/', include(('subject.urls','subject'),namespace='subject')),
     path('exam/', include(('exam.urls','exam'),namespace='exam')),
+    path('messages/', include(('message.urls','message'),namespace='message')),
     path('designation_master/', include(('designation.urls','designation'),namespace='designation')),
     path('class_master/', include(('class.urls','class'),namespace='class')),
     path('parent_student_master/', include(('parent_student.urls','parent_student'),namespace='parent_student')),
@@ -44,9 +45,8 @@ urlpatterns = [
     path('api/ClassMaster/', include('ClassMaster.urls')),
     path('api/TimeTableMaster/', include('TimeTableMaster.urls')),
     path('api/MarksheetMaster/', include('MarksheetMaster.urls')),
+    path('api/MessageMaster/', include('MessageMaster.urls')),
     
-
-
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

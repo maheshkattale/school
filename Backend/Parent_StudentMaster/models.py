@@ -15,7 +15,7 @@ class Students(TrackingModel):
     RollNo = models.CharField(max_length=150,null=True,blank=True)
     photo = models.ImageField(upload_to='StudentImages/', blank=True, null=True,verbose_name='Student Photo')
     school_code = models.CharField(max_length=150,null=True,blank=True)
-
+    primary_student=models.BooleanField(default=False)
 
 
 class studentclassLog(TrackingModel):
@@ -27,10 +27,15 @@ class studentclassLog(TrackingModel):
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
 
+# class Primary_Student(TrackingModel):
+#     ParentId = models.CharField(max_length=150,null=True,blank=True)
+#     StudentCode = models.CharField(max_length=150,null=True,blank=True)
+#     school_code = models.CharField(max_length=150,null=True,blank=True)
+
 
 
 class BloodGroup(TrackingModel):
-    Groupname = models.CharField(max_length=150,null=True,blank=True)
+    Groupname = models.CharField(max_length=200,null=True,blank=True)
 
 
 class Announcements(TrackingModel):

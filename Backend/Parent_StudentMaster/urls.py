@@ -17,7 +17,8 @@ urlpatterns = [
 
     path('getstudentlist', getstudentlist.as_view(), name = 'getstudentlist'),
     path('getstudentidcards', getstudentidcards.as_view(), name = 'getstudentidcards'),
+    path('set_primary_student', set_primary_student.as_view(), name = 'set_primary_student'),
 
     #announcements
-    path('addannouncement', addannouncement.as_view(), name = 'addannouncement'),
+    # path('addannouncement', addannouncement.as_view(), name = 'addannouncement'),
 ]

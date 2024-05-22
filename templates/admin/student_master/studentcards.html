@@ -81,75 +81,7 @@
   </table>
   </div> 
   
-<div id="idcarddiv" class="d-non">
 
-
-    <table class="card">
-        <tr>
-          <td style="padding-right: 15px;">
-            <div style="text-align: center;">
-              <img src="{% static 'assets/images/logos/school_logo.JPG' %}" alt="" />
-            </div>
-          </td>
-  
-          <td style="    border-bottom: 2px solid #082e68;        ">
-            <table style="text-align: center;">
-              <tr>
-                <td class="school_name">C.K.G High School</td>
-              </tr>
-  
-              <tr>
-                <td>(CBSC AFFILITED)</td>
-              </tr>
-  
-              <tr>
-                <td>Govali ,Ta.jaghadia , Dist.Bhuruch.</td>
-              </tr>
-  
-              <tr>
-                <td>PH.023-0345670276 , E-Mail : ckgschool@gmail.com</td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-  
-        <tr>
-          <td style="padding-right: 15px;">
-            <img src="{% static 'assets/images/profile/profile.png' %}" alt="" width="140" />
-          </td>
-          <td>
-            <table>
-              <tr>
-                <td class="card_heading">Name :</td>
-                <td>Mahesh Kattale</td>
-              </tr>
-              <tr>
-                <td class="card_heading">Class :</td>
-                <td>VI</td>
-              </tr>
-              <tr>
-                <td class="card_heading">DOB :</td>
-                <td>21 April 2000</td>
-              </tr>
-              <tr>
-                <td class="card_heading">Address :</td>
-                <td>Soniupath jalna ,Pune Dist kolhaprty</td>
-              </tr>
-              <tr>
-                <td class="card_heading">Phone :</td>
-                <td>7766327669</td>
-              </tr>
-              <tr>
-                <td class="card_heading">Mobile :</td>
-                <td>7658893652</td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-  
-      </table>
-
-</div>
 
 {% endblock %}
 
@@ -315,34 +247,103 @@ function generate_student_id_card(){
       success: function(response) {
         console.log("student_card",response)
         if(response.response.n ==1){
-          var trhtml=''
-          var doc = new jsPDF();
 
-          // Get the HTML content of the container div
-          var containerContent = $('#idcarddiv').html();
-  
-          // Add the HTML content to the PDF
-          doc.html(containerContent, {
-              callback: function (doc) {
-                  // Save the PDF with a specific name
-                  doc.save('content.pdf');
-              }
-          });
+          var containerContent = ''
+
+
+
+
+
+
+      
 
 
           counter=1
           $.each(response.data,function(o,i){
-            trhtml+=`
+            containerContent+=`
+
+
+            <table class="card" style="border: 1px solid aliceblue; border-radius: 35px;padding: 15px 20px;box-shadow: 0 0 5px grey; width:85%; margin:20px;">
+                <tr>
+                  <td style="padding-right: 15px;">
+                    <div style="text-align: center;">
+                      <img src="{% static 'assets/images/logos/school_logo.JPG' %}" alt="" />
+                    </div>
+                  </td>
+          
+                  <td style="border-bottom: 2px solid #082e68;">
+                    <table style="text-align: center;">
+                      <tr>
+                        <td class="school_name" style="font-size: 28px; color: #082e68;">`+i.schooldata.Name+`</td>
+                      </tr>
+          
+                      <tr>
+                        <td>(CBSC AFFILITED)</td>
+                      </tr>
+          
+                      <tr>
+                        <td>`+i.schooldata.Location+`</td>
+                      </tr>
+          
+                      <tr>
+                        <td>PH.`+i.schooldata.Contact+` , E-Mail : `+i.schooldata.Email+`</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+          
+                <tr>
+                  <td style="padding-right: 15px;">
+                    <img src="`+i.photo+`" alt="" width="140" />
+                  </td>
+                  <td>
+                    <table>
+                      <tr>
+                        <td class="card_heading" style="color: #082e68;" >Name :</td>
+                        <td>`+i.studentname+`</td>
+                      </tr>
+                      <tr>
+                        <td class="card_heading" style="color: #082e68;">Class :</td>
+                        <td>`+i.classname+`</td>
+                      </tr>
+                      <tr>
+                        <td class="card_heading" style="color: #082e68;">DOB :</td>
+                        <td>`+i.DateOfBirth+`</td>
+                      </tr>
+                      <tr>
+                        <td class="card_heading" style="color: #082e68;">Address :</td>
+                        <td>`+i.parentinfo.Address+`</td>
+                      </tr>
+                      <tr>
+                        <td class="card_heading" style="color: #082e68;">Phone :</td>
+                        <td>`+i.parentinfo.mobileNumber+`</td>
+                      </tr>
+                      <tr>
+                        <td class="card_heading" style="color: #082e68;">Mobile :</td>
+                        <td>`+i.parentinfo.mobileNumber+`</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+          
+              </table>
+
+
+
+
 
             `
             counter+=1
 
           });
+          document.body.innerHTML = containerContent ;
 
-          Swal.fire({
-            text: response.response.msg,
-            icon: 'success',
-          })
+          if (window.print()) {
+              return false;
+          } else {
+              location.reload();
+          }
+
         }else{
           Swal.fire({
             text: response.response.msg,
