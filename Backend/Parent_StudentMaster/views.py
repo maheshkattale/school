@@ -31,6 +31,11 @@ def createstudentid(schoolcode):
         studentcount = int(studentobject.StudentCode.split('/')[-1]) + 1
         return f"{schoolcode}/{studentcount:04d}"
       
+def dateformat(datetoformat):
+    x = datetime.strptime(datetoformat, '%Y-%m-%d')
+    changeddate = x.strftime('%d-%b-%Y')
+    return str(changeddate)
+
 
 class AddParentStudent(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -83,6 +88,7 @@ class AddParentStudent(GenericAPIView):
                     if 'photo' in s.keys():
                         s['photo']=s['photo']
                     s['DateofJoining']=formattedjoin_date
+                    s['RollNo'] = s['RollNo']
                     print("ssssssssss",s)
                     student_serializer=StudentSerializer(data=s)
                     if student_serializer.is_valid():
@@ -95,6 +101,7 @@ class AddParentStudent(GenericAPIView):
                             class_data['StudentCode']=student_serializer.data['StudentCode']
                             class_data['classid']=student_serializer.data['StudentClass']
                             class_data['school_code']=schoolcode
+                            class_data['RollNo'] = student_serializer.data['RollNo']
                             student_class_serializer=studentclassLogserializer(data=class_data)
                             if student_class_serializer.is_valid():
                                 student_class_serializer.save()
@@ -332,6 +339,10 @@ class getParentStudentbyid(GenericAPIView):
                 else:
                     s['photo'] = ""
 
+
+                bloodobj = BloodGroup.objects.filter(id=s['BloodGroup']).first()
+                s['BloodGroup'] = bloodobj.Groupname
+
             serailizer_data.update({"studentlist":ser.data})
             return Response({"data":serailizer_data,"response": {"n": 1, "msg": "parent found successfully","status": "success"}})
         else:
@@ -351,6 +362,11 @@ class studentlist(GenericAPIView):
                 s['photo'] = image_url + str(s['photo'])
             else:
                 s['photo'] = image_url + "/static/assets/images/profile.png"
+
+            bloodobj = BloodGroup.objects.filter(id=s['BloodGroup']).first()
+            s['BloodGroup'] = bloodobj.Groupname
+
+
         return Response({"data":studentser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
     
 
@@ -389,6 +405,18 @@ class studentsbyparentlist(GenericAPIView):
                 i['photo'] = image_url + str(i['photo'])
             else:
                 i['photo'] = ""
+            
+            bloodobj = BloodGroup.objects.filter(id=i['BloodGroup']).first()
+            i['BloodGroup'] = bloodobj.Groupname
+
+            # x = datetime.strptime(i['DateOfBirth'], '%Y-%m-%d')
+            # i['DateOfBirth']= x.strftime('%d-%b-%Y')
+
+
+            i['DateOfBirth']= dateformat(i['DateOfBirth'])
+
+            i['DateofJoining'] = dateformat(i['DateofJoining'])
+
         return Response({"data":ser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
     
 
@@ -552,3 +580,20 @@ class getstudentidcards(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "student list is empty ","status": "failed"}})
 
+
+
+#Announcements-------------------------------------------------------------------------------------
+class addannouncement(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        print("data",data)
+        data['isActive'] = True
+        classlist = json.loads(data['classlist'])
+        print("clad",classlist)
+        schoolcode = request.user.school_code
+        return Response({"data":'',"response": {"n": 1, "msg": "info added successfully","status": "success"}})
+
+
+       

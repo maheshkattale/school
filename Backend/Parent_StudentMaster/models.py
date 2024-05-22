@@ -12,6 +12,7 @@ class Students(TrackingModel):
     DateOfBirth =  models.DateField(null=True)
     DateofJoining = models.DateField(null=True)
     BloodGroup = models.IntegerField(null=True,blank=True)
+    RollNo = models.CharField(max_length=150,null=True,blank=True)
     photo = models.ImageField(upload_to='StudentImages/', blank=True, null=True,verbose_name='Student Photo')
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
@@ -22,6 +23,7 @@ class studentclassLog(TrackingModel):
     studentId =  models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)
     StudentCode = models.CharField(max_length=150,null=True,blank=True)
     classid = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
+    RollNo = models.CharField(max_length=150,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
 
@@ -29,3 +31,11 @@ class studentclassLog(TrackingModel):
 
 class BloodGroup(TrackingModel):
     Groupname = models.CharField(max_length=150,null=True,blank=True)
+
+
+class Announcements(TrackingModel):
+    Date = models.DateField(null=True)
+    AcademicyearId = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
+    classid = models.JSONField(null=True)
+    Announcementtext = models.TextField(null=True,blank=True)
+    school_code = models.CharField(max_length=150,null=True,blank=True)

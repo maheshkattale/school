@@ -18,4 +18,6 @@ urlpatterns = [
     path('getstudentlist', getstudentlist.as_view(), name = 'getstudentlist'),
     path('getstudentidcards', getstudentidcards.as_view(), name = 'getstudentidcards'),
 
+    #announcements
+    path('addannouncement', addannouncement.as_view(), name = 'addannouncement'),
 ]

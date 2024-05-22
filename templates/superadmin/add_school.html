@@ -109,7 +109,7 @@
     var school_admin_email=$('#school_admin_email').val();
     var school_admin_name=$('#school_admin_name').val();
     var school_contact=$('#school_contact').val();
-    var school_logo=$('#school_logo').val();
+    var school_logo=$('#school_logo')[0].files[0];
     var school_address=$('#school_address').val();
 
 
@@ -170,13 +170,13 @@
       return false;
     }
     
-    if(IsValid(school_logo)){
-      $('#school_logo').html();
-      $('#school_logo_error').show().delay(3000).slideUp();
-      $('#school_logo_error').html('Please submit school logo');
-      $('#school_logo').focus();
-      return false;
-    }
+    // if(IsValid(school_logo)){
+    //   $('#school_logo').html();
+    //   $('#school_logo_error').show().delay(3000).slideUp();
+    //   $('#school_logo_error').html('Please submit school logo');
+    //   $('#school_logo').focus();
+    //   return false;
+    // }
    
     if(IsValid(school_address)){
       $('#school_address').html();
@@ -199,10 +199,6 @@
       fd.append("school_logo",school_logo);
       fd.append("Location",school_address);
 
-
-  
-
-      
       fd.append("csrfmiddlewaretoken","{{csrf_token}}");
       $.ajax({
         type: "POST",
