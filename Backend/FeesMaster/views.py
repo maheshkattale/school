@@ -457,18 +457,24 @@ class get_student_pending_fees_list(GenericAPIView):
     def post(self,request):
         data=request.data.copy()
         data['school_code']=request.user.school_code
+        print("data",data)
         student_obj=Students.objects.filter(StudentCode=data['StudentCode'],isActive=True,school_code=data['school_code']).first()
         if student_obj is not None:
             class_log_obj=studentclassLog.objects.filter(studentId=student_obj.id,isActive=True)
             if class_log_obj.exists():
                 classIds=studentclassLogserializer(class_log_obj,many=True)
-                classid_list=[]
+                student_feeslist=[]
                 for i in classIds.data:
-                    classid_list.append({'classid':i['classid'],'academic_year':i['AcademicyearId']})
-                    fees_object=FeesDistributions.objects.filter(classid=i['classid'],academic_year_id=i['AcademicyearId']).first()
-                    
+                    fees_object=FeesDistributions.objects.filter(class_id=i['classid'],academic_year_id=i['AcademicyearId']).first()
+                    if fees_object is not None:
+                        fees_distribution_serializers=FeesDistributionsSerializer(fees_object)
+                        Breakdowns_obj=FeesDistributionsBreakdowns.objects.filter(fees_distributions_id=fees_distribution_serializers.data['id'],isActive=True)
+                        Breakdowns_serializer=CustomFeesDistributionsBreakdownsSerializer(Breakdowns_obj,many=True)
+                        student_feeslist.append({'fees':fees_distribution_serializers.data,'breakdowns':Breakdowns_serializer.data})
+
                 
-                return Response({"data":'',"response": {"n": 1, "msg": "fees  successfully","status": "success"}})
+                
+                return Response({"data":student_feeslist,"response": {"n": 1, "msg": "fees  successfully","status": "success"}})
             else:
                 return Response({"data":'',"response": {"n": 0, "msg": "student class not found","status": "failure"}})
         else:

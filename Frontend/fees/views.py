@@ -13,6 +13,7 @@ add_fees_distributions_for_multiple_class_url=frontend_url+'api/FeesMaster/add_f
 fees_destributiom_list_url=frontend_url+'api/FeesMaster/fees_destributiom_list'
 delete_fees_distributions_url=frontend_url+'api/FeesMaster/delete_fees_distributions'
 fees_distribution_details_url=frontend_url+'api/FeesMaster/get_fees_distributions_details'
+student_pending_fees_url=frontend_url+'api/FeesMaster/get_student_pending_fees_list'
 edit_fees_distributions_for_multiple_class_url=frontend_url+'api/FeesMaster/edit_fees_distributions_for_multiple_class'
 # Create your views here.
 
@@ -95,6 +96,26 @@ class edit_fees_distribution(GenericAPIView):
             edit_fees_distrubution_request = requests.post(edit_fees_distributions_for_multiple_class_url,headers=headers,data=data)
             edit_fees_distrubution_response = edit_fees_distrubution_request.json()
             return HttpResponse(json.dumps(edit_fees_distrubution_response), content_type="application/json")
+        
+class student_fees(GenericAPIView):
+    def get(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data={}
+            data['StudentCode']=request.session.get('PrimaryStudentCode')
+            student_pending_fees_request = requests.post(student_pending_fees_url,data=data,headers=headers)
+            student_pending_fees_response = student_pending_fees_request.json()
+            print("student_pending_fees_response",student_pending_fees_response)
+            return render(request, 'admin/fees_master/student_fees.html',{'fees':student_pending_fees_response['data']})
+        else:
+            return redirect('school:login')
+        
+        
+        
+        
+        
         
         
         
