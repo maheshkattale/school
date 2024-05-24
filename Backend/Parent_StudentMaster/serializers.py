@@ -1,6 +1,6 @@
 from .models import *
 from rest_framework import serializers
-
+from Frontend.school.custom_function import *
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model= Students
@@ -28,14 +28,36 @@ class AnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model= Announcements
         fields='__all__'
+class CustomAnnouncementSerializer(serializers.ModelSerializer):
+    Date = CustomDateFormatField()
+    AcademicyearId = serializers.StringRelatedField()
+    
+    
+    classes_names = serializers.SerializerMethodField()
+
+    def get_classes_names(self, obj):
+        class_id_list=obj.classid
+        if len(class_id_list) >0:
+            try:
+                classes_names=[]
+                for i in class_id_list:
+                    class_obj = Class.objects.get(id=i)
+                    classes_names.append(class_obj.ClassName)
+                        
+                return classes_names
+            except Exception as e:
+                return e
+        return []
+    class Meta:
+        model= Announcements
+        fields='__all__'
         
-        
-        
-# class Primary_Studentserializer(serializers.ModelSerializer):
-#     class Meta:
-#         model= Primary_Student
-#         fields='__all__'
-        
+class CustomAnnouncementSerializer2(serializers.ModelSerializer):
+    Date = serializer_date_yyyy_mm_dd__dd_mm_yyy()
+    class Meta:
+        model= Announcements
+        fields='__all__'
+
         
         
         

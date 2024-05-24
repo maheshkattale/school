@@ -22,6 +22,6 @@ urlpatterns = [
     path('toggleAcademicYear', toggleAcademicYear.as_view(), name = 'toggleAcademicYear'),
     path('get_current_academic_year', get_current_academic_year.as_view(), name = 'get_current_academic_year'),
 
-
+    # Announcement master
 
 ]

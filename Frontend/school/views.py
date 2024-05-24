@@ -48,9 +48,7 @@ class login(GenericAPIView):
             request.session['children_list'] = login_response['data']['children_list']
             request.session['PrimaryStudentId'] = login_response['data']['PrimaryStudentId']
             request.session['PrimaryStudentCode'] = login_response['data']['PrimaryStudentCode']
-                                 
-            # print("login_response children_list",login_response['data']['children_list'])
-            # print("login_response roleid",login_response['data']['roleid'])
+
             # msg = login_response['response']['msg']
             # messages.success(request, msg)
             return redirect('school:dashboard')
@@ -116,7 +114,6 @@ class add_school(GenericAPIView):
             data = request.data.copy()
             files['school_logo'] = request.FILES.get('school_logo')
 
-            print("front",data,files)
             add_school_request = requests.post(add_school_url, data=data,files=files, headers=headers)
             add_school_response = add_school_request.json()
             return HttpResponse(json.dumps(add_school_response), content_type="application/json")
@@ -154,7 +151,6 @@ class edit_school(GenericAPIView):
             headers = {'Authorization': t}
             data={}
             data['id']=id
-            print("frontid",id)
             get_school_info_request = requests.post(get_school_info_url,headers=headers,data=data)
             get_school_info_response = get_school_info_request.json()
             return render(request, 'superadmin/edit_school.html',{'school':get_school_info_response['data']})

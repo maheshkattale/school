@@ -12,6 +12,12 @@ bloodgrouplisturl = frontend_url+'api/Parent_StudentMaster/bloodgrouplist'
 parent_delete_url = frontend_url+'api/Parent_StudentMaster/delete'
 student_delete_url = frontend_url+'api/Parent_StudentMaster/deleteStudent'
 set_primary_student_url = frontend_url+'api/Parent_StudentMaster/set_primary_student'
+announcements_list_url= frontend_url+'api/Parent_StudentMaster/announcement_list'
+academic_list_url=frontend_url+'api/SchoolMaster/AcademicYearlist'
+add_announcements_url=frontend_url+'api/Parent_StudentMaster/add_announcement'
+delete_announcements_url=frontend_url+'api/Parent_StudentMaster/delete_announcement'
+get_announcement_details_url=frontend_url+'api/Parent_StudentMaster/get_announcement_details'
+edit_announcements_url=frontend_url+'api/Parent_StudentMaster/edit_announcement'
 
 class parent_student_master(GenericAPIView):
     def get(self,request):
@@ -25,8 +31,6 @@ class parent_student_master(GenericAPIView):
         else:
             return redirect('school:login')
 
-      
-    
 class add_parent_student(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
@@ -105,12 +109,68 @@ class set_primary_student(GenericAPIView):
             return HttpResponse(json.dumps(set_primary_student_response), content_type="application/json")
         
         
+class announcements(GenericAPIView):
+    def get(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            announcements_list_request = requests.get(announcements_list_url,headers=headers)
+            announcements_list_response = announcements_list_request.json()
+            
+            
+            
+            class_list_request = requests.get(class_list_url,headers=headers)
+            class_list_response = class_list_request.json()
+            
+            academic_list_request = requests.get(academic_list_url,headers=headers)
+            academic_list_response = academic_list_request.json()
+            
+            return render(request, 'admin/announcement_master/announcements.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'announcementslist':announcements_list_response['data']})
+        else:
+            return redirect('school:login')
         
-        
-        
-        
-        
-        
+
+class add_announcements(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            add_announcements_request = requests.post(add_announcements_url,headers=headers,data=data)
+            add_announcements_response = add_announcements_request.json()
+            return HttpResponse(json.dumps(add_announcements_response), content_type="application/json")
+class delete_announcements(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            delete_announcements_request = requests.post(delete_announcements_url,headers=headers,data=data)
+            delete_announcements_response = delete_announcements_request.json()
+            return HttpResponse(json.dumps(delete_announcements_response), content_type="application/json")
+class edit_announcements(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            edit_announcements_request = requests.post(edit_announcements_url,headers=headers,data=data)
+            edit_announcements_response = edit_announcements_request.json()
+            return HttpResponse(json.dumps(edit_announcements_response), content_type="application/json")
+class get_announcement_details(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            get_announcement_details_request = requests.post(get_announcement_details_url,headers=headers,data=data)
+            get_announcement_details_response = get_announcement_details_request.json()
+            return HttpResponse(json.dumps(get_announcement_details_response), content_type="application/json")
         
         
         

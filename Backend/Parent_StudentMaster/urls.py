@@ -20,5 +20,12 @@ urlpatterns = [
     path('set_primary_student', set_primary_student.as_view(), name = 'set_primary_student'),
 
     #announcements
-    # path('addannouncement', addannouncement.as_view(), name = 'addannouncement'),
+    path('add_announcement', add_announcement.as_view(), name = 'add_announcement'),
+    path('edit_announcement', edit_announcement.as_view(), name = 'edit_announcement'),
+    path('announcement_list', announcement_list.as_view(), name = 'announcement_list'),
+    path('get_announcement_details', get_announcement_details.as_view(), name = 'get_announcement_details'),
+    path('delete_announcement', delete_announcement.as_view(), name = 'delete_announcement'),
+    path('get_student_announcements', get_student_announcements.as_view(), name = 'get_student_announcements'),
+    
+    
 ]

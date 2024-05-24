@@ -111,7 +111,6 @@ class classdatabyexcel(GenericAPIView):
         dataset = Dataset()
       
         new_product = request.FILES.get('classfile')
-        # print("new_product",new_product)
 
         if not new_product.name.endswith('xlsx'):
             return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})

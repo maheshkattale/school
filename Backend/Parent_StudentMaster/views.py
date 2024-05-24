@@ -21,7 +21,7 @@ from SchoolErp.settings import EMAIL_HOST_USER
 from datetime import datetime
 from Frontend.school.static_info import frontend_url,image_url
 
-
+from rest_framework import generics, permissions, status
 def createstudentid(schoolcode):
     studentobject = Students.objects.filter(school_code=schoolcode, isActive=True).order_by('-id').first()
     if studentobject is None:
@@ -42,7 +42,6 @@ class AddParentStudent(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
-        # print("data",data)
         data['isActive'] = True
         studentlist = json.loads(data['studentlist'])
         schoolcode = request.user.school_code
@@ -89,7 +88,6 @@ class AddParentStudent(GenericAPIView):
                         s['photo']=s['photo']
                     s['DateofJoining']=formattedjoin_date
                     s['RollNo'] = s['RollNo']
-                    print("ssssssssss",s)
                     student_serializer=StudentSerializer(data=s)
                     if student_serializer.is_valid():
                         student_serializer.save()
@@ -269,7 +267,6 @@ class updateParentStudent(GenericAPIView):
                                 # return Response({"data":stuserializer.errors,"response": {"n": 0, "msg": "Couldn't update student ! ","status": "failure"}})
                     else:
                         newstudentcode = createstudentid(schoolcode)
-                        print("parentid",parentid)
                         s['ParentId']=str(parentid)
                         s['DateOfBirth']=formatteddob_date
                         s['DateofJoining']=formattedjoin_date
@@ -619,12 +616,116 @@ class set_primary_student(GenericAPIView):
             
 
 
+class add_announcement(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        data=request.data.copy()
+        data['school_code']=request.user.school_code
+        data['isActive']=True
+        print("dta",data)
+        serializer = AnnouncementSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"data":serializer.data,"response": {"n": 1, "msg":'Announcement added successfully',"status": "success"}})
+        else:
+            first_key, first_value = next(iter(serializer.errors.items()))
+            return Response({"data":serializer.errors,"response": {"n": 0, "msg":first_key + " : "+ first_value[0],"status": "failure"}})
+                            
 
 
+class announcement_list(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        school_code=request.user.school_code
+        obj=Announcements.objects.filter(isActive=True,school_code=school_code)
+        serializer = CustomAnnouncementSerializer(obj,many=True)
+        return Response({"data":serializer.data,"response": {"n": 1, "msg":'Announcements found successfully',"status": "success"}})
+                        
+
+class edit_announcement(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        data=request.data.copy()
+        data['school_code']=request.user.school_code
+        obj=Announcements.objects.filter(id=data['id'],isActive=True,school_code=data['school_code']).first()
+        if obj is not None:
+            serializer = AnnouncementSerializer(obj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg":'Announcement updated successfully',"status": "success"}})
+            else:
+                first_key, first_value = next(iter(serializer.errors.items()))
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg":first_key + " : "+ first_value[0],"status": "failed"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg":'announcement not found',"status": "failed"}})
+        
+        
+        
+        
+        
+        
+        
+        
+class get_announcement_details(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self, request):
+        data=request.data.copy()
+        data['school_code']=request.user.school_code
+        obj=Announcements.objects.filter(id=data['id'],isActive=True,school_code=data['school_code']).first()
+        if obj is not None:
+            serializer = CustomAnnouncementSerializer2(obj)
+            return Response({"data":serializer.data,"response": {"n": 1, "msg":'Announcement found successfully',"status": "success"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg":'announcement not found',"status": "failed"}})
 
 
+class delete_announcement(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self, request):
+        data=request.data.copy()
+        data['school_code']=request.user.school_code
+        data['isActive']=False
+        obj=Announcements.objects.filter(id=data['id'],isActive=True,school_code=data['school_code']).first()
+        if obj is not None:
+            serializer = AnnouncementSerializer(obj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg":'Announcement deleted successfully',"status": "success"}})
+            else:
+                first_key, first_value = next(iter(serializer.errors.items()))
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg":first_key + " : "+ first_value[0],"status": "failed"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg":'announcement not found',"status": "failed"}})
+                              
 
+class get_student_announcements(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self, request):
+        data=request.data.copy()
+        data['school_code']=request.user.school_code
+        
+        student_obj=Students.objects.filter(StudentCode=data['StudentCode'],isActive=True,school_code=data['school_code']).first()
+        if student_obj is not None:
+            student_serializeer=StudentSerializer(student_obj)
+            class_id=[str(student_serializeer.data['StudentClass'])]
+            obj=Announcements.objects.filter(classid__contains=class_id,isActive=True,school_code=data['school_code']).order_by('-Date')
+            if obj.exists():
+                serializer = CustomAnnouncementSerializer2(obj,many=True)
+                return Response({"data":serializer.data,"response": {"n": 1, "msg":'Announcement found successfully',"status": "success"}})
+            else:
+                return Response({"data":[],"response": {"n": 0, "msg":'Announcement not found',"status": "failed"}})
 
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg":'student not found',"status": "failed"}})
 
 
 

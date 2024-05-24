@@ -16,7 +16,6 @@ class add_message(GenericAPIView):
     def post(self,request):
         data={}
         data['from_user_id']=request.POST.get('from_user_id')
-        print("data",request.data)
         school_code=request.user.school_code
         from_user_obj=User.objects.filter(id=data['from_user_id'],isActive=True).first()
         if from_user_obj is None:
@@ -29,7 +28,6 @@ class add_message(GenericAPIView):
                 data['StudentCode']=student_obj.StudentCode
             else:
                 return Response({"data":'',"response": {"n": 0, "msg":'we dont found your student ',"status": "failure"}})
-        # print("from_user_obj",str(from_user_obj.role))
 
         data['from_user_str']=from_user_obj.Username
         data['message']=request.POST.get('message')
@@ -41,17 +39,14 @@ class add_message(GenericAPIView):
             return Response({"data":'',"response": {"n": 0, "msg":'To user not found',"status": "failure"}})
         
         if str(to_user_obj.role) == 'Parent':
-            # print("to_user_obj.id",to_user_obj.id)
-            # print("school_code",school_code)
+
             
             student_obj=Students.objects.filter(StudentCode=request.POST.get('StudentCode'),school_code=school_code,ParentId=to_user_obj.id,isActive=True).first()
-            # print("student_obj",student_obj)
             
             if student_obj is not None:
                 data['StudentCode']=student_obj.StudentCode
             else:
                 return Response({"data":'',"response": {"n": 0, "msg":'we dont found your student ',"status": "failure"}})
-        # print("to_user_obj",str(to_user_obj.role))
 
         data['to_user_str']=to_user_obj.Username
 
@@ -60,7 +55,6 @@ class add_message(GenericAPIView):
         data['date_str']=formatted_date
         data['school_code']=school_code
         
-        # print("data",data)
         serializer=MessageSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -98,9 +92,6 @@ class get_send_messages(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):   
         user_id=request.user.id
-        print("request.user.role",request.user.role)
-        print("request.POST.get('StudentCode')",request.POST.get('StudentCode'))
-        # print("user_id",user_id)
 
         message_obj=Messages.objects.filter(from_user_id=user_id,isActive=True)
 
@@ -125,7 +116,6 @@ class get_recived_messages(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):   
         user_id=request.user.id
-        # print("user_id",user_id)
         message_obj=Messages.objects.filter(to_user_id=user_id,isActive=True)
         serializer=CustomMessageSerializer(message_obj,many=True)
         return Response({"data":serializer.data,"response": {"n": 1, "msg": "Message found Successfully","status": "Success"}})

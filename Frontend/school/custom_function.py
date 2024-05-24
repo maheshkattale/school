@@ -19,7 +19,10 @@ class CustomDateFormatField(serializers.Field):
     def to_representation(self, value):
         date_format = DateFormat(value)
         return date_format.format('d F Y')
-    
+class serializer_date_yyyy_mm_dd__dd_mm_yyy(serializers.Field):
+    def to_representation(self, value):
+        date_format = DateFormat(value)
+        return date_format.format('d-m-Y')
     
 def dd_mm_yyyy_to_yyyy_mm_dd(date_str):
     # Parse the input date string to a datetime object

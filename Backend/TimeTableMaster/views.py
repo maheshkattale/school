@@ -37,7 +37,6 @@ class addtimetable(GenericAPIView):
         schoolcode = request.user.school_code
         if timetablelist != []:
             for t in timetablelist :
-                print("t",t)
                 TimeTable.objects.create(ClassId_id=t['class'],startdate = t['startdate'],enddate=t['enddate'],Day=t['day'],start_time=t['starttime'],end_time = t['endtime'],SubjectId_id=t['subject'],TeacherId = t['teacher'],school_code=schoolcode,AcademicYear_id = t['AcademicYear'])
 
             return Response({"data":'',"response": {"n": 1, "msg": "TimeTable Added Successfully","status": "Success"}})
@@ -225,7 +224,6 @@ class get_ttbyid(GenericAPIView):
 #             day = startdate + datetime.timedelta(days=i)
 #             dates.append(day)
 
-#         print("dates",dates)
 #         return Response({"data":dates,"response": {"n": 1, "msg": "Timetable Record found Successfully","status": "Success"}})
 
 
@@ -256,9 +254,7 @@ class get_recipient(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        print("request.data",request.data)
         if str(request.user.role) == "Parent":
-            print("hii")
             schoolcode = request.user.school_code
             stuid = request.data.get('stuid')
             Academicyearobj = AcademicYear.objects.filter(isActive=True,school_code=schoolcode).first()
@@ -282,7 +278,6 @@ class get_recipient(GenericAPIView):
             else:
                 return Response({"data":'',"response": {"n": 0, "msg": "AcademicYear is not active","status": "failed"}})
         else:
-            print("byy")
             
             
             user_objs=User.objects.filter(isActive=True,)

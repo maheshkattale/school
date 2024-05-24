@@ -131,9 +131,7 @@ class getschoolbyid(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         id = request.data.get('id')
-        print("idddddddddddd",id)
         schoolobj = School.objects.filter(id=id).first()
-        print("schoolobjschoolobj",schoolobj)
         if schoolobj is not None:
             serializer = schoolSerializer(schoolobj)
             for s in [serializer.data]:
@@ -154,7 +152,6 @@ class updateSchool(GenericAPIView):
     def post(self,request):
         data = request.data.copy()
         data['school_logo'] = request.FILES.get('school_logo')
-        print("dataaaa",data)
         schoolid = data['id']
         schoolobj = School.objects.filter(id=schoolid,isActive=True).first()
         if schoolobj is not None:
@@ -206,7 +203,6 @@ class updateSchool(GenericAPIView):
                     else:
                         return Response({"data":'',"response": {"n": 0, "msg": "Couldn't find admin email to update ! ","status": "failure"}})
                 else:
-                    print("serializer.errors",serializer.errors)
                     return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Update School ! ","status": "failure"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "School is not Active ","status": "failure"}})
@@ -383,7 +379,6 @@ class enableAcademicYear(GenericAPIView):
         id = request.data.get('id')
         data={}
         data['isActive'] = True
-        print("id",id)
         yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
         if yearobj is not None:
             if yearobj.isActive == False:
@@ -451,3 +446,28 @@ class disableAcademicYear(GenericAPIView):
                 
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Academic Year not found ","status": "failure"}})
+        
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

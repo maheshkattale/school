@@ -94,6 +94,10 @@ function yyyy_mm_dd(dateString) {
   var parts = dateString.split("-");
   return parts[2] + "-" + parts[1] + "-" + parts[0];
 }
+function yyyy_mm_dd_to_dd_mm_yyyy(dateString) {
+  var parts = dateString.split("-");
+  return parts[2] + "-" + parts[1] + "-" + parts[0];
+}
 flatpickr(".date_picker", {
   dateFormat: "d-m-Y", // Customize date format if needed
   // You can add more configuration options here

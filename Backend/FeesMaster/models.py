@@ -17,4 +17,9 @@ class FeesDistributionsBreakdowns(TrackingModel):
     amount = models.CharField(max_length=150,null=True,blank=True)
     start_date = models.DateField(null=True,blank=True)
     end_date = models.DateField(null=True,blank=True)
-    fees_distributions_id = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
+    fees_distributions_id = models.ForeignKey(FeesDistributions,on_delete=models.CASCADE,null=True,blank=True)
+
+
+
+
+

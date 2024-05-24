@@ -33,7 +33,6 @@ class bulk_upload_fees_distribution(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         dataset = Dataset()
-        print("request.data",request.data)
         school_code=request.user.school_code
         fileerrorlist=[]
         new_fees_distributions = request.FILES['file']
@@ -207,7 +206,6 @@ class bulk_upload_fees_distribution(GenericAPIView):
                         continue
                     
                 if data['valid_entry']:
-                    print("data",data)
 
                     check_already_exist_obj=FeesDistributions.objects.filter(class_id=data['class_id'],academic_year_id=data['academic_year_id']).first()
                     if check_already_exist_obj is not None:
@@ -253,7 +251,6 @@ class add_fees_distributions(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        print("request.data",request.data)
         data=request.data.copy()
         breakdown_list = json.loads(data['breakdown_list'])
         check_already_exist_obj=FeesDistributions.objects.filter(class_id=data['class_id'],academic_year_id=data['academic_year_id']).first()
@@ -271,17 +268,17 @@ class add_fees_distributions(GenericAPIView):
                             FeesDistributionsBreakdownsSerializers.save()
                         else:
                             return Response({"data":'',"response": {"n": 0, "msg": 'Error in adding fees breakdown '+first_key +' : '+ first_value[0],"status": "failure"}})
-                return Response({"data":'',"response": {"n": 0, "msg": "fees added successfully","status": "success"}})
+                return Response({"data":'',"response": {"n": 1, "msg": "fees added successfully","status": "success"}})
 
             else:
                 first_key, first_value = next(iter(FeesDistributionsSerializers.errors.items()))
                 return Response({"data":'',"response": {"n": 0, "msg": 'Error in adding fees  '+first_key +' : '+ first_value[0],"status": "failure"}})
 
+
 class update_fees_distributions(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        print("request.data",request.data)
         data=request.data.copy()
         breakdown_list = json.loads(data['breakdown_list'])
         
@@ -300,7 +297,7 @@ class update_fees_distributions(GenericAPIView):
                             FeesDistributionsBreakdownsSerializers.save()
                         else:
                             return Response({"data":'',"response": {"n": 0, "msg": 'Error in adding fees breakdown '+first_key +' : '+ first_value[0],"status": "failure"}})
-                return Response({"data":'',"response": {"n": 0, "msg": "fees updated successfully","status": "success"}})
+                return Response({"data":'',"response": {"n": 1, "msg": "fees updated successfully","status": "success"}})
 
             else:
                 first_key, first_value = next(iter(FeesDistributionsSerializers.errors.items()))
@@ -312,25 +309,144 @@ class delete_fees_distributions(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        print("request.data",request.data)
         data=request.data.copy()
         data['isActive']=False
         
-        update_obj=FeesDistributions.objects.filter(id=data['id'],isActive=True).first()
-        if update_obj is not None:
-            FeesDistributionsSerializers=FeesDistributionsSerializer(update_obj,data=data,partial=True)
+        delete_obj=FeesDistributions.objects.filter(id=data['id'],isActive=True).first()
+        if delete_obj is not None:
+            FeesDistributionsSerializers=FeesDistributionsSerializer(delete_obj,data=data,partial=True)
             if FeesDistributionsSerializers.is_valid():
                 FeesDistributionsSerializers.save()
                 delete_already_exist_obj=FeesDistributionsBreakdowns.objects.filter(fees_distributions_id=FeesDistributionsSerializers.data['id']).update(isActive=False)
-                return Response({"data":'',"response": {"n": 0, "msg": "fees deleted successfully","status": "success"}})
+                return Response({"data":'',"response": {"n": 1, "msg": "fees deleted successfully","status": "success"}})
             else:
                 first_key, first_value = next(iter(FeesDistributionsSerializers.errors.items()))
                 return Response({"data":'',"response": {"n": 0, "msg": 'Error in deleting fees  '+first_key +' : '+ first_value[0],"status": "failure"}})
 
         return Response({"data":'',"response": {"n": 0, "msg": "fees not found","status": "failure"}})
 
+class add_fees_distributions_for_multiple_class(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data=request.data.copy()
+        breakdown_list = json.loads(data['breakdown_list'])
+        classes = json.loads(data['classes'])
+        if len(breakdown_list) >0:
+            data['breakdown']=True
+        else:
+            data['breakdown']=False
+            
+        print("breakdown_list",breakdown_list)
+        print("classes",classes)
+        print("data",data)
+        not_added_list=[]
+        for i in classes:
+            data['class_id']=i
+            data['isActive']=True
+            check_already_exist_obj=FeesDistributions.objects.filter(class_id=i,academic_year_id=data['academic_year_id']).first()
+            if check_already_exist_obj is not None:
+                not_added_list.append(i)
+            else:
+                FeesDistributionsSerializers=FeesDistributionsSerializer(data=data)
+                if FeesDistributionsSerializers.is_valid():
+                    FeesDistributionsSerializers.save()
+                    print("saved FeesDistributionsSerializers",FeesDistributionsSerializers.data)
+                    
+                    if FeesDistributionsSerializers.data['breakdown']:
+                        for breakdown in breakdown_list:
+                            breakdown['fees_distributions_id']=FeesDistributionsSerializers.data['id']
+                            breakdown['start_date']=dd_mm_yyyy_to_yyyy_mm_dd(breakdown['start_date'])
+                            breakdown['end_date']=dd_mm_yyyy_to_yyyy_mm_dd(breakdown['end_date'])
+                            FeesDistributionsBreakdownsSerializers=FeesDistributionsBreakdownsSerializer(data=breakdown)
+                            if FeesDistributionsBreakdownsSerializers.is_valid():
+                                FeesDistributionsBreakdownsSerializers.save()
+                                print("saved")
+                            else:
+                                print('error',FeesDistributionsBreakdownsSerializers.errors)
+                else:
+                    not_added_list.append(i)
+                    print('error',FeesDistributionsSerializers.errors)
+                    
+        return Response({"data":'',"response": {"n": 1, "msg": "fees added successfully","status": "success"}})
+
+                    
+ 
+class fees_destributiom_list(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):        
+        obj=FeesDistributions.objects.filter(isActive=True)
+        FeesDistributionsSerializers=CustomFeesDistributionsSerializer(obj,many=True)
+        newlist=FeesDistributionsSerializers.data
+        for i in newlist:
+            Breakdowns_obj=FeesDistributionsBreakdowns.objects.filter(fees_distributions_id=i['id'],isActive=True)
+            Breakdowns_serializer=CustomFeesDistributionsBreakdownsSerializer(Breakdowns_obj,many=True)
+            i['Breakdowns']=Breakdowns_serializer.data
+        return Response({"data":newlist,"response": {"n": 1, "msg": "fees list found successfully","status": "success"}})
+ 
+                   
+class get_fees_distributions_details(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data=request.data.copy()        
+        obj=FeesDistributions.objects.filter(id=data['id'],isActive=True).first()
+        if obj is not None:
+            FeesDistributionsSerializers=FeesDistributionsSerializer(obj)
+            Breakdowns_obj=FeesDistributionsBreakdowns.objects.filter(fees_distributions_id=FeesDistributionsSerializers.data['id'],isActive=True)
+            Breakdowns_serializer=CustomFeesDistributionsBreakdownsSerializer(Breakdowns_obj,many=True)
+            return Response({"data":{'fees':FeesDistributionsSerializers.data,'breakdowns':Breakdowns_serializer.data},"response": {"n": 1, "msg": "fees details found successfully","status": "success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "fees not found","status": "failure"}})
 
 
+class edit_fees_distributions_for_multiple_class(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data=request.data.copy()
+        breakdown_list = json.loads(data['breakdown_list'])
+        if data['breakdown'] =='true':
+            data['breakdown']=True
+        else:
+            data['breakdown']=False
+            
+        print("data",data)
+
+
+        data['isActive']=True
+        obj=FeesDistributions.objects.filter(class_id=data['class_id'],academic_year_id=data['academic_year_id'],isActive=True).first()
+        if obj is not None:
+            FeesDistributionsSerializers=FeesDistributionsSerializer(obj,data=data)
+            if FeesDistributionsSerializers.is_valid():
+                FeesDistributionsSerializers.save()
+                if FeesDistributionsSerializers.data['breakdown']:
+                    print("int(FeesDistributionsSerializers.data['id'])",int(FeesDistributionsSerializers.data['id']))
+                    deleteexist=FeesDistributionsBreakdowns.objects.filter(fees_distributions_id=int(FeesDistributionsSerializers.data['id'])).update(isActive=False)
+                    print("deleteexist",deleteexist)
+                    
+                    for breakdown in breakdown_list:
+                        print("breakdown",breakdown)
+                        breakdown['fees_distributions_id']=FeesDistributionsSerializers.data['id']
+                        breakdown['start_date']=dd_mm_yyyy_to_yyyy_mm_dd(breakdown['start_date'])
+                        breakdown['end_date']=dd_mm_yyyy_to_yyyy_mm_dd(breakdown['end_date'])
+                        FeesDistributionsBreakdownsSerializers=FeesDistributionsBreakdownsSerializer(data=breakdown)
+                        if FeesDistributionsBreakdownsSerializers.is_valid():
+                            FeesDistributionsBreakdownsSerializers.save()
+                            print("saved")
+                        else:
+                            print('error',FeesDistributionsBreakdownsSerializers.errors)
+                return Response({"data":'',"response": {"n": 1, "msg": "fees  updated Successfully","status": "success"}})
+                            
+            else:
+                print('error',FeesDistributionsSerializers.errors)
+                first_key, first_value = next(iter(FeesDistributionsSerializers.errors.items()))
+                return Response({"data":'',"response": {"n": 0, "msg": first_key +' : '+ first_value[0],"status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "fees not updated ","status": "failure"}})
+
+        
 
 
 

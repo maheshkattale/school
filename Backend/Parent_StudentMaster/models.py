@@ -23,7 +23,7 @@ class studentclassLog(TrackingModel):
     studentId =  models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)
     StudentCode = models.CharField(max_length=150,null=True,blank=True)
     classid = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
-    RollNo = models.CharField(max_length=150,null=True,blank=True)
+    # RollNo = models.CharField(max_length=150,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
 
@@ -43,4 +43,4 @@ class Announcements(TrackingModel):
     AcademicyearId = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
     classid = models.JSONField(null=True)
     Announcementtext = models.TextField(null=True,blank=True)
-    school_code = models.CharField(max_length=150,null=True,blank=True)
+    school_code = models.CharField(max_length=250,null=True,blank=True)

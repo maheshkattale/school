@@ -1,0 +1,607 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+<style>
+    .switch {
+        display: inline-block;
+        height: 34px;
+        position: relative;
+        width: 60px;
+      }
+      
+      .switch input {
+        display:none;
+      }
+      
+      .slider {
+        background-color: #ccc;
+        bottom: 0;
+        cursor: pointer;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transition: .4s;
+      }
+      
+      .slider:before {
+        background-color: #fff;
+        bottom: 4px;
+        content: "";
+        height: 26px;
+        left: 4px;
+        position: absolute;
+        transition: .4s;
+        width: 26px;
+      }
+      
+      input:checked + .slider {
+        background-color: #66bb6a;
+      }
+      
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+      
+      .slider.round {
+        border-radius: 34px;
+      }
+      
+      .slider.round:before {
+        border-radius: 50%;
+      }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+</style>
+{% endblock %}
+
+{% block heading %}
+  <span class="tab-title"> <span class="px-1">Fees Distribution</span></span>
+{% endblock %}
+
+{% block body %}
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between">
+        <h5 class="card-title fw-semibold mb-4">Add Fees Distribution Forms </h5>
+        <h5 class="card-title fw-semibold mb-4"> </h5>
+      </div>
+      <div class="card">
+        <div class="card-body">
+      
+     
+            <div class="row">
+                <div class="mb-3 col-lg-3">
+                    <label for="academic_year" class="form-label">Academic Year</label> 
+                    <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
+                      <option value="">Please Select Academic Year</option>
+                      {% for i in academic_years %}
+                        <option value="{{i.id}}">{{i.startdate_month_yyyy}} to {{i.enddate_month_yyyy}}</option>
+                      {% endfor %}
+                    </select>
+                    <div id="academic_year_error" class="form-text error_message"></div>
+                </div>
+                <div class="mb-3 col-lg-3">
+                    <label for="class_name" class="form-label">Class</label> 
+                    <select id="class_name" class="form-select select2" aria-describedby="class_name_error" multiple>
+                        <option value="">Please select class</option>
+
+                        {% for i in classes %}
+                            <option value="{{i.id}}">{{i.ClassName}}</option>
+                        {% endfor %}
+                    </select>
+                    <div id="class_name_error" class="form-text error_message"></div>
+                </div>
+                <div class="mb-3 col-lg-3">
+                    <label for="total_amount" class="form-label">Total Amount</label>
+                    <input type="text" class="form-control" id="total_amount" placeholder="Please enter total fees amount" aria-describedby="total_amount_error" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"/>
+                    <div id="total_amount_error" class="form-text error_message"></div>
+                </div>
+                <div class="mb-3 col-lg-3">
+                    <div>
+                        <label for="" class="form-label">
+                            Breakdown
+                        </label>
+                    </div>
+
+                    <div>
+                        <label for="breakdown" class="switch">
+                            <input type="checkbox" class="" id="breakdown">
+                            <div class="slider round"></div>
+                        </label>
+                    </div>
+                    <div id="breakdown_error" class="form-text error_message"></div>
+
+                </div>
+            </div>
+
+            <div class="row d-none" id="breakdown_div">
+
+                <div class="mb-3 col-lg-3">
+                    <label for="breakdown_name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="breakdown_name"  placeholder="Please enter fees breakdown title"  aria-describedby="breakdown_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
+                    <div id="breakdown_name_error" class="form-text error_message"></div>
+                </div>
+
+                <div class="mb-3 col-lg-3">
+                <label for="breakdown_amount" class="form-label">Amount</label>
+                <input type="text" class="form-control" id="breakdown_amount" placeholder="Please enter fees breakdown amount"   aria-describedby="breakdown_amount_error" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"/>
+                <div id="breakdown_amount_error" class="form-text error_message"></div>
+                </div>
+
+                <div class="mb-3 col-lg-3">
+                <label for="breakdown_startdate" class="form-label">Start Date</label>
+                <input type="text" class="form-control date_picker" placeholder="Please select fees breakdown start date"   id="breakdown_startdate" aria-describedby="breakdown_startdate_error" readonly/>
+                <div id="breakdown_startdate_error" class="form-text error_message"></div>
+                </div>
+
+                <div class="mb-3 col-lg-3">
+                <label for="breakdown_enddate" class="form-label">End Date</label>
+                <input type="text" class="form-control date_picker" placeholder="Please select fees breakdown end date"   id="breakdown_enddate" aria-describedby="breakdown_enddate_error" readonly/>
+                <div id="breakdown_enddate_error" class="form-text error_message"></div>
+                </div>
+
+                <div class="mb-3 col-lg-12 text-center">
+                <a id="add_breakdown_btn" class="btn btn-primary" onclick="add_breakdown()">Add</a>
+                <a id="updatedraftbreakdownbtn" onclick="update_draft();" class="btn btn-primary d-none">Update</a>
+    
+                </div>
+
+                <div class="mb-3 col-lg-12 text-center">
+                    <table class="table">
+                      <thead class="thead-dark">
+                        <th>Breakdown Name</th>
+                        <th>Breakdown Amount</th>
+                        <th>Breakdown Start Date</th>
+                        <th>Breakdown End Date</th>
+         
+                        <th>Action</th>
+                      </thead>
+                      <tbody id="added_breakdowns">
+      
+      
+                      </tbody>
+                    </table>
+                  </div>
+            </div>
+
+
+
+
+            <div class="row">
+              <div class="d-flex justify-content-center">
+                <a id="" onclick="save_fees_distribution();" class="btn btn-primary">Save</a>
+              </div>
+            </div>
+
+            
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+  var breakdowns = []; // Array to store breakdowns
+  var rowno = 1; // timetable number counter
+  var itemtobechange=''
+
+
+
+
+  function check_existing_entry(){
+
+    var classid=$('#class_name').val();
+    var day=$('#day').val();
+    var starttime=$('#start_time').val();
+    var endtime=$('#end_time').val();
+    var dates = getdates($('#spandatechange').html());
+    var status =false
+      var fd = new FormData();   
+      fd.append("startdate",dates.start_date);
+      fd.append("enddate",dates.end_date);
+      fd.append("starttime",starttime);
+      fd.append("endtime",endtime);
+      fd.append("classid",classid);
+      fd.append("day",day);
+      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+
+      $.ajax({
+        type: "POST",
+        url: frontend_url+"time_table_master/check_existing_timetable_entry",
+        data: fd,
+        processData: false,
+        contentType: false,
+        
+        success: function(response) {
+          console.log("timetable",response)
+          if(response.response.n == 1){
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+            status= true
+            
+          }else{
+
+            status=false
+          }
+  
+    
+        },
+      });
+      return status
+
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+  function save_fees_distribution(){
+
+
+    var isChecked = $('#breakdown').prop('checked'); // Get the checked property
+    var academic_year = $('#academic_year').val();
+    var class_name = $('#class_name').val();
+    var total_amount = $('#total_amount').val();
+    
+
+
+    if(IsValid(academic_year)){
+        $('#academic_year').html();
+        $('#academic_year_error').show().delay(3000).slideUp();
+        $('#academic_year_error').html('Please select academic year');
+        $('#academic_year').focus();
+        return false;
+    }
+    if(class_name=="" || class_name == null || class_name ==[] || class_name == undefined){
+        $('#class_name').html();
+        $('#class_name_error').show().delay(3000).slideUp();
+        $('#class_name_error').html('Please select classes');
+        $('#class_name').focus();
+        return false;
+    }
+    if(IsValid(total_amount)){
+        $('#total_amount').html();
+        $('#total_amount_error').show().delay(3000).slideUp();
+        $('#total_amount_error').html('Please enter total amount');
+        $('#total_amount').focus();
+        return false;
+    }
+    var breakdown_total_amount=0
+    $.each(breakdowns,function(i,o){
+      breakdown_total_amount+=parseInt(o.amount)
+    });
+    console.log('isChecked && breakdowns.length',isChecked, breakdowns.length,breakdown_total_amount,total_amount)
+    if (isChecked && breakdowns.length == 0){
+      Swal.fire({
+        text: "Please add fees breakdowns",
+        icon: 'error',
+      })
+      return false;
+
+    }
+    if(isChecked && breakdown_total_amount != total_amount){
+      Swal.fire({
+        text: "Fees total amount and  sum of breakdowns is not same.",
+        icon: 'error',
+      })
+      return false;
+
+    }else{
+      var fd = new FormData();    
+      fd.append("academic_year_id",academic_year);
+      fd.append("total_amount",total_amount);
+      fd.append("classes",JSON.stringify(class_name));
+      fd.append("breakdown_list",JSON.stringify(breakdowns));
+      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+
+      $.ajax({
+        type: "POST",
+        url: frontend_url+"fees/add_fees_distrubution",
+        data: fd,
+        processData: false,
+        contentType: false,
+        
+        success: function(response) {
+          console.log(response)
+          if(response.response.n == 1){
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'success',
+            }).then((result) => {
+              window.location.href = "/fees/fees_distrubution";
+            });
+          }else{
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+          }
+  
+    
+        },
+      });
+
+    }
+
+  };
+
+
+$(document).ready(function() {
+
+
+
+
+
+
+
+
+
+
+
+
+  $('#breakdown').change(function() {
+
+
+      var isChecked = $(this).prop('checked'); // Get the checked property
+      console.log("Checkbox checked: " + isChecked);
+
+      // You can perform further actions based on whether the checkbox is checked
+      if (isChecked) {
+          $('#breakdown_div').removeClass('d-none')
+          // Actions when the checkbox is checked
+      } else {
+          $('#breakdown_div').addClass('d-none')
+
+          // Actions when the checkbox is unchecked
+      }
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+});
+
+function add_breakdown(){
+    
+    var breakdown_name = $('#breakdown_name').val();
+    var breakdown_amount = $('#breakdown_amount').val();
+    var breakdown_startdate = $('#breakdown_startdate').val();
+    var breakdown_enddate = $('#breakdown_enddate').val();
+    if(IsValid(breakdown_name)){
+        $('#breakdown_name').html();
+        $('#breakdown_name_error').show().delay(3000).slideUp();
+        $('#breakdown_name_error').html('Please enter breakdown name');
+        $('#breakdown_name').focus();
+        return false;
+    }
+    if(IsValid(breakdown_amount)){
+        $('#breakdown_amount').html();
+        $('#breakdown_amount_error').show().delay(3000).slideUp();
+        $('#breakdown_amount_error').html('Please enter breakdown amount');
+        $('#breakdown_amount').focus();
+        return false;
+    }
+    if(IsValid(breakdown_startdate)){
+        $('#breakdown_startdate').html();
+        $('#breakdown_startdate_error').show().delay(3000).slideUp();
+        $('#breakdown_startdate_error').html('Please enter breakdown startdate');
+        $('#breakdown_startdate').focus();
+        return false;
+    }
+    if(IsValid(breakdown_enddate)){
+        $('#breakdown_enddate').html();
+        $('#breakdown_enddate_error').show().delay(3000).slideUp();
+        $('#breakdown_enddate_error').html('Please enter breakdown enddate');
+        $('#breakdown_enddate').focus();
+        return false;
+    }
+
+  
+    $('#added_breakdowns').append(`
+            <tr class="rowitem`+rowno+`">
+            <td>`+breakdown_name+`</td>
+            <td>`+breakdown_amount + `</td>
+            <td>`+breakdown_startdate+`</td>
+            <td>`+breakdown_enddate+`</td>
+
+            <td>
+                <a onclick="get_edit_obj_details(`+rowno+`);" data-bs-toggle="tooltip" title="Edit "><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+                <a onclick="deleterow(`+rowno+`);"  data-bs-toggle="tooltip" title="Delete "><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+            </td>
+            </tr>
+    `);
+
+    $('#breakdown_name').val(' ');
+    $('#breakdown_amount').val(' ');
+    $('#breakdown_startdate').val(' ');
+    $('#breakdown_enddate').val(' ');
+  
+  
+  
+    breakdowns.push({"itemno":rowno,"name":breakdown_name,"amount":breakdown_amount,"start_date":breakdown_startdate,"end_date":breakdown_enddate});
+    rowno++;
+    console.log("add draft",breakdowns)
+                
+          
+};
+function update_draft(){
+
+    itemNo=itemtobechange
+    var breakdown_name = $('#breakdown_name').val();
+    var breakdown_amount = $('#breakdown_amount').val();
+    var breakdown_startdate = $('#breakdown_startdate').val();
+    var breakdown_enddate = $('#breakdown_enddate').val();
+    if(IsValid(breakdown_name)){
+        $('#breakdown_name').html();
+        $('#breakdown_name_error').show().delay(3000).slideUp();
+        $('#breakdown_name_error').html('Please enter breakdown name');
+        $('#breakdown_name').focus();
+        return false;
+    }
+    if(IsValid(breakdown_amount)){
+        $('#breakdown_amount').html();
+        $('#breakdown_amount_error').show().delay(3000).slideUp();
+        $('#breakdown_amount_error').html('Please enter breakdown amount');
+        $('#breakdown_amount').focus();
+        return false;
+    }
+    if(IsValid(breakdown_startdate)){
+        $('#breakdown_startdate').html();
+        $('#breakdown_startdate_error').show().delay(3000).slideUp();
+        $('#breakdown_startdate_error').html('Please enter breakdown startdate');
+        $('#breakdown_startdate').focus();
+        return false;
+    }
+    if(IsValid(breakdown_enddate)){
+        $('#breakdown_enddate').html();
+        $('#breakdown_enddate_error').show().delay(3000).slideUp();
+        $('#breakdown_enddate_error').html('Please enter breakdown enddate');
+        $('#breakdown_enddate').focus();
+        return false;
+    }
+
+    $('.rowitem'+itemNo).html(`
+        
+        <td>`+breakdown_name+`</td>
+        <td>`+breakdown_amount + `</td>
+        <td>`+breakdown_startdate+`</td>
+        <td>`+breakdown_enddate+`</td>
+
+        <td>
+            <a onclick="get_edit_obj_details(`+itemNo+`);" data-bs-toggle="tooltip" title="Edit "><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+            <a onclick="deleterow(`+itemNo+`);"  data-bs-toggle="tooltip" title="Delete "><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+        </td>
+    
+    `)
+
+
+
+
+
+
+
+    var result=breakdowns.find(item => item.itemno === itemNo)
+
+
+    if (result) {
+        result.name =breakdown_name;
+        result.amount =breakdown_amount;
+        result.start_date =breakdown_startdate;
+        result.end_date = breakdown_enddate;
+
+    } 
+    $('#breakdown_name').val(' ');
+    $('#breakdown_amount').val(' ');
+    $('#breakdown_startdate').val(' ');
+    $('#breakdown_enddate').val(' ');
+
+    $('#add_breakdown_btn').removeClass('d-none')
+    $('#updatedraftbreakdownbtn').addClass('d-none')
+
+
+};
+function get_edit_obj_details(itemNo){
+
+    var result=breakdowns.find(item => item.itemno === itemNo)
+    const index = breakdowns.findIndex(item => item.itemno === itemNo);
+    $('#add_breakdown_btn').addClass('d-none')
+    $('#updatedraftbreakdownbtn').removeClass('d-none')
+    itemtobechange=itemNo
+    $("#breakdown_name").val(result.name);
+    $('#breakdown_amount').val(result.amount);
+    $('#breakdown_startdate').val(result.start_date);
+    $('#breakdown_enddate').val(result.end_date);
+
+
+
+
+};
+function deleterow(id){
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+
+
+
+
+      var result=breakdowns.find(item => item.itemno === id)
+
+      const index = breakdowns.findIndex(item => item.itemno === id);
+
+
+      if (index !== -1) {
+          breakdowns.splice(index, 1)[0];
+      }
+      var rownoToRemove = $('.rowitem'+id);
+
+      rownoToRemove.remove();
+
+      $('#breakdown_name').val(' ');
+      $('#breakdown_amount').val(' ');
+      $('#breakdown_startdate').val(' ');
+      $('#breakdown_enddate').val(' ');
+
+      $('#add_breakdown_btn').removeClass('d-none')
+      $('#updatedraftbreakdownbtn').addClass('d-none')
+
+    }
+
+      console.log("delete draft",breakdowns)
+      });
+};
+</script>
+{% endblock %}

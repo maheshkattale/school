@@ -23,6 +23,7 @@ class student_list(GenericAPIView):
             
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
+            
             academic_list_request = requests.get(academic_list_url,headers=headers)
             academic_list_response = academic_list_request.json()
             
@@ -40,7 +41,6 @@ class student_list(GenericAPIView):
             t = 'Token {}'.format(tok)
             headers = {'Authorization': t}
             data = request.data.copy()
-            print("data",data)
             student_list_request = requests.post(student_list_url,headers=headers,data=data)
             student_list_response = student_list_request.json()
             return HttpResponse(json.dumps(student_list_response), content_type="application/json")
@@ -72,7 +72,6 @@ class student_id_cards(GenericAPIView):
             t = 'Token {}'.format(tok)
             headers = {'Authorization': t}
             data = request.data.copy()
-            print("data",data)
             student_id_cards_request = requests.post(student_id_cards_url,headers=headers,data=data)
             student_id_cards_response = student_id_cards_request.json()
             return HttpResponse(json.dumps(student_id_cards_response), content_type="application/json")
