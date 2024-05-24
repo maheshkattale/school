@@ -23,14 +23,9 @@ class studentclassLog(TrackingModel):
     studentId =  models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)
     StudentCode = models.CharField(max_length=150,null=True,blank=True)
     classid = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
-    # RollNo = models.CharField(max_length=150,null=True,blank=True)
+    RollNo = models.CharField(max_length=150,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
-
-# class Primary_Student(TrackingModel):
-#     ParentId = models.CharField(max_length=150,null=True,blank=True)
-#     StudentCode = models.CharField(max_length=150,null=True,blank=True)
-#     school_code = models.CharField(max_length=150,null=True,blank=True)
 
 
 

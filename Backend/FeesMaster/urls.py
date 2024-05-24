@@ -11,6 +11,10 @@ urlpatterns = [
     path('fees_destributiom_list', fees_destributiom_list.as_view(), name = 'fees_destributiom_list'),
     path('get_fees_distributions_details', get_fees_distributions_details.as_view(), name = 'get_fees_distributions_details'),
     path('edit_fees_distributions_for_multiple_class', edit_fees_distributions_for_multiple_class.as_view(), name = 'edit_fees_distributions_for_multiple_class'),
+    path('get_student_pending_fees_list', get_student_pending_fees_list.as_view(), name = 'get_student_pending_fees_list'),
+    
+    
+    
     
 ]
 

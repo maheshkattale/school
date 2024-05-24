@@ -23,6 +23,7 @@ from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
 from datetime import datetime, timedelta
 from Parent_StudentMaster.models import Students,studentclassLog
+from Parent_StudentMaster.serializers import *
 from tablib import Dataset
 from SchoolMaster.models import AcademicYear
 from ClassMaster.models import Class
@@ -450,6 +451,28 @@ class edit_fees_distributions_for_multiple_class(GenericAPIView):
 
 
 
+class get_student_pending_fees_list(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data=request.data.copy()
+        data['school_code']=request.user.school_code
+        student_obj=Students.objects.filter(StudentCode=data['StudentCode'],isActive=True,school_code=data['school_code']).first()
+        if student_obj is not None:
+            class_log_obj=studentclassLog.objects.filter(studentId=student_obj.id,isActive=True)
+            if class_log_obj.exists():
+                classIds=studentclassLogserializer(class_log_obj,many=True)
+                classid_list=[]
+                for i in classIds.data:
+                    classid_list.append({'classid':i['classid'],'academic_year':i['AcademicyearId']})
+                    fees_object=FeesDistributions.objects.filter(classid=i['classid'],academic_year_id=i['AcademicyearId']).first()
+                    
+                
+                return Response({"data":'',"response": {"n": 1, "msg": "fees  successfully","status": "success"}})
+            else:
+                return Response({"data":'',"response": {"n": 0, "msg": "student class not found","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "student not found","status": "failure"}})
 
 
 

@@ -278,9 +278,6 @@ class get_recipient(GenericAPIView):
             else:
                 return Response({"data":'',"response": {"n": 0, "msg": "AcademicYear is not active","status": "failed"}})
         else:
-            
-            
             user_objs=User.objects.filter(isActive=True,)
             serializers=UserlistSerializer(user_objs,many=True)
-            
             return Response({"data":serializers.data,"response": {"n": 1, "msg": "user found successfully","status": "Success"}})
