@@ -13,7 +13,7 @@ class Students(TrackingModel):
     DateofJoining = models.DateField(null=True)
     BloodGroup = models.IntegerField(null=True,blank=True)
     RollNo = models.CharField(max_length=150,null=True,blank=True)
-    photo = models.ImageField(upload_to='StudentImages/', blank=True, null=True,verbose_name='Student Photo')
+    photo = models.TextField(null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
     primary_student=models.BooleanField(default=False)
 

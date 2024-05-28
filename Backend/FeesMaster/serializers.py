@@ -6,7 +6,12 @@ class FeesDistributionsSerializer(serializers.ModelSerializer):
     class Meta:
         model= FeesDistributions
         fields='__all__'
-        
+
+
+class StudentFeesLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= StudentFeesLog
+        fields='__all__'
         
 class FeesDistributionsBreakdownsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,6 +21,14 @@ class CustomFeesDistributionsSerializer(serializers.ModelSerializer):
     academic_year_id = serializers.StringRelatedField()
     class_id = serializers.StringRelatedField()
     
+    academic_year_id_id = serializers.PrimaryKeyRelatedField(source='academic_year_id', queryset=AcademicYear.objects.all())
+    class_id_id = serializers.PrimaryKeyRelatedField(source='class_id', queryset=Class.objects.all())
+    
+    
+
+    
+
+
     class Meta:
         model= FeesDistributions
         fields='__all__'

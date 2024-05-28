@@ -3,7 +3,7 @@
 {% block head %}
 <style>
    .breakdowncard{
-    box-shadow: 0 0 5px black;
+    box-shadow: 0 0 5px #c7c7c7;
     border-radius: 15px;
     padding: 10px;
     font-weight: 600;
@@ -74,7 +74,7 @@
                             <div class="card-body">
                               <div class="row">
                                 {% for j in i.Breakdowns %}
-                                
+                         
                                 <div class="col-lg-6">
                                   <div class="breakdowncard my-2">
                                     <div class="breakdownname">Name:{{j.name}}</div>
@@ -84,8 +84,9 @@
                                         <span class="breakdownenddate">End Date</span>
                                       </div>
                                       <div class="breakdowndates">
-                                        <span class="breakdownstartdate">2nd April 2023</span>
-                                        <span class="breakdownenddate">2nd April 2024</span>
+                                        <span class="breakdownstartdate">       {{j.startdate_dd_mm_yyyy}}
+                                         </span>
+                                        <span class="breakdownenddate"> {{j.enddate_dd_mm_yyyy}}</span>
                                       </div>
                                     </div>
                                     <div class="breakdownamount">Amount : {{j.amount}}</div>

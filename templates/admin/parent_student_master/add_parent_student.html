@@ -1,197 +1,269 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block head %}
+<style>
+  .imagepre {
+    width: 100px;
+    min-height: 100px;
+    max-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: lightgray;
+    border-width: 2px;
+    border-style: dotted;
+    border-color: rgb(136 0 239);
+    border-image: initial;
+    padding: 3px;
+}
+</style>
 
 {% endblock %}
 
 {% block heading %}
-  <span class="tab-title"><span class="px-1">Add Parent Student</span></span>
+<span class="tab-title"><span class="px-1">Add Parent Student</span></span>
 {% endblock %}
 
 {% block body %}
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title fw-semibold mb-4">Add Parent Student Forms</h5>
-      <div class="card">
-        <div class="card-body">
-          <form>
-            <div class="row">
-              <div class="mb-3 col-lg-3">
-                <label for="parent_name" class="form-label">Parent Name</label>
-                <input type="text" class="form-control" id="parent_name" placeholder="Please enter parent name" aria-describedby="parent_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
-                <div id="parent_name_error" class="form-text error_message"></div>
-              </div>
-
-              <div class="mb-3 col-lg-3">
-                <label for="parent_email" class="form-label">Parent Email</label>
-                <input type="text" class="form-control" id="parent_email" placeholder="Please enter parent email" aria-describedby="parent_email_error" oninput="email_validate('parent_email')"/>
-                <div id="parent_email_error" class="form-text error_message"></div>
-              </div>
-
-              <div class="mb-3 col-lg-3">
-                <label for="parent_contact" class="form-label">Contact No</label>
-                <input type="text" class="form-control" id="parent_contact" placeholder="Please enter parent contact" aria-describedby="parent_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');" />
-                <div id="parent_contact_error" class="form-text error_message"></div>
-              </div>
-
-              <div class="mb-3 col-lg-3">
-                <label for="children_count" class="form-label">No of Children</label>
-                <div class="childddcount "><span class="quantity_Id ps-2" id="child_count">0</span><span class="quantitybtnspan"><button type="button" class="btn quantitybtn plus-btn" id="addquantity2" onclick="addchild()">+</button></span></div>
-                <div id="children_count_error" class="form-text error_message"></div>
-              </div>
-
-
-
-
-
-
-
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title fw-semibold mb-4">Add Parent Student Forms</h5>
+    <div class="card">
+      <div class="card-body">
+        <form>
+          <div class="row">
+            <div class="mb-3 col-lg-3">
+              <label for="parent_name" class="form-label">Parent Name</label>
+              <input type="text" class="form-control" id="parent_name" placeholder="Please enter parent name"
+                aria-describedby="parent_name_error"
+                oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+              <div id="parent_name_error" class="form-text error_message"></div>
             </div>
-            {{ classlist|json_script:"classlist" }}
-            {{bloodgrplist|json_script:"bloodgrplist"}}
 
-            <div class="form-row" >
-              <table class="table" id="child-table">
-               <thead>
+            <div class="mb-3 col-lg-3">
+              <label for="parent_email" class="form-label">Parent Email</label>
+              <input type="text" class="form-control" id="parent_email" placeholder="Please enter parent email"
+                aria-describedby="parent_email_error" oninput="email_validate('parent_email')" />
+              <div id="parent_email_error" class="form-text error_message"></div>
+            </div>
+
+            <div class="mb-3 col-lg-3">
+              <label for="parent_contact" class="form-label">Contact No</label>
+              <input type="text" class="form-control" id="parent_contact" placeholder="Please enter parent contact"
+                aria-describedby="parent_contact_error" maxlength="10"
+                oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');" />
+              <div id="parent_contact_error" class="form-text error_message"></div>
+            </div>
+
+            <div class="mb-3 col-lg-3">
+              <label for="children_count" class="form-label">No of Children</label>
+              <div class="childddcount "><span class="quantity_Id ps-2" id="child_count">0</span><span
+                  class="quantitybtnspan"><button type="button" class="btn quantitybtn plus-btn" id="addquantity2"
+                    onclick="addchild()">+</button></span></div>
+              <div id="children_count_error" class="form-text error_message"></div>
+            </div>
+
+
+
+
+
+          </div>
+          {{ classlist|json_script:"classlist" }}
+          {{bloodgrplist|json_script:"bloodgrplist"}}
+
+          <div class="form-row">
+            <table class="table" id="child-table">
+              <thead>
                 <tr>
-                 <th class="text-center">S.N.</th>
-                 <th class="text-center">Student Name</th>
-                 <th class="text-center" style="width:12%">Class</th>
-                  <th class="text-center">Date of Birth</th>
-                  <th class="text-center">Date of Joining</th>
-                  <th class="text-center" style="width:10%">Roll No</th>
-                  <th class="text-center" style="width:10%">Blood Group</th>
-                  <th></th>
-               </tr>
-             </thead>
-             <tbody id="Childinfotable">
-            
-             
-               
-               
-             </tbody>
-           </table>
-         </div>
+                  <th class="">S.N.</th>
+                  <th class="" style="width: 12%;">Personal Info</th>
+                  <th class="">School Info</th>
+                  <th class=""></th>
+                  <th class=""></th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="Childinfotable">
 
 
 
-            <div class="row">
 
-              <div class="mb-3 col-lg-12">
-                <label for="address" class="form-label"> Address</label>
-                <textarea class="form-control" name="address" id="address" cols="30" rows="5" aria-describedby="address_error"></textarea>
-                <div id="address_error" class="form-text error_message"></div>
-              </div>
-              
+              </tbody>
+            </table>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <div class="row">
+
+            <div class="mb-3 col-lg-12">
+              <label for="address" class="form-label"> Address</label>
+              <textarea class="form-control" name="address" id="address" cols="30" rows="5"
+                aria-describedby="address_error"></textarea>
+              <div id="address_error" class="form-text error_message"></div>
             </div>
 
-            <div class="row">
-              <div class="d-flex justify-content-center">
-                <a onclick="validate_form();" class="btn btn-primary">Submit</a>
-              </div>
+          </div>
+
+          <div class="row">
+            <div class="d-flex justify-content-center">
+              <a onclick="validate_form();" class="btn btn-primary">Submit</a>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+</div>
+
+
 {% endblock %}
 
 {% block script %}
 <script>
-  $(document).ready(function() {
+  $(document).ready(function () {
     $('#children1_class').select2();
     $('#children_count').select2();
     $('#children1_blood_group').select2();
+    $('.select2').select2();
+
     flatpickr(".date_of_birth", {
       dateFormat: "d-m-Y",
 
     });
     flatpickr(".date_of_joining", {
       dateFormat: "d-m-Y",
-    maxDate: "today" // Disable future dates
+      maxDate: "today" // Disable future dates
 
     });
 
   });
 
-  function addchild(){
-    var ccount=$('#child_count').text();
+  function addchild() {
+    var ccount = $('#child_count').text();
     var inccount = parseInt(ccount) + 1;
-   $('#child_count').text(inccount);
-   add_childern_feilds()
+    $('#child_count').text(inccount);
+    add_childern_feilds()
   }
-var bloodgrplist = JSON.parse(document.getElementById('bloodgrplist').textContent);
-var classlist = JSON.parse(document.getElementById('classlist').textContent);
-counter=1
-var counterlist = []
-  function add_childern_feilds(){
-    var count=$('#child_count').text();
-    var trHTML=''
+  var bloodgrplist = JSON.parse(document.getElementById('bloodgrplist').textContent);
+  var classlist = JSON.parse(document.getElementById('classlist').textContent);
+  counter = 1
+  var counterlist = []
+  function add_childern_feilds() {
+    debugger;
+    var count = $('#child_count').text();
+    var trHTML = ''
     var classOpt = ''
- 
-      trHTML+=`
-      <tr class="countchildren" id="rowd`+counter+`" >
-        <th scope="row" class="text-center srNumber">`+counter+`</th>
 
-        <td class="text-center"> <input type="text" class="form-control childname"  id="childname`+counter+`"  placeholder="Please enter children name" aria-describedby="childnameerror`+counter+`" />
-        <div id="childnameerror`+counter+`" class="form-text error_message"></div></td>
+    trHTML += `
+      <tr class="countchildren" id="rowd`+ counter + `" >
+        <td scope="row" class="text-center srNumber" style="align-content: center;">`+ counter + `</td>
 
         <td class="text-center">
-          <select id="childclass`+counter+`" class="form-select childclass" aria-describedby="childclasserror`+counter+`">
-          
-        </select>
-        <div id="childclasserror`+counter+`" class="form-text error_message"></div>
+          <label for="Photo`+counter+`" class="form-content cursor-pointer w-100 p-1">
+            <div class="image-div-preview">
+              <input type="file" id="Photo`+counter+`" class="d-none photo" name="photo`+counter+`"
+                onchange="validateImage(this,'Photopreview`+counter+`');">
+              <div class="image-preview" id="imagePreview">
+                <img base64='' src="" id="Photopreview`+counter+`" alt="Select Image" class="imagepre photopreview" />
+              </div>
+              <span id="photo_err`+counter+`" class="error_message"></span>
+            </div>
+
+          </label>
+        </td> 
+
+
+        <td class="text-center"> 
+
+          <input type="text" class="form-control childname"  id="childname`+ counter + `"  placeholder="Please enter children name" aria-describedby="childnameerror` + counter + `" />
+          <div id="childnameerror`+ counter + `" class="form-text error_message"></div>
+    
+          <select id="child_bloodgroup`+ counter + `" class="form-select bloodgroup select2" aria-describedby="child_bloodgrouperror` + counter + `" >
+          </select>
+          <div id="child_bloodgrouperror`+ counter + `" class="form-text error_message"></div>
+        
         </td>
 
         <td class="text-center">
-          <input type="text" class="form-control date_of_birth" id="child_dateofbirth`+counter+`" placeholder="Please select children DOB" aria-describedby="child_dateofbirtherror`+counter+`"  readonly/>
-        <div id="child_dateofbirtherror`+counter+`"  class="form-text error_message"></div>
-          </td>
-
-        <td class="text-center">
-          <input type="text" class="form-control date_of_joining" id="child_dateofjoining`+counter+`"  placeholder="Please select children DOJ" aria-describedby="child_dateofjoiningerror`+counter+`" readonly/>
-        <div id="child_dateofjoiningerror`+counter+`" class="form-text error_message"></div>
-          </td>
-
-          <td class="text-center"> 
-            <input type="text" class="form-control childrollno"  id="childrollno`+counter+`"  placeholder="Please enter children roll no" aria-describedby="childrollnoerror`+counter+`" />
-        <div id="childrollnoerror`+counter+`" class="form-text error_message"></div></td>
-
-        <td class="text-center">
-          <select id="child_bloodgroup`+counter+`" class="form-select bloodgroup" aria-describedby="child_bloodgrouperror`+counter+`" >
+          <select id="childclass`+ counter + `" class="form-select childclass select2" aria-describedby="childclasserror` + counter + `">
           </select>
-        <div id="child_bloodgrouperror`+counter+`" class="form-text error_message"></div>
-          </td>
+          <div id="childclasserror`+ counter + `" class="form-text error_message"></div>
 
-        <td class="text-left"><a href="javascript:void(0);" class="view-btn" id="delete`+counter+`" onclick="deleteChild(`+counter+`)"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a></td>
+          <input type="text" class="form-control childrollno"  id="childrollno`+ counter + `"  placeholder="Please enter children roll no" aria-describedby="childrollnoerror` + counter + `" />
+          <div id="childrollnoerror`+ counter + `" class="form-text error_message"></div>
+        </td>
+
+        <td class="text-center">
+          <input type="text" class="form-control date_of_birth" id="child_dateofbirth`+ counter + `" placeholder="Select DOB" aria-describedby="child_dateofbirtherror` + counter + `"  readonly/>
+          <div id="child_dateofbirtherror`+ counter + `"  class="form-text error_message"></div>
+          
+
+          <input type="text" class="form-control date_of_joining" id="child_dateofjoining`+ counter + `"  placeholder="Select DOJ" aria-describedby="child_dateofjoiningerror` + counter + `" readonly/>
+          <div id="child_dateofjoiningerror`+ counter + `" class="form-text error_message"></div>
+        </td>
+
+
+
+
+
+        <td style="align-content: center;" class="text-center">
+          <a href="javascript:void(0);" class="view-btn" id="delete`+ counter + `" onclick="deleteChild(` + counter + `)"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+        </td>
         
       </tr>
       `
     $('#Childinfotable').append(trHTML)
-    $(".srNumber").each(function(i,v){
-          $(v).text(i+1);
-      })
-     
-      console.log('classlist',classlist)
-      var classOpt = '<option value="">select class</option>';
-      $.each(classlist, function(index, value){  
-              classOpt += `<option value="` + value.id + `">` + value.ClassName + `</option>`;           
-            });
-            $("#childclass"+counter).html(classOpt);
+    $(".srNumber").each(function (i, v) {
+      $(v).text(i + 1);
+    })
 
-      var bloodgropOpt = '<option value="">select Blood Group</option>';
-      //bloodgropOpt += `<option value="o">o</option>`;           
+    console.log('classlist', classlist)
+    var classOpt = '<option value="">select class</option>';
+    $.each(classlist, function (index, value) {
+      classOpt += `<option value="` + value.id + `">` + value.ClassName + `</option>`;
+    });
+    $("#childclass" + counter).html(classOpt);
 
-      $.each(bloodgrplist, function(index, value){  
-        bloodgropOpt += `<option value="` + value.id + `">` + value.Groupname + `</option>`;           
-            });
-            $("#child_bloodgroup"+counter).html(bloodgropOpt);
+    var bloodgropOpt = '<option value="">select Blood Group</option>';
+    //bloodgropOpt += `<option value="o">o</option>`;           
 
-      counterlist.push(counter)
-      counter=counter+1;
+    $.each(bloodgrplist, function (index, value) {
+      bloodgropOpt += `<option value="` + value.id + `">` + value.Groupname + `</option>`;
+    });
+    $("#child_bloodgroup" + counter).html(bloodgropOpt);
 
-      flatpickr(".date_of_birth", {
+    counterlist.push(counter)
+    counter = counter + 1;
+
+    flatpickr(".date_of_birth", {
       dateFormat: "d-m-Y",
     });
     flatpickr(".date_of_joining", {
@@ -199,257 +271,401 @@ var counterlist = []
       maxDate: "today" // Disable future dates
 
     });
-    lengthtr=$('#child-table tbody tr').length;
+
+
+    lengthtr = $('#child-table tbody tr').length;
     $('#child_count').text(lengthtr);
   }
 
 
 
-  function deleteChild(childid){  
-  var productRowCount = $(".countchildren").length
-  counterlist.splice(counterlist.indexOf(childid),1)
-  $("#rowd"+childid).remove(); 
-  $('tbody').find('tr').each(function (index) {
-    var firstTDDomEl = $(this).find('th')[0];
-    var $firstTDJQObject = $(firstTDDomEl);
-    $firstTDJQObject.text(index + 1);
-  });
-  lengthtr=$('#child-table tbody tr').length;
+  function deleteChild(childid) {
+    var productRowCount = $(".countchildren").length
+    counterlist.splice(counterlist.indexOf(childid), 1)
+    $("#rowd" + childid).remove();
+    $('tbody').find('tr').each(function (index) {
+      var firstTDDomEl = $(this).find('th')[0];
+      var $firstTDJQObject = $(firstTDDomEl);
+      $firstTDJQObject.text(index + 1);
+    });
+    lengthtr = $('#child-table tbody tr').length;
     $('#child_count').text(lengthtr);
-}
+  }
 
-function studentlist(){
-   var studentlist = [];
-   var counter = 0;
-    lengthtr=$('#child-table tbody tr').length;
-    $(counterlist).each(function(o,i){
-      var children_name=$("#childname"+i).val();
-      var children_class=$("#childclass"+i).val();
-      var children_date_of_birth=$("#child_dateofbirth"+i).val();
-      var children_blood_group=$("#child_bloodgroup"+i).val();
-      var children_date_of_joining=$("#child_dateofjoining"+i).val();
-      data = { 'childname': children_name, 'childclass':children_class,'dateofbirth':children_date_of_birth,'dateobjoining': children_date_of_joining,'bloodgroup':children_blood_group}
+  function studentlist() {
+    var studentlist = [];
+    var counter = 0;
+    lengthtr = $('#child-table tbody tr').length;
+    $(counterlist).each(function (o, i) {
+      var children_name = $("#childname" + i).val();
+      var children_class = $("#childclass" + i).val();
+      var children_date_of_birth = $("#child_dateofbirth" + i).val();
+      var children_blood_group = $("#child_bloodgroup" + i).val();
+      var children_date_of_joining = $("#child_dateofjoining" + i).val();
+      data = { 'childname': children_name, 'childclass': children_class, 'dateofbirth': children_date_of_birth, 'dateobjoining': children_date_of_joining, 'bloodgroup': children_blood_group }
       studentlist.push(data)
     })
   }
 
-  function validate_form(){
+  function validate_form() {
     debugger;
-    var parent_name=$('#parent_name').val();
-    var parent_email=$('#parent_email').val();
-    var parent_contact=$('#parent_contact').val();
-    var address=$('#address').val();
+    var parent_name = $('#parent_name').val();
+    var parent_email = $('#parent_email').val();
+    var parent_contact = $('#parent_contact').val();
+    var address = $('#address').val();
 
     var childnameArr = $(".childname");
     var childname = true
-    for(var i = 0; i < childnameArr.length; i++){
+    for (var i = 0; i < childnameArr.length; i++) {
       childname_value = $(childnameArr[i]).val()
-        if (childname_value == ""){
-          childname = false
-          break;
-        }else{
-          childname = true
-        }
-        
+      if (childname_value == "") {
+        childname = false
+        break;
+      } else {
+        childname = true
+      }
+
     }
+    
+    
+
+    var photoArr = $(".photo");
+    var photo = true
+    for (var i = 0; i < photoArr.length; i++) {
+      photo_value = $(photoArr[i]).val()
+      if (photo_value == "") {
+        photo = false
+        break;
+      } else {
+        photo = true
+      }
+
+    }
+
 
     var childclassArr = $(".childclass");
     var childclass = true
-    for(var i = 0; i < childclassArr.length; i++){
+    for (var i = 0; i < childclassArr.length; i++) {
       childclass_value = $(childclassArr[i]).val()
-        if (childclass_value == ""){
-          childclass = false
-          break;
-        }else{
-          childclass = true
-        }
-        
+      if (childclass_value == "") {
+        childclass = false
+        break;
+      } else {
+        childclass = true
+      }
+
     }
 
     var date_of_birthArr = $(".date_of_birth");
     var date_of_birth = true
-    for(var i = 0; i < date_of_birthArr.length; i++){
+    for (var i = 0; i < date_of_birthArr.length; i++) {
       date_of_birth_value = $(date_of_birthArr[i]).val()
-        if (date_of_birth_value == ""){
-          date_of_birth = false
-          break;
-        }else{
-          date_of_birth = true
-        }
-        
+      if (date_of_birth_value == "") {
+        date_of_birth = false
+        break;
+      } else {
+        date_of_birth = true
+      }
+
     }
 
-  
-    var  date_of_joiningArr = $(".date_of_joining");
-    var  date_of_joining = true
-    for(var i = 0; i < date_of_joiningArr.length; i++){
+
+    var date_of_joiningArr = $(".date_of_joining");
+    var date_of_joining = true
+    for (var i = 0; i < date_of_joiningArr.length; i++) {
       date_of_joining_value = $(date_of_joiningArr[i]).val()
-        if (date_of_joining_value == ""){
-          date_of_joining = false
-          break;
-        }else{
-          date_of_joining = true
-        }
-        
+      if (date_of_joining_value == "") {
+        date_of_joining = false
+        break;
+      } else {
+        date_of_joining = true
+      }
+
     }
 
-    var  date_of_joiningArr = $(".date_of_joining");
-    var  date_of_joining = true
-    for(var i = 0; i < date_of_joiningArr.length; i++){
+    var date_of_joiningArr = $(".date_of_joining");
+    var date_of_joining = true
+    for (var i = 0; i < date_of_joiningArr.length; i++) {
       date_of_joining_value = $(date_of_joiningArr[i]).val()
-        if (date_of_joining_value == ""){
-          date_of_joining = false
-          break;
-        }else{
-          date_of_joining = true
-        }  
+      if (date_of_joining_value == "") {
+        date_of_joining = false
+        break;
+      } else {
+        date_of_joining = true
+      }
     }
 
-    var  bloodgroupArr = $(".bloodgroup");
-    var  bloodgroup = true
-    for(var i = 0; i < bloodgroupArr.length; i++){
+    var bloodgroupArr = $(".bloodgroup");
+    var bloodgroup = true
+    for (var i = 0; i < bloodgroupArr.length; i++) {
       bloodgroup_value = $(bloodgroupArr[i]).val()
-        if (bloodgroup_value == ""){
-          bloodgroup = false
-          break;
-        }else{
-          bloodgroup = true
-        }  
+      if (bloodgroup_value == "") {
+        bloodgroup = false
+        break;
+      } else {
+        bloodgroup = true
+      }
     }
 
-    if(IsValid(parent_name)){
+    var childrollnoArr = $(".childrollno");
+    var childrollno = true
+    for (var i = 0; i < childrollnoArr.length; i++) {
+      childrollno_value = $(childrollnoArr[i]).val()
+      if (childrollno_value == "") {
+        childrollno = false
+        break;
+      } else {
+        childrollno = true
+      }
+    }
+
+
+    if (IsValid(parent_name)) {
       $('#parent_name').html();
       $('#parent_name_error').show().delay(3000).slideUp();
       $('#parent_name_error').html('Please enter parent name');
       $('#parent_name').focus();
       return false;
     }
-    if(IsValid(parent_email)){
+    if (IsValid(parent_email)) {
       $('#parent_email').html();
       $('#parent_email_error').show().delay(3000).slideUp();
       $('#parent_email_error').html('Please enter parent email');
       $('#parent_email').focus();
       return false;
     }
-    if(email_validate('parent_email') == false){
+    if (email_validate('parent_email') == false) {
       $('#parent_email').html();
       $('#parent_email_error').show().delay(3000).slideUp();
       $('#parent_email_error').html('Please enter parent valid email ');
       $('#parent_email').focus();
       return false;
     }
-    if(IsValid(parent_contact)){
+    if (IsValid(parent_contact)) {
       $('#parent_contact').html();
       $('#parent_contact_error').show().delay(3000).slideUp();
       $('#parent_contact_error').html('Please enter parent contact number');
       $('#parent_contact').focus();
       return false;
     }
-    if(mobile_validate('parent_contact') == false){
+    if (mobile_validate('parent_contact') == false) {
       $('#parent_contact').html();
       $('#parent_contact_error').show().delay(3000).slideUp();
       $('#parent_contact_error').html('Please enter parent contact number ');
       $('#parent_contact').focus();
       return false;
     }
-
-    if(childname == false){
+    if (childname == false) {
       Swal.fire({
-                text: "Please enter child name",
-                icon: 'error',
-              })
+        text: "Please enter child name",
+        icon: 'error',
+      })
+      return false;
+    }
+    if (photo == false) {
+      Swal.fire({
+        text: "Please select children photo",
+        icon: 'error',
+      })
       return false;
     }
 
-    if(childclass == false){
+    if (childclass == false) {
       Swal.fire({
-                text: "Please select child class",
-                icon: 'error',
-              })
+        text: "Please select child class",
+        icon: 'error',
+      })
       return false;
     }
 
-    if(date_of_birth == false){
+    if (date_of_birth == false) {
       Swal.fire({
-                text: "Please enter child Date Of Birth",
-                icon: 'error',
-              })
-      return false;
-    }
-    
-    if(date_of_joining == false){
-      Swal.fire({
-                text: "Please enter child Date Of Joining",
-                icon: 'error',
-              })
+        text: "Please enter child Date Of Birth",
+        icon: 'error',
+      })
       return false;
     }
 
-    if(bloodgroup == false){
+    if (date_of_joining == false) {
       Swal.fire({
-                text: "Please select blood group",
-                icon: 'error',
-              })
+        text: "Please enter child Date Of Joining",
+        icon: 'error',
+      })
+      return false;
+    }
+    if (childrollno == false) {
+      Swal.fire({
+        text: "Please enter student roll no",
+        icon: 'error',
+      })
+      return false;
+    }
+    if (bloodgroup == false) {
+      Swal.fire({
+        text: "Please select blood group",
+        icon: 'error',
+      })
       return false;
     }
 
-    if(IsValid(address)){
+    if (IsValid(address)) {
       $('#address').html();
       $('#address_error').show().delay(3000).slideUp();
       $('#address_error').html('Please enter address');
       $('#address').focus();
       return false;
-    }else{
+    } else {
       var studentlist = []
-      $(counterlist).each(function(o,i){
-      var children_name=$("#childname"+i).val();
-      var children_class=$("#childclass"+i).val();
-      var children_date_of_birth=$("#child_dateofbirth"+i).val();
-      var children_blood_group=$("#child_bloodgroup"+i).val();
-      var children_date_of_joining=$("#child_dateofjoining"+i).val();
-      data = { 'Studentname': children_name, 'StudentClass':children_class,'DateOfBirth':children_date_of_birth,'DateofJoining': children_date_of_joining,'BloodGroup':children_blood_group}
-      studentlist.push(data)
-    })
-    t = 'Bearer {{token}}'
-    console.log("tttttttt",t)
-       var fd = new FormData();    
-       fd.append('Name', parent_name)
-       fd.append('Email', parent_email)
-       fd.append('MobileNumber', parent_contact)
-       fd.append('Address', address)
-        fd.append("studentlist",JSON.stringify(studentlist));
-        fd.append("csrfmiddlewaretoken","{{csrf_token}}");
-        console.log("fd",fd)
-        $.ajax({
-          type: "POST",
-          url: frontend_url+"api/Parent_StudentMaster/Add",
-          headers:{'Authorization':t},
-          data: fd,
-          processData: false,
-          contentType: false,
-          
-          success: function(response) {
-            if(response.response.n ==1){
-              Swal.fire({
-                text: response.response.msg,
-                icon: 'success',
-              }).then((result) => {
-                window.location.href = "/parent_student_master/";
-        
-              });
-            }else{
-              Swal.fire({
-                text: response.response.msg,
-                icon: 'error',
-              })
-            }
+      $(counterlist).each(function (o, i) {
+        var children_name = $("#childname" + i).val();
+        var children_class = $("#childclass" + i).val();
+        var children_date_of_birth = $("#child_dateofbirth" + i).val();
+        var children_rollno = $("#childrollno" + i).val();
+        var children_blood_group = $("#child_bloodgroup" + i).val();
+        var children_date_of_joining = $("#child_dateofjoining" + i).val();
+        var photopreviewbase64 = $('#Photopreview' + i).attr('base64');
 
-      
-          },
-        });
+        data = { 'Studentname': children_name, 'StudentClass': children_class, 'DateOfBirth': children_date_of_birth, 'DateofJoining': children_date_of_joining, 'RollNo': children_rollno, 'BloodGroup': children_blood_group ,'photo':photopreviewbase64}
+        studentlist.push(data)
+      })
+      t = 'Bearer {{token}}'
+      var fd = new FormData();
+      fd.append('Name', parent_name)
+      fd.append('Email', parent_email)
+      fd.append('MobileNumber', parent_contact)
+      fd.append('Address', address)
+      fd.append("studentlist", JSON.stringify(studentlist));
+      fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
+      console.log("fd", fd)
+      $.ajax({
+        type: "POST",
+        url: frontend_url + "api/Parent_StudentMaster/Add",
+        headers: { 'Authorization': t },
+        data: fd,
+        processData: false,
+        contentType: false,
+
+        success: function (response) {
+          console.log("response", response)
+
+          if (response.response.n == 1) {
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'success',
+            }).then((result) => {
+              window.location.href = "/parent_student_master/";
+
+            });
+          } else {
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+          }
+
+
+        },
+      });
 
     }
   }
- 
+
+  function validateImage(input, preview) {
+      debugger;
+      var maxSizeMB = 2;
+      var allowedExtensions = ["jpg", "jpeg", "png", "pdf"];
+    
+      var file = input.files[0];
+    
+
+
+      
+          
+
+
+
+
+      if (!file) {
+        console.error("No file selected.");
+        return;
+      }
+    
+      var fileName = file.name.toLowerCase();
+      var fileExtension = fileName.split(".").pop();
+    
+      if ($.inArray(fileExtension, allowedExtensions) === -1) {
+        showError("Invalid file type. Allowed types are: " + allowedExtensions.join(", "));
+        clearInputAndPreview(input, preview);
+        return;
+      }
+    
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function (evt) {
+          var base64 = evt.target.result;
+          $("#"+preview).attr('base64',base64)
+      }
+
+
+
+      if (fileExtension === "pdf") {
+        displayPdfPreview(file, preview);
+      } else {
+        displayImagePreview(file, preview);
+      }
+    }
+    
+    function displayPdfPreview(file, preview) {
+
+      var iframeElement = $('<iframe>');
+    
+      var fileUrl = URL.createObjectURL(file);
+      iframeElement.attr('src', fileUrl);
+    
+      replacePreviewWithElement(preview, iframeElement);
+    }
+    
+    function displayImagePreview(file, preview) {
+      var reader = new FileReader();
+    
+      reader.onload = function (e) {
+        var imageElement = $('<img>');
+        imageElement.attr('src', e.target.result);
+        imageElement.attr('base64',e.target.result)
+
+
+        replacePreviewWithElement(preview, imageElement);
+      };
+    
+      reader.onerror = function (e) {
+        console.error("Error reading file:", e);
+      };
+    
+      reader.readAsDataURL(file);
+    }
+    
+    function replacePreviewWithElement(preview, newElement) {
+      var existingPreview = $("#" + preview);
+      newElement.attr('id', existingPreview.attr('id'));
+      newElement.attr('alt', existingPreview.attr('alt'));
+      newElement.attr('class', existingPreview.attr('class'));
+      
+      existingPreview.replaceWith(newElement);
+    }
+    
+    function clearInputAndPreview(input, preview) {
+      $(input).val("");
+      $("#" + preview).attr("src", "");
+    }
+    
+    function showError(message) {
+      swal({
+        icon: "error",
+        title: "",
+        text: message,
+        timer: 2000,
+      });
+    }
+    
 </script>
 {% endblock %}

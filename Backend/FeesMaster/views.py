@@ -457,24 +457,35 @@ class get_student_pending_fees_list(GenericAPIView):
     def post(self,request):
         data=request.data.copy()
         data['school_code']=request.user.school_code
-        print("data",data)
         student_obj=Students.objects.filter(StudentCode=data['StudentCode'],isActive=True,school_code=data['school_code']).first()
         if student_obj is not None:
-            class_log_obj=studentclassLog.objects.filter(studentId=student_obj.id,isActive=True)
+            student_serializer=StudentSerializer(student_obj)
+            class_log_obj=studentclassLog.objects.filter(studentId=student_serializer.data['id'],isActive=True)
             if class_log_obj.exists():
                 classIds=studentclassLogserializer(class_log_obj,many=True)
                 student_feeslist=[]
+                pending_student_feeslist=[]
                 for i in classIds.data:
                     fees_object=FeesDistributions.objects.filter(class_id=i['classid'],academic_year_id=i['AcademicyearId']).first()
                     if fees_object is not None:
-                        fees_distribution_serializers=FeesDistributionsSerializer(fees_object)
+                        fees_distribution_serializers=CustomFeesDistributionsSerializer(fees_object)
                         Breakdowns_obj=FeesDistributionsBreakdowns.objects.filter(fees_distributions_id=fees_distribution_serializers.data['id'],isActive=True)
                         Breakdowns_serializer=CustomFeesDistributionsBreakdownsSerializer(Breakdowns_obj,many=True)
-                        student_feeslist.append({'fees':fees_distribution_serializers.data,'breakdowns':Breakdowns_serializer.data})
-
-                
-                
-                return Response({"data":student_feeslist,"response": {"n": 1, "msg": "fees  successfully","status": "success"}})
+                        student_feeslist.append({'fees':fees_distribution_serializers.data,'breakdowns':Breakdowns_serializer.data,'student':student_serializer.data})
+                        
+                        
+                for fees in student_feeslist:
+                    check_payment_obj=StudentFeesLog.objects.filter(fees_distributions_id=fees['fees']['id'],student_id=fees['student']['id'],class_id=fees['fees']['class_id_id'])
+                    if check_payment_obj.exists():
+                        payment_logs=StudentFeesLogSerializer(check_payment_obj,many=True)
+                        sum_of_payment=0
+                        for payment in payment_logs.data:
+                            sum_of_payment+=payment['amount']
+                        if sum_of_payment != fees['fees']['total_amount']:
+                            pending_student_feeslist.append(fees)
+                    else:
+                        pending_student_feeslist.append(fees)
+                return Response({"data":pending_student_feeslist,"response": {"n": 1, "msg": "fees found successfully","status": "success"}})
             else:
                 return Response({"data":'',"response": {"n": 0, "msg": "student class not found","status": "failure"}})
         else:

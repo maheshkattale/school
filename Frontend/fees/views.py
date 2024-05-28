@@ -108,7 +108,7 @@ class student_fees(GenericAPIView):
             student_pending_fees_request = requests.post(student_pending_fees_url,data=data,headers=headers)
             student_pending_fees_response = student_pending_fees_request.json()
             print("student_pending_fees_response",student_pending_fees_response)
-            return render(request, 'admin/fees_master/student_fees.html',{'fees':student_pending_fees_response['data']})
+            return render(request, 'admin/fees_master/student_fees.html',{'fees':student_pending_fees_response['data'],})
         else:
             return redirect('school:login')
         

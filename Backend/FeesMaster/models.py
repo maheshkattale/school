@@ -20,6 +20,7 @@ class FeesDistributionsBreakdowns(TrackingModel):
     fees_distributions_id = models.ForeignKey(FeesDistributions,on_delete=models.CASCADE,null=True,blank=True)
 
 
+
 class StudentFeesLog(TrackingModel):
     fees_distributions_id = models.ForeignKey(FeesDistributions,on_delete=models.CASCADE,null=True,blank=True)
     student_id = models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)
@@ -27,5 +28,7 @@ class StudentFeesLog(TrackingModel):
     amount = models.CharField(max_length=150,null=True,blank=True)
     status = models.CharField(max_length=150,null=True,blank=True,default='UnPaid')
     Date = models.DateField(null=True)
+    payment_type = models.CharField(max_length=150,null=True,blank=True)
+
     
 

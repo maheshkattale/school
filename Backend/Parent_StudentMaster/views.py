@@ -42,6 +42,7 @@ class AddParentStudent(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
+        print("data",data)
         data['isActive'] = True
         studentlist = json.loads(data['studentlist'])
         schoolcode = request.user.school_code
