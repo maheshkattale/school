@@ -149,7 +149,6 @@ class students_fees(GenericAPIView):
         else:
             return redirect('school:login')
         
-        
 class student_fee(GenericAPIView):
     def get(self,request,id):
         tok = request.session.get('token', False)
