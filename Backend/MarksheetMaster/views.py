@@ -14,6 +14,11 @@ from User.jwt import userJWTAuthentication
 from datetime import datetime
 from tablib import Dataset
 from openpyxl import load_workbook
+import pandas as pd
+import os
+from django.conf import settings
+
+from rest_framework.parsers import FileUploadParser
 
 
 class AddExamType(GenericAPIView):
@@ -341,24 +346,12 @@ class deleteexam(GenericAPIView):
             return Response({"data":'',"response": {"n": 0, "msg": "Exam not found ","status": "failure"}})
         
 
-
 class uploadmarksheet(GenericAPIView):
     # authentication_classes=[userJWTAuthentication]
     # permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         datafile = request.FILES.get("excelfile")
-        # dataframe = load_workbook(datafile)
-        # # imported_data = dataset.load(datafile.read(), format='xlsx')
-        # List_of_sheets = dataframe.sheetnames
-        # for i in List_of_sheets:     
-        #     sheetOne = dataframe[i]
-            
-        #     # Iterate the loop to read the cell values
-        #     for row in range(1, sheetOne.max_row):
-        #         for col in sheetOne.iter_cols(1, sheetOne.max_column):
-        #             print(col[row].value)
         
-        # Path to your Excel file
         excel_file_path = datafile
 
         # Load the workbook
@@ -386,3 +379,37 @@ class uploadmarksheet(GenericAPIView):
                 print("row",row)
         
         return Response({"data":'',"response": {"n": 0, "msg": "Exam not found ","status": "failure"}})
+    
+    
+    
+ 
+
+class UploadExcelMarkSheet(GenericAPIView): 
+    def post(self,request):
+        dataset = Dataset()
+        fileerrorlist=[]
+        new_fees_distributions = request.FILES['file']
+
+        if not new_fees_distributions.name.endswith('xlsx'):
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
+        imported_data = dataset.load(new_fees_distributions.read(), format='xlsx')
+        for i in imported_data:
+            print('1',i)
+            AcademicYearId = i[0]
+            ClassId = i[1]
+            Status = i[2]
+            RollNo = i[3]
+            Student = i[4]
+            Exam = i[5]
+            ObtainedMarks = i[6]
+            SchoolCode = i[7]
+            
+            obj = MarkSheet.objects.create(AcademicYearId=AcademicYearId,ClassId=ClassId,Status=Status,RollNo=RollNo,Student=Student,Exam=Exam,ObtainedMarks=ObtainedMarks,SchoolCode=SchoolCode)
+            
+        # response_={
+        #     'status':'success',
+        #     'msg':'Product Added Successfully.',
+        #     'errorfile':fileerrorlist
+        # }
+        # return Response(response_,status=200)
+

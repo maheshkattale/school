@@ -4,6 +4,7 @@ from ClassMaster.models import Class
 from SubjectMaster.models import Subject
 from Parent_StudentMaster.models import Students
 from SchoolMaster.models import AcademicYear
+
 # Create your models here.
 
 
@@ -34,15 +35,14 @@ class Exams(TrackingModel):
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
 
-# class marksheet(TrackingModel):
-#     ClassId = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
-#     Date = models.DateField(null=True,blank=True)
-#     StudentId = models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)
-#     StudentCode = models.CharField(max_length=150,null=True,blank=True)
-#     SubjectId = models.ForeignKey(Subject,on_delete=models.CASCADE,null=True,blank=True)
-#     ExamType =  models.ForeignKey(ExamType,on_delete=models.CASCADE,null=True,blank=True)
-#     obtainedmarks =  models.CharField(max_length=255,null=True,blank=True)
-#     totalMarks = models.CharField(max_length=255,null=True,blank=True)
-#     school_code = models.CharField(max_length=150,null=True,blank=True)
+class MarkSheet(TrackingModel):
+    AcademicYearId = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
+    ClassId = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
+    Status = models.CharField(max_length=150,null=True,blank=True)
+    RollNo = models.CharField(max_length=150,null=True,blank=True)
+    Student=  models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)
+    Exam=models.ForeignKey(Exams,on_delete=models.CASCADE,null=True,blank=True)
+    ObtainedMarks =  models.CharField(max_length=255,null=True,blank=True)
+    SchoolCode = models.CharField(max_length=150,null=True,blank=True)
 
 

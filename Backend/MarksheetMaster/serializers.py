@@ -31,3 +31,9 @@ class ExamTypeMarksSerializer1(serializers.ModelSerializer):
     class Meta:
         model= ExamTypeMarks
         fields='__all__'
+        
+        
+class MarkSheetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= MarkSheet
+        fields='__all__'

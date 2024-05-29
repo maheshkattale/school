@@ -6,8 +6,7 @@ import re
 class dd_mm_yyyy(serializers.Field):
     def to_representation(self, value):
         return value.strftime('%d-%m-%Y')
-    
-    
+      
 class month_yyyy(serializers.Field):
     def to_representation(self, value):
         return value.strftime('%B %Y')
@@ -15,10 +14,12 @@ class month_yyyy(serializers.Field):
 class dd_month_yyyy(serializers.Field):
     def to_representation(self, value):
         return value.strftime('%d %B %Y')
+    
 class CustomDateFormatField(serializers.Field):
     def to_representation(self, value):
         date_format = DateFormat(value)
         return date_format.format('d F Y')
+    
 class serializer_date_yyyy_mm_dd__dd_mm_yyy(serializers.Field):
     def to_representation(self, value):
         date_format = DateFormat(value)
