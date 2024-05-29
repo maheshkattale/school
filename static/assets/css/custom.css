@@ -58,6 +58,7 @@ align-items: center;
     margin-top: -70px;
     box-shadow: 0 10px 25px #0000004d;
     margin-bottom: 20px;
+    height: 135px;
 }
 .contact-grid .phone .material-icons {
     font-size: 16px;

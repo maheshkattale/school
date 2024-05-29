@@ -1,5 +1,7 @@
 {% extends 'index.html' %}
 {% load static %}
+{% load custom_filters %}
+
 {% block head %}
 <style>
   .imagepre {
@@ -84,7 +86,9 @@
               <p class="d-none" id="listlength">{{parentsinfo.studentlist|length}}</p>
               <tbody id="Childinfotable">
                 {%for i in parentsinfo.studentlist%}
+                
                 <tr class="countchildren" id="rowd{{forloop.counter}}">
+                  
                   <td scope="row" class="text-center srNumber" style="align-content: center;">{{forloop.counter}}</td>
 
                   <td class="text-center">
@@ -93,7 +97,16 @@
                         <input type="file" id="Photo{{forloop.counter}}" class="d-none photo" name="photo{{forloop.counter}}"
                           onchange="validateImage(this,'Photopreview{{forloop.counter}}');">
                         <div class="image-preview" id="imagePreview">
-                          <img base64='' src="" id="Photopreview{{forloop.counter}}" alt="Select Image" class="imagepre photopreview" />
+
+                          {% if i.photo|startswith:"data:application/pdf" %}
+                          <iframe base64='{{i.photo}}' src="{{i.photo}}" id="Photopreview{{forloop.counter}}" class="imagepre photopreview"  frameborder="0" allowfullscreen></iframe>
+
+                          {% else %}
+                          <img base64='{{i.photo}}' src="{{i.photo}}" id="Photopreview{{forloop.counter}}" alt="Select Image" class="imagepre photopreview" />
+
+                          {% endif %} 
+       
+
                         </div>
                         <span id="photo_err{{forloop.counter}}" class="error_message"></span>
                       </div>
@@ -176,7 +189,7 @@
             </div>
 
           </div>
-
+ 
           <div class="row">
             <div class="d-flex justify-content-center">
               <a onclick="validate_form();" class="btn btn-primary">Submit</a>
@@ -212,7 +225,6 @@
 
   var counterlist = [];
   function listCounter(count) {
-    debugger;
     for (var i = 1; i <= count; i++) {
       counterlist.push(i);
     }
@@ -331,7 +343,6 @@
   }
 
   function deleteChild(childid) {
-    debugger;
     var studentcode = $('#stucode' + childid).text();
     console.log("studentcode", studentcode)
     if (studentcode != '') {
@@ -399,7 +410,6 @@
 
 
   //   function deleteChild(childid){  
-  //      debugger;
   //       var productRowCount = $(".countchildren").length
 
   //       if ( productRowCount > 1){
@@ -421,7 +431,6 @@
 
 
   function validate_form() {
-    debugger;
     var id = $('#parentid').text();
     var parent_name = $('#parent_name').val();
     var parent_email = $('#parent_email').val();
@@ -440,17 +449,16 @@
       }
 
     }
-    var photoArr = $(".photo");
+    var photoArr = $(".photopreview");
     var photo = true
     for (var i = 0; i < photoArr.length; i++) {
-      photo_value = $(photoArr[i]).val()
+      photo_value = $(photoArr[i]).attr('base64')
       if (photo_value == "") {
         photo = false
         break;
       } else {
         photo = true
       }
-
     }
     var childclassArr = $(".childclass");
     var childclass = true
@@ -678,7 +686,6 @@
   }
 
   function validateImage(input, preview) {
-      debugger;
       var maxSizeMB = 2;
       var allowedExtensions = ["jpg", "jpeg", "png", "pdf"];
     

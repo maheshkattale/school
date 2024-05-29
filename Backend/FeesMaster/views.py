@@ -338,9 +338,7 @@ class add_fees_distributions_for_multiple_class(GenericAPIView):
         else:
             data['breakdown']=False
             
-        print("breakdown_list",breakdown_list)
-        print("classes",classes)
-        print("data",data)
+  
         not_added_list=[]
         for i in classes:
             data['class_id']=i
@@ -352,7 +350,6 @@ class add_fees_distributions_for_multiple_class(GenericAPIView):
                 FeesDistributionsSerializers=FeesDistributionsSerializer(data=data)
                 if FeesDistributionsSerializers.is_valid():
                     FeesDistributionsSerializers.save()
-                    print("saved FeesDistributionsSerializers",FeesDistributionsSerializers.data)
                     
                     if FeesDistributionsSerializers.data['breakdown']:
                         for breakdown in breakdown_list:
@@ -362,7 +359,6 @@ class add_fees_distributions_for_multiple_class(GenericAPIView):
                             FeesDistributionsBreakdownsSerializers=FeesDistributionsBreakdownsSerializer(data=breakdown)
                             if FeesDistributionsBreakdownsSerializers.is_valid():
                                 FeesDistributionsBreakdownsSerializers.save()
-                                print("saved")
                             else:
                                 print('error',FeesDistributionsBreakdownsSerializers.errors)
                 else:
@@ -413,7 +409,6 @@ class edit_fees_distributions_for_multiple_class(GenericAPIView):
         else:
             data['breakdown']=False
             
-        print("data",data)
 
 
         data['isActive']=True
@@ -423,12 +418,9 @@ class edit_fees_distributions_for_multiple_class(GenericAPIView):
             if FeesDistributionsSerializers.is_valid():
                 FeesDistributionsSerializers.save()
                 if FeesDistributionsSerializers.data['breakdown']:
-                    print("int(FeesDistributionsSerializers.data['id'])",int(FeesDistributionsSerializers.data['id']))
                     deleteexist=FeesDistributionsBreakdowns.objects.filter(fees_distributions_id=int(FeesDistributionsSerializers.data['id'])).update(isActive=False)
-                    print("deleteexist",deleteexist)
                     
                     for breakdown in breakdown_list:
-                        print("breakdown",breakdown)
                         breakdown['fees_distributions_id']=FeesDistributionsSerializers.data['id']
                         breakdown['start_date']=dd_mm_yyyy_to_yyyy_mm_dd(breakdown['start_date'])
                         breakdown['end_date']=dd_mm_yyyy_to_yyyy_mm_dd(breakdown['end_date'])
@@ -460,11 +452,13 @@ class get_student_pending_fees_list(GenericAPIView):
         student_obj=Students.objects.filter(StudentCode=data['StudentCode'],isActive=True,school_code=data['school_code']).first()
         if student_obj is not None:
             student_serializer=StudentSerializer(student_obj)
+            print("student_serializer",student_serializer.data)
             class_log_obj=studentclassLog.objects.filter(studentId=student_serializer.data['id'],isActive=True)
             if class_log_obj.exists():
                 classIds=studentclassLogserializer(class_log_obj,many=True)
                 student_feeslist=[]
                 pending_student_feeslist=[]
+                paid_student_feeslist=[]
                 for i in classIds.data:
                     fees_object=FeesDistributions.objects.filter(class_id=i['classid'],academic_year_id=i['AcademicyearId']).first()
                     if fees_object is not None:
@@ -476,21 +470,192 @@ class get_student_pending_fees_list(GenericAPIView):
                         
                 for fees in student_feeslist:
                     check_payment_obj=StudentFeesLog.objects.filter(fees_distributions_id=fees['fees']['id'],student_id=fees['student']['id'],class_id=fees['fees']['class_id_id'])
-                    if check_payment_obj.exists():
-                        payment_logs=StudentFeesLogSerializer(check_payment_obj,many=True)
-                        sum_of_payment=0
-                        for payment in payment_logs.data:
-                            sum_of_payment+=payment['amount']
-                        if sum_of_payment != fees['fees']['total_amount']:
-                            pending_student_feeslist.append(fees)
+                    fees['fees']['status']='Pay Now'
+                    if check_payment_obj.exists():  
+                        if fees['fees']['breakdown']==True:
+                            un_paid=False
+                            for breakdown in fees['breakdowns']:
+                                check_payment_breakdowns_obj=StudentFeesLog.objects.filter(fees_distributions_id=fees['fees']['id'],student_id=fees['student']['id'],class_id=fees['fees']['class_id_id'],termid=breakdown['id']).first()
+                                if check_payment_breakdowns_obj is not None:
+                                    breakdown['Paid']=True
+                                else:
+                                    un_paid=True
+                                    breakdown['Paid']=False
+                            if un_paid:
+                                pending_student_feeslist.append(fees)
+                            else:
+                                fees['fees']['status']='Paid'
+                                paid_student_feeslist.append(fees)
+                        else:
+                            check_payment_status_obj=StudentFeesLog.objects.filter(fees_distributions_id=fees['fees']['id'],student_id=fees['student']['id'],class_id=fees['fees']['class_id_id']).first()
+                            if check_payment_status_obj is None:
+                                pending_student_feeslist.append(fees)
+                            else:
+                                fees['fees']['status']='Paid'
+                                paid_student_feeslist.append(fees)
+                        
+
+        
                     else:
                         pending_student_feeslist.append(fees)
-                return Response({"data":pending_student_feeslist,"response": {"n": 1, "msg": "fees found successfully","status": "success"}})
+                return Response({"data":pending_student_feeslist+paid_student_feeslist,"response": {"n": 1, "msg": "fees found successfully","status": "success"}})
             else:
                 return Response({"data":'',"response": {"n": 0, "msg": "student class not found","status": "failure"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "student not found","status": "failure"}})
 
+
+class get_student_pending_fees_list_by_id(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data=request.data.copy()
+        data['school_code']=request.user.school_code
+        student_obj=Students.objects.filter(id=data['id'],isActive=True,school_code=data['school_code']).first()
+        if student_obj is not None:
+            student_serializer=StudentSerializer(student_obj)
+            class_log_obj=studentclassLog.objects.filter(studentId=student_serializer.data['id'],isActive=True)
+            if class_log_obj.exists():
+                classIds=studentclassLogserializer(class_log_obj,many=True)
+                student_feeslist=[]
+                pending_student_feeslist=[]
+                paid_student_feeslist=[]
+                for i in classIds.data:
+                    fees_object=FeesDistributions.objects.filter(class_id=i['classid'],academic_year_id=i['AcademicyearId']).first()
+                    if fees_object is not None:
+                        fees_distribution_serializers=CustomFeesDistributionsSerializer(fees_object)
+                        Breakdowns_obj=FeesDistributionsBreakdowns.objects.filter(fees_distributions_id=fees_distribution_serializers.data['id'],isActive=True)
+                        Breakdowns_serializer=CustomFeesDistributionsBreakdownsSerializer(Breakdowns_obj,many=True)
+                        student_feeslist.append({'fees':fees_distribution_serializers.data,'breakdowns':Breakdowns_serializer.data,'student':student_serializer.data})
+                        
+                        
+                for fees in student_feeslist:
+                    check_payment_obj=StudentFeesLog.objects.filter(fees_distributions_id=fees['fees']['id'],student_id=fees['student']['id'],class_id=fees['fees']['class_id_id'])
+                    fees['fees']['status']='Pay Now'
+                    if check_payment_obj.exists():  
+                        if fees['fees']['breakdown']==True:
+                            un_paid=False
+                            for breakdown in fees['breakdowns']:
+                                check_payment_breakdowns_obj=StudentFeesLog.objects.filter(fees_distributions_id=fees['fees']['id'],student_id=fees['student']['id'],class_id=fees['fees']['class_id_id'],termid=breakdown['id']).first()
+                                if check_payment_breakdowns_obj is not None:
+                                    breakdown['Paid']=True
+                                else:
+                                    un_paid=True
+                                    breakdown['Paid']=False
+                            if un_paid:
+                                pending_student_feeslist.append(fees)
+                            else:
+                                fees['fees']['status']='Paid'
+                                paid_student_feeslist.append(fees)
+                        else:
+                            check_payment_status_obj=StudentFeesLog.objects.filter(fees_distributions_id=fees['fees']['id'],student_id=fees['student']['id'],class_id=fees['fees']['class_id_id']).first()
+                            if check_payment_status_obj is None:
+                                pending_student_feeslist.append(fees)
+                            else:
+                                fees['fees']['status']='Paid'
+                                paid_student_feeslist.append(fees)
+                        
+
+        
+                    else:
+                        pending_student_feeslist.append(fees)
+                return Response({"data":pending_student_feeslist+paid_student_feeslist,'student':student_serializer.data,"response": {"n": 1, "msg": "fees found successfully","status": "success"}})
+            else:
+                return Response({"data":'',"response": {"n": 0, "msg": "student class not found","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "student not found","status": "failure"}})
+
+
+
+class pay_student_fees(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data=request.data.copy()
+        data['school_code']=request.user.school_code
+        data['isActive']=True
+        data['termid']=json.loads(request.POST.get('termid'))
+        student_obj=Students.objects.filter(StudentCode=data['StudentCode'],isActive=True,school_code=data['school_code']).first()
+        class_obj=Class.objects.filter(id=data['class_id'],isActive=True).first()
+        successfull_payments=[]
+        unsuccessfull_payments=[]
+
+        if student_obj is not None:
+            student_serializer=StudentSerializer(student_obj)
+            data['student_id']=student_serializer.data['id']
+            if class_obj is not None:
+                FeesDistributions_obj=FeesDistributions.objects.filter(id=data['fees_distributions_id'],isActive=True).first()
+                if FeesDistributions_obj is not None:
+                    if data['termid']=='' or data['termid'] is None or data['termid'] == []:
+                        if FeesDistributions_obj.breakdown == True:
+                            print("want to make make full payment of all breakdowns")
+                            # want to make make full payment of all breakdowns
+                            get_breakdown_obj=FeesDistributionsBreakdowns.objects.filter(fees_distributions_id=FeesDistributions_obj.id,isActive=True)
+                            breakdowns_serializers=FeesDistributionsBreakdownsSerializer(get_breakdown_obj,many=True)
+                            for b in  breakdowns_serializers.data:
+                                print("b['id']",b['id'])
+                                alredy_payment_obj=StudentFeesLog.objects.filter(fees_distributions_id=FeesDistributions_obj.id,student_id=student_serializer.data['id'],class_id=class_obj.id,termid=str(b['id'])).first()
+                                payment_entry={}
+                                payment_entry['fees_distributions_id']=FeesDistributions_obj.id
+                                payment_entry['student_id']=student_serializer.data['id']
+                                payment_entry['class_id']=class_obj.id
+                                payment_entry['termid']=str(b['id'])
+                                if alredy_payment_obj is None:
+                                    serializer=StudentFeesLogSerializer(data=payment_entry)
+                                    if serializer.is_valid():
+                                        serializer.save()
+                                        successfull_payments.append(payment_entry)
+                                    else:
+                                        print(serializer.errors)
+                                        unsuccessfull_payments.append(payment_entry)
+
+
+                        else:
+                            print("want to make make full payment ")
+                            # want to make make full payment 
+                            alredy_payment_obj=StudentFeesLog.objects.filter(fees_distributions_id=FeesDistributions_obj.id,student_id=student_serializer.data['id'],class_id=class_obj.id,termid='').first()
+                            payment_entry={}
+                            payment_entry['fees_distributions_id']=FeesDistributions_obj.id
+                            payment_entry['student_id']=student_serializer.data['id']
+                            payment_entry['class_id']=class_obj.id
+                            payment_entry['termid']=''
+                            if alredy_payment_obj is None:
+                                serializer=StudentFeesLogSerializer(data=payment_entry)
+                                if serializer.is_valid():
+                                    serializer.save()
+                                    successfull_payments.append(payment_entry)
+                                else:
+                                    unsuccessfull_payments.append(payment_entry)
+                    else:
+                        # want to make make term wise payment 
+                        print("want to make make term wise payment ")
+
+                        for term in data['termid']:
+                            alredy_payment_obj=StudentFeesLog.objects.filter(fees_distributions_id=FeesDistributions_obj.id,student_id=student_serializer.data['id'],class_id=class_obj.id,termid=term).first()
+                            payment_entry={}
+                            payment_entry['fees_distributions_id']=FeesDistributions_obj.id
+                            payment_entry['student_id']=student_serializer.data['id']
+                            payment_entry['class_id']=class_obj.id
+                            payment_entry['termid']=term
+                            if alredy_payment_obj is None:
+                                serializer=StudentFeesLogSerializer(data=payment_entry)
+                                if serializer.is_valid():
+                                    serializer.save()
+                                    successfull_payments.append(payment_entry)
+                                else:
+                                    unsuccessfull_payments.append(payment_entry)
+
+                    if len(unsuccessfull_payments) > 0:
+                        return Response({"data":{'unsuccessfull_payments':unsuccessfull_payments,'successfull_payments':successfull_payments},"response": {"n": 0, "msg": "Few fees are not paid","status": "failure"}})
+                    
+                    else:
+                        return Response({"data":{'unsuccessfull_payments':unsuccessfull_payments,'successfull_payments':successfull_payments},"response": {"n": 1, "msg": " Fees  paid successfully","status": "success"}})
+                else:
+                    return Response({"data":'',"response": {"n": 0, "msg": "Fees not exists","status": "failure"}})     
+            else:
+                return Response({"data":'',"response": {"n": 0, "msg": "Student class of this class id not found","status": "failure"}})                
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Student not found","status": "failure"}})
 
 
 
