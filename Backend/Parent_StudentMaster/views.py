@@ -336,7 +336,7 @@ class getParentStudentbyid(GenericAPIView):
 
                 
                 if s['photo'] != "" and s['photo'] is not None:
-                    s['photo'] = image_url + str(s['photo'])
+                    s['photo'] = s['photo']
                 else:
                     s['photo'] = ""
 
@@ -403,10 +403,15 @@ class studentsbyparentlist(GenericAPIView):
                 i['classname'] = "--"
 
             if i['photo'] != "" and i['photo'] is not None:
-                i['photo'] = image_url + str(i['photo'])
+                i['photo'] = i['photo']
             else:
                 i['photo'] = ""
-            
+
+            if starts_with(i['photo'],'data:application/pdf'):
+                i['iframes']=True
+            else:
+                i['iframes']=False
+
             bloodobj = BloodGroup.objects.filter(id=i['BloodGroup']).first()
             i['BloodGroup'] = bloodobj.Groupname
 

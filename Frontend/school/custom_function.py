@@ -48,7 +48,8 @@ def is_valid_number(number_str):
     else:
         return False
         
-    
+def starts_with(s,string):
+    return s.startswith(string)
     
 def is_valid_dd_mm_yyyy(date_str):
     # Define the regular expression pattern for dd-mm-yyyy

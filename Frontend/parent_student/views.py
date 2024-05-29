@@ -60,7 +60,6 @@ class edit_parent_student(GenericAPIView):
             parentresp = get_parent_info_request.json()
             get_blood_info_request = requests.get(bloodgrouplisturl,headers=headers)
             bloodgresp = get_blood_info_request.json()
-            
             return render(request, 'admin/parent_student_master/edit_parent_student.html',{'classlist':class_list_response['data'],'parentsinfo':parentresp['data'],'bloodgrplist':bloodgresp['data']})
 
    

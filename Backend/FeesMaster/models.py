@@ -3,6 +3,8 @@ from helpers.models import TrackingModel
 from ClassMaster.models import Class
 from SchoolMaster.models import AcademicYear
 from Parent_StudentMaster.models import Students,studentclassLog
+from django.utils import timezone
+
 # Create your models here.
 
 
@@ -25,10 +27,25 @@ class StudentFeesLog(TrackingModel):
     fees_distributions_id = models.ForeignKey(FeesDistributions,on_delete=models.CASCADE,null=True,blank=True)
     student_id = models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)
     class_id = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
-    amount = models.CharField(max_length=150,null=True,blank=True)
-    status = models.CharField(max_length=150,null=True,blank=True,default='UnPaid')
-    Date = models.DateField(null=True)
-    payment_type = models.CharField(max_length=150,null=True,blank=True)
+    Date = models.DateField(default=timezone.now,null=True)
+    termid=models.CharField(max_length=150,null=True,blank=True)
 
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
