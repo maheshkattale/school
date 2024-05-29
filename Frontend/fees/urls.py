@@ -11,5 +11,6 @@ urlpatterns = [
     path('student_fees', student_fees.as_view(), name = 'student_fees'),
     path('students_fees', students_fees.as_view(), name = 'students_fees'),
     path('student_fee/<str:id>', student_fee.as_view(), name = 'student_fee'),
+    path('pay_student_fee', pay_student_fee.as_view(), name = 'pay_student_fee'),
     
 ]

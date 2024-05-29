@@ -19,6 +19,11 @@ class ExamTypeMarks(TrackingModel):
     Marks =  models.CharField(max_length=150,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
+class Exam(TrackingModel):
+    Name =  models.CharField(max_length=550,null=True,blank=True)
+    school_code = models.CharField(max_length=150,null=True,blank=True)
+
+
 class Exams(TrackingModel):
     ClassId = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
     Date = models.DateField(null=True,blank=True)
@@ -32,6 +37,7 @@ class Exams(TrackingModel):
     RoomNo = models.CharField(max_length=255,null=True,blank=True)
     Instructions = models.TextField(null=True,blank=True)
     AcademicYearId = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
+    exam = models.ForeignKey(Exam,on_delete=models.CASCADE,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
 

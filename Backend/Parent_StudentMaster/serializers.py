@@ -44,8 +44,6 @@ class AnnouncementSerializer(serializers.ModelSerializer):
 class CustomAnnouncementSerializer(serializers.ModelSerializer):
     Date = CustomDateFormatField()
     AcademicyearId = serializers.StringRelatedField()
-    
-    
     classes_names = serializers.SerializerMethodField()
 
     def get_classes_names(self, obj):
@@ -72,7 +70,28 @@ class CustomAnnouncementSerializer2(serializers.ModelSerializer):
         fields='__all__'
 
         
-        
+
+class CustomStudentSerializer(serializers.ModelSerializer):
+    StudentClass=serializers.StringRelatedField()
+    DateOfBirth = CustomDateFormatField()
+    DateofJoining = CustomDateFormatField()
+
+    bloodgroup_name = serializers.SerializerMethodField()
+
+    def get_bloodgroup_name(self, obj):
+        bloodgroup_id = obj.BloodGroup
+        if bloodgroup_id:
+            try:
+                bloodgroup = BloodGroup.objects.get(id=bloodgroup_id)
+                return bloodgroup.Groupname
+            except BloodGroup.DoesNotExist:
+                return None
+        return None
+
+
+    class Meta:
+        model= Students
+        fields='__all__'
         
         
         

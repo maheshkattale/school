@@ -234,6 +234,11 @@ class AddExam(GenericAPIView):
         reportTime = data['reportTime']
         Instructions = data['Instructions']
         AcademicYearId = int(data['AcademicYearId'])
+        exam = int(data['exam'])
+        exam_obj = Exam.objects.filter(id=exam,isActive=True).first()
+        if exam_obj is None:
+            return Response({"data":'',"response": {"n": 0, "msg": "exam  not found ","status": "failure"}})
+        
         academic_obj = AcademicYear.objects.filter(id=AcademicYearId,Isdeleted=False).first()
         if academic_obj is None:
             return Response({"data":'',"response": {"n": 0, "msg": "Academic year not found ","status": "failure"}})
@@ -243,15 +248,14 @@ class AddExam(GenericAPIView):
         for i in classlist :
             examobj = Exams.objects.filter(ClassId=i['ClassId'],Date=Date,Examstarttime__lt = Examendtime,Examendtime__gt=Examstarttime,school_code=schoolcode)
             if examobj.exists():
-                return Response({"data":'',"response": {"n": 0, "msg": "Exam already exists ! ","status": "failure"}})
+                return Response({"data":'',"response": {"n": 0, "msg": "Exam shedule already exists ! ","status": "failure"}})
 
         duplicateexist = has_duplicate_value(classlist, 'ClassId')
 
         if duplicateexist == False:
             for i in classlist:
-                Exams.objects.create(ClassId_id=i['ClassId'],Date=Date,Examstarttime=Examstarttime,Examendtime=Examendtime,SubjectId_id=SubjectId,ExamType_id=ExamType,totalMarks=totalMarks,reportTime=reportTime,RoomNo=i['RoomNo'],InvigilatorId=i['InvigilatorId'],Instructions=Instructions,school_code=schoolcode,AcademicYearId=academic_obj)
-
-            return Response({"data":'',"response": {"n": 1, "msg": "Exams created successfully","status": "success"}})
+                Exams.objects.create(ClassId_id=i['ClassId'],Date=Date,Examstarttime=Examstarttime,Examendtime=Examendtime,SubjectId_id=SubjectId,ExamType_id=ExamType,totalMarks=totalMarks,reportTime=reportTime,RoomNo=i['RoomNo'],InvigilatorId=i['InvigilatorId'],Instructions=Instructions,school_code=schoolcode,AcademicYearId=academic_obj,exam=exam_obj)
+            return Response({"data":'',"response": {"n": 1, "msg": "Exams shedule created successfully","status": "success"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Class repeated in list","status": "failed"}})
     
@@ -316,6 +320,7 @@ class updateexam(GenericAPIView):
             reqdata['reportTime'] =  data['reportTime']
             reqdata['RoomNo'] = data['RoomNo']
             reqdata['Instructions'] = data['Instructions']
+            reqdata['exam'] = data['exam']
 
             serializer  = ExamSerializer(Examobj,data=reqdata,partial=True)
             if serializer.is_valid():
