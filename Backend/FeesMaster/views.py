@@ -235,18 +235,14 @@ class bulk_upload_fees_distribution(GenericAPIView):
                         error = i + tuple([reason])
                         fileerrorlist.append(error)
                         continue
-
-                                
-                                
-
-                
-
         response_={
                     'status':'success',
                     'msg':'Product Added Successfully.',
                     'errorfile':fileerrorlist
                 }
         return Response(response_,status=200)
+    
+    
     
 class add_fees_distributions(GenericAPIView):
     authentication_classes=[userJWTAuthentication]

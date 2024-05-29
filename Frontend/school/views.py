@@ -15,6 +15,12 @@ disable_school_url=frontend_url+'api/SchoolMaster/disable'
 enable_school_url=frontend_url+'api/SchoolMaster/enable'
 get_school_info_url=frontend_url+'api/SchoolMaster/getbyid'
 edit_school_url=frontend_url+'api/SchoolMaster/update'
+
+# student_list_url=frontend_url+'api/Parent_StudentMaster/getstudentlist'
+class_list_url=frontend_url+'api/ClassMaster/List'
+academic_list_url=frontend_url+'api/SchoolMaster/AcademicYearlist'
+
+
 class login(GenericAPIView):
     def get(self,request):
         return render(request, 'login.html',{})
@@ -171,16 +177,32 @@ class edit_school(GenericAPIView):
 class mail(GenericAPIView):
     def get(self,request):
         return render(request, 'mails/teacher_registration.html',{"Name": 'mahesh kattale',"email":'maheshkattale@gmail.com','userid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8','frontend_url':frontend_url,'school_name':'Shri Vidya Bhavan School',"adminname": 'mahesh kattale','adminid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8', 'bestregard_from':'School ERP','phone_no':'0201-890890',})
+
+
 class template_render(GenericAPIView):
     def get(self,request):
         return render(request, 'admin/student_master/student_id_cards_pdf.html',{"Name": 'mahesh kattale',"email":'maheshkattale@gmail.com','userid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8','frontend_url':frontend_url,'school_name':'Shri Vidya Bhavan School',"adminname": 'mahesh kattale','adminid':'887ddc8c-ef0d-49f3-bc80-3afa47f52fd8', 'bestregard_from':'School ERP','phone_no':'0201-890890',})
     
+
 class reset_password_mail(GenericAPIView):
     def get(self,request):
         return render(request, 'mails/reset_password.html',{'Admin_Name':'Mahesh Kattale','frontend_url':frontend_url})
+
+
 class marksheet(GenericAPIView):
     def get(self,request):
-        return render(request, 'commingsoon.html',{})
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            class_list_request = requests.get(class_list_url,headers=headers)
+            class_list_response = class_list_request.json()
+            
+            academic_list_request = requests.get(academic_list_url,headers=headers)
+            academic_list_response = academic_list_request.json()
+            return render(request, 'admin/marksheet_master/marksheet.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],})
+        else:
+            return redirect('school:login')
     
 
 class permissions(GenericAPIView):

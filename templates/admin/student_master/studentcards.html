@@ -1,45 +1,46 @@
 {% extends "index.html" %}
-{% load static %} 
+{% load static %}
 {% block head %}
 
 <style>
-    input[type="checkbox"] {
-        cursor: pointer; /* Change cursor to pointer */
-    }
+  input[type="checkbox"] {
+    cursor: pointer;
+    /* Change cursor to pointer */
+  }
 </style>
 {% endblock %}
 {% block heading %}
 <span class="tab-title">
-    <span class="px-1"> Student ID Cards Ganerator</span>
+  <span class="px-1"> Student ID Cards Ganerator</span>
 </span>
 {% endblock %}
 {% block body %}
 <div class="row justify-content-end">
   <div class="mb-3 col-lg-3">
-      <label for="classid" class="form-label">Class</label>
-      <select id="classid" class="form-select select2" aria-describedby="class_error">
-        <option value="" selected>Please select class</option>
-        {% for class in classes %}
-          <option value="{{ class.id }}">{{ class.ClassName }} </option>
-        {% endfor %}
+    <label for="classid" class="form-label">Class</label>
+    <select id="classid" class="form-select select2" aria-describedby="class_error">
+      <option value="" selected>Please select class</option>
+      {% for class in classes %}
+      <option value="{{ class.id }}">{{ class.ClassName }} </option>
+      {% endfor %}
 
-      </select>
-      <div id="class_error" class="form-text error_message"></div>
+    </select>
+    <div id="class_error" class="form-text error_message"></div>
   </div>
-     <div class="mb-3 col-lg-3">
-      <label for="academic_year" class="form-label">Academic Year</label>
-      <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
-        <option value="" selected>Please select academic year</option>
-        {% for year in academic_years %}
-          {% if year.isActive == True %}
-            <option value="{{ year.id }}" selected>{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
-          {% else %}
-            <option value="{{ year.id }}">{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
-          {% endif %}
-        {% endfor %}
-      </select>
-      <div id="academic_year_error" class="form-text error_message"></div>
-    </div>
+  <div class="mb-3 col-lg-3">
+    <label for="academic_year" class="form-label">Academic Year</label>
+    <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
+      <option value="" selected>Please select academic year</option>
+      {% for year in academic_years %}
+      {% if year.isActive == True %}
+      <option value="{{ year.id }}" selected>{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
+      {% else %}
+      <option value="{{ year.id }}">{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
+      {% endif %}
+      {% endfor %}
+    </select>
+    <div id="academic_year_error" class="form-text error_message"></div>
+  </div>
 
 
 
@@ -48,39 +49,40 @@
     <a class="btn btn-primary" onclick="generate_student_id_card();">Get ID Cards</a>
   </div>
 </div>
-  <div class="row">
-    <table id="studentple" class="table table-striped table-bordered" style="width:100%">
-      <thead>
-          <tr>
-              <th><input type="checkbox" name="" id="selectall" onclick="toggle(this);">  Sr No</th>
-              <th>Name</th>
-              <th>Class</th>
-              <th>Action</th>
-          </tr>
-      </thead>
-      <tbody id="table_body">
+<div class="row">
+  <table id="studentple" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+      <tr>
+        <th><input type="checkbox" name="" id="selectall" onclick="toggle(this);"> Sr No</th>
+        <th>Name</th>
+        <th>Class</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="table_body">
 
-        {% for i in students %}
-          <tr>
-              <td> <input type="checkbox" name="student" id="" value="{{i.id}}"> {{forloop.counter }}  </td>
-              <td>{{i.StudentName}}</td>
-              <td>{{i.StudentClass}}</td>
-      
- 
-              <td>
-                <a data-bs-toggle="tooltip" title="Delete student" onclick="delete_student('{{i.StudentCode}}')"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-            
+      {% for i in students %}
+      <tr>
+        <td> <input type="checkbox" name="student" id="" value="{{i.id}}"> {{forloop.counter }} </td>
+        <td>{{i.StudentName}}</td>
+        <td>{{i.StudentClass}}</td>
 
 
-          </tr>
-          {% endfor %}
+        <td>
+          <a data-bs-toggle="tooltip" title="Delete student" onclick="delete_student('{{i.StudentCode}}')"><i
+              class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+        </td>
 
-      </tbody>
+
+
+      </tr>
+      {% endfor %}
+
+    </tbody>
 
   </table>
-  </div> 
-  
+</div>
+
 
 
 {% endblock %}
@@ -93,11 +95,11 @@
 
 
 <script>
-  $( document ).ready(function() {
-        new DataTable('#studentple');  
-  });  
+  $(document).ready(function () {
+    new DataTable('#studentple');
+  });
 
-  function delete_student(studentcode){
+  function delete_student(studentcode) {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -108,34 +110,34 @@
       confirmButtonText: "Yes, delete it!"
     }).then((result) => {
       if (result.isConfirmed) {
-        var fd = new FormData();    
-        fd.append("studentcode",studentcode);
-        fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+        var fd = new FormData();
+        fd.append("studentcode", studentcode);
+        fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
         $.ajax({
           type: "POST",
-          url: frontend_url+"student/delete_student",
+          url: frontend_url + "student/delete_student",
           data: fd,
           processData: false,
           contentType: false,
-          
-          success: function(response) {
-            console.log("delete",response)
-            if(response.response.n ==1){
+
+          success: function (response) {
+            console.log("delete", response)
+            if (response.response.n == 1) {
               Swal.fire({
                 text: response.response.msg,
                 icon: 'success',
               }).then((result) => {
                 window.location.href = "/student/student_list";
-        
+
               });
-            }else{
+            } else {
               Swal.fire({
                 text: response.response.msg,
                 icon: 'error',
               })
             }
 
-      
+
           },
         });
 
@@ -144,42 +146,42 @@
 
       }
     });
-     
+
 
   }
 
 </script>
 <script>
-  function search_student(){
+  function search_student() {
     var classid = $('#classid').val();
 
     var yearid = $('#academic_year').val();
 
-    var fd = new FormData();    
-    fd.append("class",classid);
-    fd.append("yearid",yearid);
-    fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+    var fd = new FormData();
+    fd.append("class", classid);
+    fd.append("yearid", yearid);
+    fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
     $.ajax({
       type: "POST",
-      url: frontend_url+"student/student_list",
+      url: frontend_url + "student/student_list",
       data: fd,
       processData: false,
       contentType: false,
-      
-      success: function(response) {
-        console.log("student_list",response)
-        if(response.response.n ==1){
-          var trhtml=''
 
-          counter=1
-          $.each(response.data,function(o,i){
-            trhtml+=`
+      success: function (response) {
+        console.log("student_list", response)
+        if (response.response.n == 1) {
+          var trhtml = ''
+
+          counter = 1
+          $.each(response.data, function (o, i) {
+            trhtml += `
             <tr>
-              <td><input type="checkbox" name="student" id="" value="`+i.id+`"> `+counter+`</td>
-              <td>`+i.StudentName+`</td>
-              <td>`+i.StudentClass+`</td>
+              <td><input type="checkbox" name="student" id="" value="`+ i.id + `"> ` + counter + `</td>
+              <td>`+ i.StudentName + `</td>
+              <td>`+ i.StudentClass + `</td>
               <td>
-                <a data-bs-toggle="tooltip" title="Delete student" onclick="delete_student('`+i.StudentCode+`')"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+                <a data-bs-toggle="tooltip" title="Delete student" onclick="delete_student('`+ i.StudentCode + `')"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
               </td>
             
   
@@ -187,7 +189,7 @@
           </tr>
             
             `
-            counter+=1
+            counter += 1
 
           });
           $('#table_body').html(trhtml)
@@ -196,31 +198,31 @@
             text: response.response.msg,
             icon: 'success',
           })
-        }else{
+        } else {
           Swal.fire({
             text: response.response.msg,
             icon: 'error',
           })
         }
 
-  
+
       },
     });
   }
   function toggle(source) {
     var checkboxes = document.getElementsByName('student');
     for (var i = 0; i < checkboxes.length; i++) {
-        checkboxes[i].checked = source.checked;
+      checkboxes[i].checked = source.checked;
     }
-}
-function generate_student_id_card(){
+  }
+  function generate_student_id_card() {
 
 
 
     var selectedCheckboxes = document.querySelectorAll('input[name="student"]:checked');
     var selectedValues = [];
-    selectedCheckboxes.forEach(function(checkbox) {
-        selectedValues.push(checkbox.value);
+    selectedCheckboxes.forEach(function (checkbox) {
+      selectedValues.push(checkbox.value);
     });
     console.log("Selected checkboxes: " + selectedValues);
 
@@ -232,21 +234,21 @@ function generate_student_id_card(){
 
     var yearid = $('#academic_year option:selected').text();
 
-    var fd = new FormData();    
-    fd.append("classid",classid);
-    fd.append("year",yearid);
-    fd.append("studentidlist",JSON.stringify(selectedValues));
-    fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+    var fd = new FormData();
+    fd.append("classid", classid);
+    fd.append("year", yearid);
+    fd.append("studentidlist", JSON.stringify(selectedValues));
+    fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
     $.ajax({
       type: "POST",
-      url: frontend_url+"student/student_id_cards",
+      url: frontend_url + "student/student_id_cards",
       data: fd,
       processData: false,
       contentType: false,
-      
-      success: function(response) {
-        console.log("student_card",response)
-        if(response.response.n ==1){
+
+      success: function (response) {
+        console.log("student_card", response)
+        if (response.response.n == 1) {
 
           var containerContent = ''
 
@@ -255,12 +257,12 @@ function generate_student_id_card(){
 
 
 
-      
 
 
-          counter=1
-          $.each(response.data,function(o,i){
-            containerContent+=`
+
+          counter = 1
+          $.each(response.data, function (o, i) {
+            containerContent += `
 
 
             <table class="card" style="border: 1px solid aliceblue; border-radius: 35px;padding: 15px 20px;box-shadow: 0 0 5px grey; width:85%; margin:20px;">
@@ -274,7 +276,7 @@ function generate_student_id_card(){
                   <td style="border-bottom: 2px solid #082e68;">
                     <table style="text-align: center;">
                       <tr>
-                        <td class="school_name" style="font-size: 28px; color: #082e68;">`+i.schooldata.Name+`</td>
+                        <td class="school_name" style="font-size: 28px; color: #082e68;">`+ i.schooldata.Name + `</td>
                       </tr>
           
                       <tr>
@@ -282,11 +284,11 @@ function generate_student_id_card(){
                       </tr>
           
                       <tr>
-                        <td>`+i.schooldata.Location+`</td>
+                        <td>`+ i.schooldata.Location + `</td>
                       </tr>
           
                       <tr>
-                        <td>PH.`+i.schooldata.Contact+` , E-Mail : `+i.schooldata.Email+`</td>
+                        <td>PH.`+ i.schooldata.Contact + ` , E-Mail : ` + i.schooldata.Email + `</td>
                       </tr>
                     </table>
                   </td>
@@ -294,33 +296,33 @@ function generate_student_id_card(){
           
                 <tr>
                   <td style="padding-right: 15px;">
-                    <img src="`+i.photo+`" alt="" width="140" />
+                    <img src="`+ i.photo + `" alt="" width="140" />
                   </td>
                   <td>
                     <table>
                       <tr>
                         <td class="card_heading" style="color: #082e68;" >Name :</td>
-                        <td>`+i.studentname+`</td>
+                        <td>`+ i.studentname + `</td>
                       </tr>
                       <tr>
                         <td class="card_heading" style="color: #082e68;">Class :</td>
-                        <td>`+i.classname+`</td>
+                        <td>`+ i.classname + `</td>
                       </tr>
                       <tr>
                         <td class="card_heading" style="color: #082e68;">DOB :</td>
-                        <td>`+i.DateOfBirth+`</td>
+                        <td>`+ i.DateOfBirth + `</td>
                       </tr>
                       <tr>
                         <td class="card_heading" style="color: #082e68;">Address :</td>
-                        <td>`+i.parentinfo.Address+`</td>
+                        <td>`+ i.parentinfo.Address + `</td>
                       </tr>
                       <tr>
                         <td class="card_heading" style="color: #082e68;">Phone :</td>
-                        <td>`+i.parentinfo.mobileNumber+`</td>
+                        <td>`+ i.parentinfo.mobileNumber + `</td>
                       </tr>
                       <tr>
                         <td class="card_heading" style="color: #082e68;">Mobile :</td>
-                        <td>`+i.parentinfo.mobileNumber+`</td>
+                        <td>`+ i.parentinfo.mobileNumber + `</td>
                       </tr>
                     </table>
                   </td>
@@ -333,27 +335,27 @@ function generate_student_id_card(){
 
 
             `
-            counter+=1
+            counter += 1
 
           });
-          document.body.innerHTML = containerContent ;
+          document.body.innerHTML = containerContent;
 
           if (window.print()) {
-              return false;
+            return false;
           } else {
-              location.reload();
+            location.reload();
           }
 
-        }else{
+        } else {
           Swal.fire({
             text: response.response.msg,
             icon: 'error',
           })
         }
 
-  
+
       },
     });
-}
+  }
 </script>
 {% endblock %}
