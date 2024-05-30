@@ -19,6 +19,7 @@ class ExamTypeMarks(TrackingModel):
     Marks =  models.CharField(max_length=150,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
+
 class Exam(TrackingModel):
     Name =  models.CharField(max_length=550,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
@@ -44,8 +45,6 @@ class Exams(TrackingModel):
 class MarkSheet(TrackingModel):
     AcademicYearId = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
     ClassId = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
-    
-    
     Student=  models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)
     SubID =  models.CharField(max_length=255,null=True,blank=True)  
     ObtainedMarks =  models.CharField(max_length=255,null=True,blank=True)  #math,sci,hind
