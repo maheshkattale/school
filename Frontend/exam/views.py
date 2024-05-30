@@ -11,6 +11,8 @@ add_exam_type_marks_url=frontend_url+'api/MarksheetMaster/add_exam_type_marks'
 edit_exam_type_url=frontend_url+'api/MarksheetMaster/update'
 delete_exam_type_url=frontend_url+'api/MarksheetMaster/delete'
 exam_list_url=frontend_url+'api/MarksheetMaster/Examlist'
+exams_list_url=frontend_url+'api/MarksheetMaster/exam_names_list'
+
 delete_exam_list_url=frontend_url+'api/MarksheetMaster/deleteexam'
 teacher_list_url=frontend_url+'api/TeacherMaster/list'
 academic_list_url=frontend_url+'api/SchoolMaster/AcademicYearlist'
@@ -44,7 +46,8 @@ class edit_exam(GenericAPIView):
             headers = {'Authorization':token}
             exam_type_list_request = requests.get(exam_type_list_url,headers=headers)
             exam_type_list_response = exam_type_list_request.json()
-            
+            exams_list_request = requests.get(exams_list_url,headers=headers)
+            exams_list_response = exams_list_request.json()
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
             teacher_list_request = requests.get(teacher_list_url,headers=headers)
@@ -58,7 +61,7 @@ class edit_exam(GenericAPIView):
             exam_info_request = requests.post(exam_info_url,headers=headers,data=data)
             exam_info_response = exam_info_request.json()
             
-            return render(request, 'admin/exam/edit_exam.html',{'exam_types':exam_type_list_response['data'],'classes':class_list_response['data'],'teachers':teacher_list_response['data'],'subjects':subject_list_response['data'],'academics':academic_list_response['data'],'exam':exam_info_response['data']})
+            return render(request, 'admin/exam/edit_exam.html',{'exam_types':exam_type_list_response['data'],'classes':class_list_response['data'],'teachers':teacher_list_response['data'],'subjects':subject_list_response['data'],'academics':academic_list_response['data'],'exam':exam_info_response['data'],'exams':exams_list_response['data']})
         else:
             return redirect('school:login')
         
@@ -82,7 +85,11 @@ class add_exam(GenericAPIView):
             headers = {'Authorization':token}
             exam_type_list_request = requests.get(exam_type_list_url,headers=headers)
             exam_type_list_response = exam_type_list_request.json()
+
+            exams_list_request = requests.get(exams_list_url,headers=headers)
+            exams_list_response = exams_list_request.json()
             
+
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
             
@@ -95,7 +102,7 @@ class add_exam(GenericAPIView):
 
             
             
-            return render(request, 'admin/exam/add_exam.html',{'exam_types':exam_type_list_response['data'],'classes':class_list_response['data'],'teachers':teacher_list_response['data'],'subjects':subject_list_response['data'],'academics':academic_list_response['data']})
+            return render(request, 'admin/exam/add_exam.html',{'exam_types':exam_type_list_response['data'],'classes':class_list_response['data'],'teachers':teacher_list_response['data'],'subjects':subject_list_response['data'],'academics':academic_list_response['data'],'exams':exams_list_response['data']})
         else:
             return redirect('school:login')
     def post(self,request):

@@ -68,7 +68,7 @@ INSTALLED_APPS = [
     'student',
     'user',
     'fees',
-
+    'rest_framework',
     'User',
     'DesignationMaster',
     'SubjectMaster',

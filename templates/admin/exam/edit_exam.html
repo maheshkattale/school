@@ -34,6 +34,23 @@
               </div>
 
               <div class="mb-3 col-lg-4">
+                <label for="exam_name" class="form-label">Exam </label>
+                <select id="exam_name" class="form-select select2" aria-describedby="exam_name_error">
+                  <option value="" selected>Please select Exam</option>
+                  {% for e in exams %}
+                    {% if e.id == exam.exam %}
+
+                    <option value="{{ e.id }}" selected>{{ e.Name }}</option>
+                    {% else %}
+                    <option value="{{ e.id }}">{{ e.Name }}</option>
+
+                    {%endif%}
+                  {% endfor %}
+                </select>
+                <div id="exam_name_error" class="form-text error_message"></div>
+              </div>
+
+              <div class="mb-3 col-lg-4">
                 <label for="exam_type" class="form-label">Exam Type</label>
                 <select id="exam_type" class="form-select select2" aria-describedby="exam_type_error" onchange="get_marks()">
                   <option value="" selected>Please select type</option>
@@ -190,6 +207,7 @@
     function validate_form(id) {
       debugger
       var exam_type = $('#exam_type').val()
+      var exam_name = $('#exam_name').val()
       var exam_totalmarks = $('#exam_totalmarks').val()
       var exam_academic = $('#exam_academic').val()
       var exam_starttime = $('#exam_starttime').val()
@@ -206,6 +224,13 @@
         $('#exam_academic_error').show().delay(3000).slideUp()
         $('#exam_academic_error').html('Please select exam academic')
         $('#exam_academic').focus()
+        return false
+      }
+      if (IsValid(exam_name)) {
+        $('#exam_name').html()
+        $('#exam_name_error').show().delay(3000).slideUp()
+        $('#exam_name_error').html('Please select exam name')
+        $('#exam_name').focus()
         return false
       }
       if (IsValid(exam_type)) {
@@ -303,6 +328,8 @@
         fd.append('ClassId', exam_class)
         fd.append('InvigilatorId', exam_invigilator)
         fd.append('RoomNo', exam_roomno)
+        fd.append('exam', exam_name)
+        fd.append('AcademicYearId', exam_academic)
   
         fd.append('csrfmiddlewaretoken', '{{csrf_token}}')
 
