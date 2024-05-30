@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block heading %}
-  <span class="tab-title"><span class="px-1">Add Exam</span></span>
+  <span class="tab-title"><span class="px-1">Add Exam Shedule</span></span>
 {% endblock %}
 
 {% block body %}
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title fw-semibold mb-4">Add Exam Forms</h5>
+      <h5 class="card-title fw-semibold mb-4">Add Exam Shedule Forms</h5>
       <div class="card">
         <div class="card-body">
           <form>
@@ -26,6 +26,19 @@
                 </select>
                 <div id="exam_academic_error" class="form-text error_message"></div>
               </div>
+
+
+              <div class="mb-3 col-lg-4">
+                <label for="exam_name" class="form-label">Exam </label>
+                <select id="exam_name" class="form-select select2" aria-describedby="exam_name_error">
+                  <option value="" selected>Please select Exam</option>
+                  {% for exam in exams %}
+                    <option value="{{ exam.id }}">{{ exam.Name }}</option>
+                  {% endfor %}
+                </select>
+                <div id="exam_name_error" class="form-text error_message"></div>
+              </div>
+
 
               <div class="mb-3 col-lg-4">
                 <label for="exam_type" class="form-label">Exam Type</label>
@@ -224,6 +237,7 @@
         }
       })
     })
+
     function update_draft(){
       if(validate_mini_form() == true){
   
@@ -307,6 +321,7 @@
     function validate_form() {
       debugger
       var exam_type = $('#exam_type').val()
+      var exam_name = $('#exam_name').val()
       var exam_totalmarks = $('#exam_totalmarks').val()
       var exam_academic = $('#exam_academic').val()
       var exam_starttime = $('#exam_starttime').val()
@@ -323,6 +338,13 @@
         $('#exam_academic').focus()
         return false
       }
+      if (IsValid(exam_name)) {
+        $('#exam_name').html()
+        $('#exam_name_error').show().delay(3000).slideUp()
+        $('#exam_name_error').html('Please select exam name')
+        $('#exam_name').focus()
+        return false
+      }
       if (IsValid(exam_type)) {
         $('#exam_type').html()
         $('#exam_type_error').show().delay(3000).slideUp()
@@ -330,6 +352,7 @@
         $('#exam_type').focus()
         return false
       }
+
       if (IsValid(exam_totalmarks)) {
         $('#exam_totalmarks').html()
         $('#exam_totalmarks_error').show().delay(3000).slideUp()
@@ -399,6 +422,7 @@
         fd.append('Examendtime', exam_endtime)
         fd.append('SubjectId', exam_subject)
         fd.append('ExamType', exam_type)
+        fd.append('exam', exam_name)
         fd.append('totalMarks', exam_totalmarks)
         fd.append('reportTime', exam_reporttime)
         fd.append('Instructions', exam_instruction)

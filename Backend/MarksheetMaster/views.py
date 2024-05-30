@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
+from django.db.models import Subquery, OuterRef
 
 from rest_framework.response import Response
 import json
@@ -267,7 +268,7 @@ class Examlist(GenericAPIView):
     def get(self,request):
         schoolcode = request.user.school_code
         Examobjs = Exams.objects.filter(isActive=True,school_code=schoolcode).order_by('-id')
-        Examser = CustomExamSerializer(Examobjs,many=True)
+        Examser = CustomExamsSerializer(Examobjs,many=True)
         for i in Examser.data:
             start_time = i['Examstarttime']
             end_time = i['Examendtime']
@@ -321,6 +322,7 @@ class updateexam(GenericAPIView):
             reqdata['RoomNo'] = data['RoomNo']
             reqdata['Instructions'] = data['Instructions']
             reqdata['exam'] = data['exam']
+            reqdata['AcademicYearId'] = data['AcademicYearId']
 
             serializer  = ExamSerializer(Examobj,data=reqdata,partial=True)
             if serializer.is_valid():
@@ -350,6 +352,38 @@ class deleteexam(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Exam not found ","status": "failure"}})
         
+
+
+class exam_names_list(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        schoolcode = request.user.school_code
+        Examobjs = Exam.objects.filter(isActive=True).order_by('Name')
+        Examser = ExamNameSerializer(Examobjs,many=True)
+        
+        return Response({"data":Examser.data,"response": {"n": 1, "msg": "Exams found successfully","status": "success"}})
+    
+class exam_by_academicyear_list(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        schoolcode = request.user.school_code
+        subquery = Exams.objects.filter(
+            isActive=True,
+            AcademicYearId=OuterRef('AcademicYearId')
+        ).order_by('AcademicYearId', 'id','exam').values('id')[:1]
+        
+        # Main query using the subquery to filter Exams
+        Examobjs = Exams.objects.filter(
+            isActive=True,
+            id__in=Subquery(subquery)
+        ).order_by('AcademicYearId', 'id','exam')
+
+        Examser = CustomExamsSerializer1(Examobjs,many=True)
+        return Response({"data":Examser.data,"response": {"n": 1, "msg": "Exams found successfully","status": "success"}})
+    
+
 
 class uploadmarksheet(GenericAPIView):
     # authentication_classes=[userJWTAuthentication]

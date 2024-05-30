@@ -10,13 +10,25 @@ class ExamSerializer(serializers.ModelSerializer):
     class Meta:
         model= Exams
         fields='__all__'
-        
-class CustomExamSerializer(serializers.ModelSerializer):
+
+
+
+
+class CustomExamsSerializer(serializers.ModelSerializer):
     class Meta:
         model= Exams
         fields='__all__'
-        
-        
+
+class CustomExamsSerializer1(serializers.ModelSerializer):
+    exam = serializers.StringRelatedField()
+
+    class Meta:
+        model= Exams
+        fields='__all__'
+class ExamNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Exam
+        fields='__all__'
 class ExamTypeMarksSerializer(serializers.ModelSerializer):
     Typeid = serializers.StringRelatedField()
     Type_id = serializers.PrimaryKeyRelatedField(source='Typeid', queryset=ExamType.objects.all())
