@@ -15,7 +15,9 @@ urlpatterns = [
     path('enable_school', enable_school.as_view(), name = 'enable_school'),
     path('mail', mail.as_view(), name = 'mail'),
     path('template_render', template_render.as_view(), name = 'template_render'),
-    path('marksheet', marksheet.as_view(), name = 'marksheet'),
+    path('promote_marksheet', promote_marksheet.as_view(), name = 'promote_marksheet'),
+    path('generate_marksheet', generate_marksheet.as_view(), name = 'generate_marksheet'),
+    path('upload_marksheet', upload_marksheet.as_view(), name = 'upload_marksheet'),
     path('permissions', permissions.as_view(), name = 'permissions'),
     path('reset_password_mail', reset_password_mail.as_view(), name = 'reset_password_mail'),
 

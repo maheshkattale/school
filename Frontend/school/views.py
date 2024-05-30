@@ -189,7 +189,10 @@ class reset_password_mail(GenericAPIView):
         return render(request, 'mails/reset_password.html',{'Admin_Name':'Mahesh Kattale','frontend_url':frontend_url})
 
 
-class marksheet(GenericAPIView):
+
+    
+
+class generate_marksheet(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
         if tok:
@@ -200,10 +203,45 @@ class marksheet(GenericAPIView):
             
             academic_list_request = requests.get(academic_list_url,headers=headers)
             academic_list_response = academic_list_request.json()
-            return render(request, 'admin/marksheet_master/marksheet.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],})
+            return render(request, 'admin/marksheet_master/generate_marksheet.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],})
         else:
             return redirect('school:login')
-    
+
+
+
+
+class upload_marksheet(GenericAPIView):
+    def get(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            class_list_request = requests.get(class_list_url,headers=headers)
+            class_list_response = class_list_request.json()
+            
+            academic_list_request = requests.get(academic_list_url,headers=headers)
+            academic_list_response = academic_list_request.json()
+            return render(request, 'admin/marksheet_master/upload_marksheet.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],})
+        else:
+            return redirect('school:login')
+
+
+class promote_marksheet(GenericAPIView):
+    def get(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            class_list_request = requests.get(class_list_url,headers=headers)
+            class_list_response = class_list_request.json()
+            
+            academic_list_request = requests.get(academic_list_url,headers=headers)
+            academic_list_response = academic_list_request.json()
+            return render(request, 'admin/marksheet_master/promote_marksheet.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],})
+        else:
+            return redirect('school:login')
+
+
 
 class permissions(GenericAPIView):
     def get(self,request):

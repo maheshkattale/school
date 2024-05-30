@@ -41,7 +41,7 @@ class MarkSheet(TrackingModel):
     
     
     Student=  models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)
-    subID =  models.CharField(max_length=255,null=True,blank=True)  
+    SubID =  models.CharField(max_length=255,null=True,blank=True)  
     ObtainedMarks =  models.CharField(max_length=255,null=True,blank=True)  #math,sci,hind
     Status = models.CharField(max_length=150,null=True,blank=True)
     Exam=models.ForeignKey(Exams,on_delete=models.CASCADE,null=True,blank=True)
