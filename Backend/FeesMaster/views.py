@@ -509,7 +509,7 @@ class get_student_pending_fees_list_by_id(GenericAPIView):
         data['school_code']=request.user.school_code
         student_obj=Students.objects.filter(id=data['id'],isActive=True,school_code=data['school_code']).first()
         if student_obj is not None:
-            student_serializer=StudentSerializer(student_obj)
+            student_serializer=CustomStudentSerializer(student_obj)
             class_log_obj=studentclassLog.objects.filter(studentId=student_serializer.data['id'],isActive=True)
             if class_log_obj.exists():
                 classIds=studentclassLogserializer(class_log_obj,many=True)

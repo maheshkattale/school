@@ -159,16 +159,20 @@ class student_fee(GenericAPIView):
             data['id']=id
             student_pending_fees_request = requests.post(student_pending_fees_by_id_url,data=data,headers=headers)
             student_pending_fees_response = student_pending_fees_request.json()
-            return render(request, 'admin/fees_master/student_fees.html',{'fees':student_pending_fees_response['data'],})
+            return render(request, 'admin/fees_master/student_fees_history.html',{'fees':student_pending_fees_response['data'],'student':student_pending_fees_response['student']})
         else:
             return redirect('school:login')
+        
+
+class pay_student_fee(GenericAPIView):
+
     def post(self,request):
         tok = request.session.get('token', False)
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            data['StudentCode']=request.session.get('PrimaryStudentCode')
+            data['StudentCode']=request.POST.get('StudentCode')
             pay_student_fees_request = requests.post(pay_student_fees_url,headers=headers,data=data)
             pay_student_fees_response = pay_student_fees_request.json()
             return HttpResponse(json.dumps(pay_student_fees_response), content_type="application/json")
