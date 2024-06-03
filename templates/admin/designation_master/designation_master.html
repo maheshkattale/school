@@ -32,7 +32,7 @@
 
 
                       <div class="mb-3 col-lg-6">
-                        <label for="designation_name" class="form-label">Designation Name</label>
+                        <label for="designation_name" class="form-label">Designation Name <span class="text-danger">*</span> </label>
                         <input type="text" class="form-control" id="designation_name" placeholder="Please enter designation name" aria-describedby="designation_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
                         <div id="designation_name_error" class="form-text error_message"></div>
                       </div>
@@ -97,7 +97,7 @@
         
         
                               <div class="mb-3 col-lg-6">
-                                <label for="designation_name{{i.id}}" class="form-label">Designation Name</label>
+                                <label for="designation_name{{i.id}}" class="form-label">Designation Name <span class="text-danger">*</span> </label>
                                 <input type="text" class="form-control" id="designation_name{{i.id}}" value="{{i.designationName}}" placeholder="Please enter class name" aria-describedby="designation_name_error{{i.id}}" />
                                 <div id="designation_name_error{{i.id}}" class="form-text error_message"></div>
                               </div>

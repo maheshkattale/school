@@ -5,11 +5,12 @@ from .views import *
 urlpatterns = [
     
     #examtypemaster
-    path('Add', AddExamType.as_view(), name = 'Add'),
+    path('add_exam_type', add_exam_type.as_view(), name = 'add_exam_type'),
     path('List', ExamTypelist.as_view(), name = 'list'),
     path('getbyid',ExamTypebyid.as_view(), name = 'getbyid'),
     path('update', updateExamType.as_view(), name = 'update'),
     path('delete', deleteExamType.as_view(), name = 'delete'),
+    path('deleteexamname', deleteexamname.as_view(), name = 'deleteexamname'),
     
     path('examscorelist', examscorelist.as_view(), name = 'examscorelist'),
     path('add_exam_type_marks', AddExamTypeMarks.as_view(), name = 'add_exam_type_marks'),
@@ -27,6 +28,7 @@ urlpatterns = [
     path('deleteexam', deleteexam.as_view(), name = 'deleteexam'),
 
     path('uploadmarksheet', uploadmarksheet.as_view(), name = 'uploadmarksheet'),
+    path('get_exam_timetable', get_exam_timetable.as_view(), name = 'get_exam_timetable'),
     
     
     #marksheet
@@ -34,6 +36,7 @@ urlpatterns = [
 
     # exam name
     path('exam_names_list', exam_names_list.as_view(), name = 'exam_names_list'),
-    path('exam_by_academicyear_list', exam_by_academicyear_list.as_view(), name = 'exam_by_academicyear_list'),
+    path('academic_exam_list', academic_exam_list.as_view(), name = 'academic_exam_list'),
+    path('add_examname', add_examname.as_view(), name = 'add_examname'),
 
 ]

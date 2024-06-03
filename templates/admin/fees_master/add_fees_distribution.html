@@ -84,7 +84,7 @@
      
             <div class="row">
                 <div class="mb-3 col-lg-3">
-                    <label for="academic_year" class="form-label">Academic Year</label> 
+                    <label for="academic_year" class="form-label">Academic Year <span class="text-danger">*</span> </label> 
                     <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
                       <option value="">Please Select Academic Year</option>
                       {% for i in academic_years %}
@@ -94,7 +94,7 @@
                     <div id="academic_year_error" class="form-text error_message"></div>
                 </div>
                 <div class="mb-3 col-lg-3">
-                    <label for="class_name" class="form-label">Class</label> 
+                    <label for="class_name" class="form-label">Class <span class="text-danger">*</span> </label> 
                     <select id="class_name" class="form-select select2" aria-describedby="class_name_error" multiple>
                         <option value="">Please select class</option>
 
@@ -105,7 +105,7 @@
                     <div id="class_name_error" class="form-text error_message"></div>
                 </div>
                 <div class="mb-3 col-lg-3">
-                    <label for="total_amount" class="form-label">Total Amount</label>
+                    <label for="total_amount" class="form-label">Total Amount <span class="text-danger">*</span> </label>
                     <input type="text" class="form-control" id="total_amount" placeholder="Please enter total fees amount" aria-describedby="total_amount_error" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"/>
                     <div id="total_amount_error" class="form-text error_message"></div>
                 </div>
@@ -130,25 +130,25 @@
             <div class="row d-none" id="breakdown_div">
 
                 <div class="mb-3 col-lg-3">
-                    <label for="breakdown_name" class="form-label">Name</label>
+                    <label for="breakdown_name" class="form-label">Name <span class="text-danger">*</span> </label>
                     <input type="text" class="form-control" id="breakdown_name"  placeholder="Please enter fees breakdown title"  aria-describedby="breakdown_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
                     <div id="breakdown_name_error" class="form-text error_message"></div>
                 </div>
 
                 <div class="mb-3 col-lg-3">
-                <label for="breakdown_amount" class="form-label">Amount</label>
+                <label for="breakdown_amount" class="form-label">Amount <span class="text-danger">*</span> </label>
                 <input type="text" class="form-control" id="breakdown_amount" placeholder="Please enter fees breakdown amount"   aria-describedby="breakdown_amount_error" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"/>
                 <div id="breakdown_amount_error" class="form-text error_message"></div>
                 </div>
 
                 <div class="mb-3 col-lg-3">
-                <label for="breakdown_startdate" class="form-label">Start Date</label>
+                <label for="breakdown_startdate" class="form-label">Start Date <span class="text-danger">*</span> </label>
                 <input type="text" class="form-control date_picker" placeholder="Please select fees breakdown start date"   id="breakdown_startdate" aria-describedby="breakdown_startdate_error" readonly/>
                 <div id="breakdown_startdate_error" class="form-text error_message"></div>
                 </div>
 
                 <div class="mb-3 col-lg-3">
-                <label for="breakdown_enddate" class="form-label">End Date</label>
+                <label for="breakdown_enddate" class="form-label">End Date <span class="text-danger">*</span> </label>
                 <input type="text" class="form-control date_picker" placeholder="Please select fees breakdown end date"   id="breakdown_enddate" aria-describedby="breakdown_enddate_error" readonly/>
                 <div id="breakdown_enddate_error" class="form-text error_message"></div>
                 </div>

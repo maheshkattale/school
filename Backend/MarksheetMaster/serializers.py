@@ -1,6 +1,6 @@
 from .models import *
 from rest_framework import serializers
-
+from Frontend.school.custom_function import *
 class ExamTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model= ExamType
@@ -20,11 +20,30 @@ class CustomExamsSerializer(serializers.ModelSerializer):
         fields='__all__'
 
 class CustomExamsSerializer1(serializers.ModelSerializer):
+    AcademicYearId = serializers.StringRelatedField()
+    AcademicYearId_id = serializers.PrimaryKeyRelatedField(source='AcademicYearId', queryset=AcademicYear.objects.all())
+    exam_id = serializers.PrimaryKeyRelatedField(source='exam', queryset=Exam.objects.all())
     exam = serializers.StringRelatedField()
+    ClassId_id = serializers.PrimaryKeyRelatedField(source='ClassId', queryset=Class.objects.all())
+    ClassId = serializers.StringRelatedField()
+
+
+    class Meta:
+        model= Exams
+        fields=['AcademicYearId','AcademicYearId_id','exam','exam_id','ClassId','ClassId_id']
+
+
+
+class CustomExamsSerializer2(serializers.ModelSerializer):
+    ExamType = serializers.StringRelatedField()
+    SubjectId = serializers.StringRelatedField()
+    ClassId = serializers.StringRelatedField()
+    Date = CustomDateFormatField()
 
     class Meta:
         model= Exams
         fields='__all__'
+
 class ExamNameSerializer(serializers.ModelSerializer):
     class Meta:
         model= Exam

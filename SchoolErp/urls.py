@@ -34,6 +34,8 @@ urlpatterns = [
     path('academic_calender/', include(('academic_calender.urls','academic_calender'),namespace='academic_calender')),
     path('user/',include(('user.urls','user'),namespace='user')),
     path('fees/',include(('fees.urls','fees'),namespace='fees')),
+    path('attendance/',include(('attendance.urls','attendance'),namespace='attendance')),
+
     path('',include(('school.urls', 'school'),namespace='school')),
 
     # backend

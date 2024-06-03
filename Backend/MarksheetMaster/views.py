@@ -22,7 +22,7 @@ from django.conf import settings
 from rest_framework.parsers import FileUploadParser
 
 
-class AddExamType(GenericAPIView):
+class add_exam_type(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
@@ -364,25 +364,85 @@ class exam_names_list(GenericAPIView):
         
         return Response({"data":Examser.data,"response": {"n": 1, "msg": "Exams found successfully","status": "success"}})
     
-class exam_by_academicyear_list(GenericAPIView):
+class academic_exam_list(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
+
     def get(self,request):
         schoolcode = request.user.school_code
-        subquery = Exams.objects.filter(
-            isActive=True,
-            AcademicYearId=OuterRef('AcademicYearId')
-        ).order_by('AcademicYearId', 'id','exam').values('id')[:1]
-        
-        # Main query using the subquery to filter Exams
-        Examobjs = Exams.objects.filter(
-            isActive=True,
-            id__in=Subquery(subquery)
-        ).order_by('AcademicYearId', 'id','exam')
+        Examobjs = Exams.objects.filter(isActive=True).order_by('exam_id','AcademicYearId_id',).distinct('exam_id','AcademicYearId_id',)
+        serializer = CustomExamsSerializer1(Examobjs,many=True)
+        newlist=serializer.data
+        for i in newlist:
+            Exam_shedule_obj = Exams.objects.filter(exam=int(i['exam_id']),AcademicYearId=int(i['AcademicYearId_id']),isActive=True).order_by('Date')
+            Exam_shedule_serializer = CustomExamsSerializer2(Exam_shedule_obj,many=True)
+            i['shedule']=Exam_shedule_serializer.data
+            for e in i['shedule']:
+                start_time = e['Examstarttime']
+                end_time = e['Examendtime']
 
-        Examser = CustomExamsSerializer1(Examobjs,many=True)
-        return Response({"data":Examser.data,"response": {"n": 1, "msg": "Exams found successfully","status": "success"}})
+                # convert time string to datetime
+                t1 = datetime.strptime(start_time, "%H:%M")
+                # print('Start time:', t1.time())
+
+                t2 = datetime.strptime(end_time, "%H:%M")
+                # print('End time:', t2.time())
+
+                # get difference
+                delta = t2 - t1
+
+                e['totaltime'] = str(delta)+"hrs"
+            
+
+        return Response({"data":serializer.data,"response": {"n": 1, "msg": "Exams found successfully","status": "success"}})
     
+class get_exam_timetable(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self,request):
+
+        exam_id=request.POST.get('exam_id')
+        AcademicYearId_id=request.POST.get('AcademicYearId')
+        if exam_id is not None and exam_id != '':
+            if AcademicYearId_id is not None and AcademicYearId_id != '':
+                classid=request.POST.get('classid')
+                school_code = request.user.school_code
+                class_objs = Exams.objects.filter(isActive=True,exam_id=exam_id,AcademicYearId_id=AcademicYearId_id,school_code=school_code).order_by('ClassId_id').distinct('ClassId_id')
+                if classid is not None and classid !='':
+                    class_objs=class_objs.filter(ClassId=classid)
+                if class_objs.exists() :   
+                    serializer = CustomExamsSerializer1(class_objs,many=True)
+
+                    newlist=serializer.data
+                    for i in newlist:
+                        Exam_shedule_obj = Exams.objects.filter(exam=int(i['exam_id']),AcademicYearId=int(i['AcademicYearId_id']),ClassId=int(i['ClassId_id']),isActive=True,school_code=school_code).order_by('Date')
+                        Exam_shedule_serializer = CustomExamsSerializer2(Exam_shedule_obj,many=True)
+                        i['shedule']=Exam_shedule_serializer.data
+                        for e in i['shedule']:
+                            start_time = e['Examstarttime']
+                            end_time = e['Examendtime']
+
+                            # convert time string to datetime
+                            t1 = datetime.strptime(start_time, "%H:%M")
+                            # print('Start time:', t1.time())
+
+                            t2 = datetime.strptime(end_time, "%H:%M")
+                            # print('End time:', t2.time())
+
+                            # get difference
+                            delta = t2 - t1
+
+                            e['totaltime'] = str(delta)+"hrs"
+                    
+
+                    return Response({"data":newlist,"response": {"n": 1, "msg": "Exams found successfully","status": "success"}})
+                else:
+                    return Response({"data":[],"response": {"n": 0, "msg": "No exam found","status": "failure"}})
+            else:
+                return Response({"data":[],"response": {"n": 0, "msg": "Please provide academic year id","status": "failure"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg": "Please provide exam id","status": "failure"}})
 
 
 class uploadmarksheet(GenericAPIView):
@@ -451,4 +511,69 @@ class UploadExcelMarkSheet(GenericAPIView):
         #     'errorfile':fileerrorlist
         # }
         # return Response(response_,status=200)
+
+class deleteexamname(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        Examid = data['id']
+        Examobj = Exam.objects.filter(id=Examid,isActive=True).first()
+        if Examobj is not None:
+            data['isActive'] = False
+            serializer = ExamSerializer(Examobj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "Exam Deleted successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Delete Exam ! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Exam not found ","status": "failure"}})
+
+
+class add_examname(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        data['isActive'] = True
+        data['school_code']=request.user.school_code
+        exam_exist = Exam.objects.filter(Name=data['Name'],isActive= True,school_code=data['school_code']).first()
+        if exam_exist is not None:
+            return Response({"data":'',"response": {"n": 0, "msg": "Exam Name already exist","status": "failure"}})
+        else:
+            serializer = ExamNameSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "Exam Name added successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Exam Name not added ","status": "failure"}})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

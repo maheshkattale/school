@@ -14,6 +14,8 @@ def getMenu(request):
     children_list = request.session.get('children_list')
     PrimaryStudentId = request.session.get('PrimaryStudentId')
     PrimaryStudentCode = request.session.get('PrimaryStudentCode')
+    school_logo = request.session.get('school_logo')
+    user_role_name = request.session.get('user_role_name')
     
 
     return {
@@ -30,6 +32,8 @@ def getMenu(request):
             'PrimaryStudentId':PrimaryStudentId,
             'PrimaryStudentCode':PrimaryStudentCode,
             'username':username,
+            'school_logo':school_logo,
+            'user_role_name':user_role_name,
             
             
             }

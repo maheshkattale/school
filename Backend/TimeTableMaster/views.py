@@ -254,6 +254,7 @@ class get_recipient(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
+        print("str(request.user.role)",str(request.user.role))
         if str(request.user.role) == "Parent":
             schoolcode = request.user.school_code
             stuid = request.data.get('stuid')
@@ -278,6 +279,8 @@ class get_recipient(GenericAPIView):
             else:
                 return Response({"data":'',"response": {"n": 0, "msg": "AcademicYear is not active","status": "failed"}})
         else:
-            user_objs=User.objects.filter(isActive=True,)
+            print("byy",)
+            user_objs=User.objects.filter(isActive=True)
             serializers=UserlistSerializer(user_objs,many=True)
+            # print("serializers",serializers.data)
             return Response({"data":serializers.data,"response": {"n": 1, "msg": "user found successfully","status": "Success"}})

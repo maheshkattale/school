@@ -34,7 +34,7 @@
         <form>
           <div class="row">
             <div class="mb-3 col-lg-3">
-              <label for="parent_name" class="form-label">Parent Name</label>
+              <label for="parent_name" class="form-label">Parent Name <span class="text-danger">*</span> </label>
               <input type="text" class="form-control" id="parent_name" placeholder="Please enter parent name"
                 aria-describedby="parent_name_error"
                 oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
@@ -42,14 +42,14 @@
             </div>
 
             <div class="mb-3 col-lg-3">
-              <label for="parent_email" class="form-label">Parent Email</label>
+              <label for="parent_email" class="form-label">Parent Email <span class="text-danger">*</span> </label>
               <input type="text" class="form-control" id="parent_email" placeholder="Please enter parent email"
                 aria-describedby="parent_email_error" oninput="email_validate('parent_email')" />
               <div id="parent_email_error" class="form-text error_message"></div>
             </div>
 
             <div class="mb-3 col-lg-3">
-              <label for="parent_contact" class="form-label">Contact No</label>
+              <label for="parent_contact" class="form-label">Contact No <span class="text-danger">*</span> </label>
               <input type="text" class="form-control" id="parent_contact" placeholder="Please enter parent contact"
                 aria-describedby="parent_contact_error" maxlength="10"
                 oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');" />
@@ -57,7 +57,7 @@
             </div>
 
             <div class="mb-3 col-lg-3">
-              <label for="children_count" class="form-label">No of Children</label>
+              <label for="children_count" class="form-label">No of Children <span class="text-danger">*</span> </label>
               <div class="childddcount "><span class="quantity_Id ps-2" id="child_count">0</span><span
                   class="quantitybtnspan"><button type="button" class="btn quantitybtn plus-btn" id="addquantity2"
                     onclick="addchild()">+</button></span></div>
@@ -124,7 +124,7 @@
           <div class="row">
 
             <div class="mb-3 col-lg-12">
-              <label for="address" class="form-label"> Address</label>
+              <label for="address" class="form-label"> Address <span class="text-danger">*</span> </label>
               <textarea class="form-control" name="address" id="address" cols="30" rows="5"
                 aria-describedby="address_error"></textarea>
               <div id="address_error" class="form-text error_message"></div>

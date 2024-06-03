@@ -32,22 +32,22 @@ class AddTeacher(GenericAPIView):
         data['isActive'] = True
         subjects = json.loads(data['subjects'])
         schoolcode = request.user.school_code
-        teacherexist = User.objects.filter(Username=data['Name'],isActive= True).first()
+        teacherexist = User.objects.filter(Username=data['Name'],isActive= True,school_code=schoolcode).first()
         if teacherexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Teacher Name already exist","status": "failure"}})
         
-        teacheremailexist = User.objects.filter(email=data['Email'],isActive= True).first()
+        teacheremailexist = User.objects.filter(email=data['Email'],isActive= True,school_code=schoolcode).first()
         if teacheremailexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Email already exist","status": "failure"}})
         
-        teachermobileexist = User.objects.filter(mobileNumber=data['MobileNumber'],isActive= True).first()
+        teachermobileexist = User.objects.filter(mobileNumber=data['MobileNumber'],isActive= True,school_code=schoolcode).first()
         if teachermobileexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Mobile Number already exist","status": "failure"}})
         
         else:
             teachercreate = User.objects.create(email=data['Email'],Username = data['Name'], school_code = schoolcode,role_id = 4,password = str(12345),textPassword = str(12345),designation_id=data['Designation'],mobileNumber=data['MobileNumber'],joiningDate=data['joiningDate'],Address=data['Address'])
 
-            teacherobj = User.objects.filter(email=data['Email'],isActive=True).first()
+            teacherobj = User.objects.filter(email=data['Email'],isActive=True,school_code=schoolcode).first()
             if teacherobj is not None :
                 teacherid = teacherobj.id
 

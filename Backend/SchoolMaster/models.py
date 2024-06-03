@@ -1,6 +1,6 @@
 from django.db import models
 from helpers.models import TrackingModel
-from ClassMaster.models import Class
+# from ClassMaster.models import Class
 # Create your models here.
 class School(TrackingModel):
     Name = models.CharField(max_length=255,null=True,blank=True)
@@ -30,7 +30,9 @@ class AcademicYear(TrackingModel):
         return f"{self.format_date(self.startdate)} to {self.format_date(self.enddate)}"
 
     def format_date(self, date):
-        return date.strftime('%d') + self.day_suffix(date.day) + ' ' + date.strftime('%B %Y')
+        return  date.strftime('%B %Y')
+
+        # return date.strftime('%d') + self.day_suffix(date.day) + ' ' + date.strftime('%B %Y')
 
     def day_suffix(self, day):
         if 11 <= day <= 13:

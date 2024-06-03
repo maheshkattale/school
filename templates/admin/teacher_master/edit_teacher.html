@@ -18,19 +18,17 @@
           <form>
             <div class="row">
               <div class="mb-3 col-lg-4">
-                <label for="teacher_name" class="form-label">Teacher Name</label>
+                <label for="teacher_name" class="form-label">Teacher Name <span class="text-danger">*</span> </label>
                 <input type="text" class="form-control" id="teacher_name" placeholder="Please enter name" value="{{ teacher.Username }}" aria-describedby="teacher_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
                 <div id="teacher_name_error" class="form-text error_message"></div>
               </div>
-
               <div class="mb-3 col-lg-4">
-                <label for="teacher_email" class="form-label">Teacher Email</label>
+                <label for="teacher_email" class="form-label">Teacher Email <span class="text-danger">*</span> </label>
                 <input type="text" class="form-control" id="teacher_email" placeholder="Please enter email" value="{{ teacher.email }}" aria-describedby="teacher_email_error" oninput="email_validate('teacher_email');" />
                 <div id="teacher_email_error" class="form-text error_message"></div>
               </div>
-
               <div class="mb-3 col-lg-4">
-                <label for="teacher_designation" class="form-label">Designation</label>
+                <label for="teacher_designation" class="form-label">Designation <span class="text-danger">*</span> </label>
                 <select id="teacher_designation" class="form-select select2" value="" aria-describedby="teacher_designation_error">
                   <option value="">Please select Designation</option>
                   {% for designation in designations %}
@@ -43,20 +41,18 @@
                 </select>
                 <div id="teacher_designation_error" class="form-text error_message"></div>
               </div>
-
               <div class="mb-3 col-lg-4">
-                <label for="teacher_joining_date" class="form-label">Joining Date</label>
+                <label for="teacher_joining_date" class="form-label">Joining Date <span class="text-danger">*</span> </label>
                 <input type="text" class="form-control date_picker_upto_today" id="teacher_joining_date" placeholder="Please select joining date" value="{{ teacher.joiningDate }}" aria-describedby="teacher_joining_date_error" readonly />
                 <div id="teacher_joining_date_error" class="form-text error_message"></div>
               </div>
-
               <div class="mb-3 col-lg-4">
-                <label for="teacher_contact" class="form-label">Contact No</label>
+                <label for="teacher_contact" class="form-label">Contact No <span class="text-danger">*</span> </label>
                 <input type="text" class="form-control" id="teacher_contact" placeholder="Please enter contact no" value="{{ teacher.mobileNumber }}" aria-describedby="teacher_contact_error" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]+/g,'').replace(/(\..*)\./g, '$1');" />
                 <div id="teacher_contact_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
-                <label for="teacher_subject" class="form-label">Subject</label>
+                <label for="teacher_subject" class="form-label">Subject <span class="text-danger">*</span> </label>
                 <select id="teacher_subject" class="form-select select2" value="" aria-describedby="teacher_subject_error" multiple>
                   {% for subject in subjects %}
                     {% if subject.id in teacher_subjects %}
@@ -69,7 +65,7 @@
                 <div id="teacher_subject_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-12">
-                <label for="teacher_address" class="form-label">Teacher Address</label>
+                <label for="teacher_address" class="form-label">Teacher Address <span class="text-danger">*</span> </label>
                 <textarea class="form-control" name="teacher_address" id="teacher_address" cols="30" rows="5" aria-describedby="teacher_address_error">Address</textarea>
                 <div id="teacher_address_error" class="form-text error_message"></div>
               </div>

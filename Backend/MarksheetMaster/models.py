@@ -19,11 +19,15 @@ class ExamTypeMarks(TrackingModel):
     Marks =  models.CharField(max_length=150,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
+
+
 class Exam(TrackingModel):
     Name =  models.CharField(max_length=550,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
     def __str__(self):
         return self.Name
+
+
 
 class Exams(TrackingModel):
     ClassId = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)

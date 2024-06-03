@@ -14,7 +14,8 @@ urlpatterns = [
     path('studentsbyparentlist', studentsbyparentlist.as_view(), name = 'studentsbyparentlist'),
     path('bloodgrouplist', bloodgrouplist.as_view(), name = 'bloodgrouplist'),
     path('deleteStudent', deleteStudent.as_view(), name = 'deleteStudent'),
-
+    
+    path('search_student_by_class_and_year', search_student_by_class_and_year.as_view(), name = 'search_student_by_class_and_year'),
     path('getstudentlist', getstudentlist.as_view(), name = 'getstudentlist'),
     path('getstudentidcards', getstudentidcards.as_view(), name = 'getstudentidcards'),
     path('set_primary_student', set_primary_student.as_view(), name = 'set_primary_student'),

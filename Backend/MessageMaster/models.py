@@ -12,4 +12,4 @@ class Messages(TrackingModel):
     IsRead = models.BooleanField(default=False)
     date_str = models.CharField(max_length=500, null=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
-    StudentCode = models.CharField(max_length=150)
+    StudentCode = models.CharField(max_length=150,null=True,blank=True)

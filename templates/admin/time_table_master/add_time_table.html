@@ -21,7 +21,7 @@
             <div class="row">
 
               <div class="mb-3 col-lg-4">
-                <label for="class_name" class="form-label">Class</label> 
+                <label for="class_name" class="form-label">Class <span class="text-danger">*</span> </label> 
                 <select id="class_name" class="form-select select2" aria-describedby="class_name_error">
                   <option value="">Please select class</option>
 
@@ -33,7 +33,7 @@
               </div>
 
               <div class="mb-3 col-lg-4">
-                  <label for="daterange" class="form-label">Dates</label>
+                  <label for="daterange" class="form-label">Dates <span class="text-danger">*</span> </label>
                     <span style="display:flex;">
                       <span id="daterange"  class="form-control">
                           <i class="fa fa-calendar"></i>&nbsp;
@@ -50,7 +50,7 @@
               
 
               <div class="mb-3 col-lg-4">
-                <label for="day" class="form-label">Days</label>
+                <label for="day" class="form-label">Days <span class="text-danger">*</span> </label>
                 <select id="day" class="form-select select2 select2" aria-describedby="day_error">
                   <option value="">Please select Days</option>
 
@@ -66,19 +66,19 @@
               </div>
 
               <div class="mb-3 col-lg-4">
-                <label for="start_time" class="form-label">Start Time</label>
+                <label for="start_time" class="form-label">Start Time <span class="text-danger">*</span> </label>
                 <input type="time" class="form-control" id="start_time" aria-describedby="start_time_error" />
                 <div id="start_time_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
-                <label for="end_time" class="form-label">End Time</label>
+                <label for="end_time" class="form-label">End Time <span class="text-danger">*</span> </label>
                 <input type="time" class="form-control" id="end_time" aria-describedby="end_time_error" />
                 <div id="end_time_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
-                <label for="subject" class="form-label">Subject</label>
+                <label for="subject" class="form-label">Subject <span class="text-danger">*</span> </label>
                 <select id="subject" class="form-select select2" aria-describedby="subject_error">
                   <option value=""> Please select subject</option>
 
@@ -92,7 +92,7 @@
 
 
               <div class="mb-3 col-lg-4">
-                <label for="teacher" class="form-label">Teacher</label>
+                <label for="teacher" class="form-label">Teacher <span class="text-danger">*</span> </label>
                 <select id="teacher" class="form-select select2" aria-describedby="teacher_error">
                   <option value=""> Please select teacher</option>
 
@@ -147,7 +147,7 @@
   <div class="row">
     <div class="row justify-content-end">
       <div class="my-3 col-lg-4">
-        <label for="timetable_daterange" class="form-label">Dates</label>
+        <label for="timetable_daterange" class="form-label">Dates <span class="text-danger">*</span> </label>
         <select id="timetable_daterange" class="form-select select2" aria-describedby="timetable_daterange_error">
           <option value="">Please select Dates</option>
           {% for i in timetable_dates_ranges %}

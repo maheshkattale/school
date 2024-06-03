@@ -15,7 +15,7 @@ disable_school_url=frontend_url+'api/SchoolMaster/disable'
 enable_school_url=frontend_url+'api/SchoolMaster/enable'
 get_school_info_url=frontend_url+'api/SchoolMaster/getbyid'
 edit_school_url=frontend_url+'api/SchoolMaster/update'
-
+get_announcements_url=frontend_url+'api/Parent_StudentMaster/get_student_announcements'
 # student_list_url=frontend_url+'api/Parent_StudentMaster/getstudentlist'
 class_list_url=frontend_url+'api/ClassMaster/List'
 academic_list_url=frontend_url+'api/SchoolMaster/AcademicYearlist'
@@ -54,9 +54,8 @@ class login(GenericAPIView):
             request.session['children_list'] = login_response['data']['children_list']
             request.session['PrimaryStudentId'] = login_response['data']['PrimaryStudentId']
             request.session['PrimaryStudentCode'] = login_response['data']['PrimaryStudentCode']
-
-            # msg = login_response['response']['msg']
-            # messages.success(request, msg)
+            request.session['school_logo'] = login_response['data']['school_logo']
+            request.session['user_role_name'] = login_response['data']['user_role_name']
             return redirect('school:dashboard')
 
 
@@ -86,7 +85,18 @@ class dashboard(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
         if tok:
-            return render(request, 'admin/dashboard.html',{})
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data={}
+            if request.session.get('roleid') == 5:
+                data['StudentCode']=request.session.get('PrimaryStudentCode')
+                get_announcements_request = requests.post(get_announcements_url,headers=headers, data=data)
+                get_announcements_response = get_announcements_request.json()
+                print("get_announcements_response",get_announcements_response)
+
+                return render(request, 'admin/dashboard.html',{'announcements':get_announcements_response['data']})
+            else:
+                return render(request, 'admin/dashboard.html',{})
 
         messages.error(request, 'Session expired please login again')
         return redirect('school:login')

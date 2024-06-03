@@ -5,19 +5,19 @@
 {% endblock %}
 
 {% block heading %}
-  <span class="tab-title"><span class="px-1">Edit Exam</span></span>
+  <span class="tab-title"><span class="px-1">Exam</span></span>
 {% endblock %}
 
 {% block body %}
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title fw-semibold mb-4">Edit Exam Forms</h5>
+      <h5 class="card-title fw-semibold mb-4">Edit Exam</h5>
       <div class="card">
         <div class="card-body">
           <form>
             <div class="row">
               <div class="mb-3 col-lg-4">
-                <label for="exam_academic" class="form-label">Academic</label>
+                <label for="exam_academic" class="form-label">Academic Year <span class="text-danger">*</span> </label>
                 <select id="exam_academic" class="form-select select2" aria-describedby="exam_academic_error">
                   <option value="" selected>Please select academic</option>
                   {% for academic in academics %}
@@ -34,7 +34,7 @@
               </div>
 
               <div class="mb-3 col-lg-4">
-                <label for="exam_name" class="form-label">Exam </label>
+                <label for="exam_name" class="form-label">Exam  <span class="text-danger">*</span> </label>
                 <select id="exam_name" class="form-select select2" aria-describedby="exam_name_error">
                   <option value="" selected>Please select Exam</option>
                   {% for e in exams %}
@@ -51,7 +51,7 @@
               </div>
 
               <div class="mb-3 col-lg-4">
-                <label for="exam_type" class="form-label">Exam Type</label>
+                <label for="exam_type" class="form-label">Paper Type <span class="text-danger">*</span> </label>
                 <select id="exam_type" class="form-select select2" aria-describedby="exam_type_error" onchange="get_marks()">
                   <option value="" selected>Please select type</option>
                   {% for type in exam_types %}
@@ -66,7 +66,7 @@
                 <div id="exam_type_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
-                <label for="exam_totalmarks" class="form-label">Exam Total Marks</label>
+                <label for="exam_totalmarks" class="form-label">Exam Total Marks <span class="text-danger">*</span> </label>
                 
                 <select id="exam_totalmarks" class="form-select select2" aria-describedby="exam_totalmarks_error" >
                   <option value="{{ exam.totalMarks }}" selected>{{ exam.totalMarks }}</option>
@@ -87,30 +87,30 @@
 
 
               <div class="mb-3 col-lg-4">
-                <label for="exam_starttime" class="form-label">Exam Start Time</label>
+                <label for="exam_starttime" class="form-label">Exam Start Time <span class="text-danger">*</span> </label>
                 <input type="time" class="form-control" id="exam_starttime" value="{{exam.Examstarttime}}" placeholder="Please enter starttime" aria-describedby="exam_starttime_error"  />
                 <div id="exam_starttime_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
-                <label for="exam_endtime" class="form-label">Exam End Time</label>
+                <label for="exam_endtime" class="form-label">Exam End Time <span class="text-danger">*</span> </label>
                 <input type="time" class="form-control" id="exam_endtime" value="{{exam.Examendtime}}" placeholder="Please enter endtime" aria-describedby="exam_endtime_error"  />
                 <div id="exam_endtime_error" class="form-text error_message"></div>
               </div>
 
 
               <div class="mb-3 col-lg-4">
-                <label for="exam_reporttime" class="form-label">Exam Report Time</label>
+                <label for="exam_reporttime" class="form-label">Exam Report Time <span class="text-danger">*</span> </label>
                 <input type="time" class="form-control" id="exam_reporttime" value="{{exam.reportTime}}"  placeholder="Please enter report time" aria-describedby="exam_reporttime_error"  />
                 <div id="exam_reporttime_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
-                <label for="exam_date" class="form-label">Date</label>
+                <label for="exam_date" class="form-label">Date <span class="text-danger">*</span> </label>
                 <input type="text" class="form-control date_picker" value="{{exam.Date}}" id="exam_date" placeholder="Please select date" aria-describedby="exam_date_error" readonly />
                 <div id="exam_date_error" class="form-text error_message"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
-                <label for="exam_subject" class="form-label">Subject</label>
+                <label for="exam_subject" class="form-label">Subject <span class="text-danger">*</span> </label>
                 <select id="exam_subject" class="form-select select2" aria-describedby="exam_subject_error">
                   <option value="" selected>Please select subject</option>
                   {% for subject in subjects %}
@@ -129,7 +129,7 @@
 
 
               <div class="mb-3 col-lg-4">
-                <label for="exam_class" class="form-label">Class</label>
+                <label for="exam_class" class="form-label">Class <span class="text-danger">*</span> </label>
                 <select id="exam_class" class="form-select select2" aria-describedby="exam_class_error">
                   <option value="" selected>Please select class</option>
                   {% for class in classes %}
@@ -146,7 +146,7 @@
                 <div id="exam_class_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
-                <label for="exam_invigilator" class="form-label">Exam Invigilator</label>
+                <label for="exam_invigilator" class="form-label">Exam Invigilator <span class="text-danger">*</span> </label>
                 <select id="exam_invigilator" class="form-select select2" aria-describedby="exam_invigilator_error">
                   <option value="" selected>Please select invigilator</option>
                   {% for Invigilator in teachers %}
@@ -163,7 +163,7 @@
               </div>
 
               <div class="mb-3 col-lg-4">
-                <label for="exam_roomno" class="form-label">Exam Room No</label>
+                <label for="exam_roomno" class="form-label">Exam Room No <span class="text-danger">*</span> </label>
                 <input type="text" class="form-control" id="exam_roomno" value="{{exam.RoomNo}}" placeholder="Please enter room no" aria-describedby="exam_roomno_error"  />
                 <div id="exam_roomno_error" class="form-text error_message"></div>
               </div>
@@ -171,7 +171,7 @@
 
 
               <div class="mb-3 col-lg-12">
-                <label for="exam_instruction" class="form-label">Exam Instruction</label>
+                <label for="exam_instruction" class="form-label">Exam Instruction <span class="text-danger">*</span> </label>
                 <textarea class="form-control" name="exam_instruction" id="exam_instruction" cols="30" rows="5" aria-describedby="exam_instruction_error">{{exam.Instructions}}</textarea>
                 <div id="exam_instruction_error" class="form-text error_message"></div>
               </div>

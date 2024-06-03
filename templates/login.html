@@ -33,13 +33,13 @@
                     {% csrf_token %}
 
                     <div class="mb-3">
-                      <label for="exampleInputEmail1" class="form-label">Email</label>
+                      <label for="exampleInputEmail1" class="form-label">Email <span class="text-danger">*</span> </label>
                       <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" />
                       <div id="email_error" class="form-text error_message"></div>
 
                     </div>
                     <div class="mb-4">
-                      <label for="exampleInputPassword1" class="form-label">Password</label>
+                      <label for="exampleInputPassword1" class="form-label">Password <span class="text-danger">*</span> </label>
                       <input type="password" name="password" class="form-control" id="password" />
                       <span toggle="#password" class="fa fa-fw fa-eye-slash field-icon toggle-password"></span>
                       <div id="password_error" class="form-text error_message"></div>

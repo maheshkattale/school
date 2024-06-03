@@ -8,10 +8,12 @@ from school.static_info import frontend_url
 class_list_url=frontend_url+'api/ClassMaster/List'
 exam_type_list_url=frontend_url+'api/MarksheetMaster/List'
 add_exam_type_marks_url=frontend_url+'api/MarksheetMaster/add_exam_type_marks'
+add_exam_type_url=frontend_url+'api/MarksheetMaster/add_exam_type'
 edit_exam_type_url=frontend_url+'api/MarksheetMaster/update'
 delete_exam_type_url=frontend_url+'api/MarksheetMaster/delete'
 exam_list_url=frontend_url+'api/MarksheetMaster/Examlist'
 exams_list_url=frontend_url+'api/MarksheetMaster/exam_names_list'
+get_exam_timetable_url=frontend_url+'api/MarksheetMaster/get_exam_timetable'
 
 delete_exam_list_url=frontend_url+'api/MarksheetMaster/deleteexam'
 teacher_list_url=frontend_url+'api/TeacherMaster/list'
@@ -24,17 +26,31 @@ subject_list_url=frontend_url+'api/SubjectMaster/List'
 delete_exam_type_marks_url=frontend_url+'api/MarksheetMaster/delete_exam_type_marks'
 edit_exam_type_marks_url=frontend_url+'api/MarksheetMaster/edit_exam_type_marks'
 get_marks_by_exam_type_url=frontend_url+'api/MarksheetMaster/get_marks_by_exam_type'
+academic_exam_list_url=frontend_url+'api/MarksheetMaster/academic_exam_list'
+delete_examname_list_url=frontend_url+'api/MarksheetMaster/deleteexamname'
+add_exam_name_list_url=frontend_url+'api/MarksheetMaster/add_examname'
+
+
+
 class exam(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
+
+            exams_name_list_request = requests.get(exams_list_url,headers=headers)
+            exams_name_list_response = exams_name_list_request.json()
+            class_list_request = requests.get(class_list_url,headers=headers)
+            class_list_response = class_list_request.json()
+            academic_list_request = requests.get(academic_list_url,headers=headers)
+            academic_list_response = academic_list_request.json()
+
+
             
-            
-            exam_list_request = requests.get(exam_list_url,headers=headers)
+            exam_list_request = requests.get(academic_exam_list_url,headers=headers)
             exam_list_response = exam_list_request.json()
-            return render(request, 'admin/exam/exam_master.html',{'exams':exam_list_response['data']})
+            return render(request, 'admin/exam/exam_master.html',{'exams':exam_list_response['data'],'exam_names':exams_name_list_response['data'],'classes':class_list_response['data'],'academic_years':academic_list_response['data']})
         else:
             return redirect('school:login')
         
@@ -196,15 +212,71 @@ class get_marks_by_exam_type(GenericAPIView):
             return redirect('school:login')
         
   
-  
-  
-  
-  
-  
+class get_exam_timetable(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            get_exam_timetable_request = requests.post(get_exam_timetable_url,data=data,headers=headers)
+            get_exam_timetable_response = get_exam_timetable_request.json()
+            return HttpResponse(json.dumps(get_exam_timetable_response), content_type="application/json")
+        else:
+            return redirect('school:login')
   
   
   
         
+class add_exam_type(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            add_exam_type_list_request = requests.post(add_exam_type_url,data=data,headers=headers)
+            add_exam_type_list_response = add_exam_type_list_request.json()
+            return HttpResponse(json.dumps(add_exam_type_list_response), content_type="application/json")
+        else:
+            return redirect('school:login')
+class delete_exam_type(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            delete_exam_type_list_request = requests.post(delete_exam_type_url,data=data,headers=headers)
+            delete_exam_type_list_response = delete_exam_type_list_request.json()
+            return HttpResponse(json.dumps(delete_exam_type_list_response), content_type="application/json")
+        else:
+            return redirect('school:login')
+  
+class delete_examname(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            delete_examname_list_request = requests.post(delete_examname_list_url,data=data,headers=headers)
+            delete_examname_list_response = delete_examname_list_request.json()
+            return HttpResponse(json.dumps(delete_examname_list_response), content_type="application/json")
+        else:
+            return redirect('school:login')
+class add_exam_name(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            add_exam_name_list_request = requests.post(add_exam_name_list_url,data=data,headers=headers)
+            add_exam_name_list_response = add_exam_name_list_request.json()
+            return HttpResponse(json.dumps(add_exam_name_list_response), content_type="application/json")
+        else:
+            return redirect('school:login')
         
         
                 
