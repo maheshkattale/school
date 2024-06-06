@@ -20,10 +20,6 @@ class ExamTypeMarks(TrackingModel):
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 2b67fe75d2efff763bdec96687a9a5db1aa4b2cf
 class Exam(TrackingModel):
     Name =  models.CharField(max_length=550,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)

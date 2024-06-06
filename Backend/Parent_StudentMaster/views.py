@@ -804,6 +804,66 @@ class get_student_announcements(GenericAPIView):
 
 
 
+class promote_student_class(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self, request):
+        data=request.data.copy()
+        data['school_code']=request.user.school_code
+        data['promoted_class']=request.POST.get('promoted_class')
+        data['academic_year_id']=request.POST.get('academic_year_id')
+        if data['academic_year_id'] is not None and data['academic_year_id'] !='':
+            if data['promoted_class'] is not None and data['promoted_class'] !='':
+
+                if request.POST.get('students_ids_list') is not None and data['students_ids_list'] !=[]:
+                    data['students_ids_list']=json.loads(request.POST.get('students_ids_list'))
+
+                    for student in data['students_ids_list']:
+                        print(student)
+
+
+
+                    return Response({"data":[],"response": {"n": 1, "msg":'Students promoted successfully',"status": "success"}})
+
+
+                else:
+                    return Response({"data":[],"response": {"n": 0, "msg":'Please provide promoted student list',"status": "failed"}})
+            else:
+                return Response({"data":[],"response": {"n": 0, "msg":'Please provide promoted class',"status": "failed"}})
+
+
+        return Response({"data":[],"response": {"n": 0, "msg":'Please provide promoted academic year',"status": "failed"}})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class getPromotedList(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -840,3 +900,48 @@ class getPromotedList(GenericAPIView):
                 st['StudentClass'] = classobj.ClassName
                 
             return Response({"data":studentclassser.data,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})
+
+
+
+class search_students(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        
+        schoolcode = request.user.school_code
+        studentlist = []
+        print("data",data)        
+        studentclassLogobj = studentclassLog.objects.filter(school_code=schoolcode)
+        if 'class' in request.data.keys():
+            if request.data.get('class') is not None and request.data.get('class') !='':
+                class_id = data['class']
+                studentclassLogobj = studentclassLogobj.filter(classid=class_id)
+                
+        if 'yearid' in request.data.keys():
+            if request.data.get('yearid') is not None and request.data.get('yearid') !='':
+                ac_yearid = data['yearid']
+                studentclassLogobj = studentclassLogobj.filter(AcademicyearId=ac_yearid)
+                
+        if studentclassLogobj.exists():
+            studentclassser = studentclassLogserializer(studentclassLogobj,many=True)
+            for s in studentclassser.data:
+                stuobj = Students.objects.filter(id=s['studentId'],StudentCode=s['StudentCode'],school_code=schoolcode,isActive=True).first()
+                if stuobj is not None:
+                    stuser = StudentSerializer1(stuobj) 
+                    details = []
+                    for t in [stuser.data]:
+                        t['classid'] = s['classid']
+                        # t['exam_name'] = s['Exam']
+                        details.append(t)
+                    studentlist.append(details[0])
+        # else:
+        #     stuobj = Students.objects.filter(school_code=schoolcode,isActive=True)
+        #     stuser = StudentSerializer1(stuobj,many=True) 
+        #     studentlist=stuser.data
+
+        return Response({"data":studentlist,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})
+
+
+
+

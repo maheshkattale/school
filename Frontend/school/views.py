@@ -269,7 +269,7 @@ class upload_marksheet(GenericAPIView):
 
 
 
-class promote_marksheet(GenericAPIView):
+class promote_student(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
         print('tok',tok)
@@ -288,7 +288,7 @@ class promote_marksheet(GenericAPIView):
             student_list_request = requests.post(student_list1_url,headers=headers)
             student_list_response = student_list_request.json()
             
-            return render(request, 'admin/marksheet_master/promote_marksheet.html',{'token':tok,'student':student_list_response['data'],'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exam_name':exam_names_list_response['data']})
+            return render(request, 'admin/marksheet_master/promote_student.html',{'token':tok,'student':student_list_response['data'],'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exam_name':exam_names_list_response['data']})
         else:
             return redirect('school:login')
 

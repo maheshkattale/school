@@ -20,7 +20,7 @@ urlpatterns = [
     path('reset_password_mail', reset_password_mail.as_view(), name = 'reset_password_mail'),
     
     
-    path('promote_marksheet', promote_marksheet.as_view(), name = 'promote_marksheet'),
+    path('promote_student', promote_student.as_view(), name = 'promote_student'),
     path('generate_marksheet', generate_marksheet.as_view(), name = 'generate_marksheet'),
     path('upload_marksheet', upload_marksheet.as_view(), name = 'upload_marksheet'),
     path('reportcard/<int:id>/<int:classid>', reportcard.as_view(), name = 'reportcard'),
