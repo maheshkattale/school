@@ -31,6 +31,8 @@ urlpatterns = [
     
     # 
     path('getPromotedList', getPromotedList.as_view(), name = 'getPromotedList'),
+    path('promote_student_class', promote_student_class.as_view(), name = 'promote_student_class'),
+    path('search_students', search_students.as_view(), name = 'search_students'),
     
     
 ]

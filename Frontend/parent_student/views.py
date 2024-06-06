@@ -18,6 +18,7 @@ add_announcements_url=frontend_url+'api/Parent_StudentMaster/add_announcement'
 delete_announcements_url=frontend_url+'api/Parent_StudentMaster/delete_announcement'
 get_announcement_details_url=frontend_url+'api/Parent_StudentMaster/get_announcement_details'
 edit_announcements_url=frontend_url+'api/Parent_StudentMaster/edit_announcement'
+search_students_url=frontend_url+'api/Parent_StudentMaster/search_students'
 
 class parent_student_master(GenericAPIView):
     def get(self,request):
@@ -175,6 +176,17 @@ class get_announcement_details(GenericAPIView):
         
         
         
+class search_students(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            search_students_request = requests.post(search_students_url,headers=headers,data=data)
+            search_students_response = search_students_request.json()
+
+            return HttpResponse(json.dumps(search_students_response), content_type="application/json")
         
         
         
