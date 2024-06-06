@@ -10,16 +10,16 @@ from rest_framework.generics import GenericAPIView
 from django.contrib.auth import authenticate
 from .models import *
 from .serializers import *
-
+from Frontend.school.static_info import frontend_url,image_url
 from Parent_StudentMaster.models import *
 from Parent_StudentMaster.serializers import *
-
+from SchoolMaster.models import *
+from SchoolMaster.serializers import *  
 from .jwt import userJWTAuthentication
 from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
 from SchoolErp.settings import EMAIL_HOST_USER
 from django.contrib.auth.hashers import make_password,check_password
-from Frontend.school.static_info import frontend_url
 
 def createtoken(uuid,email,source):
     token = jwt.encode(
@@ -40,7 +40,7 @@ class login(GenericAPIView):
         if email is None or Password is None :
             return Response(
                                                 {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':'','school_logo':'','school_info':[],'user_info':[],'user_role_name':''},
                     "response":{
                     "status":"error",
                     'msg': 'Please provide email and password',
@@ -51,7 +51,7 @@ class login(GenericAPIView):
         if userexist is None:
            return Response(
                     {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':'','school_logo':'','school_info':[],'user_info':[],'user_role_name':''},
                     "response":{
                     "status":"error",
                     'msg': 'This user is not found',
@@ -64,7 +64,7 @@ class login(GenericAPIView):
             if p is False:
                 return Response(
                     {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':'','school_logo':'','school_info':[],'user_info':[],'user_role_name':''},
                     "response":{
                     "status":"error",
                     'msg': 'Please enter correct password',
@@ -74,8 +74,7 @@ class login(GenericAPIView):
                                 )
             else:
                 useruuid = str(userexist.id)
-                role = userexist.role
-
+                print("userexist",userexist.role)
                 role_id=user_serializer.data['role']
 
                 username = userexist.Username
@@ -100,7 +99,7 @@ class login(GenericAPIView):
                     createmobiletoken = UserToken.objects.create(User=useruuid,MobileToken=Token,source=source)
                 else:
                     return Response({
-                        "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':''},
+                        "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':'','school_logo':'','school_info':[],'user_info':[],'user_role_name':''},
                         "response":{
                         "status":"error",
                         'msg': 'Please Provide Source',
@@ -120,9 +119,23 @@ class login(GenericAPIView):
                     if primary_student_objs is not None:
                         PrimaryStudentId = primary_student_objs.id
                         PrimaryStudentCode = primary_student_objs.StudentCode
-                        
+
+
+                get_school_obj=School.objects.filter(school_code=user_serializer.data['school_code'],isActive=True).first()        
+                if get_school_obj is not None:
+                    school_serializer=schoolSerializer(get_school_obj)
+                    school_info=school_serializer.data
+                    if school_info['school_logo'] is not None:
+
+                        school_logo=image_url+str(school_info['school_logo'])
+                    else:
+                        school_logo=''
+
+                else:
+                    school_logo=''
+                    school_info=[]
                 return Response({
-                    "data" : {'token':Token,'username':username,'user_id':useruuid,'schoolcode':schoolcode,'Menu':perSer.data,'roleid':role_id,'Address':user_serializer.data['Address'],'mobileNumber':user_serializer.data['mobileNumber'],'email':user_serializer.data['email'],'children_list':children_list,'PrimaryStudentCode':PrimaryStudentCode,'PrimaryStudentId':PrimaryStudentId},
+                    "data" : {'token':Token,'username':username,'user_id':useruuid,'schoolcode':schoolcode,'Menu':perSer.data,'roleid':role_id,'Address':user_serializer.data['Address'],'mobileNumber':user_serializer.data['mobileNumber'],'email':user_serializer.data['email'],'children_list':children_list,'PrimaryStudentCode':PrimaryStudentCode,'PrimaryStudentId':PrimaryStudentId,'school_logo':school_logo,'school_info':school_info,'user_info':user_serializer.data,'user_role_name':str(userexist.role)},
                     "response":{
                         "n": 1 ,
                         "msg" : "login successful",

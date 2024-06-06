@@ -1,0 +1,492 @@
+.tasktitlehover {
+  width: 250px;
+}
+.tooltip-inner {
+  background-color: white;
+  color: black;
+  box-shadow: 2px 4px #888888;
+  z-index: 111;
+}
+.tooltip-inner {
+  max-width: 100% !important;
+}
+
+
+
+.currentmnth td {
+  color: green;
+}
+.error {
+  font-size: 12px;
+}
+.add-btn {
+  padding: 12px 20px 12px 20px !important;
+}
+.leave-card-footer {
+  padding: 15px;
+  min-height: 125px;
+}
+.daySlider {
+  padding: 20px;
+  width: 87%;
+  margin: auto;
+}
+.clndr-controls {
+  font-family: "Arial", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0 auto;
+  max-width: 500px;
+  text-align: center;
+}
+.clndr-control-button:before {
+  content: "\f137";
+  font-family: FontAwesome;
+}
+
+.clndr-controls {
+  align-items: initial;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.clndr-control-button.rightalign {
+  transform: rotate(180deg);
+}
+.clndr-control-button .clndr-next-button,
+.clndr-control-button .clndr-previous-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.clndr-table,
+.clndr-table thead,
+.clndr-table tbody,
+.clndr-table tr,
+.clndr-table td {
+  display: inline-block;
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+
+.clndr-table {
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 10px 0px;
+  margin-bottom: 50px;
+}
+
+.clndr-table tr {
+  padding-bottom: 58px;
+  position: relative;
+}
+.clndr-table tr td {
+  display: inline-block;
+  text-align: center;
+}
+.clndr-table tr td + td {
+  margin-left: 25px;
+}
+.clndr-table tr + tr {
+  margin-left: 25px;
+}
+
+.clndr-table:after {
+  bottom: 0;
+  content: "";
+  display: block;
+  height: 58px;
+  left: 50%;
+  margin-left: -570px;
+  opacity: 0.7;
+  position: absolute;
+  width: 1140px;
+}
+
+.clndr-table .day {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1em;
+  display: inline-block;
+  color: black;
+
+  padding: 15px 0;
+}
+tr td {
+  border-bottom: none !important;
+}
+.clndr-table tr {
+  padding: 0px 22px 0 0px;
+  border-right: 1px solid grey;
+}
+.clndr-table .day.today {
+  color: #ffffff;
+  padding: 14px 11px;
+  background: #8ccaff;
+  border-radius: 16px;
+}
+.today {
+  background: #ebebeb;
+  border-radius: 10px;
+}
+.holiday {
+  color: #269900;
+  border-radius: 16px;
+}
+.weeklyoff {
+  color: #e30000 !important;
+  border-radius: 16px;
+}
+.clndr-table .day.event {
+  color: #54659c;
+  cursor: pointer;
+}
+.day {
+  cursor: pointer;
+}
+.clndr-table .day.selected {
+  padding: 10px 5px;
+}
+.clndr-table .day.selected.event {
+  background: #00b0ef;
+  color: white;
+  border-radius: 5px;
+}
+
+.col-2 {
+  flex: 0 0 auto;
+  width: 16.66666667%;
+  height: 340px;
+}
+
+.modal-dialog {
+  max-width: 50%;
+}
+.clndr-control-button {
+  background: url("http://lorempixel.com/26/26/abstract/") no-repeat 0 0;
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  position: relative;
+}
+.calendarIcon-img {
+  top: -36px;
+  left: 90%;
+  cursor: pointer;
+}
+.clndr-table .empty {
+  display: none;
+}
+
+.calendar {
+  width: 100%;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 0px;
+  padding: 15px 0 0 0;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px 0;
+}
+
+#holidaylistable td {
+  text-align: start;
+}
+
+#calendarBody > td {
+  cursor: pointer;
+  padding: 10px;
+}
+
+tbody td:hover {
+  background-color: #eee;
+}
+
+.selected {
+  background-color: #995dff;
+  color: #fff !important;
+  border-radius: 16px;
+}
+#monthYear {
+  margin: 0 30px;
+  font-size: 20px;
+  width: 200px;
+  text-align: center;
+}
+#prevBtn:before {
+  content: "\f0a8";
+  font-family: FontAwesome;
+  font-style: normal;
+  cursor: pointer;
+  font-size: 18px;
+}
+#nextBtn:before {
+  content: "\f0a9";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.calendar > td {
+  width: 55px;
+  border: 1px solid black;
+  margin: 10px;
+  padding: 10px 15px;
+  border-radius: 12px;
+}
+.weekdays {
+  position: absolute;
+  top: 95%;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0%;
+  right: 0%;
+}
+.weekdays > td {
+  padding: 5px;
+}
+
+.header-day {
+  background: transparent;
+  width: 150px;
+  border-radius: 5px;
+  margin: 13px !important;
+  color: #a0a0a0;
+  border: 1px solid #a0a0a0 !important;
+}
+.selected-weekday {
+  background-color: #995dff !important;
+  border: 1px solid #995dff !important;
+  outline: 1px solid #995dff !important;
+  color: whitesmoke !important;
+}
+.weekend {
+  border-right: 2px solid #c9c9c9;
+}
+
+@media only screen and (max-device-width: 1380px) {
+  #calendarBody > td {
+    cursor: pointer;
+    padding: 9px;
+  }
+
+  .header-days {
+    position: absolute !important;
+    top: 42%;
+    border: none !important;
+  }
+  .clndr-table tr td + td {
+    margin-left: 15px;
+  }
+
+  .header-day {
+    width: 115px !important;
+  }
+  .leave-status {
+    width: 63%;
+    font-size: 12px;
+  }
+  .manager-box {
+    margin: 14px;
+  }
+  .viewEmpDeetsBtn {
+    font-size: 12px;
+  }
+  .leave-days {
+    font-size: 12px;
+  }
+  .radio-div > label {
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .leave-reason {
+    font-size: 12px;
+  }
+  .clndr-table .day {
+    font-size: 12px;
+  }
+  .leave-Manager-Title {
+    font-size: 12px;
+  }
+}
+@media only screen and (max-device-width: 1100px) {
+  .clndr-table tr td + td {
+    margin-left: 7px;
+  }
+  #calendarBody > td {
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  .header-day {
+    width: 80px !important;
+    font-size: 12px !important;
+  }
+  .leave-Manager-Title {
+    font-size: 12px;
+  }
+  .header-days {
+    position: absolute !important;
+    top: 35%;
+    border: none !important;
+  }
+  .leave-Employee-name {
+    font-size: 12px;
+  }
+  .leave-days {
+    font-size: 12px;
+  }
+  .radio-div > label {
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .leave-reason {
+    font-size: 12px;
+  }
+  .leave-status {
+    font-size: 10px;
+  }
+  .leave-date {
+    font-size: 10px;
+  }
+  .clndr-table .day {
+    font-size: 12px;
+  }
+}
+@media only screen and (max-device-width: 768px) {
+  table td {
+    font-size: 10px !important;
+  }
+  .clndr-table tr td + td {
+    margin-left: 5px;
+  }
+  #calendarBody > td {
+    cursor: pointer;
+    padding: 5px;
+  }
+  .clndr-table tr + tr {
+    margin-left: 5px;
+  }
+  .leave-Manager-Title {
+    font-size: 10px;
+  }
+  .leave-date {
+    font-size: 10px;
+  }
+  .leave-status {
+    font-size: 10px;
+  }
+  .header-day {
+    width: 58px !important;
+    font-size: 10px !important;
+    padding: 8px 0 !important;
+  }
+
+  .leave-Employee-name {
+    font-size: 10px;
+  }
+  .leave-days {
+    font-size: 10px;
+  }
+  .leave-reason {
+    font-size: 10px;
+  }
+  .radio-div > label {
+    font-size: 10px;
+  }
+  .header-days {
+    top: 25%;
+  }
+  .clndr-table .day {
+    font-size: 12px;
+  }
+}
+.leads-div{
+  margin-bottom: 15px;
+}
+
+.switch {
+  display: inline-block;
+  height: 20px;
+  position: relative;
+  width: 40px;
+}
+
+.switch input {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 0px;
+  content: "";
+  left: 0px;
+  position: absolute;
+  transition: .4s;
+  width: 20px;
+  height: 20px;
+
+}
+
+input:checked + .slider {
+  background-color: #66bb6a;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}

@@ -27,12 +27,12 @@
                
 
                       <div class="mb-3 col-lg-6">
-                        <label for="academic_start_date" class="form-label">Start Date</label>
+                        <label for="academic_start_date" class="form-label">Start Date <span class="text-danger">*</span> </label>
                         <input type="text" class="form-control date_picker" id="academic_start_date" placeholder="Please select start date" aria-describedby="academic_start_date_error" readonly/>
                         <div id="academic_start_date_error" class="form-text error_message"></div>
                       </div>
                       <div class="mb-3 col-lg-6">
-                        <label for="academic_end_date" class="form-label">End Date</label>
+                        <label for="academic_end_date" class="form-label">End Date  <span class="text-danger">*</span> </label>
                         <input type="text" class="form-control date_picker" id="academic_end_date" placeholder="Please select end date" aria-describedby="academic_end_date_error" readonly/>
                         <div id="academic_end_date_error" class="form-text error_message"></div>
                       </div>
@@ -90,12 +90,12 @@
                   
           
                                 <div class="mb-3 col-lg-6">
-                                  <label for="academic_start_date{{i.id}}" class="form-label">Start Date</label>
+                                  <label for="academic_start_date{{i.id}}" class="form-label">Start Date  <span class="text-danger">*</span> </label>
                                   <input type="text" class="form-control date_picker" id="academic_start_date{{i.id}}" value="{{i.startdate_dd_mm_yyyy}}" placeholder="Please select start date" aria-describedby="academic_start_date_error" readonly/>
                                   <div id="academic_start_date_error{{i.id}}" class="form-text error_message"></div>
                                 </div>
                                 <div class="mb-3 col-lg-6">
-                                  <label for="academic_end_date{{i.id}}" class="form-label">End Date</label>
+                                  <label for="academic_end_date{{i.id}}" class="form-label">End Date  <span class="text-danger">*</span> </label>
                                   <input type="text" class="form-control date_picker" id="academic_end_date{{i.id}}" value="{{i.enddate_dd_mm_yyyy}}" placeholder="Please select end date" aria-describedby="academic_end_date_error" readonly/>
                                   <div id="academic_end_date_error{{i.id}}" class="form-text error_message"></div>
                                 </div>

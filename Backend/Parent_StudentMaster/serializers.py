@@ -22,8 +22,17 @@ class studentclassLogserializer(serializers.ModelSerializer):
     class Meta:
         model= studentclassLog
         fields='__all__'
-        
-        
+
+class custom_studentclassLogserializer(serializers.ModelSerializer):
+    studentId=serializers.StringRelatedField()
+    classid=serializers.StringRelatedField()
+    studentId_id = serializers.PrimaryKeyRelatedField(source='studentId', queryset=Students.objects.all())
+    classid_id = serializers.PrimaryKeyRelatedField(source='classid', queryset=Class.objects.all())
+
+    class Meta:
+        model= studentclassLog
+        fields='__all__'
+
 class custom_student_class_log_serializer_class_id_list(serializers.ListSerializer):
     def to_representation(self, data):
         return [item.classid for item in data]
@@ -66,7 +75,7 @@ class CustomAnnouncementSerializer(serializers.ModelSerializer):
         fields='__all__'
         
 class CustomAnnouncementSerializer2(serializers.ModelSerializer):
-    Date = serializer_date_yyyy_mm_dd__dd_mm_yyy()
+    Date = CustomDateFormatField()
     class Meta:
         model= Announcements
         fields='__all__'

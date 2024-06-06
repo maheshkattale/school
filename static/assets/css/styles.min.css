@@ -20050,3 +20050,26 @@ ul {
     color: grey;
 
 }
+.not_found_text{
+        font-size: 22px;
+        font-weight: 600;
+        opacity: 0.5;
+        padding: 50px;
+        height: 100%;
+        width: 100%;
+        text-align:center;
+    
+}
+
+.user_name_text{
+    color: black;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+.accordion-flush>.accordion-item>.accordion-header .accordion-button, .accordion-flush>.accordion-item>.accordion-header .accordion-button.collapsed {
+        border: var(--bs-border-width) solid #DFE5EF;
+}
+.accordion-body {
+        border: var(--bs-border-width) solid #DFE5EF;
+}

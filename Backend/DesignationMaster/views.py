@@ -23,7 +23,8 @@ class AddDesignation(GenericAPIView):
     def post(self,request):
         data = request.data.copy()
         data['isActive'] = True
-        Desgnexist = Designation.objects.filter(designationName=data['designationName'],isActive= True).first()
+        data['school_code']=request.user.school_code
+        Desgnexist = Designation.objects.filter(designationName=data['designationName'],isActive= True,school_code=data['school_code']).first()
         if Desgnexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Designation already exist","status": "failure"}})
         else:
@@ -39,7 +40,8 @@ class Designationlist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
-        desgobjs = Designation.objects.filter(isActive=True).order_by('-id')
+        school_code=request.user.school_code
+        desgobjs = Designation.objects.filter(isActive=True,school_code=school_code).order_by('-id')
         serializer = DesignationSerializer(desgobjs,many=True)
         return Response({"data":serializer.data,"response": {"n": 1, "msg": "Designation list found successfully","status": "success"}})
       

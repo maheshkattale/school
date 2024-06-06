@@ -17,6 +17,9 @@ class Students(TrackingModel):
     school_code = models.CharField(max_length=150,null=True,blank=True)
     primary_student=models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.StudentName
+
 
 class studentclassLog(TrackingModel):
     AcademicyearId = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)

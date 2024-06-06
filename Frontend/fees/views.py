@@ -18,6 +18,7 @@ student_list_url=frontend_url+'api/Parent_StudentMaster/getstudentlist'
 pay_student_fees_url=frontend_url+'api/FeesMaster/pay_student_fees'
 edit_fees_distributions_for_multiple_class_url=frontend_url+'api/FeesMaster/edit_fees_distributions_for_multiple_class'
 student_pending_fees_by_id_url=frontend_url+'api/FeesMaster/get_student_pending_fees_list_by_id'
+search_student_by_class_and_year_url=frontend_url+'api/Parent_StudentMaster/search_student_by_class_and_year'
 
 # Create your views here.
 
@@ -131,7 +132,7 @@ class students_fees(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data={}
-            student_list_request = requests.post(student_list_url,headers=headers)
+            student_list_request = requests.post(search_student_by_class_and_year_url,headers=headers)
             student_list_response = student_list_request.json()
             
             class_list_request = requests.get(class_list_url,headers=headers)

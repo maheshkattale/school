@@ -23,7 +23,9 @@ class AddSubject(GenericAPIView):
     def post(self,request):
         data = request.data.copy()
         data['isActive'] = True
-        subjectnexist = Subject.objects.filter(SubjectName=data['SubjectName'],isActive= True).first()
+        school_code = request.user.school_code
+        data['school_code']=school_code
+        subjectnexist = Subject.objects.filter(SubjectName=data['SubjectName'],isActive= True,school_code=school_code).first()
         if subjectnexist is not None:
             return Response({"data":'',"response": {"n": 0, "msg": "Subject already exist","status": "failure"}})
         else:
@@ -39,7 +41,8 @@ class Subjectlist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
-        subjectobjs = Subject.objects.filter(isActive=True).order_by('-id')
+        school_code = request.user.school_code
+        subjectobjs = Subject.objects.filter(isActive=True,school_code=school_code).order_by('SubjectName')
         serializer = SubjectSerializer(subjectobjs,many=True)
         return Response({"data":serializer.data,"response": {"n": 1, "msg": "Subject list found successfully","status": "success"}})
       

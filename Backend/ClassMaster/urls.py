@@ -10,5 +10,10 @@ urlpatterns = [
     path('delete', deleteclass.as_view(), name = 'delete'),
 
     path('classdatabyexcel', classdatabyexcel.as_view(), name = 'classdatabyexcel'),
+    path('add_class_teacher', add_class_teacher.as_view(), name = 'add_class_teacher'),
+    path('get_class_teachers', get_class_teachers.as_view(), name = 'get_class_teachers'),
+    path('edit_class_teacher', edit_class_teacher.as_view(), name = 'edit_class_teacher'),
+    path('delete_class_teacher', delete_class_teacher.as_view(), name = 'delete_class_teacher'),
+    path('teacher_classes_list', teacher_classes_list.as_view(), name = 'teacher_classes_list'),
 
 ]

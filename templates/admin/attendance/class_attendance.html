@@ -1,0 +1,576 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/class_attendance.css' %}">
+<style>
+    .tri-state-checkbox {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #c4c4c4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+        margin-right: 10px;
+    }
+
+    .tri-state-checkbox.empty {
+        background-color: #fff;
+    }
+
+    .tri-state-checkbox.checked {
+        background-color: #fff;
+        color: green;
+    }
+
+    .tri-state-checkbox.unchecked {
+        background-color: #fff;
+        color: red;
+    }
+
+    .check_box-item, .select-all-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .check_box-name, .select-all-name {
+        font-size: 16px;
+    }
+</style>
+{% endblock %}
+{% block heading %}
+  <span class="tab-title"><span class="px-1">Class Attendance</span></span>
+{% endblock %}
+{% block body %}
+
+  <div class="row">
+    <div class="leads-div">
+
+        <div class="position-relative">
+            <div class="row">
+                <div class="col-lg-4">
+                </div>
+                <div class="nav col-lg-4" >
+                    <span id="prevBtn"></span>
+                    <h2 id="monthYear"></h2>
+                    <span id="nextBtn"></span>
+                </div>
+
+            </div>
+
+
+          <div class="calendar">
+      
+              <table>
+                  <thead class="">
+
+                  </thead>
+                  <tbody id="calendarBody">
+      
+                  </tbody>
+              </table>
+
+
+              
+      
+              
+          </div>
+        </div>
+  </div>
+
+  <div class="row">
+    <div  class="col-lg-3 mb-3">
+        <label for="class_name" class="form-label">Class </label>
+
+        <select id="class_name" class="form-select select2 w-50" aria-describedby="class_name_error" onchange="search_student()">
+
+          {% for class in classes %}
+              <option value="{{class.classid_id}}"> {{class.classid}}</option>
+          {% endfor %}
+
+        </select>
+        
+    </div>
+    <div  class="col-lg-9 d-flex m-auto justify-content-end">
+        <a  class="btn btn-primary mx-2" onclick="mark_attendance()">Mark Attendance</a>
+
+    </div>
+  </div>
+
+  <div class="row">
+    <table id="studentable" class="table table-striped table-bordered" style="width:100%">
+      <thead>
+        <tr>
+          <th class="d-flex"><span class="tri-state-checkbox empty" id="selectAllCheckbox" data-state="empty" onclick="selectall(this)"></span><span>Roll No</span></th>
+          
+          <th>Student Code</th>
+          <th>Name</th>
+     
+        </tr>
+      </thead>
+      <tbody id="table_body">
+  
+
+  
+      </tbody>
+  
+    </table>
+</div>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script>
+
+    $(document).ready(function () {
+
+        search_student();
+        var date = new Date();
+        var currentfulldate =  date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+        var selectdateclass;
+        var currentMonth = date.getMonth();
+        var currentYear = date.getFullYear();
+        var currentday = date.getDay();
+        var currentdate= date.getDate()          // Get the day as a number (1-31)
+        var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        var todayWeekday = weekdays[currentday];
+        $(".weekday"+todayWeekday).addClass("selected-weekday");
+
+
+        var selectedDate = null;
+
+        // Initialize calendar
+        generateCalendar(currentMonth, currentYear);
+        var changeedmonth;
+        
+        // Navigation button events
+        $("#prevBtn").on("click", function () {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            if(currentMonth<10){
+            changeedmonth="0"+(currentMonth+1)
+            }else{
+            changeedmonth=(currentMonth+1)
+            }
+            var searcdate= String(currentYear+"-"+changeedmonth+"-"+"01")
+            get_attendance_by_date(searcdate);
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        $("#nextBtn").on("click", function () {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+
+            if(currentMonth+1<10){
+            changeedmonth="0"+(currentMonth+1)
+            }else{
+            changeedmonth=(currentMonth+1)
+            }
+            var searcdate=String(currentYear+"-"+changeedmonth+"-"+"01")
+            get_attendance_by_date(searcdate);
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        // Click event for calendar dates
+        // Click event for calendar dates
+        $(document).on("click", "#calendarBody td", function() {
+            var clickedDate = $(this).text();
+
+
+            // Get the day, month, and year from the clicked date
+            var selectedDay = clickedDate;
+            var selectedMonth = currentMonth + 1; // Adding 1 because JavaScript months are zero-based
+            var selectedYear = currentYear;
+            var selectedDate1 = new Date(currentYear, selectedMonth - 1, selectedDay); // Subtract 1 from the month to make it zero-based
+            var weekday = selectedDate1.getDay();
+
+            selectdateclass= selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth()+1) + "-" + selectedDate1.getDate();
+
+            var currentWeekday = weekdays[weekday];
+            $(".header-day").removeClass("selected-weekday");
+            $(".day").removeClass("selected");
+            $(".weekday"+currentWeekday).addClass("selected-weekday");
+            
+
+            if (selectedDate !== null) {
+                selectedDate.removeClass("selected");
+            }
+            if (selectedDate !== $(this)) {
+                $(this).addClass("selected");
+                selectedDate = $(this);
+                $("#selectedDate").text(clickedDate); // Update selected date in the div
+            } else {
+                selectedDate = null;
+                $("#selectedDate").text(""); // Clear selected date when deselected
+            }
+
+            // Display the selected day, month, and year
+            $("#selectedDay").text(selectedDay);
+            $("#selectedMonth").text(selectedMonth);
+            $("#selectedYear").text(selectedYear);
+            if(selectedMonth<10){
+            selectedMonth="0"+selectedMonth
+            }
+            if(selectedDay<10){
+            selectedDay="0"+selectedDay
+            }
+            var searchdate=selectedYear+'-'+selectedMonth+'-'+selectedDay;            
+            searchdate=searchdate.toString();                
+
+            get_attendance_by_date(searchdate);
+
+
+        });
+
+        selectdateclass=currentfulldate;
+
+        // Function to generate calendar
+        function generateCalendar(month, year) {
+            debugger;
+            var startDate = new Date(year, month, 1);
+            var endDate = new Date(year, month + 1, 0);
+            var calendarBody = $("#calendarBody");
+            calendarBody.empty();
+
+            // Set month and year in the header
+            $("#monthYear").text(startDate.toLocaleDateString("en-US", { month: "long", year: "numeric" }));
+            // Generate calendar days
+            for (var date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
+                var day = date.getDate();
+                
+                forloopmonth=date.getMonth()+1
+                if (forloopmonth<10){
+                forloopmonth="0"+forloopmonth
+                }
+                forloopday=date.getDate()
+                if (forloopday<10){
+                forloopday="0"+forloopday
+                }
+
+                var fulldate = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+                var yyyy_mm_dd = date.getFullYear() + "-" + (forloopmonth) + "-" + (forloopday);
+                var dayOfWeek = date.getDay();
+
+                var cell = $("<td>").text(day);
+                    cell.addClass("day"+day)
+                    cell.addClass(yyyy_mm_dd)
+                    cell.addClass(fulldate)
+                    cell.addClass("day")
+                if (dayOfWeek === 0) {
+                    cell.addClass("weekend");
+                    
+                }
+                if (dayOfWeek === 0 || dayOfWeek === 6 ) {
+                cell.addClass("weeklyoff");
+                cell.css("color", "red");
+            }
+                calendarBody.append(cell);
+            }
+
+            $("."+year+"-"+(month+1)+"-1").addClass("selected");
+            
+            month_repeat=month+1
+            if (month_repeat<10){
+            month_repeat="0"+month_repeat
+            }
+            //get_per_date_leaves_count(month_repeat,year)
+            $("."+currentfulldate).addClass("today");
+            //holidaylist()
+        }
+
+        $(".day").removeClass("selected");
+        $("."+selectdateclass).addClass("selected");
+        console.log("selectdateclass",selectdateclass)
+        get_attendance_by_date(selectdateclass)
+    });
+
+
+ 
+    function search_student() {
+        debugger;
+
+        var classid = $('#class_name').val();
+        var fd = new FormData();
+        fd.append("class", classid);
+        fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
+        $.ajax({
+            type: "POST",
+            url: frontend_url + "student/get_class_students",
+            data: fd,
+            processData: false,
+            contentType: false,
+
+            success: function (response) {
+            if (response.response.n == 1) {
+                var trhtml = ''
+
+                counter = 1
+                $.each(response.data, function (o, i) {
+                const checkbox = `<div onclick="onclickcheckbox(this);" data-check_box="`+ i.studentId_id + `-`+ i.classid_id +`-`+ i.AcademicyearId +`" data-state="empty" class="tri-state-checkbox empty"></div>`;
+                const check_boxItem = `<div class="check_box-item">`+checkbox+` <div class="check_box-name">`+i.RollNo +`</div></div>`;
+                trhtml += `
+                <tr>
+                    <td>
+                        `+check_boxItem+`
+                    </td>
+                    <td>`+ i.StudentCode + `</td>
+                    <td>`+ i.studentId + `</td>
+
+   
+                </tr>
+                
+                `
+                counter += 1
+
+                });
+                $('#table_body').html(trhtml)
+
+                Swal.fire({
+                text: response.response.msg,
+                icon: 'success',
+                })
+            } else {
+                Swal.fire({
+                text: response.response.msg,
+                icon: 'error',
+                })
+            }
+
+
+            },
+        });
+    }
+    function get_attendance_by_date(searcdate) {
+        debugger;
+
+        SelectedDate=searcdate
+        var classid = $('#class_name').val();
+        var fd = new FormData();
+        fd.append("class_id", classid);
+        fd.append("Date", searcdate);
+        
+        fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
+        $.ajax({
+            type: "POST",
+            url: frontend_url + "attendance/get_class_attendance_by_date",
+            data: fd,
+            processData: false,
+            contentType: false,
+
+            success: function (response) {
+            console.log(" response: " ,response);
+            $('[data-state]').attr('data-state', 'empty');
+            $('[data-state]').removeClass();
+            $('[data-state]').addClass('tri-state-checkbox');
+            $('[data-state]').addClass('empty');
+            $('[data-state]').html('');
+
+
+            if (response.response.n == 1) {
+                var trhtml = ''
+
+                $.each(response.data, function (o, i) {
+                    const Element = $('[data-check_box="'+i.student_id+'-'+i.class_id+'-'+i.academic_year_id+'"]');
+                    var state=''
+                    if(i.IsPresent == true) {
+                        state='checked'
+                    }else if(i.IsPresent == false) {
+                        state='unchecked'
+                    }else{
+                        state='empty'
+                    }
+                    Element.attr('data-state', state);
+                    Element.removeClass();
+                    Element.addClass('tri-state-checkbox ');
+                    Element.addClass(state);
+                    
+                    let icon;
+                    if (state === 'checked') {
+                        icon = '<i class="fas fa-check"></i>';
+                    } else if (state === 'unchecked') {
+                        icon = '<i class="fas fa-times"></i>';
+                    } else {
+                        icon = '';
+                    }
+                    Element.html(icon);
+
+
+
+                
+
+                });
+            } else {
+                console.log("fail")
+            }
+
+
+            },
+        }); 
+    }
+    var SelectedDate='';
+    function mark_attendance() {
+        debugger;
+
+
+
+
+        if(IsValid(SelectedDate)){
+            Swal.fire({
+                text: 'Please select date',
+                icon: 'error',
+            })
+            return false
+        }
+
+
+
+
+
+
+        var selectedValues = [];
+
+    
+        const checkboxes = document.querySelectorAll('.check_box-item .tri-state-checkbox');
+        checkboxes.forEach(checkbox => {
+            const check_box = checkbox.getAttribute('data-check_box');
+            const state = checkbox.getAttribute('data-state');
+            var result = check_box.split("-"); // Split the string by ', '
+            var IsPresent='';
+            if (state=='checked'){
+                IsPresent=true
+            }else if (state=='unchecked'){
+                IsPresent=false
+            }else if (state=='') {
+                IsPresent=''
+            }
+
+            var dict={
+                'student_id':result[0], //    
+                'IsPresent':IsPresent,
+    
+              }
+            selectedValues.push(dict);
+        });
+
+
+
+
+
+
+
+        var classid = $('#class_name').val();
+        var fd = new FormData();
+        fd.append("class_id", classid);
+        fd.append("Date", SelectedDate);
+        fd.append("student_ids_list", JSON.stringify(selectedValues));
+        fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
+        $.ajax({
+            type: "POST",
+            url: frontend_url + "attendance/mark_class_attendance",
+            data: fd,
+            processData: false,
+            contentType: false,
+
+            success: function (response) {
+
+            if (response.response.n == 1) {
+                var trhtml = ''
+
+                counter = 1
+                $.each(response.data, function (o, i) {
+
+
+                counter += 1
+
+                });
+
+                Swal.fire({
+                text: response.response.msg,
+                icon: 'success',
+                })
+            } else {
+                Swal.fire({
+                text: response.response.msg,
+                icon: 'error',
+                })
+            }
+
+
+            },
+        });
+    }
+
+
+    function onclickcheckbox(ele){
+        debugger;
+
+        const currentState = ele.getAttribute('data-state');
+        let nextState;
+        switch (currentState) {
+            case 'empty':
+                nextState = 'unchecked';
+                break;
+            case 'unchecked':
+                nextState = 'checked';
+                break;
+            case 'checked':
+                nextState = 'empty';
+                break;
+            default:
+                nextState = 'empty';
+        }
+        updateCheckboxState(ele, nextState);
+    }
+    function updateCheckboxState(checkbox, state) {
+        debugger;
+
+        checkbox.setAttribute('data-state', state);
+        checkbox.className = `tri-state-checkbox ${state}`;
+        let icon;
+        if (state === 'checked') {
+            icon = '<i class="fas fa-check"></i>';
+        } else if (state === 'unchecked') {
+            icon = '<i class="fas fa-times"></i>';
+        } else {
+            icon = '';
+        }
+        checkbox.innerHTML = icon;
+    }
+
+    function selectall(ele){
+        debugger;
+
+            const currentState = ele.getAttribute('data-state');
+            let nextState;
+            switch (currentState) {
+                case 'empty':
+                    nextState = 'unchecked';
+                    break;
+                case 'unchecked':
+                    nextState = 'checked';
+                    break;
+                case 'checked':
+                    nextState = 'empty';
+                    break;
+                default:
+                    nextState = 'empty';
+            }
+            updateCheckboxState(ele, nextState);
+
+            const checkboxes = document.querySelectorAll('.check_box-item .tri-state-checkbox');
+            checkboxes.forEach(checkbox => {
+                updateCheckboxState(checkbox, nextState);
+            });
+    }
+
+
+  </script>
+{% endblock %}

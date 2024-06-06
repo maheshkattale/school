@@ -132,3 +132,112 @@ class classdatabyexcel(GenericAPIView):
 
         return Response({"data":'done',"response": {"n": 1, "msg": "Class uploaded successfully","status": "success"}})
 
+
+
+class add_class_teacher(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        data['isActive'] = True
+        schoolcode = request.user.school_code
+        data['school_code'] = schoolcode
+        class_teacher_exist = ClassTeacher.objects.filter(classid=data['classid'],teacherid=data['teacherid'],academic_year_id=data['academic_year_id'],isActive= True,school_code=schoolcode).first()
+        if class_teacher_exist is not None:
+            return Response({"data":'',"response": {"n": 0, "msg": "Class teacher already exist","status": "failure"}})
+        else:
+            serializer = ClassTeacherSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "Class teacher assigned successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "unable to assign class teacher ","status": "failure"}})
+
+       
+
+class get_class_teachers(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        schoolcode = request.user.school_code
+        class_teacher_exist = ClassTeacher.objects.filter(isActive= True,school_code=schoolcode)
+        if class_teacher_exist.exists():
+            serializer = CustomClassTeacherSerializer(class_teacher_exist,many=True)
+            return Response({"data":serializer.data,"response": {"n": 1, "msg": "Class teachers founds successfully","status": "success"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg": "class teacher not found","status": "failure"}})
+
+class delete_class_teacher(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        class_teacher = data['id']
+        schoolcode = request.user.school_code
+        class_teacher_obj = ClassTeacher.objects.filter(id=class_teacher,isActive=True,school_code=schoolcode).first()
+        if class_teacher_obj is not None:
+            data['isActive'] = False
+            serializer = ClassTeacherSerializer(class_teacher_obj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "Class Teacher Deleted successfully","status": "success"}})
+            else:
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Delete Class Teacher! ","status": "failure"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Class teacher not found ","status": "failure"}})
+        
+
+
+
+class edit_class_teacher(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        data['isActive'] = True
+        schoolcode = request.user.school_code
+        data['school_code'] = schoolcode
+        class_teacher_obj = ClassTeacher.objects.filter(id=data['id'],isActive= True,school_code=schoolcode).first()
+        if class_teacher_obj is not None:
+            class_teacher_exist = ClassTeacher.objects.filter(classid=data['classid'],teacherid=data['teacherid'],academic_year_id=data['academic_year_id'],isActive= True,school_code=schoolcode).exclude(id=data['id']).first()
+            if class_teacher_exist is not None:
+                return Response({"data":'',"response": {"n": 0, "msg": "Class teacher already exist","status": "failure"}})
+            else:
+                serializer = ClassTeacherSerializer(class_teacher_obj,data=data,partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"data":serializer.data,"response": {"n": 1, "msg": "Class teacher updated successfully","status": "success"}})
+                else:
+                    return Response({"data":serializer.errors,"response": {"n": 0, "msg": "unable to update class teacher ","status": "failure"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg": " class teacher not found ","status": "failure"}})
+       
+
+
+class teacher_classes_list(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        schoolcode = request.user.school_code
+        teacherid=request.user.id
+        current_academic_year=AcademicYear.objects.filter(Isdeleted=False,isActive=True,school_code=schoolcode).first()
+        if current_academic_year is not None:
+            teacher_classes_objs = ClassTeacher.objects.filter(teacherid=teacherid,isActive= True,school_code=schoolcode)
+            if teacher_classes_objs.exists():
+                serializer = CustomClassTeacherSerializer(teacher_classes_objs,many=True)
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "teacher Classes founds successfully","status": "success"}})
+            else:
+                return Response({"data":[],"response": {"n": 0, "msg": " teacher class not found","status": "failure"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg": "current academic year is not set","status": "failure"}})
+
+
+
+
+
+
+
+
+
+
+

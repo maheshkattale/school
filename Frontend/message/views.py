@@ -33,7 +33,7 @@ class messages(GenericAPIView):
             recived_messages_list_response = recived_messages_list_request.json()
             
             return render(request, 'admin/message/messages.html',{
-                # 'recipients':recipients_list_response['data'],
+                'recipients':recipients_list_response['data'],
                 'send_messages':send_messages_list_response['data'],'recived_messages':recived_messages_list_response['data']})
         else:
             return redirect('school:login')

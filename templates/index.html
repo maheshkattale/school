@@ -29,7 +29,11 @@
         <!-- Sidebar scroll -->
         <div>
           <div class="brand-logo d-flex align-items-center justify-content-between">
-            <a href="/" class="text-nowrap logo-img"><img src="{% static 'assets/images/logos/black-ort_logo.png' %}" width="180" height="50" alt="" /></a>
+            {% if school_logo != '' and school_logo is not None %}
+            <a class="text-nowrap logo-img"><img src="{{school_logo}}"  height="50" alt="" /></a>
+            {% else %}
+            <a class="text-nowrap logo-img"><img src="{% static 'assets/images/logos/black-ort_logo.png' %}"  height="50" alt="" /></a>
+            {% endif %}
             <div class="close-btn d-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
               <i class="ti ti-x fs-8"></i>
             </div>
@@ -150,7 +154,11 @@
                   </a>
                 </li>
 
+                <li class="nav-item">
+                  <div class="user_name_text">{{username}}</div>
+                  <div class="user_name_text">{{user_role_name}}</div>
 
+                </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
 
@@ -168,7 +176,7 @@
                         <p class="mb-0 fs-3">My Profile</p>
                       </a>
                       <a href="/user/change_password/{{user_id}}" class="d-flex align-items-center gap-2 dropdown-item">
-                        <i class="ti ti-mail fs-6"></i>
+                        <i class="ti ti-key fs-6"></i>
                         <p class="mb-0 fs-3">Change Password</p>
                       </a>
 

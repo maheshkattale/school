@@ -2,14 +2,7 @@
 {% load static %}
 {% block head %}
 <style>
-    .message-tabs {
 
-        padding: 10px;
-        width: 49%;
-        text-align: center;
-        border: 1px solid #995dff;
-    border-radius: 5px;
-    }
     ul>li>a{
         color: #995dff;
         font-weight: 600;
@@ -40,6 +33,68 @@
         font-weight: 600;
         text-transform: capitalize;
     }
+
+
+    body
+    {
+      background-color:#f1f1f2;
+    }
+    .tile
+    {
+      width:80%;
+      margin:60px auto;
+    }
+    #tile-1 .tab-pane
+    {
+      padding:15px;
+      height:80px;
+    }
+    #tile-1 .nav-tabs
+    {
+      position:relative;
+      border:none!important;
+      background-color:#fff;
+    /*   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2); */
+      border-radius:6px;
+    }
+    #tile-1 .nav-tabs li
+    {
+      margin:0px!important;
+    }
+    #tile-1 .nav-tabs li a
+    {
+      position:relative;
+      margin-right:0px!important;
+      padding: 20px 40px!important;
+      font-size:16px;
+      border:none!important;
+      color:#333;
+    }
+    #tile-1 .nav-tabs a:hover
+    {
+      background-color:#fff!important;
+      border:none;
+    }
+    #tile-1 .slider
+    {
+      display:inline-block;
+      width:30px;
+      height:4px;
+      border-radius:3px;
+      background-color:#995dff;
+      position:absolute;
+      z-index:1;
+      bottom:0;
+      transition:all .4s linear;
+      
+    }
+    #tile-1 .nav-tabs .active
+    {
+      background-color:transparent!important;
+      border:none!important;
+      color:#995dff!important;
+    }
+
 </style>
 {% endblock %}
 {% block heading %}
@@ -63,12 +118,14 @@
                       <div class="row">
   
                         <div class="mb-3 col-lg-12">
-                          <label for="recipient" class="form-label">Recipient </label>
+                          <label for="recipient" class="form-label">Recipient  <span class="text-danger">*</span> </label>
                           <select id="recipient" class="form-select select2" aria-describedby="recipient_error">
 
                             <option value="" selected> Please select recipient</option>
                             {% for recipient in recipients %}
-                              <option value="{{recipient.id}}"> {{recipient.Username}}</option>
+                              {% if recipient.id != user_id %}
+                                <option value="{{recipient.id}}"> {{recipient.Username}}</option>
+                              {% endif %}
                             {% endfor %}
           
                           </select>
@@ -78,14 +135,14 @@
 
 
                         <div class="mb-3 col-lg-12">
-                            <label for="subject" class="form-label">Subject </label>
+                            <label for="subject" class="form-label">Subject  <span class="text-danger">*</span> </label>
                             <input type="text" class="form-control" id="subject" placeholder="Please enter subject" aria-describedby="subject_error" />
                             <div id="subject_error" class="form-text error_message"></div>
                           </div>
 
 
                           <div class="mb-3 col-lg-12">
-                            <label for="message" class="form-label">message </label>
+                            <label for="message" class="form-label">message  <span class="text-danger">*</span> </label>
                             <textarea class="form-control" rows="5" id="message" >Please enter message</textarea>
                             <div id="message_error" class="form-text error_message"></div>
                           </div>
@@ -107,14 +164,32 @@
       </div>
   </div>
   <div class="row card pb-5 my-2">
-    <ul class="nav nav-pills justify-content-evenly my-2" role="tablist">
-        <li class="message-tabs"><a data-bs-toggle="pill" href="#Recived" class="active">Recieved Messages</a></li>
-        <li class="message-tabs"><a data-bs-toggle="pill" href="#Send">Sent Messages</a></li>
-      </ul>
+
+
+
+
+
+
+
+      <div class="tile" id="tile-1">
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs nav-justified" role="tablist">
+          <div class="slider"></div>
+           <li class="nav-item">
+              <a class="nav-link active" id="recived-tab" data-toggle="tab" href="#recived" role="tab" aria-controls="recived" aria-selected="true"><i class="ti ti-arrow-down"></i> Recieved Messages</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="sent-tab" data-toggle="tab" href="#sent" role="tab" aria-controls="sent" aria-selected="false"><i class="ti ti-arrow-up"></i> Sent Messages</a>
+            </li>
       
-      <div class="tab-content">
-        <div id="Recived" class="tab-pane fade in active show">
-          {% for i  in recived_messages  %}
+        </ul>
+      
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="recived" role="tabpanel" aria-labelledby="recived-tab">
+            
+            {% for i  in recived_messages  %}
 
             <div class="d-flex message_box">
                 <div class="">
@@ -128,33 +203,13 @@
                     <div><span>Message : </span>{{i.message}}</div>
                 </div>
             </div>
+            {%empty%}
+
+            <div class="text-center not_found_text" >No messages found</div>
           {% endfor %}
-            <div class="d-flex message_box">
-                <div class="">
-                    <div class="m-2">
-                        <img class="message-profile-image" src="{% static 'assets/images/profile/profile.png' %}" alt="" width="50px">
-                    </div>
-                </div>
-                <div class="w-100 me-2">
-                    <div class="d-flex justify-content-between"><span class="message_username">Mahesh Kattale</span><span>2nd April 2024</span></div>
-                    <div><span>Subject : </span> Thanks for your support</div>
-                    <div><span>Message : </span> Some content in this message has been blocked because the sender isn't in your Safe senders list.</div>
-                </div>
-            </div>
-        </div>
-        <div id="Send" class="tab-pane fade">
-            <div class="d-flex message_box">
-              <div class="">
-                  <div class="m-2">
-                      <img class="message-profile-image" src="{% static 'assets/images/profile/profile.png' %}" alt="" width="50px">
-                  </div>
-              </div>
-              <div class="w-100 me-2">
-                  <div class="d-flex justify-content-between"><span class="message_username">Mahesh Kattale</span><span>2nd April 2024</span></div>
-                  <div><span>Subject : </span> Thanks for your support</div>
-                  <div><span>Message : </span> Some content in this message has been blocked because the sender isn't in your Safe senders list.</div>
-              </div>
-            </div>
+
+          </div>
+          <div class="tab-pane fade" id="sent" role="tabpanel" aria-labelledby="sent-tab">
             {% for i  in send_messages  %}
 
             <div class="d-flex message_box">
@@ -169,11 +224,17 @@
                     <div><span>Message : </span>{{i.message}}</div>
                 </div>
             </div>
+            {%empty%}
+
+            <div class="text-center not_found_text" >No messages found</div>
+
           {% endfor %}
-
+          </div>
+      
         </div>
-
+      
       </div>
+
   </div>
 {% endblock %}
 
@@ -304,6 +365,17 @@
        
 
     }
+
+    $("#tile-1 .nav-tabs a").click(function () {
+      var position = $(this).parent().position();
+      var width = $(this).parent().width();
+      $("#tile-1 .slider").css({ left: +position.left, width: width });
+    });
+    
+    var actWidth = $("#tile-1 .nav-tabs").find(".active").parent("li").width();
+    var actPosition = $("#tile-1 .nav-tabs .active").position();
+    $("#tile-1 .slider").css({ left: +actPosition.left, width: actWidth });
+
 
   </script>
 {% endblock %}
