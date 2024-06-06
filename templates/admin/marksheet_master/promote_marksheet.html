@@ -95,7 +95,19 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   </div>
 
   <div class="mb-3 col-lg-3">
-    <label for="promote_class" class="form-label">Promote Class</label>
+    <label for="classid" class="form-label">Promoted Class</label>
+    <select id="classid" class="form-select select2" aria-describedby="class_error">
+      <option value="" selected>Please select promoted class</option>
+      {% for class in classes %}
+      <option value="{{ class.id }}">{{ class.ClassName }} </option>
+      {% endfor %}
+
+    </select>
+    <div id="class_error" class="form-text error_message"></div>
+  </div>
+ 
+  <div class="mb-3 col-lg-3">
+    <label for="promote_class" class="form-label">Promote Type</label>
     <select id="promote_class" class="form-select select2" aria-describedby="class_error">
       <option value="">Please select</option>
       <option value="True">Promote Class</option>
@@ -104,16 +116,16 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     <div id="class_error" class="form-text error_message"></div>
   </div>
 
-  <div class="my-auto col-lg-3 d-flex justify-content-evenly">
-    <div>
-      <a class="btn btn-primary" onclick="All_filter_student();">Apply</a>
-      <a class="btn btn-primary multiplecheckchild" id="hide_btn" onclick="promote_class_function();">Promote Class</a>
-    </div>
-    <div id="Promote_ClassDiv" style="display: none;">
-      <a class="btn btn-primary" onclick="Promote_filter();">All Promoted</a>
-    </div>
+</div>
+
+<div class="my-auto col-lg-12 d-flex justify-content-evenly">
+  <div>
+    <a class="btn btn-primary" onclick="All_filter_student();">Apply</a>
+    <a class="btn btn-primary multiplecheckchild" id="hide_btn" onclick="promote_class_function();">Promote Class</a>
   </div>
-  {% comment %} <div id="allorderdata"></div> {% endcomment %}
+  <div id="Promote_ClassDiv" style="display: none;">
+    <a class="btn btn-primary" onclick="Promote_filter();">All Promoted</a>
+  </div>
 </div>
 <div class="row">
  
