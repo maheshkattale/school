@@ -13,6 +13,7 @@ from rest_framework import permissions
 from .models import *
 from .serializers import *
 from SchoolMaster.models import *
+from MarksheetMaster.models import *
 from SchoolMaster.serializers import *
 from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
@@ -510,6 +511,7 @@ class getstudentlist(GenericAPIView):
         
         schoolcode = request.user.school_code
         studentlist = []
+                
         studentclassLogobj = studentclassLog.objects.filter(school_code=schoolcode)
         if 'class' in request.data.keys():
             if request.data.get('class') is not None and request.data.get('class') !='':
@@ -520,22 +522,31 @@ class getstudentlist(GenericAPIView):
             if request.data.get('yearid') is not None and request.data.get('yearid') !='':
                 ac_yearid = data['yearid']
                 studentclassLogobj = studentclassLogobj.filter(AcademicyearId=ac_yearid)
-            
+                
+        if 'promote_classid' in request.data.keys():
+            if request.data.get('promote_classid') is not None and request.data.get('promote_classid') !='':
+                proid = data['promote_classid']
+                studentclassLogobj = studentclassLogobj.filter(promote_class=proid)
+        
         if studentclassLogobj.exists():
             studentclassser = studentclassLogserializer(studentclassLogobj,many=True)
             for s in studentclassser.data:
+            
                 stuobj = Students.objects.filter(id=s['studentId'],StudentCode=s['StudentCode'],school_code=schoolcode,isActive=True).first()
                 if stuobj is not None:
                     stuser = StudentSerializer1(stuobj) 
-                    studentlist.append(stuser.data)
+                    details = []
+                    for t in [stuser.data]:
+                        t['classid'] = s['classid']
+                        # t['exam_name'] = s['Exam']
+                        details.append(t)
+                    studentlist.append(details[0])
         # else:
         #     stuobj = Students.objects.filter(school_code=schoolcode,isActive=True)
         #     stuser = StudentSerializer1(stuobj,many=True) 
         #     studentlist=stuser.data
-        
-        
-        
-        return Response({"data":studentlist,"response": {"n": 1, "msg": "student list found ","status": "success"}})
+
+        return Response({"data":studentlist,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})
 
 
 
@@ -736,3 +747,38 @@ class get_student_announcements(GenericAPIView):
 
 
 
+class getPromotedList(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        
+        schoolcode = request.user.school_code
+        studentlist = []
+                
+        studentclassLogobj = studentclassLog.objects.filter(school_code=schoolcode)
+        if 'class' in request.data.keys():
+            if request.data.get('class') is not None and request.data.get('class') !='':
+                class_id = data['class']
+                studentclassLogobj = studentclassLogobj.filter(classid=class_id)
+                
+        if 'yearid' in request.data.keys():
+            if request.data.get('yearid') is not None and request.data.get('yearid') !='':
+                ac_yearid = data['yearid']
+                studentclassLogobj = studentclassLogobj.filter(AcademicyearId=ac_yearid)
+                
+        if 'promote_classid' in request.data.keys():
+            if request.data.get('promote_classid') is not None and request.data.get('promote_classid') !='':
+                proid = data['promote_classid']
+                studentclassLogobj = studentclassLogobj.filter(promote_class=proid)
+        
+        if studentclassLogobj.exists():
+            studentclassser = studentclassLogserializer(studentclassLogobj,many=True)
+            for st in studentclassser.data:
+                studeobj = Students.objects.filter(id=st['studentId']).first()
+                st['StudentName'] = studeobj.StudentName
+
+                classobj = Class.objects.filter(id=st['classid']).first()
+                st['StudentClass'] = classobj.ClassName
+                
+            return Response({"data":studentclassser.data,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})

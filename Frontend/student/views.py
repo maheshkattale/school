@@ -30,10 +30,11 @@ class student_list(GenericAPIView):
             
             return render(request, 'admin/student_master/studentlist.html',{'students':student_list_response['data'],
                                                                             'classes':class_list_response['data'],
-                                                                            'academic_years':academic_list_response['data'],})
+                                                                            'academic_years':academic_list_response['data'],'promote_classid':student_list_response['promote_classid'],'exam_name':student_list_response['exam_name']})
 
         else:
             return redirect('school:login')
+
 
     def post(self,request):
         tok = request.session.get('token', False)

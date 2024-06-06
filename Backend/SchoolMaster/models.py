@@ -26,14 +26,14 @@ class AcademicYear(TrackingModel):
             models.Index(fields=['startdate', 'enddate']),
         ]
     
-    def __str__(self):
-        return f"{self.format_date(self.startdate)} to {self.format_date(self.enddate)}"
+    # def __str__(self):
+    #     return f"{self.format_date(self.startdate)} to {self.format_date(self.enddate)}"
 
-    def format_date(self, date):
-        return date.strftime('%d') + self.day_suffix(date.day) + ' ' + date.strftime('%B %Y')
+    # def format_date(self, date):
+    #     return date.strftime('%d') + self.day_suffix(date.day) + ' ' + date.strftime('%B %Y')
 
-    def day_suffix(self, day):
-        if 11 <= day <= 13:
-            return 'th'
-        return {1: 'st', 2: 'nd', 3: 'rd'}.get(day % 10, 'th')  
+    # def day_suffix(self, day):
+    #     if 11 <= day <= 13:
+    #         return 'th'
+    #     return {1: 'st', 2: 'nd', 3: 'rd'}.get(day % 10, 'th')  
 

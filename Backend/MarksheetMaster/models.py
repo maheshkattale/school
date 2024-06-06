@@ -44,14 +44,16 @@ class Exams(TrackingModel):
 
 
 class MarkSheet(TrackingModel):
-    AcademicYearId = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
-    ClassId = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
-    Student=  models.ForeignKey(Students,on_delete=models.CASCADE,null=True,blank=True)
+    AcademicYearId = models.BigIntegerField(null=True,blank=True)
+    ClassId = models.BigIntegerField(null=True,blank=True)
+    Student=  models.BigIntegerField(null=True,blank=True)
     SubID =  models.CharField(max_length=255,null=True,blank=True)  
-    ObtainedMarks =  models.CharField(max_length=255,null=True,blank=True)  #math,sci,hind
+    ObtainedMarks =  models.CharField(max_length=255,null=True,blank=True)
+    OutOfMarks =  models.FloatField(null=True,blank=True)
     Status = models.CharField(max_length=150,null=True,blank=True)
-    Exam=models.ForeignKey(Exams,on_delete=models.CASCADE,null=True,blank=True)
+    Exam=models.BigIntegerField(null=True,blank=True)
     RollNo = models.CharField(max_length=150,null=True,blank=True) #
     SchoolCode = models.CharField(max_length=150,null=True,blank=True)
+
 
 

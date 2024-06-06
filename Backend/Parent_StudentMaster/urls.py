@@ -27,5 +27,8 @@ urlpatterns = [
     path('delete_announcement', delete_announcement.as_view(), name = 'delete_announcement'),
     path('get_student_announcements', get_student_announcements.as_view(), name = 'get_student_announcements'),
     
+    # 
+    path('getPromotedList', getPromotedList.as_view(), name = 'getPromotedList'),
+    
     
 ]

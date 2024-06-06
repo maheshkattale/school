@@ -76,22 +76,18 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
       <option value="" selected>Please select academic year</option>
       {% for year in academic_years %}
-      {% if year.isActive == True %}
-      <option value="{{ year.id }}" selected>{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
-      {% else %}
       <option value="{{ year.id }}">{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
-      {% endif %}
       {% endfor %}
     </select>
     <div id="academic_year_error" class="form-text error_message"></div>
   </div>
 
   <div class="mb-3 col-lg-3">
-    <label for="classid" class="form-label">Exam Name</label>
-    <select id="classid" class="form-select select2" aria-describedby="class_error">
-      <option value="" selected>Exam Name</option>
-      {% for class in classes %}
-      <option value="{{ class.id }}">{{ class.ClassName }} </option>
+    <label for="exam" class="form-label">Exam Name</label>
+    <select id="exam" class="form-select select2" aria-describedby="class_error">
+      <option value="" selected>Please select Exam Name</option>
+      {% for ename in exam_name %}
+      <option value="{{ ename.id }}">{{ ename.Name }} </option>
       {% endfor %}
 
     </select>
@@ -110,37 +106,37 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   </div>
 
 
-
-  <div class="my-auto col-lg-3 d-flex justify-content-evenly">
+<div class="my-auto col-lg-3 d-flex justify-content-evenly">
+  <div>
     <a class="btn btn-primary" onclick="search_student();">Apply</a>
   </div>
+  <div id="Generate_Marksheet_ClassDiv" style="display: none;">
+    <a class="btn btn-primary" onclick="generate_marksheet_filter();" download>All Marksheet</a>
+  </div>
+</div>
 </div>
 <div class="row">
   <table id="studentple" class="table table-striped table-bordered" style="width:100%">
     <thead>
       <tr>
-        <th><input type="checkbox" name="" id="selectall" onclick="toggle(this);"> Sr No</th>
+        <th><input type="checkbox" class="multiplecheckchild" id="selectall" onclick="multiple_generate_marksheet();"> Sr.No</th>
         <th>Name</th>
         <th>Class</th>
+        <th>Exam Name</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody id="table_body">
-
-      {% for i in students %}
+      {% for i in student %}
       <tr>
-        <td> <input type="checkbox" name="student" id="" value="{{i.id}}"> {{forloop.counter }} </td>
+        <td><input class="multiplecheckchild"  type="checkbox" name="student" id="selectall" value="{{i.id}}"> {{forloop.counter }} </td>
         <td>{{i.StudentName}}</td>
         <td>{{i.StudentClass}}</td>
-
-
+        <td>{{i.exam_name}}</td>
         <td>
-          <a data-bs-toggle="tooltip" title="Delete student" onclick="delete_student('{{i.StudentCode}}')"><i
-              class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+          {% comment %} <a href="/reportcard/{{i.id}}/{{i.classid}}" class="btn btn-primary">Generate Marksheet</a> {% endcomment %}
+          <a href="/reportcard/{{i.id}}/{{i.classid}}" download class="btn btn-primary">Generate Marksheet</a>
         </td>
-
-
-
       </tr>
       {% endfor %}
 
@@ -213,13 +209,16 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
 </script>
 <script>
   function search_student() {
-    var classid = $('#classid').val();
-
+    debugger;
     var yearid = $('#academic_year').val();
+    var classid = $('#classid').val();
+    var exam_id = $('#Exam').val();
 
     var fd = new FormData();
     fd.append("class", classid);
     fd.append("yearid", yearid);
+    fd.append("exam_id", exam_id);
+
     fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
     $.ajax({
       type: "POST",
@@ -240,15 +239,11 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
               <td><input type="checkbox" name="student" id="" value="`+ i.id + `"> ` + counter + `</td>
               <td>`+ i.StudentName + `</td>
               <td>`+ i.StudentClass + `</td>
+              <td>`+ i.exam_name + `</td>
               <td>
-                <a data-bs-toggle="tooltip" title="Delete student" onclick="delete_student('`+ i.StudentCode + `')"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+                <a class="btn btn-primary" onclick="search_student();">Generate Marksheet</a>
               </td>
-            
-  
-  
-          </tr>
-            
-            `
+          </tr>`
             counter += 1
 
           });
@@ -277,18 +272,12 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   }
   function generate_student_id_card() {
 
-
-
     var selectedCheckboxes = document.querySelectorAll('input[name="student"]:checked');
     var selectedValues = [];
     selectedCheckboxes.forEach(function (checkbox) {
       selectedValues.push(checkbox.value);
     });
     console.log("Selected checkboxes: " + selectedValues);
-
-
-
-
 
     var classid = $('#classid').val();
 
@@ -311,14 +300,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
         if (response.response.n == 1) {
 
           var containerContent = ''
-
-
-
-
-
-
-
-
 
           counter = 1
           $.each(response.data, function (o, i) {
@@ -416,6 +397,87 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
 
       },
     });
+  }
+
+
+  function generate_marksheet_filter() {
+
+    userlist = []
+
+      $(".multiplecheckchild:checked").each(function(){
+        userlist.push($(this).val());
+    });
+
+    console.log(userlist)
+
+    Swal.fire({
+      text: 'Are you sure you want to generate all this student marksheet?',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+      position: 'top',
+      customClass: {
+        confirmButton: 'swal-button',
+        cancelButton: 'swal-button'
+      }
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          console.log("userlistsss",userlist)
+          $.ajax({
+            url: frontend_url + "student/student_list",
+            data: {
+              'studentId': JSON.stringify(userlist),
+              csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            type: 'POST',
+            success: function (response) {
+              console.log("assss", response)
+              if (response.status == 1) {
+                Swal.fire("Student marksheet have been generate!", {
+                  icon: "success",
+                  timer: 1000,
+                  buttons: false,
+                });
+                setTimeout(
+                  function() 
+                  {
+                      window.location.href = "http://127.0.0.1:8000/generate_marksheet";
+                  }, 2000);
+              } else {
+                Swal.fire("Poof! Your Student marksheet has not been generate!", {
+                  icon: "error",
+                  timer: 1000,
+                  button: "Close",
+                });
+              }
+            }
+          });
+
+        } else {
+          Swal.fire("Your Student marksheet has not been generate!", {
+            icon: "error",
+            timer: 1000,
+            buttons: false,
+          });
+        }
+      });
+  }
+
+
+  function multiple_generate_marksheet(){
+    debugger;
+    if ($("#selectall").is(":checked")) {
+
+      $("#Generate_Marksheet_ClassDiv").show();
+      $(".multiplecheckchild").prop('checked',true);
+    } else {
+        $("#Generate_Marksheet_ClassDiv").hide();
+        $(".multiplecheckchild").prop('checked',false);
+    }
+    
   }
 </script>
 {% endblock %}

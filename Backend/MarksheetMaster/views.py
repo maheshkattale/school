@@ -7,6 +7,9 @@ from rest_framework.response import Response
 import json
 from rest_framework.generics import GenericAPIView
 from MarksheetMaster.models import *
+from Parent_StudentMaster.models import *
+from Parent_StudentMaster.serializers import *
+from User.models import *
 from MarksheetMaster.serializers import *
 from rest_framework.authentication import (BaseAuthentication,
                                            get_authorization_header)
@@ -364,6 +367,7 @@ class exam_names_list(GenericAPIView):
         
         return Response({"data":Examser.data,"response": {"n": 1, "msg": "Exams found successfully","status": "success"}})
     
+    
 class exam_by_academicyear_list(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -425,6 +429,7 @@ class uploadmarksheet(GenericAPIView):
 
 class UploadExcelMarkSheet(GenericAPIView): 
     def post(self,request):
+        print('data',request.data)
         dataset = Dataset()
         fileerrorlist=[]
         new_fees_distributions = request.FILES['file']
@@ -434,21 +439,199 @@ class UploadExcelMarkSheet(GenericAPIView):
         imported_data = dataset.load(new_fees_distributions.read(), format='xlsx')
         for i in imported_data:
             print('1',i)
-            AcademicYearId = i[0]
-            ClassId = i[1]
-            Status = i[2]
-            RollNo = i[3]
-            Student = i[4]
-            Exam = i[5]
-            ObtainedMarks = i[6]
-            SchoolCode = i[7]
-            
-            obj = MarkSheet.objects.create(AcademicYearId=AcademicYearId,ClassId=ClassId,Status=Status,RollNo=RollNo,Student=Student,Exam=Exam,ObtainedMarks=ObtainedMarks,SchoolCode=SchoolCode)
-            
-        # response_={
-        #     'status':'success',
-        #     'msg':'Product Added Successfully.',
-        #     'errorfile':fileerrorlist
-        # }
-        # return Response(response_,status=200)
+            AcademicYearId = request.POST.get('AcademicYearId')
+            ClassId = request.POST.get('ClassId')
+           
+            ObtainedMarks = i[2]
+            OutOfMarks = i[3]
+            Status = i[4]
+            Exam = request.POST.get('Exam')
+            RollNo = i[5]
+            SchoolCode = i[6]
+            stuobj = Students.objects.filter(StudentName = i[0]).first()
+            print('stuobj',stuobj)
+            student = stuobj.id
+            subjobj = Subject.objects.filter(SubjectName = i[1]).first()
+            SubId = subjobj.id
+            obj = MarkSheet.objects.create(AcademicYearId=int(AcademicYearId),ClassId=int(ClassId),Status=Status,RollNo=RollNo,Student=student,Exam=int(Exam),ObtainedMarks=ObtainedMarks,OutOfMarks=OutOfMarks,SchoolCode=SchoolCode,SubID=SubId)
+        response_={
+            'status':1,
+            'msg':'Data found',
+            'data':{}
+        }
+        return Response(response_,status=200)
+    
+    
+    
+    
+class promotemarksheetexcel(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        Student = request.user.Student
+        AcademicYearId = request.user.AcademicYearId
+        promote_class = request.user.promote_class
+        RollNo = request.user.RollNo
+        SchoolCode = request.user.SchoolCode
+        dataset = Dataset()
+      
+        new_product = request.FILES.get('classfile')
 
+        if not new_product.name.endswith('xlsx'):
+            return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+
+        imported_data = dataset.load(new_product.read(), format='xlsx')
+        
+        importDataList =[]
+        notimporteddatalist = []
+        for i in imported_data:
+            if i[0] is not None:
+                importDataList.append(i)
+            else:
+                notimporteddatalist.append(i)
+
+        for i in importDataList:
+            classexist = MarkSheet.objects.filter(ClassName__in=[i[0].lower(),i[0].upper()],Student=Student,AcademicYearId=AcademicYearId,promote_class=promote_class,RollNo=RollNo,SchoolCode=SchoolCode).first()
+            if classexist is None:
+                MarkSheet.objects.create(ClassName=i[0],Student=Student,AcademicYearId=AcademicYearId,promote_class=promote_class,RollNo=RollNo,SchoolCode=SchoolCode)
+
+        return Response({"data":'done',"response": {"n": 1, "msg": "Promote Marksheet uploaded successfully","status": "success"}})
+
+
+class GenerateMarkSheet(GenericAPIView): 
+    def post(self,request):
+        Status = ''
+        classid = request.POST.get('classid')
+        studentId = request.POST.get('studentId')
+        
+        studenobj = Students.objects.filter(id=studentId).first()
+        studentname = studenobj.StudentName
+        ParentId = studenobj.ParentId
+        scode = studenobj.school_code
+        rollno = studenobj.RollNo
+        AcademicYearId = ''
+        StudentCode = ''
+        classobj = Class.objects.filter(id=classid).first()
+        classname = classobj.ClassName 
+        scname = studenobj.StudentCode
+        
+        Username_obj = User.objects.filter(id=studenobj.ParentId).first()
+        parent_name = Username_obj.Username
+                 
+        obj = MarkSheet.objects.filter(ClassId=classid,Student=studentId,isActive=True)
+        ser = MarkSheetSerializer(obj,many=True)
+        
+        for s in ser.data:
+            
+            if s['Status'] == '1':
+                Status = 'PASS'
+            else:
+                Status = 'FAIL'
+                
+            studenobj = Students.objects.filter(id=s['Student']).first()
+            s['studentname'] = studenobj.StudentName
+            
+            s['scode'] = s['SchoolCode']
+            s['rollno'] = s['RollNo']
+            classobj = Class.objects.filter(id=s['ClassId']).first()
+            s['classname'] = classobj.ClassName 
+            StudentCode = studenobj.StudentCode
+            
+            subobj = Subject.objects.filter(id=s['SubID']).first()
+            s['subjname'] = subobj.SubjectName
+            
+            examobj = Exam.objects.filter(id=s['Exam'],isActive=True).first()
+            s['exname'] = examobj.Name
+            
+            AcademicYearId_obj = AcademicYear.objects.filter(id=s['AcademicYearId']).first()
+            AcademicYearId_name = str(AcademicYearId_obj.startdate) + '-' + str(AcademicYearId_obj.enddate)
+
+            
+        return Response({"data":ser.data,"parent_name":parent_name,"AcademicYearId_name":AcademicYearId_name,"Status":Status,"studentname":studentname,"ParentId":ParentId,"scode":scode,"rollno":rollno,"classname":classname,"StudentCode":StudentCode,"response": {"n": 1, "msg": "Generate Marksheet successfully","status": "success"}})
+
+
+
+# class multiplecandiateshortlist(GenericAPIView):
+    # def post(self,request):
+    #     studentId = json.loads(request.data.get('studentId'))
+    #     if studentId is not None and studentId != "":
+    #         for student_id  in studentId:
+    #             studobject = studentclassLog.objects.filter(promote_class=False,id=student_id).first()
+    #             if studobject is not None:
+    #                 studobject.promote_class = True
+    #                 studobject.save()
+    #         response_={
+    #             'status':1,
+    #             'msg':'Student have been Promoted',
+    #             'data':[]
+    #         }
+    #         return Response(response_,status=200) 
+    #     response_={
+    #         'status':0,
+    #         'msg':'Student have not been Promoted',
+    #         'data':[]
+    #     }
+    #     return Response(response_,status=200)
+    
+    
+    
+class MultipleStudentShortlist(GenericAPIView):
+    def post(self, request):
+        try:
+            # Extract studentId from request data
+            studentId = json.loads(request.data.get('checklist'))
+            print('studentId',studentId)
+            
+            for i in studentId:
+                studobject = studentclassLog.objects.filter(promote_class=False,id=i).first()
+                if studobject is not None:
+                    studobject.promote_class = True
+                    studobject.save()
+                    
+                    class_obj = Class.objects.filter(ClassName=studobject.classid).first()
+                    print('class_obj',class_obj.ClassName)
+                    classname = list(class_obj.ClassName)
+                    print('classname',classname)
+                    accturalclass_name = int(classname[0]) + 1
+                    print('accturalclass_name',accturalclass_name)
+                    mainclass_name =  str(accturalclass_name) + str(classname[1])
+                    print('mainclass_name',mainclass_name)
+                    classobj = Class.objects.filter(ClassName=mainclass_name).first()
+                    print('classobj',classobj)
+                    print('studobjectAcademicyearId',studobject.AcademicyearId.id)
+                    
+                    data = {
+                        'promote_class':False,
+                        'AcademicyearId':int(studobject.AcademicyearId.id),
+                        'studentId':int(studobject.studentId.id),
+                        'StudentCode':studobject.StudentCode,
+                        'classid':int(classobj.id),
+                        'RollNo':studobject.RollNo,
+                        'school_code':studobject.school_code
+                    }
+                    studentclassser = studentclassLogserializer(data=data)
+                    if studentclassser.is_valid():
+                        studentclassser.save()
+                        print('studentclassser111',studentclassser.data)
+                    else:
+                        print('studentclassser',studentclassser.errors)
+                           
+            response_ = {
+                'status': 1,
+                'msg': 'Students have been Promoted',
+                'data': []
+            }
+            return Response(response_, status=200)
+        
+        except (ValueError, json.JSONDecodeError) as e:
+            response_ = {
+                'status': 0,
+                'msg': f'Students have not been Promoted. Error: {str(e)}',
+                'data': []
+            }
+            return Response(response_, status=400)
+        
+        
+# class PromotedClassList(GenericAPIView):
+#     def post(self, request):
+#         studentclassLog.objects.filter()

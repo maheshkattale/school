@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+	<title>Report Card</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<!--custom css styles-->
+	<link rel="stylesheet" href="index.css" type="text/css"/>
+	<!--fontawesome-->
+	<link rel="stylesheet" href="fontawesome/css/all.min.css" type="text/css"/>
+	<!--favicon-->
+	<!-- <link rel="shortcut icon" type="image/png" href="../img/favicon.png"/> -->
+   <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.12.0/css/all.css">
+</head>
+<style>
+    *,
+*::before,
+*::after{
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body{
+  font-family: sans-serif;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* STUDENT LIST */
+#student_list{
+	height: 100vh;
+	width: 13vw;
+	background-color: #ddd;
+	/*padding: 0.8rem;*/
+	/*justify-self: flex-start;*/
+	/*align-self: flex-start;*/
+	padding: 1rem;
+}
+
+#student_list input{
+	padding: 0.5rem;
+	border-radius: 0.3rem;
+	border: none;
+	outline-color: #3bbced;
+	margin-bottom: 5rem;
+}
+
+#student_list p{
+	margin-bottom: 1rem;
+	display: flex;
+	justify-content: space-between;
+}
+
+#student_list i{
+	color: red;
+	cursor: pointer;
+}
+
+.report_body{
+	display: flex;
+	flex-flow: column;
+	justify-content: space-evenly;
+}
+
+/* HEADING */
+#heading h1, #heading h2, #heading h3{
+	text-align: center;
+}
+
+
+/* STUDENT INFO */
+#student_info p:first-child{
+	margin-bottom: 1.5rem;
+}
+
+
+#student_info input{
+	padding: 0.5rem;
+}
+/* TABLE */
+
+table{
+  border-collapse: collapse;
+  margin:20px;
+}
+
+table input{
+  border: none;
+  outline: none;
+  text-align: center;
+  font-size: 1rem;
+}
+
+td{
+  padding: 0.5rem;
+  border-right: 0.1rem solid white;
+  border-left: 0.1rem solid white;
+  text-align: center;
+}
+
+th{
+  padding: 0.5rem;
+  border-right: 0.1rem solid white;
+}
+
+tr:nth-child(even){
+  background-color: #ddd;
+}
+
+tr:nth-child(even) input{
+  background-color: #ddd;
+}
+
+th{
+  background-color: #3bbced;
+  color: white;
+  border-bottom: 0.1rem solid white;
+}
+ #actions{
+	font-size: 2rem;
+	display: flex;
+	flex-flow: column;
+	margin-right: 1.5rem;
+} 
+
+#actions i{
+	margin-bottom: 1rem;
+	cursor: pointer;
+}
+.headerstyle{
+    display:flex;
+    justify-content: flex-start;
+}
+.textheaderimg{
+    margin-left: 24px;
+    margin-top:10px;
+}
+.textheader{
+    margin-left: 23px;
+    line-height: 71px;
+}
+.secndheard{
+    display:flex;
+    justify-content: space-around;
+}
+.secndheard1{
+    display:flex;
+    justify-content: space-around;
+    margin-bottom:20px;
+}
+.h3style{
+    margin-top: -36px;
+}
+#student_info p:first-child {
+    margin-bottom: 0.5rem;
+}
+.textp{
+    margin-bottom: 0.5rem;
+}
+td{
+    text-align:center!important;
+}
+</style>
+<body >
+<div class="container">
+    <div class="row">
+        <div class="report_body" style="border:1px solid black;">
+
+            <!-- Section 0 School info + img -->
+            <div class="headerstyle textheaderimg">
+                <div>
+                    <img src="{% static 'assets/images/logos/school_logo.JPG' %}" width="100" height="100" alt="">
+                </div>
+                <div class="textheader">
+                        <h1 style="margin-left:80px;">AMITY UNIVERSITY</h1><h3 class="h3style">BECHELOR's OF ARTS IN PSYCHOLOGY - THEROY</h3>
+                </div>
+                <div style="margin-left:20px!important;">
+                    <img src="{% static 'assets/images/girls.jpg' %}" width="100" height="100" alt="">
+                </div>
+            </div>
+            
+            <!-- Section 1 Info-->
+           
+            <div id="student_info" class="secndheard">
+                {% comment %} {% for s in student %} {% endcomment %}
+                <div>
+                    <p class="textp">Name Of Student: <span>{{studentname}}</span></p>
+                    <p class="textp">Parent Name: <span>{{parent_name}}</span></p>
+                    <p class="textp">Roll No: <span>{{rollno}}</span></p>
+                </div>
+                <div>
+                    <p class="textp">Academic Year: <span>{{AcademicYearId_name}}</span></p>
+                    <p class="textp">Class: <span>{{classname}}</span></p>
+                    <p class="textp">School Code: <span>{{StudentCode}}</span></p>
+                </div>
+                {% comment %} {% endfor %} {% endcomment %}
+            </div>
+
+            <!-- Section 2 Middle One Table-->
+            <div id="table">
+                <table style="border:1px solid black;">
+                    <!-- HEADINGS -->
+                    <tr>
+                    <th>SR.NO</th>
+                    <th>SUBJECT</th>
+                    <th>Obtained MARKS</th>
+                    <th>OUT OF MARKS</th>
+                    <th>TOTAL</th>
+                    </tr>
+
+                    <!-- QURAN -->
+                    {% for g in generate %}
+                    <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{g.subjname}}</td>
+                    <td><input type="text">{{g.ObtainedMarks}}</td>
+                    <td><input type="text">{{g.OutOfMarks}}</td>
+                    <td><span></span></td>
+                    </tr>
+                    {% endfor %}
+                    <!-- HIFZ -->
+                   
+                </table>
+            </div>
+
+            <!-- Section 3 Footers-->
+            <div class="row">
+                <div style="margin-left:100px; margin-bottom:20px;" >Status : <span>{{Status}}</span></div>
+                <div class="secndheard1">
+                    <div>Prepared By : </div>
+                    <div>Checked By : </div>
+                    <div>Controller Of Examination</div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+	<!--javascript-->
+<script type="text/javascript" src="index.js"></script>
+
+<script>
+    //document.addEventListener('DOMContentLoaded', () => {
+
+        //document.querySelector("#table").addEventListener("keyup",function(e){
+    
+            //GRABBING THE PARENT TABLE ROW ELEMENT OF THE TARGET INPUT ELEMENT
+        //    let parent = e.target.parentNode.parentNode;
+    
+        //    if(e.target.tagName = "INPUT"){
+        //        let total = 0;
+    
+                //LOOPING THROUGH THE TAGS CONTAINING THE INPUT TAGS
+                //TAKING THE VALUES OF THE INPUT TAGS AND ADDING TO "TOTAL"
+        //        for(let i = 1; i < parent.childElementCount - 2; i++){
+        //            let stringed_value = parent.children[i].children[0].value;
+        //            let val = Number(stringed_value);
+        //             if(isNaN(val)){
+        //                alert("only numbers allowed");
+        //                return;
+        //            }
+        //            total += val;
+        //        }
+    
+                //OUTPUTTING THE TOTAL
+        //        parent.children[3].children[0].innerHTML = total;
+    
+                //EVALUATAING THE REMARKS
+        //       if(total >= 80){
+        //            parent.children[4].children[0].innerHTML = "Excellent";
+        //        }else if(total >= 70 && total < 80){
+        //            parent.children[4].children[0].innerHTML = "Very Good";
+        //        }else if(total >= 60 && total < 70){
+        //           parent.children[4].children[0].innerHTML = "Good";
+        //        }else if(total >= 50 && total < 60){
+        //            parent.children[4].children[0].innerHTML = "Fair";
+        //        }else if(total >= 40 && total < 50){
+        //            parent.children[4].children[0].innerHTML = "Poor";
+        //        }else{
+        //           parent.children[4].children[0].innerHTML = "Bad";
+        //        }
+        //    }
+    
+        //})
+    
+    
+        /*SEARCH*/
+        //document.querySelector("#student_list input").addEventListener("keyup",function() {
+        //    let keyword = this.value.toLowerCase();
+    
+        //    document.querySelectorAll("#student_list p span").forEach(name => {
+        //        if(name.innerHTML.toLowerCase().indexOf(keyword) == -1){
+        //           name.parentNode.style.display = "none";
+        //        }else{
+        //            name.parentNode.style.display = "flex"
+        //        }
+        //    })
+        //})
+    
+    //})
+</script>
+
+</body>
+</html>

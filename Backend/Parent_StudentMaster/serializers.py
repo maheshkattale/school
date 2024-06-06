@@ -22,6 +22,8 @@ class studentclassLogserializer(serializers.ModelSerializer):
     class Meta:
         model= studentclassLog
         fields='__all__'
+        
+        
 class custom_student_class_log_serializer_class_id_list(serializers.ListSerializer):
     def to_representation(self, data):
         return [item.classid for item in data]

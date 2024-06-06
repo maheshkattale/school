@@ -31,6 +31,10 @@ urlpatterns = [
     
     #marksheet
     path('UploadExcelMarkSheet', UploadExcelMarkSheet.as_view(), name = 'UploadExcelMarkSheet'),
+    path('promotemarksheetexcel', promotemarksheetexcel.as_view(), name = 'promotemarksheetexcel'),
+    path('GenerateMarkSheet', GenerateMarkSheet.as_view(), name = 'GenerateMarkSheet'),
+    path('MultipleStudentShortlist', MultipleStudentShortlist.as_view(), name = 'MultipleStudentShortlist'),
+    # path('PromotedClassList', PromotedClassList.as_view(), name = 'PromotedClassList'),
 
     # exam name
     path('exam_names_list', exam_names_list.as_view(), name = 'exam_names_list'),

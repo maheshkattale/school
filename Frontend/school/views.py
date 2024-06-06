@@ -20,6 +20,13 @@ edit_school_url=frontend_url+'api/SchoolMaster/update'
 class_list_url=frontend_url+'api/ClassMaster/List'
 academic_list_url=frontend_url+'api/SchoolMaster/AcademicYearlist'
 
+exam_names_list_url=frontend_url+'api/MarksheetMaster/exam_names_list'
+UploadExcelMarkSheet_url=frontend_url+'api/MarksheetMaster/UploadExcelMarkSheet'
+student_list_url=frontend_url+'api/Parent_StudentMaster/getstudentlist'
+student_list1_url=frontend_url+'api/Parent_StudentMaster/getPromotedList'
+GenerateMarkSheet_url=frontend_url+'api/MarksheetMaster/GenerateMarkSheet'
+sub_url=frontend_url+'api/SubjectMaster/List'
+
 
 class login(GenericAPIView):
     def get(self,request):
@@ -198,12 +205,20 @@ class generate_marksheet(GenericAPIView):
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
+            
+            student_list_request = requests.post(student_list_url,headers=headers)
+            student_list_response = student_list_request.json()
+            print('student_list_response',student_list_response)
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
             
             academic_list_request = requests.get(academic_list_url,headers=headers)
             academic_list_response = academic_list_request.json()
-            return render(request, 'admin/marksheet_master/generate_marksheet.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],})
+            
+            exam_names_list_request = requests.get(exam_names_list_url,headers=headers)
+            exam_names_list_response = exam_names_list_request.json()
+            return render(request, 'admin/marksheet_master/generate_marksheet.html',{'student':student_list_response['data'],'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exam_name':exam_names_list_response['data']})
+            # return render(request, 'admin/marksheet_master/generate_marksheet.html',{'student':student_list_response['data'],'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exam_name':exam_names_list_response['data']})
         else:
             return redirect('school:login')
 
@@ -212,23 +227,42 @@ class generate_marksheet(GenericAPIView):
 
 class upload_marksheet(GenericAPIView):
     def get(self,request):
+        
         tok = request.session.get('token', False)
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
+            
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
             
             academic_list_request = requests.get(academic_list_url,headers=headers)
             academic_list_response = academic_list_request.json()
-            return render(request, 'admin/marksheet_master/upload_marksheet.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],})
+            
+            exam_names_list_request = requests.get(exam_names_list_url,headers=headers)
+            exam_names_list_response = exam_names_list_request.json()
+            return render(request, 'admin/marksheet_master/upload_marksheet.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exam_name':exam_names_list_response['data']})
         else:
             return redirect('school:login')
+        
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            if request.method == 'POST':
+                data = request.POST.copy()
+                file = request.FILES
+                UploadExcelMarkSheet_request = requests.post(UploadExcelMarkSheet_url,data=data,files=file)
+                UploadExcelMarkSheet_response = UploadExcelMarkSheet_request.json()
+                return redirect('school:upload_marksheet')
+
 
 
 class promote_marksheet(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
+        print('tok',tok)
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
@@ -237,7 +271,14 @@ class promote_marksheet(GenericAPIView):
             
             academic_list_request = requests.get(academic_list_url,headers=headers)
             academic_list_response = academic_list_request.json()
-            return render(request, 'admin/marksheet_master/promote_marksheet.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],})
+            
+            exam_names_list_request = requests.get(exam_names_list_url,headers=headers)
+            exam_names_list_response = exam_names_list_request.json()
+            
+            student_list_request = requests.post(student_list1_url,headers=headers)
+            student_list_response = student_list_request.json()
+            
+            return render(request, 'admin/marksheet_master/promote_marksheet.html',{'token':tok,'student':student_list_response['data'],'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exam_name':exam_names_list_response['data']})
         else:
             return redirect('school:login')
 
@@ -247,5 +288,19 @@ class permissions(GenericAPIView):
     def get(self,request):
         return render(request, 'admin/permissions.html',{})
     
+    
 def custom_404_view(request, exception):
     return render(request, '404.html', status=404)
+
+
+
+class reportcard(GenericAPIView):
+    def get(self,request,id,classid):
+        data = {'studentId':id,'classid':classid}
+        GenerateMarkSheet_request = requests.post(GenerateMarkSheet_url,data=data)
+        GenerateMarkSheet_response = GenerateMarkSheet_request.json()
+        print('GenerateMarkSheet_response',GenerateMarkSheet_response)
+        sub_request = requests.get(sub_url)
+        sub_response = sub_request.json()
+    
+        return render(request, 'admin/marksheet_master/reportcard.html',{'AcademicYearId_name':GenerateMarkSheet_response['AcademicYearId_name'],'studentname':GenerateMarkSheet_response['studentname'],'parent_name':GenerateMarkSheet_response['parent_name'],'StudentCode':GenerateMarkSheet_response['StudentCode'],'rollno':GenerateMarkSheet_response['rollno'],'classname':GenerateMarkSheet_response['classname'],'Status':GenerateMarkSheet_response['Status'],'generate':GenerateMarkSheet_response['data'],'subj':sub_response['data']})
