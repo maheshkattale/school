@@ -232,12 +232,8 @@ class updateParentStudent(GenericAPIView):
                     studentcode = s['StudentCode']
                     if studentcode != '':
                         stuobj = Students.objects.filter(StudentCode=studentcode,isActive=True).first()
-                        # print()
                         if stuobj is not None :
-                            # if s['photo'] != "" and s['photo'] is not None:
-                            #     s['photo'] = s['photo']
-                            # else:
-                            #     s['photo'] = stuobj.photo
+     
                             stuserializer = StudentSerializer(stuobj,data=s,partial=True)
                             if stuserializer.is_valid():
                                 stuserializer.save()
@@ -249,7 +245,8 @@ class updateParentStudent(GenericAPIView):
                                     class_data['StudentCode']=stuserializer.data['StudentCode']
                                     class_data['classid']=stuserializer.data['StudentClass']
                                     class_data['school_code']=schoolcode
-                                    class_lof_obj=studentclassLog.objects.filter(studentId=class_data['studentId'],StudentCode=class_data['StudentCode']).first()
+                                    class_data['RollNo']=stuserializer.data['RollNo']
+                                    class_lof_obj=studentclassLog.objects.filter(studentId=class_data['studentId'],StudentCode=class_data['StudentCode'],AcademicyearId=class_data['AcademicyearId']).first()
                                     if class_lof_obj is not None:
                                         student_class_serializer=studentclassLogserializer(class_lof_obj,data=class_data)
                                     else:
@@ -614,6 +611,38 @@ class getstudentidcards(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "student list is empty ","status": "failed"}})
 
+
+class search_student_by_class_of_currentyear(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        school_code = request.user.school_code
+        studentlist = []
+        studentclassLogobj = studentclassLog.objects.filter(school_code=school_code).order_by('RollNo')
+        if 'class' in request.data.keys():
+            if request.data.get('class') is not None and request.data.get('class') !='':
+                class_id = data['class']
+                print("class_id",class_id)
+                studentclassLogobj = studentclassLogobj.filter(classid=class_id).order_by('RollNo')
+                
+        
+        current_acedemic_obj=AcademicYear.objects.filter(Isdeleted=False,school_code=school_code,isActive=True).first()
+        if current_acedemic_obj is not None:
+            studentclassLogobj = studentclassLogobj.filter(AcademicyearId=current_acedemic_obj.id).order_by('RollNo')
+
+
+        if studentclassLogobj.exists():
+            studentclassser = custom_studentclassLogserializer(studentclassLogobj,many=True)
+            # for s in studentclassser.data:
+            #     print("s",s)
+
+
+
+
+            return Response({"data":studentclassser.data,"response": {"n": 1, "msg": "Students found successfully","status": "success"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg": "No student found ","status": "failure"}})
 
 
 #Announcements-------------------------------------------------------------------------------------

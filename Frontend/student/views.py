@@ -12,7 +12,7 @@ class_list_url=frontend_url+'api/ClassMaster/List'
 academic_list_url=frontend_url+'api/SchoolMaster/AcademicYearlist'
 delete_student_url=frontend_url+'api/Parent_StudentMaster/deleteStudent'
 student_id_cards_url=frontend_url+'api/Parent_StudentMaster/getstudentidcards'
-
+search_student_by_class_of_currentyear_url=frontend_url+'api/Parent_StudentMaster/search_student_by_class_of_currentyear'
 class student_list(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
@@ -88,8 +88,17 @@ class delete_student(GenericAPIView):
             delete_student_request = requests.post(delete_student_url, data=data,headers=headers)
             delete_student_response = delete_student_request.json()
             return HttpResponse(json.dumps(delete_student_response), content_type="application/json")
+class get_class_students(GenericAPIView):
         
-  
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data = request.data.copy()
+            get_class_students_request = requests.post(search_student_by_class_of_currentyear_url,headers=headers,data=data)
+            get_class_students_response = get_class_students_request.json()
+            return HttpResponse(json.dumps(get_class_students_response), content_type="application/json")
         
         
         

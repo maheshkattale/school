@@ -50,6 +50,7 @@ urlpatterns = [
     path('api/TimeTableMaster/', include('TimeTableMaster.urls')),
     path('api/MarksheetMaster/', include('MarksheetMaster.urls')),
     path('api/MessageMaster/', include('MessageMaster.urls')),
+    path('api/AttendanceMaster/', include('AttendanceMaster.urls')),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

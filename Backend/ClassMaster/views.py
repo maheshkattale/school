@@ -214,6 +214,22 @@ class edit_class_teacher(GenericAPIView):
        
 
 
+class teacher_classes_list(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        schoolcode = request.user.school_code
+        teacherid=request.user.id
+        current_academic_year=AcademicYear.objects.filter(Isdeleted=False,isActive=True,school_code=schoolcode).first()
+        if current_academic_year is not None:
+            teacher_classes_objs = ClassTeacher.objects.filter(teacherid=teacherid,isActive= True,school_code=schoolcode)
+            if teacher_classes_objs.exists():
+                serializer = CustomClassTeacherSerializer(teacher_classes_objs,many=True)
+                return Response({"data":serializer.data,"response": {"n": 1, "msg": "teacher Classes founds successfully","status": "success"}})
+            else:
+                return Response({"data":[],"response": {"n": 0, "msg": " teacher class not found","status": "failure"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg": "current academic year is not set","status": "failure"}})
 
 
 
