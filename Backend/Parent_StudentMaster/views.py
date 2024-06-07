@@ -44,7 +44,6 @@ class AddParentStudent(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
-        print("data",data)
         data['isActive'] = True
         studentlist = json.loads(data['studentlist'])
         schoolcode = request.user.school_code
@@ -138,8 +137,7 @@ class AddParentStudent(GenericAPIView):
                     )
                     msg.content_subtype = "html"
                     m = msg.send()
-                    if m:
-                        print(m)
+ 
                     data['n'] = 1
                     data['Msg'] = 'Email has been sent'
                     data['Status'] = "Success"
@@ -558,7 +556,6 @@ class getstudentidcards(GenericAPIView):
     def post(self,request):
         idcardlist = []
         data = request.data.copy()
-        print("data",data)
 
         schoolcode = request.user.school_code
         # studentidlist = json.loads(data['studentlist'])
@@ -632,7 +629,6 @@ class search_student_by_class_of_currentyear(GenericAPIView):
         if 'class' in request.data.keys():
             if request.data.get('class') is not None and request.data.get('class') !='':
                 class_id = data['class']
-                print("class_id",class_id)
                 studentclassLogobj = studentclassLogobj.filter(classid=class_id).order_by('RollNo')
                 
         
@@ -643,8 +639,6 @@ class search_student_by_class_of_currentyear(GenericAPIView):
 
         if studentclassLogobj.exists():
             studentclassser = custom_studentclassLogserializer(studentclassLogobj,many=True)
-            # for s in studentclassser.data:
-            #     print("s",s)
 
 
 
@@ -693,7 +687,6 @@ class add_announcement(GenericAPIView):
         data=request.data.copy()
         data['school_code']=request.user.school_code
         data['isActive']=True
-        print("dta",data)
         serializer = AnnouncementSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -799,35 +792,82 @@ class get_student_announcements(GenericAPIView):
 
 
 
-class promote_student_class(GenericAPIView):
+class promote_students_class(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self, request):
         data=request.data.copy()
         data['school_code']=request.user.school_code
         data['promoted_class']=request.POST.get('promoted_class')
-        data['academic_year_id']=request.POST.get('academic_year_id')
-        if data['academic_year_id'] is not None and data['academic_year_id'] !='':
-            if data['promoted_class'] is not None and data['promoted_class'] !='':
+        data['promoted_academic_year_id']=request.POST.get('promoted_academic_year_id')
 
-                if request.POST.get('students_ids_list') is not None and data['students_ids_list'] !=[]:
-                    data['students_ids_list']=json.loads(request.POST.get('students_ids_list'))
+        if data['current_academic_year_id'] is not None and data['current_academic_year_id'] !='':
+            if data['current_class'] is not None and data['current_class'] !='':
+                if data['promoted_academic_year_id'] is not None and data['promoted_academic_year_id'] !='':
+                    if data['promoted_class'] is not None and data['promoted_class'] !='':
+                        data['students_ids_list']=json.loads(request.POST.get('students_ids_list'))
+                        if data['students_ids_list'] is not None and data['students_ids_list'] !=[]:
+                            get_studentlist=Students.objects.filter(id__in=data['students_ids_list'],isActive=True).order_by('StudentName')
+                            students_serializer=StudentSerializer(get_studentlist,many=True)
+                            promoted=[]
+                            non_promoted=[]
+                            counter=1
+                            for student in students_serializer.data:
+                                check_already_promoted_obj=studentclassLog.objects.filter(studentId=student['id'],AcademicyearId=data['promoted_academic_year_id'],school_code=data['school_code']).first()
+                                if check_already_promoted_obj is not None:
+                                    class_log_data={}
+                                    class_log_data['classid']=data['promoted_class']
+                                    class_log_data['promote_class']=False
+                                    class_log_data['RollNo']=counter
+                                    
+                                    serializer=studentclassLogserializer(check_already_promoted_obj,data=class_log_data,partial=True)
+                                    if serializer.is_valid():
+                                        serializer.save()
+                                        counter+=1
 
-                    for student in data['students_ids_list']:
-                        print(student)
+                                        Students.objects.filter(id=serializer.data['studentId'],isActive=True).update(StudentClass=serializer.data['classid'],RollNo=serializer.data['RollNo'])
 
+                                        promoted.append(student['StudentName'])
+                                    else:
+                                        non_promoted.append(student['StudentName'])
+                                        
+                                else:
+                                    check_previous_promoted_obj=studentclassLog.objects.filter(studentId=student['id'],AcademicyearId=data['current_academic_year_id'],school_code=data['school_code'],classid=data['current_class']).first()
+                                    if check_previous_promoted_obj is not None:
+                                        check_previous_promoted_obj.promote_class=True
+                                        check_previous_promoted_obj.save()
+                                    else:
+                                        print("previous class not found for promotion")
+                                    class_log_data={}
+                                    class_log_data['AcademicyearId']=data['promoted_academic_year_id']
+                                    class_log_data['studentId']=student['id']
+                                    class_log_data['classid']=data['promoted_academic_year_id']
+                                    class_log_data['school_code']=data['school_code']
+                                    class_log_data['promote_class']=False
+                                    class_log_data['StudentCode']=student['StudentCode']
+                                    class_log_data['RollNo']=counter
 
+                                    serializer=studentclassLogserializer(data=class_log_data)
+                                    if serializer.is_valid():
+                                        serializer.save()
+                                        counter+=1
+                                        Students.objects.filter(id=serializer.data['studentId'],isActive=True).update(StudentClass=serializer.data['classid'],RollNo=serializer.data['RollNo'])
 
-                    return Response({"data":[],"response": {"n": 1, "msg":'Students promoted successfully',"status": "success"}})
+                                        promoted.append(student['StudentName'])
+                                    else:
+                                        non_promoted.append(student['StudentName'])
 
-
+                            return Response({"data":{'promoted':promoted,'non_promoted':non_promoted},"response": {"n": 1, "msg":'Students promoted successfully',"status": "success"}})
+                        else:
+                            return Response({"data":{'promoted':[],'non_promoted':[]},"response": {"n": 0, "msg":'Please provide promoted student list',"status": "failed"}})
+                    else:
+                        return Response({"data":{'promoted':[],'non_promoted':[]},"response": {"n": 0, "msg":'Please provide promoted class',"status": "failed"}})
                 else:
-                    return Response({"data":[],"response": {"n": 0, "msg":'Please provide promoted student list',"status": "failed"}})
+                    return Response({"data":{'promoted':[],'non_promoted':[]},"response": {"n": 0, "msg":'Please provide promoted academic year',"status": "failed"}})
             else:
-                return Response({"data":[],"response": {"n": 0, "msg":'Please provide promoted class',"status": "failed"}})
-
-
-        return Response({"data":[],"response": {"n": 0, "msg":'Please provide promoted academic year',"status": "failed"}})
+                return Response({"data":{'promoted':[],'non_promoted':[]},"response": {"n": 0, "msg":'Please provide current class',"status": "failed"}})
+        else:
+            return Response({"data":{'promoted':[],'non_promoted':[]},"response": {"n": 0, "msg":'Please provide current academic year',"status": "failed"}})
 
 
 
@@ -877,7 +917,10 @@ class search_students(GenericAPIView):
         
         schoolcode = request.user.school_code
         studentlist = []
-        print("data",data)        
+        # students_objects=Students.objects.filter(school_code=schoolcode,isActive=True)
+        # student_serializer=custom_student_serializer(students_objects,many=True)  
+        # stdent_list=list(student_serializer.data)
+
         studentclassLogobj = studentclassLog.objects.filter(school_code=schoolcode)
         if 'class' in request.data.keys():
             if request.data.get('class') is not None and request.data.get('class') !='':
@@ -898,13 +941,9 @@ class search_students(GenericAPIView):
                     details = []
                     for t in [stuser.data]:
                         t['classid'] = s['classid']
-                        # t['exam_name'] = s['Exam']
                         details.append(t)
                     studentlist.append(details[0])
-        # else:
-        #     stuobj = Students.objects.filter(school_code=schoolcode,isActive=True)
-        #     stuser = StudentSerializer1(stuobj,many=True) 
-        #     studentlist=stuser.data
+
 
         return Response({"data":studentlist,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})
 

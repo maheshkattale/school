@@ -42,7 +42,6 @@ class mark_class_attendance(GenericAPIView):
                 dictornary['class_id'] = data['class_id']
                 dictornary['Date'] = data['Date']
                 dictornary['academic_year_id'] = data['academic_year_id']
-                print("dictornary",dictornary)
 
 
                 class_attendance=ClassAttendance.objects.filter(student_id=dictornary['student_id'],school_code=dictornary['school_code'],class_id=dictornary['class_id'],Date=dictornary['Date']).first()
@@ -73,7 +72,6 @@ class get_class_attendance_by_date(GenericAPIView):
         data['school_code'] =request.user.school_code
         data['class_id'] = request.POST.get('class_id')
         data['Date'] = request.POST.get('Date')
-        print('data',data)
         current_academic_year_obj=AcademicYear.objects.filter(isActive=True,Isdeleted=False,school_code=data['school_code']).first()
         if current_academic_year_obj is not None:
             data['academic_year_id'] = current_academic_year_obj.id

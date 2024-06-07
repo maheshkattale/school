@@ -423,7 +423,6 @@ class edit_fees_distributions_for_multiple_class(GenericAPIView):
                         FeesDistributionsBreakdownsSerializers=FeesDistributionsBreakdownsSerializer(data=breakdown)
                         if FeesDistributionsBreakdownsSerializers.is_valid():
                             FeesDistributionsBreakdownsSerializers.save()
-                            print("saved")
                         else:
                             print('error',FeesDistributionsBreakdownsSerializers.errors)
                 return Response({"data":'',"response": {"n": 1, "msg": "fees  updated Successfully","status": "success"}})
@@ -448,7 +447,6 @@ class get_student_pending_fees_list(GenericAPIView):
         student_obj=Students.objects.filter(StudentCode=data['StudentCode'],isActive=True,school_code=data['school_code']).first()
         if student_obj is not None:
             student_serializer=StudentSerializer(student_obj)
-            print("student_serializer",student_serializer.data)
             class_log_obj=studentclassLog.objects.filter(studentId=student_serializer.data['id'],isActive=True)
             if class_log_obj.exists():
                 classIds=studentclassLogserializer(class_log_obj,many=True)
@@ -584,12 +582,10 @@ class pay_student_fees(GenericAPIView):
                 if FeesDistributions_obj is not None:
                     if data['termid']=='' or data['termid'] is None or data['termid'] == []:
                         if FeesDistributions_obj.breakdown == True:
-                            print("want to make make full payment of all breakdowns")
                             # want to make make full payment of all breakdowns
                             get_breakdown_obj=FeesDistributionsBreakdowns.objects.filter(fees_distributions_id=FeesDistributions_obj.id,isActive=True)
                             breakdowns_serializers=FeesDistributionsBreakdownsSerializer(get_breakdown_obj,many=True)
                             for b in  breakdowns_serializers.data:
-                                print("b['id']",b['id'])
                                 alredy_payment_obj=StudentFeesLog.objects.filter(fees_distributions_id=FeesDistributions_obj.id,student_id=student_serializer.data['id'],class_id=class_obj.id,termid=str(b['id'])).first()
                                 payment_entry={}
                                 payment_entry['fees_distributions_id']=FeesDistributions_obj.id
@@ -607,7 +603,6 @@ class pay_student_fees(GenericAPIView):
 
 
                         else:
-                            print("want to make make full payment ")
                             # want to make make full payment 
                             alredy_payment_obj=StudentFeesLog.objects.filter(fees_distributions_id=FeesDistributions_obj.id,student_id=student_serializer.data['id'],class_id=class_obj.id,termid='').first()
                             payment_entry={}
@@ -624,7 +619,6 @@ class pay_student_fees(GenericAPIView):
                                     unsuccessfull_payments.append(payment_entry)
                     else:
                         # want to make make term wise payment 
-                        print("want to make make term wise payment ")
 
                         for term in data['termid']:
                             alredy_payment_obj=StudentFeesLog.objects.filter(fees_distributions_id=FeesDistributions_obj.id,student_id=student_serializer.data['id'],class_id=class_obj.id,termid=term).first()

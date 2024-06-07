@@ -29,7 +29,6 @@ class studentclassLog(TrackingModel):
     RollNo = models.CharField(max_length=150,null=True,blank=True)
     school_code = models.CharField(max_length=150,null=True,blank=True)
     promote_class = models.BooleanField(default=False,null=True,blank=True)
-    # Exam = models.BigIntegerField(null=True,blank=True)
 
 
 class BloodGroup(TrackingModel):
