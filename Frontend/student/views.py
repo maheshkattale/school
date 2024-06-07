@@ -31,7 +31,7 @@ class student_list(GenericAPIView):
             
             return render(request, 'admin/student_master/studentlist.html',{'students':student_list_response['data'],
                                                                             'classes':class_list_response['data'],
-                                                                            'academic_years':academic_list_response['data'],'promote_classid':student_list_response['promote_classid'],'exam_name':student_list_response['exam_name']})
+                                                                            'academic_years':academic_list_response['data']})
 
         else:
             return redirect('school:login')
@@ -89,6 +89,8 @@ class delete_student(GenericAPIView):
             delete_student_request = requests.post(delete_student_url, data=data,headers=headers)
             delete_student_response = delete_student_request.json()
             return HttpResponse(json.dumps(delete_student_response), content_type="application/json")
+
+
 class get_class_students(GenericAPIView):
         
     def post(self,request):

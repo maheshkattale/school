@@ -1,7 +1,11 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block head %}
-
+<style>
+  .modal-content{
+    margin-left:50px;
+  }
+</style>
 {% endblock %}
 {% block heading %}
   <span class="tab-title"><span class="px-1">Subject Master</span></span>
@@ -56,7 +60,7 @@
           <th>Action</th>
         </tr>
       </thead>
-      <tbody>       
+      <tbody> 
          {% for i  in subjects %}
         <tr>
           <td>{{forloop.counter}}</td>
@@ -78,22 +82,11 @@
                           <form>
                             <div class="row">
         
-        
-        
-        
-        
-             
-        
-        
-        
                               <div class="mb-3 col-lg-6">
                                 <label for="subject_name{{i.id}}" class="form-label">Subject Name <span class="text-danger">*</span> </label>
                                 <input type="text" class="form-control" id="subject_name{{i.id}}" value="{{i.SubjectName}}" placeholder="Please enter class name" aria-describedby="subject_name_error{{i.id}}" />
                                 <div id="subject_name_error{{i.id}}" class="form-text error_message"></div>
                               </div>
-        
-        
-
                             </div>
         
                             <div class="row">

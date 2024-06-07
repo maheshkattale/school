@@ -89,8 +89,8 @@
 </span>
 {% endblock %}
 {% block body %}
-<div class="row justify-content-end">
-  <div class="mb-3 col-lg-3">
+<div class="row justify-content-start">
+  <div class="mb-3 col-lg-4">
     <label for="classid" class="form-label">Class</label>
     <select id="classid" class="form-select select2" aria-describedby="class_error">
       <option value="" selected>Please select class</option>
@@ -101,7 +101,7 @@
     </select>
     <div id="class_error" class="form-text error_message"></div>
   </div>
-  <div class="mb-3 col-lg-3">
+  <div class="mb-3 col-lg-4">
     <label for="academic_year" class="form-label">Academic Year</label>
     <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
       <option value="" selected>Please select academic year</option>
@@ -116,7 +116,7 @@
     <div id="academic_year_error" class="form-text error_message"></div>
   </div>
 
-  <div class="mb-3 my-auto col-lg-3 d-flex justify-content-evenly">
+  <div class="mb-3 my-auto col-lg-4 d-flex justify-content-evenly">
     <a class="btn btn-primary" onclick="search_student();">Apply</a>
     <a class="btn btn-primary" onclick="generate_student_id_card();">Get ID Cards</a>
   </div>

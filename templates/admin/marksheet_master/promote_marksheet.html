@@ -64,7 +64,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
 {% endblock %}
 {% block heading %}
 <span class="tab-title">
-    <span class="px-1">Generate Marktsheet</span>
+    <span class="px-1">Promote Marktsheet</span>
 </span>
 {% endblock %}
 {% block body %}
@@ -83,17 +83,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   </div>
 
   <div class="mb-3 col-lg-3">
-    <label for="exam" class="form-label">Exam Name</label>
-    <select id="exam" class="form-select select2" aria-describedby="class_error">
-      <option value="" selected>Please select Exam Name</option>
-      {% for ename in exam_name %}
-      <option value="{{ ename.id }}">{{ ename.Name }} </option>
-      {% endfor %}
-
-    </select>
-    <div id="class_error" class="form-text error_message"></div>
-  </div>
-  <div class="mb-3 col-lg-3">
     <label for="classid" class="form-label">Class</label>
     <select id="classid" class="form-select select2" aria-describedby="class_error">
       <option value="" selected>Please select class</option>
@@ -105,38 +94,55 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     <div id="class_error" class="form-text error_message"></div>
   </div>
 
+  <div class="mb-3 col-lg-3">
+    <label for="classid" class="form-label">Promoted Class</label>
+    <select id="classid" class="form-select select2" aria-describedby="class_error">
+      <option value="" selected>Please select promoted class</option>
+      {% for class in classes %}
+      <option value="{{ class.id }}">{{ class.ClassName }} </option>
+      {% endfor %}
 
-<div class="my-auto col-lg-3 d-flex justify-content-evenly">
-  <div>
-    <a class="btn btn-primary" onclick="search_student();">Apply</a>
+    </select>
+    <div id="class_error" class="form-text error_message"></div>
   </div>
-  <div id="Generate_Marksheet_ClassDiv" style="display: none;">
-    <a class="btn btn-primary" onclick="generate_marksheet_filter();" download>All Marksheet</a>
+ 
+  <div class="mb-3 col-lg-3">
+    <label for="promote_class" class="form-label">Promote Type</label>
+    <select id="promote_class" class="form-select select2" aria-describedby="class_error">
+      <option value="">Please select</option>
+      <option value="True">Promote Class</option>
+      <option value="False">Unpromote Class</option>
+    </select>
+    <div id="class_error" class="form-text error_message"></div>
   </div>
+
 </div>
+
+<div class="my-auto col-lg-12 d-flex justify-content-evenly">
+  <div>
+    <a class="btn btn-primary" onclick="All_filter_student();">Apply</a>
+    <a class="btn btn-primary multiplecheckchild" id="hide_btn" onclick="promote_class_function();">Promote Class</a>
+  </div>
+  <div id="Promote_ClassDiv" style="display: none;">
+    <a class="btn btn-primary" onclick="Promote_filter();">All Promoted</a>
+  </div>
 </div>
 <div class="row">
+ 
   <table id="studentple" class="table table-striped table-bordered" style="width:100%">
     <thead>
       <tr>
-        <th><input type="checkbox" class="multiplecheckchild" id="selectall" onclick="multiple_generate_marksheet();"> Sr.No</th>
+        <th><input type="checkbox" class="multiplecheckchild" id="selectall" onclick="multiplecheck();"> Sr.No</th>
         <th>Name</th>
         <th>Class</th>
-        <th>Exam Name</th>
-        <th>Action</th>
       </tr>
     </thead>
     <tbody id="table_body">
       {% for i in student %}
       <tr>
-        <td><input class="multiplecheckchild"  type="checkbox" name="student" id="selectall" value="{{i.id}}"> {{forloop.counter }} </td>
+        <td><input type="checkbox" class="multiplecheckchild" onclick="single_check_function({{i.id}});" name="student" id="selectall" value="{{i.id}}"> {{forloop.counter }} </td>
         <td>{{i.StudentName}}</td>
         <td>{{i.StudentClass}}</td>
-        <td>{{i.exname}}</td>
-        <td>
-          {% comment %} <a href="/reportcard/{{i.id}}/{{i.classid}}" class="btn btn-primary">Generate Marksheet</a> {% endcomment %}
-          <a href="/reportcard/{{i.id}}/{{i.classid}}" download class="btn btn-primary">Generate Marksheet</a>
-        </td>
       </tr>
       {% endfor %}
 
@@ -144,7 +150,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
 
   </table>
 </div>
-
 
 {% endblock %}
 
@@ -208,22 +213,24 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
 
 </script>
 <script>
-  function search_student() {
+  function All_filter_student() {
     debugger;
+    t = 'Bearer {{token}}'
     var yearid = $('#academic_year').val();
     var classid = $('#classid').val();
-    var exam_id = $('#Exam').val();
+    var promote_classid = $('#promote_class').val();
 
     var fd = new FormData();
     fd.append("class", classid);
     fd.append("yearid", yearid);
-    fd.append("exam_id", exam_id);
+    fd.append("promote_classid", promote_classid);
 
     fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
     $.ajax({
       type: "POST",
-      url: frontend_url + "student/student_list",
+      url: frontend_url + "api/Parent_StudentMaster/getPromotedList",
       data: fd,
+      headers:{'Authorization':t},
       processData: false,
       contentType: false,
 
@@ -239,10 +246,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
               <td><input type="checkbox" name="student" id="" value="`+ i.id + `"> ` + counter + `</td>
               <td>`+ i.StudentName + `</td>
               <td>`+ i.StudentClass + `</td>
-              <td>`+ i.exname + `</td>
-              <td>
-                <a class="btn btn-primary" onclick="search_student();">Generate Marksheet</a>
-              </td>
           </tr>`
             counter += 1
 
@@ -271,6 +274,8 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     }
   }
   function generate_student_id_card() {
+
+
 
     var selectedCheckboxes = document.querySelectorAll('input[name="student"]:checked');
     var selectedValues = [];
@@ -398,9 +403,9 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
       },
     });
   }
+  
 
-
-  function generate_marksheet_filter() {
+  function Promote_filter() {
 
     userlist = []
 
@@ -411,7 +416,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     console.log(userlist)
 
     Swal.fire({
-      text: 'Are you sure you want to generate all this student marksheet?',
+      text: 'Are you sure you want to promoted all this Student?',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
@@ -427,7 +432,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
         if (result.isConfirmed) {
           console.log("userlistsss",userlist)
           $.ajax({
-            url: frontend_url + "student/student_list",
+            url: frontend_url + 'api/MarksheetMaster/MultipleStudentShortlist',
             data: {
               'studentId': JSON.stringify(userlist),
               csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -436,7 +441,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
             success: function (response) {
               console.log("assss", response)
               if (response.status == 1) {
-                Swal.fire("Student marksheet have been generate!", {
+                Swal.fire("Student have been Promoted!", {
                   icon: "success",
                   timer: 1000,
                   buttons: false,
@@ -444,10 +449,10 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
                 setTimeout(
                   function() 
                   {
-                      window.location.href = "http://127.0.0.1:8000/generate_marksheet";
+                      window.location.href = "http://127.0.0.1:8000/promote_marksheet";
                   }, 2000);
               } else {
-                Swal.fire("Poof! Your Student marksheet has not been generate!", {
+                Swal.fire("Poof! Your Student has not been Promoted!", {
                   icon: "error",
                   timer: 1000,
                   button: "Close",
@@ -457,7 +462,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
           });
 
         } else {
-          Swal.fire("Your Student marksheet has not been generate!", {
+          Swal.fire("Your Student has not been Promoted!", {
             icon: "error",
             timer: 1000,
             buttons: false,
@@ -466,18 +471,97 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
       });
   }
 
-
-  function multiple_generate_marksheet(){
+  function multiplecheck(){
     debugger;
     if ($("#selectall").is(":checked")) {
 
-      $("#Generate_Marksheet_ClassDiv").show();
+      $("#Promote_ClassDiv").show();
+      $("#hide_btn").hide();
       $(".multiplecheckchild").prop('checked',true);
     } else {
-        $("#Generate_Marksheet_ClassDiv").hide();
+        $("#Promote_ClassDiv").hide();
+        $("#hide_btn").show();
         $(".multiplecheckchild").prop('checked',false);
     }
     
+  }
+
+
+  var checklist = [];
+  function single_check_function(id){
+    var check1 = false
+    $(checklist).each(function (c,d){
+      if(d == bid){
+        check1 = true
+      }
+     })
+    if (check1 == true){
+      const index = checklist.indexOf(id);
+    if (index > -1) { // only splice array when item is found
+      checklist.splice(index, 1); // 2nd parameter means remove one item only
+    }
+
+    }else{
+      console.log("id",id)
+      checklist.push(id);
+    }
+      
+  }
+  function promote_class_function(){
+
+    Swal.fire({
+      text: 'Are you sure you want to promoted all this Student?',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+      position: 'top',
+      customClass: {
+        confirmButton: 'swal-button',
+        cancelButton: 'swal-button'
+      }
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: frontend_url + 'api/MarksheetMaster/MultipleStudentShortlist',
+            data: {
+              'checklist': JSON.stringify(checklist),
+              csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            type: 'POST',
+            success: function (response) {
+              console.log("assss", response)
+              if (response.status == 1) {
+                Swal.fire("Student have been Promoted!", {
+                  icon: "success",
+                  timer: 1000,
+                  buttons: false,
+                });
+                setTimeout(
+                  function() 
+                  {
+                      window.location.href = "http://127.0.0.1:8000/promote_marksheet";
+                  }, 2000);
+              } else {
+                Swal.fire("Poof! Your Student has not been Promoted!", {
+                  icon: "error",
+                  timer: 1000,
+                  button: "Close",
+                });
+              }
+            }
+          });
+
+        } else {
+          Swal.fire("Your Student has not been Promoted!", {
+            icon: "error",
+            timer: 1000,
+            buttons: false,
+          });
+        }
+      });
   }
 </script>
 {% endblock %}

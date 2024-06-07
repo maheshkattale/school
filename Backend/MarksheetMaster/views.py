@@ -375,8 +375,10 @@ class academic_exam_list(GenericAPIView):
         schoolcode = request.user.school_code
         Examobjs = Exams.objects.filter(isActive=True).order_by('exam_id','AcademicYearId_id',).distinct('exam_id','AcademicYearId_id',)
         serializer = CustomExamsSerializer1(Examobjs,many=True)
+        
         newlist=serializer.data
         for i in newlist:
+            print('sssss',i['exam_id'],i['AcademicYearId_id'])
             Exam_shedule_obj = Exams.objects.filter(exam=int(i['exam_id']),AcademicYearId=int(i['AcademicYearId_id']),isActive=True).order_by('Date')
             Exam_shedule_serializer = CustomExamsSerializer2(Exam_shedule_obj,many=True)
             i['shedule']=Exam_shedule_serializer.data
@@ -599,7 +601,7 @@ class GenerateMarkSheet(GenericAPIView):
             subobj = Subject.objects.filter(id=s['SubID']).first()
             s['subjname'] = subobj.SubjectName
             
-            examobj = Exam.objects.filter(id=s['Exam'],isActive=True).first()
+            examobj = Exam.objects.filter(id=s['Exam']).first()
             s['exname'] = examobj.Name
             
             AcademicYearId_obj = AcademicYear.objects.filter(id=s['AcademicYearId']).first()

@@ -37,6 +37,9 @@
       font-weight: 600;
       text-transform: capitalize;
     }
+    .modal-content{
+      margin-left:50px;
+    }
   </style>
 {% endblock %}
 {% block heading %}
@@ -64,7 +67,7 @@
                               <option value="{{ academic.id }}">{{ academic.startdate_month_yyyy }} to {{ academic.enddate_month_yyyy }}</option>
                             {% endfor %}
                           </select>
-                          <div id="academic_year_error" class="form-text error_message"></div>
+                          <div id="academic_year_error" class="form-text error_message mt-3"></div>
                         </div>
 
                         <div class="mb-3 col-lg-6">

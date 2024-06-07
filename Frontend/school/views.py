@@ -219,6 +219,10 @@ class generate_marksheet(GenericAPIView):
             student_list_request = requests.post(student_list_url,headers=headers)
             student_list_response = student_list_request.json()
             print('student_list_response',student_list_response)
+            
+            # GenerateMarkSheet_request = requests.post(GenerateMarkSheet_url,data=data)
+            # GenerateMarkSheet_response = GenerateMarkSheet_request.json()
+            
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
             
@@ -227,7 +231,8 @@ class generate_marksheet(GenericAPIView):
             
             exam_names_list_request = requests.get(exam_names_list_url,headers=headers)
             exam_names_list_response = exam_names_list_request.json()
-            return render(request, 'admin/marksheet_master/generate_marksheet.html',{'student':student_list_response['data'],'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exam_name':exam_names_list_response['data']})
+            
+            return render(request, 'admin/marksheet_master/generate_marksheet.html',{'student':student_list_response['data'],'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exname':exam_names_list_response['data']})
             # return render(request, 'admin/marksheet_master/generate_marksheet.html',{'student':student_list_response['data'],'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exam_name':exam_names_list_response['data']})
         else:
             return redirect('school:login')

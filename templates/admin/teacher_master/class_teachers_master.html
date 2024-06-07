@@ -1,7 +1,11 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block head %}
-
+<style>
+.modal-content{
+  margin-left:50px;
+}
+</style>
 {% endblock %}
 {% block heading %}
   <span class="tab-title"><span class="px-1">Class Teacher Master</span></span>
@@ -35,7 +39,7 @@
                 
                                 </select>
                             
-                            <div id="class_name_error" class="form-text error_message"></div>
+                            <div id="class_name_error" class="form-text error_message mt-3"></div>
                         </div>
 
                         <div class="mb-3 col-lg-6">
@@ -51,7 +55,7 @@
             
                             </select>
                             
-                            <div id="class_teacher_name_error" class="form-text error_message"></div>
+                            <div id="class_teacher_name_error" class="form-text error_message mt-3"></div>
                         </div>
 
                         <div class="mb-3 col-lg-6">
@@ -67,7 +71,7 @@
             
                             </select>
                             
-                            <div id="academic_year_error" class="form-text error_message"></div>
+                            <div id="academic_year_error" class="form-text error_message mt-3"></div>
                         </div>
                     </div>
 
@@ -144,7 +148,7 @@
                         
                                         </select>
                                     
-                                    <div id="class_name_error{{i.id}}" class="form-text error_message"></div>
+                                    <div id="class_name_error{{i.id}}" class="form-text error_message mt-3"></div>
                                 </div>
         
                                 <div class="mb-3 col-lg-6">
@@ -164,7 +168,7 @@
                     
                                     </select>
                                     
-                                    <div id="class_teacher_name_error{{i.id}}" class="form-text error_message"></div>
+                                    <div id="class_teacher_name_error{{i.id}}" class="form-text error_message mt-3"></div>
                                 </div>
         
                                 <div class="mb-3 col-lg-6">
@@ -184,7 +188,7 @@
                     
                                     </select>
                                     
-                                    <div id="academic_year_error{{i.id}}" class="form-text error_message"></div>
+                                    <div id="academic_year_error{{i.id}}" class="form-text error_message mt-3"></div>
                                 </div>
         
         

@@ -516,11 +516,6 @@ class getstudentlist(GenericAPIView):
                         # t['exam_name'] = s['Exam']
                         details.append(t)
                     studentlist.append(details[0])
-        # else:
-        #     stuobj = Students.objects.filter(school_code=schoolcode,isActive=True)
-        #     stuser = StudentSerializer1(stuobj,many=True) 
-        #     studentlist=stuser.data
-
         return Response({"data":studentlist,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})
 
 
@@ -836,35 +831,6 @@ class promote_student_class(GenericAPIView):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class getPromotedList(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -944,4 +910,15 @@ class search_students(GenericAPIView):
 
 
 
-
+class GenerateMarksheetListApi(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        schoolcode = request.user.school_code
+        
+        stuobj = Students.objects.filter(school_code=schoolcode,isActive=True)
+        stuser = StudentSerializer1(stuobj,many=True) 
+        details = []
+        for t in stuser.data:
+            details.append(t)
