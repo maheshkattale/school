@@ -289,7 +289,21 @@
         $(".day").removeClass("selected");
         $("."+selectdateclass).addClass("selected");
         console.log("selectdateclass",selectdateclass)
-        get_attendance_by_date(selectdateclass)
+        var selected_d=selectdateclass.split("-")
+        var s_d=selected_d[2]
+        var s_m=selected_d[1]
+        var s_y=selected_d[0]
+        if(parseInt(s_m)<10){
+            s_m="0"+s_m
+        }
+        if(parseInt(s_d)<10){
+            s_d="0"+s_d
+        }
+        var s_date=s_y+'-'+s_m+'-'+s_d;            
+        s_date=s_date.toString()
+
+
+        get_attendance_by_date(s_date)
     });
 
 

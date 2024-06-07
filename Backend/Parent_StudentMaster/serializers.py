@@ -6,6 +6,29 @@ class StudentSerializer(serializers.ModelSerializer):
         model= Students
         fields='__all__'
 
+class custom_student_serializer_id_list(serializers.ListSerializer):
+    def to_representation(self, data):
+        return [item.id for item in data]
+
+class custom_student_serializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Students
+        fields = ['id']
+        list_serializer_class = custom_student_serializer_id_list
+
+
+class custom_student_classlog_serializer_studentid_list(serializers.ListSerializer):
+    def to_representation(self, data):
+        return [item.studentId for item in data]
+
+class custom_studentid_classlog_serializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = studentclassLog
+        fields = ['studentId']
+        list_serializer_class = custom_student_classlog_serializer_studentid_list
+
 class StudentSerializer1(serializers.ModelSerializer):
     StudentClass=serializers.StringRelatedField()
     class Meta:
@@ -39,7 +62,6 @@ class custom_student_class_log_serializer_class_id_list(serializers.ListSerializ
 
 class custom_student_class_log_serializer(serializers.ModelSerializer):
     classid = serializers.PrimaryKeyRelatedField(source='classid', queryset=Class.objects.all())
-    # RoleID = serializers.StringRelatedField()
 
     class Meta:
         model = studentclassLog

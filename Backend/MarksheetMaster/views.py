@@ -278,10 +278,8 @@ class Examlist(GenericAPIView):
 
             # convert time string to datetime
             t1 = datetime.strptime(start_time, "%H:%M")
-            # print('Start time:', t1.time())
 
             t2 = datetime.strptime(end_time, "%H:%M")
-            # print('End time:', t2.time())
 
             # get difference
             delta = t2 - t1
@@ -386,10 +384,8 @@ class academic_exam_list(GenericAPIView):
 
                 # convert time string to datetime
                 t1 = datetime.strptime(start_time, "%H:%M")
-                # print('Start time:', t1.time())
 
                 t2 = datetime.strptime(end_time, "%H:%M")
-                # print('End time:', t2.time())
 
                 # get difference
                 delta = t2 - t1
@@ -428,10 +424,8 @@ class get_exam_timetable(GenericAPIView):
 
                             # convert time string to datetime
                             t1 = datetime.strptime(start_time, "%H:%M")
-                            # print('Start time:', t1.time())
 
                             t2 = datetime.strptime(end_time, "%H:%M")
-                            # print('End time:', t2.time())
 
                             # get difference
                             delta = t2 - t1
@@ -475,10 +469,9 @@ class uploadmarksheet(GenericAPIView):
 
         # Now all_sheet_data contains data from all sheets in the Excel file
         # You can access each sheet's data using its name as key
-        for sheet_name, data in all_sheet_data.items():
-            # print(f"Data from Sheet: {sheet_name}")
-            for row in data:
-                print("row",row)
+        # for sheet_name, data in all_sheet_data.items():
+        #     for row in data:
+        #         print("row",row)
         
         return Response({"data":'',"response": {"n": 0, "msg": "Exam not found ","status": "failure"}})
     
@@ -488,7 +481,6 @@ class uploadmarksheet(GenericAPIView):
 
 class UploadExcelMarkSheet(GenericAPIView): 
     def post(self,request):
-        print('data',request.data)
         dataset = Dataset()
         fileerrorlist=[]
         new_fees_distributions = request.FILES['file']
@@ -497,7 +489,6 @@ class UploadExcelMarkSheet(GenericAPIView):
             return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
         imported_data = dataset.load(new_fees_distributions.read(), format='xlsx')
         for i in imported_data:
-            print('1',i)
             AcademicYearId = request.POST.get('AcademicYearId')
             ClassId = request.POST.get('ClassId')
            
@@ -508,7 +499,6 @@ class UploadExcelMarkSheet(GenericAPIView):
             RollNo = i[5]
             SchoolCode = i[6]
             stuobj = Students.objects.filter(StudentName = i[0]).first()
-            print('stuobj',stuobj)
             student = stuobj.id
             subjobj = Subject.objects.filter(SubjectName = i[1]).first()
             SubId = subjobj.id
@@ -639,7 +629,6 @@ class MultipleStudentShortlist(GenericAPIView):
         try:
             # Extract studentId from request data
             studentId = json.loads(request.data.get('checklist'))
-            print('studentId',studentId)
             
             for i in studentId:
                 studobject = studentclassLog.objects.filter(promote_class=False,id=i).first()
@@ -648,16 +637,10 @@ class MultipleStudentShortlist(GenericAPIView):
                     studobject.save()
                     
                     class_obj = Class.objects.filter(ClassName=studobject.classid).first()
-                    print('class_obj',class_obj.ClassName)
                     classname = list(class_obj.ClassName)
-                    print('classname',classname)
                     accturalclass_name = int(classname[0]) + 1
-                    print('accturalclass_name',accturalclass_name)
                     mainclass_name =  str(accturalclass_name) + str(classname[1])
-                    print('mainclass_name',mainclass_name)
                     classobj = Class.objects.filter(ClassName=mainclass_name).first()
-                    print('classobj',classobj)
-                    print('studobjectAcademicyearId',studobject.AcademicyearId.id)
                     
                     data = {
                         'promote_class':False,
@@ -671,7 +654,6 @@ class MultipleStudentShortlist(GenericAPIView):
                     studentclassser = studentclassLogserializer(data=data)
                     if studentclassser.is_valid():
                         studentclassser.save()
-                        print('studentclassser111',studentclassser.data)
                     else:
                         print('studentclassser',studentclassser.errors)
                            

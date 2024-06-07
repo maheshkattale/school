@@ -74,7 +74,6 @@ class login(GenericAPIView):
                                 )
             else:
                 useruuid = str(userexist.id)
-                print("userexist",userexist.role)
                 role_id=user_serializer.data['role']
 
                 username = userexist.Username

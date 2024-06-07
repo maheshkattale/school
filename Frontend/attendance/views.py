@@ -21,7 +21,6 @@ class class_attendance(GenericAPIView):
             headers = {'Authorization':token}
             teacher_classes_list_request = requests.get(teacher_classes_list_url,headers=headers)
             teacher_classes_list_response = teacher_classes_list_request.json()
-            print("teacher_classes_list_response['data']",teacher_classes_list_response['data'])
             return render(request, 'admin/attendance/class_attendance.html',{
                 'classes':teacher_classes_list_response['data']
                 })
@@ -49,7 +48,6 @@ class mark_class_attendance(GenericAPIView):
             data=request.data.copy()
             mark_class_attendance_request = requests.post(mark_class_attendance_url,headers=headers,data=data)
             mark_class_attendance_response = mark_class_attendance_request.json()
-            print("mark_class_attendance_response['data']",mark_class_attendance_response['data'])
             return HttpResponse(json.dumps(mark_class_attendance_response), content_type="application/json")
 
         else:

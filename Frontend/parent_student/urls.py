@@ -12,6 +12,7 @@ urlpatterns = [
     path('delete_student', delete_student.as_view(), name = 'delete_student'),
     path('set_primary_student', set_primary_student.as_view(), name = 'set_primary_student'),
     path('search_students', search_students.as_view(), name = 'search_students'),
+    path('promote_students_class', promote_students_class.as_view(), name = 'promote_students_class'),
     
     
     # announcements

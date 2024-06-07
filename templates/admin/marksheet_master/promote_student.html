@@ -66,11 +66,10 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
 {% block body %}
 
 <div class="row justify-content-end">
-  
+
   <div class="mb-3 col-lg-3">
     <label for="academic_year" class="form-label">Current Academic Year</label>
     <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
-      <option value="" selected>Please select academic year</option>
       {% for year in academic_years %}
       <option value="{{ year.id }}">{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
       {% endfor %}
@@ -81,7 +80,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   <div class="mb-3 col-lg-3">
     <label for="classid" class="form-label">Current Class</label>
     <select id="classid" class="form-select select2" aria-describedby="class_error">
-      <option value="" selected>Please select class</option>
       {% for class in classes %}
       <option value="{{ class.id }}">{{ class.ClassName }} </option>
       {% endfor %}
@@ -125,10 +123,10 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   </div>
   <div class="my-auto col-lg-6 d-flex justify-content-center">
     <div>
-      <a class="btn btn-primary mx-1 multiplecheckchild" id="hide_btn" onclick="promote_class_function();">Promote Class</a>
+      <a class="btn btn-primary mx-1 multiplecheckchild" id="hide_btn" onclick="promote_class_function();">Promote Students</a>
     </div>
     <div id="Promote_ClassDiv" style="display: none;">
-      <a class="btn btn-primary mx-1" onclick="Promote_filter();">All Promoted</a>
+      <a class="btn btn-primary mx-1" onclick="Promote_filter();"> Promote All</a>
     </div>
   </div>
 </div>
@@ -143,13 +141,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
       </tr>
     </thead>
     <tbody id="table_body">
-      {% for i in student %}
-      <tr>
-        <td><input type="checkbox" class="multiplecheckchild Checkbox" onclick="single_check_function({{i.id}});" name="student" id="selectall" value="{{i.id}}"> {{forloop.counter }} </td>
-        <td>{{i.StudentName}}</td>
-        <td>{{i.StudentClass}}</td>
-      </tr>
-      {% endfor %}
+
 
     </tbody>
 
@@ -162,7 +154,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
 
 <script>
   $(document).ready(function () {
-    new DataTable('#studentple');
+    All_filter_student();
   });
 
 
@@ -205,6 +197,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
 
           });
           $('#table_body').html(trhtml)
+          new DataTable('#studentple');
 
           Swal.fire({
             text: response.response.msg,
@@ -223,67 +216,61 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   }
   function Promote_filter() {
 
-    userlist = []
+    var current_academic_year_id=$('#academic_year').val()
+    var promoted_academic_year_id=$('#promoted_academic_year').val()
+    var current_class_id=$('#classid').val()
+    var promoted_class_id=$('#promoted_classid').val()
 
-      $(".multiplecheckchild:checked").each(function(){
-        userlist.push($(this).val());
+    var selectedCheckboxes = document.querySelectorAll('input[name="student"]:checked');
+    var selectedValues = [];
+    selectedCheckboxes.forEach(function (checkbox) {
+      var valuess=checkbox.value;
+
+      selectedValues.push(valuess);
     });
 
-    console.log(userlist)
 
     Swal.fire({
-      text: 'Are you sure you want to promoted all this Student?',
+      title: "Are you sure?",
+      text: "You want promote All selected students?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-      position: 'top',
-      customClass: {
-        confirmButton: 'swal-button',
-        cancelButton: 'swal-button'
-      }
-    })
-      .then((result) => {
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, do it!"
+    }).then((result) => {
         if (result.isConfirmed) {
-          console.log("userlistsss",userlist)
           $.ajax({
-            url: frontend_url + 'api/MarksheetMaster/MultipleStudentShortlist',
+            url: frontend_url + 'parent_student_master/promote_students_class',
             data: {
-              'studentId': JSON.stringify(userlist),
-              csrfmiddlewaretoken: '{{ csrf_token }}'
+              'current_academic_year_id': current_academic_year_id,
+              'promoted_academic_year_id': promoted_academic_year_id,
+              'current_class': current_class_id,
+              'promoted_class': promoted_class_id,
+              'students_ids_list': JSON.stringify(selectedValues),
+               csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             type: 'POST',
             success: function (response) {
               console.log("assss", response)
-              if (response.status == 1) {
-                Swal.fire("Student have been Promoted!", {
-                  icon: "success",
-                  timer: 1000,
-                  buttons: false,
+              if (response.response.n == 1) {
+                Swal.fire({
+                  text: response.response.msg,
+                  icon: 'success',
+                }).then((result) => {
+                  window.location.href = "/promote_student";
+  
                 });
-                setTimeout(
-                  function() 
-                  {
-                      window.location.href = frontend_url+"promote_student";
-                  }, 2000);
               } else {
-                Swal.fire("Poof! Your Student has not been Promoted!", {
-                  icon: "error",
-                  timer: 1000,
-                  button: "Close",
-                });
+                Swal.fire({
+                  text: response.response.msg,
+                  icon: 'error',
+                })
               }
             }
           });
 
-        } else {
-          Swal.fire("Your Student has not been Promoted!", {
-            icon: "error",
-            timer: 1000,
-            buttons: false,
-          });
-        }
+        } 
       });
   }
   function multiplecheck(){
@@ -321,6 +308,21 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
       
   }
   function promote_class_function(){
+    var current_academic_year_id=$('#academic_year').val()
+    var promoted_academic_year_id=$('#promoted_academic_year').val()
+    var current_class_id=$('#classid').val()
+    var promoted_class_id=$('#promoted_classid').val()
+
+    var selectedCheckboxes = document.querySelectorAll('input[name="student"]:checked');
+    var selectedValues = [];
+    selectedCheckboxes.forEach(function (checkbox) {
+      var valuess=checkbox.value;
+
+      selectedValues.push(valuess);
+    });
+
+
+
 
     Swal.fire({
       title: "Are you sure?",
@@ -333,31 +335,31 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
-            url: frontend_url + 'api/MarksheetMaster/MultipleStudentShortlist',
+            url: frontend_url + 'parent_student_master/promote_students_class',
             data: {
-              'checklist': JSON.stringify(checklist),
+              'current_academic_year_id': current_academic_year_id,
+              'promoted_academic_year_id': promoted_academic_year_id,
+              'current_class': current_class_id,
+              'promoted_class': promoted_class_id,
+              'students_ids_list': JSON.stringify(selectedValues),
               csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             type: 'POST',
             success: function (response) {
               console.log("assss", response)
-              if (response.status == 1) {
-                Swal.fire("Student have been Promoted!", {
-                  icon: "success",
-                  timer: 1000,
-                  buttons: false,
+              if (response.response.n== 1) {
+                Swal.fire({
+                  text: response.response.msg,
+                  icon: 'success',
+                }).then((result) => {
+                  window.location.href = "/promote_student";
+  
                 });
-                setTimeout(
-                  function() 
-                  {
-                      window.location.href = frontend_url+"promote_student";
-                  }, 2000);
               } else {
-                Swal.fire("Poof! Your Student has not been Promoted!", {
-                  icon: "error",
-                  timer: 1000,
-                  button: "Close",
-                });
+                Swal.fire({
+                  text: response.response.msg,
+                  icon: 'error',
+                })
               }
             }
           });

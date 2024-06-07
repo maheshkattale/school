@@ -19,7 +19,7 @@ delete_announcements_url=frontend_url+'api/Parent_StudentMaster/delete_announcem
 get_announcement_details_url=frontend_url+'api/Parent_StudentMaster/get_announcement_details'
 edit_announcements_url=frontend_url+'api/Parent_StudentMaster/edit_announcement'
 search_students_url=frontend_url+'api/Parent_StudentMaster/search_students'
-
+promote_students_class_url=frontend_url+'api/Parent_StudentMaster/promote_students_class'
 class parent_student_master(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
@@ -190,5 +190,17 @@ class search_students(GenericAPIView):
         
         
         
+        
+class promote_students_class(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            promote_students_class_request = requests.post(promote_students_class_url,headers=headers,data=data)
+            promote_students_class_response = promote_students_class_request.json()
+
+            return HttpResponse(json.dumps(promote_students_class_response), content_type="application/json")
         
         
