@@ -12,7 +12,7 @@
     <div class="row justify-content-end">
       <div class="mb-3 col-lg-3">
         <label for="academic_year" class="form-label">Academic Year</label>
-        <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
+        <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error" onchange="search_exams();">
           {% for year in academic_years %}
             {% if year.isActive == True %}
               <option value="{{ year.id }}" selected>{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
@@ -26,8 +26,8 @@
 
 
       <div class="mb-3 col-lg-3">
-        <label for="exam" class="form-label">Exam Type</label>
-        <select id="exam" class="form-select select2" aria-describedby="exam_error">
+        <label for="exam" class="form-label">Exam </label>
+        <select id="exam" class="form-select select2" aria-describedby="exam_error" onchange="search_exams();">
           {% for exam in exam_names %}
               <option value="{{ exam.id }}">{{ exam.Name }} </option>
           {% endfor %}
@@ -39,7 +39,7 @@
 
       <div class="mb-3 col-lg-3">
           <label for="classid" class="form-label">Class</label>
-          <select id="classid" class="form-select select2" aria-describedby="class_error">
+          <select id="classid" class="form-select select2" aria-describedby="class_error" onchange="search_exams();">
             <option value="" selected>Please select class</option>
             {% for class in classes %}
               <option value="{{ class.id }}">{{ class.ClassName }} </option>
@@ -52,9 +52,8 @@
     
     
     
-      <div class="mb-3 my-auto col-lg-3 d-flex justify-content-between">
-        <a class="btn btn-primary" onclick="search_exams();">Apply</a>
-        <a data-bs-toggle="modal" data-bs-target="#add_exam" class="btn btn-primary"> Exam <i class="fa-solid fa-plus"></i></a>
+      <div class="mb-3 my-auto col-lg-3 d-flex justify-content-end ">
+        <a data-bs-toggle="modal" data-bs-target="#add_exam" class="btn btn-primary mx-1"> Exam <i class="fa-solid fa-plus"></i></a>
         <a href="/exam/add_exam"  class="btn btn-primary">Shedule <i class="fa-solid fa-plus"></i></a>
 
 
