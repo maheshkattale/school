@@ -359,17 +359,6 @@
 
 $(document).ready(function() {
 
-
-
-
-
-
-
-
-
-
-
-
   $('#breakdown').change(function() {
 
 
@@ -390,21 +379,9 @@ $(document).ready(function() {
 
   });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 });
+
+
 
 function add_breakdown(){
     
@@ -440,8 +417,15 @@ function add_breakdown(){
         $('#breakdown_enddate').focus();
         return false;
     }
+    
+    //var startTime = new Date().setHours(GetHours(breakdown_startdate), GetMinutes(breakdown_startdate), 0);
+    //var endTime = new Date().setHours(GetHours(breakdown_enddate), GetMinutes(breakdown_enddate), 0);
+    //if (endTime < startTime) {
+    //  $('#breakdown_startdate_error').show().delay(5000).slideUp();
+    //  $('#breakdown_startdate_error').html('Start Date Should be less than end Date.');
+    // return false;
+    //}
 
-  
     $('#added_breakdowns').append(`
             <tr class="rowitem`+rowno+`">
             <td>`+breakdown_name+`</td>
@@ -519,12 +503,6 @@ function update_draft(){
     
     `)
 
-
-
-
-
-
-
     var result=breakdowns.find(item => item.itemno === itemNo)
 
 
@@ -557,9 +535,6 @@ function get_edit_obj_details(itemNo){
     $('#breakdown_startdate').val(result.start_date);
     $('#breakdown_enddate').val(result.end_date);
 
-
-
-
 };
 function deleterow(id){
 
@@ -573,10 +548,6 @@ function deleterow(id){
       confirmButtonText: "Yes, delete it!"
     }).then((result) => {
       if (result.isConfirmed) {
-
-
-
-
 
       var result=breakdowns.find(item => item.itemno === id)
 

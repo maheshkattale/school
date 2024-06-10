@@ -24,7 +24,7 @@
                     <option value="{{ academic.id }}">{{academic.startdate_month_yyyy}} to {{academic.enddate_month_yyyy}}</option>
                   {% endfor %}
                 </select>
-                <div id="exam_academic_error" class="form-text error_message"></div>
+                <div id="exam_academic_error" class="form-text error_message mt-3"></div>
               </div>
 
 
@@ -36,7 +36,7 @@
                     <option value="{{ exam.id }}">{{ exam.Name }}</option>
                   {% endfor %}
                 </select>
-                <div id="exam_name_error" class="form-text error_message"></div>
+                <div id="exam_name_error" class="form-text error_message mt-3"></div>
               </div>
 
 
@@ -48,7 +48,7 @@
                     <option value="{{ type.id }}">{{ type.TypeName }}</option>
                   {% endfor %}
                 </select>
-                <div id="exam_type_error" class="form-text error_message"></div>
+                <div id="exam_type_error" class="form-text error_message mt-3"></div>
               </div>
               <div class="mb-3 col-lg-4">
                 <label for="exam_totalmarks" class="form-label">Exam Total Marks <span class="text-danger">*</span> </label>
@@ -58,37 +58,30 @@
 
                 </select>
                 
-                <div id="exam_totalmarks_error" class="form-text error_message"></div>
+                <div id="exam_totalmarks_error" class="form-text error_message mt-3"></div>
               </div>
-
-
-
-
-
-
-
 
               <div class="mb-3 col-lg-4">
                 <label for="exam_starttime" class="form-label">Exam Start Time <span class="text-danger">*</span> </label>
                 <input type="time" class="form-control" id="exam_starttime" placeholder="Please enter starttime" aria-describedby="exam_starttime_error"  />
-                <div id="exam_starttime_error" class="form-text error_message"></div>
+                <div id="exam_starttime_error" class="form-text error_message mt-3"></div>
               </div>
               <div class="mb-3 col-lg-4">
                 <label for="exam_endtime" class="form-label">Exam End Time <span class="text-danger">*</span> </label>
                 <input type="time" class="form-control" id="exam_endtime" placeholder="Please enter endtime" aria-describedby="exam_endtime_error"  />
-                <div id="exam_endtime_error" class="form-text error_message"></div>
+                <div id="exam_endtime_error" class="form-text error_message mt-3"></div>
               </div>
 
 
               <div class="mb-3 col-lg-4">
                 <label for="exam_reporttime" class="form-label">Exam Report Time <span class="text-danger">*</span> </label>
                 <input type="time" class="form-control" id="exam_reporttime" placeholder="Please enter report time" aria-describedby="exam_reporttime_error"  />
-                <div id="exam_reporttime_error" class="form-text error_message"></div>
+                <div id="exam_reporttime_error" class="form-text error_message mt-3"></div>
               </div>
               <div class="mb-3 col-lg-4">
                 <label for="exam_date" class="form-label">Date <span class="text-danger">*</span> </label>
                 <input type="text" class="form-control date_picker" id="exam_date" placeholder="Please select date" aria-describedby="exam_date_error" readonly />
-                <div id="exam_date_error" class="form-text error_message"></div>
+                <div id="exam_date_error" class="form-text error_message mt-3"></div>
               </div>
 
               <div class="mb-3 col-lg-4">
@@ -99,7 +92,7 @@
                     <option value="{{ subject.id }}">{{ subject.SubjectName }}</option>
                   {% endfor %}
                 </select>
-                <div id="exam_subject_error" class="form-text error_message"></div>
+                <div id="exam_subject_error" class="form-text error_message mt-3"></div>
               </div>
 
 
@@ -110,7 +103,7 @@
               <div class="mb-3 col-lg-12">
                 <label for="exam_instruction" class="form-label">Exam Instruction <span class="text-danger">*</span> </label>
                 <textarea class="form-control" name="exam_instruction" id="exam_instruction" cols="30" rows="5" aria-describedby="exam_instruction_error"></textarea>
-                <div id="exam_instruction_error" class="form-text error_message"></div>
+                <div id="exam_instruction_error" class="form-text error_message mt-3"></div>
               </div>
 
               <div class="mb-3 col-lg-3">
@@ -121,7 +114,7 @@
                     <option value="{{ class.id }}">{{ class.ClassName }}</option>
                   {% endfor %}
                 </select>
-                <div id="exam_class_error" class="form-text error_message"></div>
+                <div id="exam_class_error" class="form-text error_message mt-3"></div>
               </div>
               <div class="mb-3 col-lg-3">
                 <label for="exam_invigilator" class="form-label">Exam Invigilator <span class="text-danger">*</span> </label>
@@ -131,13 +124,13 @@
                     <option value="{{ class.id }}">{{ class.Username }}</option>
                   {% endfor %}
                 </select>
-                <div id="exam_invigilator_error" class="form-text error_message"></div>
+                <div id="exam_invigilator_error" class="form-text error_message mt-3"></div>
               </div>
 
               <div class="mb-3 col-lg-3">
                 <label for="exam_roomno" class="form-label">Exam Room No <span class="text-danger">*</span> </label>
                 <input type="text" class="form-control" id="exam_roomno" placeholder="Please enter room no" aria-describedby="exam_roomno_error"  />
-                <div id="exam_roomno_error" class="form-text error_message"></div>
+                <div id="exam_roomno_error" class="form-text error_message mt-3"></div>
               </div>
               <div class="col-lg-3 m-auto text-center">
                 <div class="">
