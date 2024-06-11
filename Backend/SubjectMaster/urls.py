@@ -8,5 +8,6 @@ urlpatterns = [
     path('getbyid',getSubjectbyid.as_view(), name = 'getbyid'),
     path('update', updateSubject.as_view(), name = 'update'),
     path('delete', deleteSubject.as_view(), name = 'delete'),
+    path('subjectdatabyexcel', subjectdatabyexcel.as_view(), name = 'subjectdatabyexcel'),
 
 ]

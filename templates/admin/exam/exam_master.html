@@ -1,6 +1,18 @@
 {% extends "index.html" %}
 {% load static %} 
 {% block head %}
+<style>
+  .astyleinexam{
+    margin-right:8px;
+  }
+  .divstyle{
+    display: flex!important;
+    justify-content: center!important;
+  }
+  .modal-content{
+    margin-left:50px;
+  }
+</style>
 {% endblock %}
 {% block heading %}
 <span class="tab-title">
@@ -10,7 +22,7 @@
 {% block body %}
 
     <div class="row justify-content-end">
-      <div class="mb-3 col-lg-3">
+      <div class="mb-3 col-lg-4">
         <label for="academic_year" class="form-label">Academic Year</label>
         <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error" onchange="search_exams();">
           {% for year in academic_years %}
@@ -37,7 +49,7 @@
 
 
 
-      <div class="mb-3 col-lg-3">
+      <div class="mb-3 col-lg-4">
           <label for="classid" class="form-label">Class</label>
           <select id="classid" class="form-select select2" aria-describedby="class_error" onchange="search_exams();">
             <option value="" selected>Please select class</option>
@@ -55,9 +67,6 @@
       <div class="mb-3 my-auto col-lg-3 d-flex justify-content-end ">
         <a data-bs-toggle="modal" data-bs-target="#add_exam" class="btn btn-primary mx-1"> Exam <i class="fa-solid fa-plus"></i></a>
         <a href="/exam/add_exam"  class="btn btn-primary">Shedule <i class="fa-solid fa-plus"></i></a>
-
-
-
 
         <div id="add_exam" class="modal">
           <div class="modal-dialog modal-lg">
@@ -84,6 +93,7 @@
                         <div class="row">
                           <div class="d-flex justify-content-center">
                             <a onclick="validate_add_examname_form();" class="btn btn-primary">Submit</a>
+                            {% comment %} <a onclick="validate_add_examname_form();" class="btn btn-primary">Close</a> {% endcomment %}
                           </div>
                         </div>
                       </form>
@@ -126,20 +136,11 @@
           </div>
         </div> 
 
-
-
-
-
-
       </div>
     </div>
 
   <div class="row mt-3">
     <div class="accordion accordion-flush" id="accordionFlushExample">
-
-
-
-
 
     </div>
   </div> 
