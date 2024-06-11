@@ -241,7 +241,19 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
           counter = 1
           $.each(response.data.marksheet_list, function (o, i) {
             if(i.n==1){
+            if(i.school_info.school_logo ==''||i.school_info.school_logo ==null){
+              school_logo=frontend_url+'/static/assets/images/logos/school_logo.jpg'
+            }else{
+              school_logo=frontend_url+i.school_info.school_logo
 
+            }
+            if(i.student_info.photo ==''||i.student_info.photo ==null){
+              photo='<img src="'+frontend_url+'/static/assets/images/profile/profile.png" width="100" height="100" alt="">'
+            }else{
+              photo='<iframe width="100" height="100" src="'+i.student_info.photo+'" frameborder="0" scrolling="no" style="overflow:hidden;" allowfullscreen></iframe>              '
+              
+
+            }
             containerContent += `
 
 
@@ -254,15 +266,16 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
                       <!-- Section 0 School info + img -->
                       <div style="display: flex;justify-content: space-between;flex-wrap: nowrap;">
                           <div>
-                              <img src="https://tse1.mm.bing.net/th?id=OIP.r-V0mO21MZnLfGJrDQKk0wHaHa&pid=Api&P=0&h=180" width="100" height="100" alt="">
+                              <img src="`+school_logo+`" width="100" height="100" alt="">
                           </div>
                           <div style="text-align: center;font-family: serif;padding: 0 15px;color: #01438e;">
-                                  <h1>`+i.school_info.Name+`</h1>
+                                  <h1 style="text-transform:capitalize;">`+i.school_info.Name+`</h1>
                                   <h3>`+i.school_info.Location+`</h3>
                                   <h4 style="font-weight: 700;color: #01438e;">Statement of Grades</h4>
                           </div>
                           <div>
-                              <img src="https://tse1.mm.bing.net/th?id=OIP.duBr9Qz66n_d1tI5tBJ1eAAAAA&pid=Api&P=0&h=180" width="100" height="100" alt="">
+                            `+photo+`
+                              
                           </div>
                       </div>
                       
@@ -351,7 +364,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
           if (window.print()) {
             return false;
           } else {
-           // location.reload();
+            location.reload();
           }
 
         } else {

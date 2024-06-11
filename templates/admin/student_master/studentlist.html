@@ -82,7 +82,8 @@
 {% block script %}
 <script>
   $( document ).ready(function() {
-        new DataTable('#studentple');  
+        new DataTable('#studentple'); 
+        search_student() 
   });  
 
   function delete_student(studentcode){
@@ -164,10 +165,89 @@
             trhtml+=`
             <tr>
               <td>`+counter+`</td>
-              <td>`+i.StudentName+`</td>
-              <td>`+i.StudentClass+`</td>
+              <td>`+i.studentId+`</td>
+              <td>`+i.classid+`</td>
               <td>
                 <a data-bs-toggle="tooltip" title="Delete student" onclick="delete_student('`+i.StudentCode+`')"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+                <a title="Edit student" data-bs-toggle="modal" data-bs-target="#edit_student" data-bs-toggle="tooltip" onclick="get_student_info('`+i.StudentCode+`')"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+
+
+
+
+                <div id="edit_student" class="modal">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-body">
+                        <div class="card">
+                          <div class="card-body">
+                            <h5 class="card-title fw-semibold mb-4">Edit Student</h5>
+                            <div class="card">
+                              <div class="card-body">
+                                <form>
+                                  <div class="row">
+                                    
+                                    <div class="mb-3 col-lg-6">
+                                      <label for="student_name" class="form-label">Student Name<span class="text-danger">*</span> </label>
+                                      <input type="text" class="form-control" id="student_name" placeholder="Please enter name" aria-describedby="student_name_error"/>
+                                      <div id="student_name_error" class="form-text error_message"></div>
+                                    </div>
+
+                                    <div class="mb-3 col-lg-6">
+
+                                      <label for="blood_group" class="form-label">Blood Group<span class="text-danger">*</span> </label>
+                                      <select id="blood_group" class="form-select select2" aria-describedby="blood_group_error">
+                                            <option value="" selected>Please Select Blood Group</option>
+                                            <option value="1" selected>1</option>
+                                            <option value="1">1</option>
+                                      </select>
+                                      <div id="blood_group_error" class="form-text error_message"></div>
+                                    </div>
+
+                                    <div class="mb-3 col-lg-6">
+                                      <label for="class_name" class="form-label">Class <span class="text-danger">*</span> </label>
+                                      <select id="class_name" class="form-select select2" aria-describedby="class_name_error">
+                                            <option value="" selected>Please Select Class </option>
+                                            <option value="1" selected>1</option>
+                                            <option value="1">1</option>
+                                      </select>
+                                      <div id="class_name_error" class="form-text error_message"></div>
+                                    </div>
+
+
+                                    <div class="mb-3 col-lg-6">
+                                      <label for="roll_no" class="form-label">Roll No<span class="text-danger">*</span> </label>
+                                      <input type="text" class="form-control" id="roll_no" placeholder="Please enter roll no" aria-describedby="roll_no_error"/>
+                                      <div id="roll_no_error" class="form-text error_message"></div>
+                                    </div>
+                                    <div class="mb-3 col-lg-6">
+                                      <label for="date_of_birth" class="form-label">Date of Birth<span class="text-danger">*</span> </label>
+                                      <input type="text" class="form-control date_picker" id="date_of_birth" placeholder="Please enter date of birth" aria-describedby="date_of_birth_error" readonly/>
+                                      <div id="date_of_birth_error" class="form-text error_message"></div>
+                                    </div>
+                                    <div class="mb-3 col-lg-6">
+                                      <label for="date_of_joining" class="form-label">Date of joining<span class="text-danger">*</span> </label>
+                                      <input type="text" class="form-control date_picker" id="date_of_joining" placeholder="Please enter date of joining" aria-describedby="date_of_joining_error" readonly/>
+                                      <div id="date_of_joining_error" class="form-text error_message"></div>
+                                    </div>
+
+                                  </div>
+          
+                                  <div class="row">
+                                    <div class="d-flex justify-content-center" id="edit_button">
+                                      <a  class="btn btn-primary">Submit</a>
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
               </td>
             
   

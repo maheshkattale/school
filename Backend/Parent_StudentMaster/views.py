@@ -585,7 +585,7 @@ class getstudentidcards(GenericAPIView):
                                 
                             
                             if starts_with(srudent_serializer.data['photo'],'data:application/pdf'):
-                                icardobj['photo'] = '<iframe width="140" src="'+srudent_serializer.data['photo']+'"  frameborder="0" allowfullscreen></iframe>'
+                                icardobj['photo'] = '<iframe width="140" src="'+srudent_serializer.data['photo']+'"  frameborder="0" scrolling="no" style="overflow:hidden;" allowfullscreen></iframe>'
                             else:
                                 icardobj['photo'] = '<img src="'+srudent_serializer.data['photo']+'" width="140"/>'
 
