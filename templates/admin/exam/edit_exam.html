@@ -69,14 +69,18 @@
                 <label for="exam_totalmarks" class="form-label">Exam Total Marks <span class="text-danger">*</span> </label>
                 
                 <select id="exam_totalmarks" class="form-select select2" aria-describedby="exam_totalmarks_error" >
-                  <option value="{{ exam.totalMarks }}" selected>{{ exam.totalMarks }}</option>
+                  <option value="{{ exam.totalMarks }}" passingmarks="{{exam.passingmarks}}" selected>{{ exam.totalMarks }}</option>
 
                 </select>
                 
                 <div id="exam_totalmarks_error" class="form-text error_message"></div>
               </div>
 
-
+              <div class="mb-3 col-lg-4">
+                <label for="exam_passingmarks" class="form-label">Passing Marks<span class="text-danger">*</span> </label>
+                <input type="text" class="form-control" value="{{exam.passingmarks}}" id="exam_passingmarks" placeholder="Please enter passing marks" aria-describedby="exam_passingmarks_error"  readonly/>
+                <div id="exam_passingmarks_error" class="form-text error_message"></div>
+              </div>
 
 
 
@@ -202,6 +206,16 @@
     
     $(document).ready(function () {
 
+      $('#exam_totalmarks').on('change', function() {
+        var selectedOption = $(this).find('option:selected');
+        var totalMarks = selectedOption.val();
+        var passingMarks = selectedOption.attr('passingmarks');
+
+        console.log('Total Marks:', totalMarks);
+        console.log('Passing Marks:', passingMarks);
+        $('#exam_passingmarks').val(passingMarks)
+        // Display the values in a div
+      });
     })
 
     function validate_form(id) {
@@ -209,6 +223,7 @@
       var exam_type = $('#exam_type').val()
       var exam_name = $('#exam_name').val()
       var exam_totalmarks = $('#exam_totalmarks').val()
+      var exam_passingmarks = $('#exam_passingmarks').val()
       var exam_academic = $('#exam_academic').val()
       var exam_starttime = $('#exam_starttime').val()
       var exam_endtime = $('#exam_endtime').val()
@@ -247,7 +262,13 @@
         $('#exam_totalmarks').focus()
         return false
       }
-
+      if (IsValid(exam_passingmarks)) {
+        $('#exam_passingmarks').html()
+        $('#exam_passingmarks_error').show().delay(3000).slideUp()
+        $('#exam_passingmarks_error').html('Please add exam passing marks')
+        $('#exam_passingmarks').focus()
+        return false
+      }
       if (IsValid(exam_starttime)) {
         $('#exam_starttime').html()
         $('#exam_starttime_error').show().delay(3000).slideUp()
@@ -323,6 +344,7 @@
         fd.append('SubjectId', exam_subject)
         fd.append('ExamType', exam_type)
         fd.append('totalMarks', exam_totalmarks)
+        fd.append('passingmarks', exam_passingmarks)
         fd.append('reportTime', exam_reporttime)
         fd.append('Instructions', exam_instruction)
         fd.append('ClassId', exam_class)
@@ -377,13 +399,14 @@
         success: function (response) {
           console.log("ExamTypMarkseobj",response)
           if (response.response.n == 1) {
+            $("#exam_passingmarks").val(' ');
 
 
             var options=''
 
               options += `<option value="">Please Select Marks</option>`;
               $.each(response.data, function(index, value){  
-                options += `<option value="` + value.Marks + `">` + value.Marks + `</option>`;           
+                options += `<option value="` + value.Marks + `" passingmarks="`+value.passingmarks+`">` + value.Marks + `</option>`;           
               });
               $("#exam_totalmarks").html(options);
 

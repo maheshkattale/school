@@ -266,8 +266,13 @@ class upload_marksheet(GenericAPIView):
             if request.method == 'POST':
                 data = request.POST.copy()
                 file = request.FILES
-                UploadExcelMarkSheet_request = requests.post(UploadExcelMarkSheet_url,data=data,files=file)
+                UploadExcelMarkSheet_request = requests.post(UploadExcelMarkSheet_url,data=data,files=file,headers=headers)
                 UploadExcelMarkSheet_response = UploadExcelMarkSheet_request.json()
+                print('maeksheet',UploadExcelMarkSheet_response)
+                # if UploadExcelMarkSheet_response['n']==1:
+
+                # messages.error(request, msg)
+
                 return redirect('school:upload_marksheet')
 
 

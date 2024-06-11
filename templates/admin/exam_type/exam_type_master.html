@@ -117,7 +117,11 @@
                         <input type="text" class="form-control" id="totalmarks" placeholder="Please enter marks" aria-describedby="totalmarks_error" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"/>
                         <div id="totalmarks_error" class="form-text error_message"></div>
                       </div>
-
+                      <div class="mb-3 col-lg-6">
+                        <label for="passingmarks" class="form-label">Passing marks <span class="text-danger">*</span> </label>
+                        <input type="text" class="form-control" id="passingmarks" placeholder="Please enter marks" aria-describedby="passingmarks_error" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"/>
+                        <div id="passingmarks_error" class="form-text error_message"></div>
+                      </div>
                     </div>
 
                     <div class="row">
@@ -142,7 +146,8 @@
         <tr>
           <th>Sr No</th>
           <th>Exam Type</th>
-          <th>Marks</th>
+          <th>Total Marks</th>
+          <th>Passing Marks</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -152,6 +157,7 @@
           <td>{{forloop.counter}}</td>
           <td>{{i.Typeid}}</td>
           <td>{{i.Marks}}</td>
+          <td>{{i.passingmarks}}</td>
 
           <td>
             <a data-bs-toggle="modal" data-bs-target="#edit_exammarks{{i.id}}"  ><i data-bs-toggle="tooltip"  title="Edit examtype" class="fa-solid fa-pen-to-square mx-1"></i></a>
@@ -200,7 +206,11 @@
                                 <input type="text" class="form-control" id="totalmarks{{i.id}}" value="{{i.Marks}}" placeholder="Please enter class name" aria-describedby="totalmarks_error{{i.id}}" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"/>
                                 <div id="totalmarks_error{{i.id}}" class="form-text error_message"></div>
                               </div>
-        
+                              <div class="mb-3 col-lg-6">
+                                <label for="passingmarks{{i.id}}" class="form-label">Passing marks <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control" id="passingmarks{{i.id}}" value="{{i.passingmarks}}" placeholder="Please enter marks" aria-describedby="passingmarks_error{{i.id}}" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"/>
+                                <div id="passingmarks_error{{i.id}}" class="form-text error_message"></div>
+                              </div>
 
                             </div>
         
@@ -241,6 +251,7 @@
       debugger
       var examtype_name=$('#examtype_name').val()
       var totalmarks=$('#totalmarks').val()
+      var passingmarks=$('#passingmarks').val()
 
       if(IsValid(examtype_name)){
         $('#examtype_name').html();
@@ -256,12 +267,27 @@
         $('#totalmarks').focus();
         return false;
       }
+      if(IsValid(passingmarks)){
+        $('#passingmarks').html();
+        $('#passingmarks_error').show().delay(3000).slideUp();
+        $('#passingmarks_error').html('Please enter passing marks');
+        $('#passingmarks').focus();
+        return false;
+      }
+      if(parseInt(passingmarks)>=parseInt(totalmarks)){
+        $('#passingmarks').html();
+        $('#passingmarks_error').show().delay(3000).slideUp();
+        $('#passingmarks_error').html('passing marks must be less than total marks');
+        $('#passingmarks').focus();
+        return false;
+      }
       else{
 
 
         var fd = new FormData();    
         fd.append("Typeid",examtype_name);
         fd.append("Marks",totalmarks);
+        fd.append("passingmarks",passingmarks);
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
           type: "POST",
@@ -298,6 +324,7 @@
       debugger
       var examtype_name=$('#examtype_name'+id).val()
       var totalmarks=$('#totalmarks'+id).val()
+      var passingmarks=$('#passingmarks'+id).val()
 
       if(IsValid(examtype_name)){
         $('#examtype_name'+id).html();
@@ -313,10 +340,24 @@
         $('#totalmarks'+id).focus();
         return false;
       }
+      if(IsValid(passingmarks)){
+        $('#passingmarks'+id).html();
+        $('#passingmarks_error'+id).show().delay(3000).slideUp();
+        $('#passingmarks_error'+id).html('Please enter passing marks');
+        $('#passingmarks'+id).focus();
+        return false;
+      }if(parseInt(passingmarks)>=parseInt(totalmarks)){
+        $('#passingmarks'+id).html();
+        $('#passingmarks_error'+id).show().delay(3000).slideUp();
+        $('#passingmarks_error'+id).html('passing marks must be less than total marks');
+        $('#passingmarks'+id).focus();
+        return false;
+      }
       else{
         var fd = new FormData();    
         fd.append("Typeid",examtype_name);
         fd.append("Marks",totalmarks);
+        fd.append("passingmarks",passingmarks);
         fd.append("id",id);
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({

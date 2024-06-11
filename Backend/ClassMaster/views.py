@@ -233,6 +233,36 @@ class teacher_classes_list(GenericAPIView):
 
 
 
+class classteacherdatabyexcel(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        school_code = request.user.school_code
+        dataset = Dataset()
+      
+        new_product = request.FILES.get('classfile')
+
+        if not new_product.name.endswith('xlsx'):
+            return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+
+        imported_data = dataset.load(new_product.read(), format='xlsx')
+        
+        importDataList =[]
+        notimporteddatalist = []
+        for i in imported_data:
+            if i[0] is not None:
+                importDataList.append(i)
+            else:
+                notimporteddatalist.append(i)
+
+        for i in importDataList:
+            classexist = ClassTeacher.objects.filter(startdate__in=[i[0]],enddate__in=[i[0]],school_code=school_code).first()
+            if classexist is None:
+                ClassTeacher.objects.create(startdate=i[0],enddate=i[0],school_code=school_code)
+
+        return Response({"data":'done',"response": {"n": 1, "msg": "Academic Year uploaded successfully","status": "success"}})
+
+
 
 
 

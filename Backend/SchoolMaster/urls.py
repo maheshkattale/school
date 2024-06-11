@@ -21,6 +21,9 @@ urlpatterns = [
     path('enableAcademicYear', enableAcademicYear.as_view(), name = 'enableAcademicYear'),
     path('toggleAcademicYear', toggleAcademicYear.as_view(), name = 'toggleAcademicYear'),
     path('get_current_academic_year', get_current_academic_year.as_view(), name = 'get_current_academic_year'),
+    
+    
+    path('academicdatabyexcel', academicdatabyexcel.as_view(), name = 'academicdatabyexcel'),
 
     # Announcement master
 

@@ -12,8 +12,43 @@
 {% endblock %}
 {% block body %}
   <div class="d-flex justify-content-end">
+    <a data-bs-toggle="modal" data-bs-target="#uploadexcelfordesignation" class="btn btn-primary mx-2">Upload Excel</a>
     <a data-bs-toggle="modal" data-bs-target="#add_designation" class="btn btn-primary">Add Designation</a>
- 
+    
+    <div id="uploadexcelfordesignation" class="modal">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+          <div class="modal-body">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">Upload Excel</h5>
+              <div class="card">
+                <div class="card-body">
+                  <div class="file-upload-box text-center">
+                    <div class="px-2">
+                      <a class="btn btn-primary" title="download excel format" href="{% static 'Media/SampleExcels/designationmaster.xlsx'%}" download>Download Sample<i class="fa fa-download" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="file-upload-btn">
+                      <input type="file" name="mydesignationfile" id="mydesignationfile" hidden="hidden" />
+                      <p id="custom-text">No file chosen, yet.</p>
+                      <button type="button" id="designationfileName" class="btn-primary btn excel-btn-info">Upload Excel File</button>
+                     <div class="mt-3">
+                      <a class="btn btn-primary" onclick="filevalidationdesignation();">submit</a>
+                     </div>
+                    
+                   </div>
+                  
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div> 
+
     <div id="add_designation" class="modal">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -26,14 +61,6 @@
                 <div class="card-body">
                   <form>
                     <div class="row">
-
-
-
-
-
-     
-
-
 
                       <div class="mb-3 col-lg-6">
                         <label for="designation_name" class="form-label">Designation Name <span class="text-danger">*</span> </label>
@@ -292,5 +319,87 @@
        
 
     }
+    // modal popup
+
+    const realFileBtn = document.getElementById("mydesignationfile");
+    const customBtn = document.getElementById("designationfileName");
+    const customTxt = document.getElementById("custom-text");
+    
+    customBtn.addEventListener("click", function() {
+      realFileBtn.click();
+    });
+    
+    realFileBtn.addEventListener("change", function() {
+      if (realFileBtn.value) {
+        customTxt.innerHTML = realFileBtn.value.match(
+          /[\/\\]([\w\d\s\.\-\(\)]+)$/
+        )[1];
+      } else {
+        customTxt.innerHTML = "No file chosen, yet.";
+      }
+    });
+  
+    $('#mydesignationfile').bind('change', function () {
+    var designationfileName = $("#mydesignationfile").val();
+    if (/^\s*$/.test(designationfileName)) {
+      $(".file-upload").removeClass('active');
+      $("#noFile").text("No file chosen..."); 
+    }
+    else {
+      $(".file-upload").addClass('active');
+      $("#noFile").text(designationfileName.replace("C:\\fakepath\\", "")); 
+    }
+  });
+
+    function filevalidationdesignation(){
+      debugger;
+      var file = $("#mydesignationfile")[0].files[0];
+      console.log("filefile",file)
+     
+      if (file == "" || file == undefined) {
+        event.preventDefault()
+        Swal.fire({
+                    text: "choose file",
+                    icon: 'error',
+                  })
+       
+        return false;
+      }
+      else{
+        t = 'Bearer {{token}}'
+        var fd = new FormData();    
+            fd.append("classfile",file);
+
+            $.ajax({
+              type: "POST",
+              url: frontend_url+"api/DesignationMaster/designationdatabyexcel",
+              data: fd,
+              headers:{'Authorization':t},
+              processData: false,
+              contentType: false,
+              
+              success: function(response) {
+                if(response.response.n ==1){
+                  Swal.fire({
+                    text: response.response.msg,
+                    icon: 'success',
+                  }).then((result) => {
+                    window.location.href = "/designation_master";
+            
+                  });
+                }else{
+                  Swal.fire({
+                    text: response.response.msg,
+                    icon: 'error',
+                  })
+                }
+    
+          
+              },
+            });
+    
+      }
+    }
+
   </script>
 {% endblock %}
