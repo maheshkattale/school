@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'exam',
     'message',
     'academic',
+    'marksheet',
     'student',
     'user',
     'fees',
@@ -84,6 +85,7 @@ INSTALLED_APPS = [
     'MessageMaster',
     'SchoolMaster',
     'AttendanceMaster',
+    
 
 ]
 

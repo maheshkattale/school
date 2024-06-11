@@ -35,6 +35,8 @@ urlpatterns = [
     path('user/',include(('user.urls','user'),namespace='user')),
     path('fees/',include(('fees.urls','fees'),namespace='fees')),
     path('attendance/',include(('attendance.urls','attendance'),namespace='attendance')),
+    path('marksheet/',include(('marksheet.urls','marksheet'),namespace='marksheet')),
+
 
     path('',include(('school.urls', 'school'),namespace='school')),
 

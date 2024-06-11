@@ -5,10 +5,7 @@
 body{
   background-color:#f1f1f2;
 }
-{% comment %} .tile{
-  width:80%;
-  margin:60px auto;
-} {% endcomment %}
+
 #tile-1 .tab-pane{
   padding:15px;
   height:80px;
@@ -44,7 +41,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   width:30px;
   height:4px;
   border-radius:3px;
-  {% comment %} background-color:#39bcd3; {% endcomment %}
   background-color:#995dff;
   position:absolute;
   z-index:1200;
@@ -56,7 +52,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
 {
   background-color:transparent!important;
   border:none!important;
-  {% comment %} color:#39bcd3!important; {% endcomment %}
   color:#995dff !important;
 }
 </style>
@@ -74,7 +69,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   <div class="mb-3 col-lg-3">
     <label for="academic_year" class="form-label">Academic Year</label>
     <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
-      <option value="" selected>Please select academic year</option>
       {% for year in academic_years %}
       <option value="{{ year.id }}">{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
       {% endfor %}
@@ -85,9 +79,8 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   <div class="mb-3 col-lg-3">
     <label for="exam" class="form-label">Exam Name</label>
     <select id="exam" class="form-select select2" aria-describedby="class_error">
-      <option value="" selected>Please select Exam Name</option>
-      {% for ename in exam_name %}
-      <option value="{{ ename.id }}">{{ ename.Name }} </option>
+      {% for ename in exam_names %}
+        <option value="{{ ename.id }}">{{ ename.Name }} </option>
       {% endfor %}
 
     </select>
@@ -96,7 +89,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   <div class="mb-3 col-lg-3">
     <label for="classid" class="form-label">Class</label>
     <select id="classid" class="form-select select2" aria-describedby="class_error">
-      <option value="" selected>Please select class</option>
       {% for class in classes %}
       <option value="{{ class.id }}">{{ class.ClassName }} </option>
       {% endfor %}
@@ -111,7 +103,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     <a class="btn btn-primary" onclick="search_student();">Apply</a>
   </div>
   <div id="Generate_Marksheet_ClassDiv" style="display: none;">
-    <a class="btn btn-primary" onclick="generate_marksheet_filter();" download>All Marksheet</a>
+    <a class="btn btn-primary" onclick="generate_student_marksheet();">All Marksheet</a>
   </div>
 </div>
 </div>
@@ -119,26 +111,14 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
   <table id="studentple" class="table table-striped table-bordered" style="width:100%">
     <thead>
       <tr>
-        <th><input type="checkbox" class="multiplecheckchild" id="selectall" onclick="multiple_generate_marksheet();"> Sr.No</th>
+        <th><input type="checkbox" class="Checkbox" name="" id="selectall" onclick="toggle(this);"> Sr.No</th>
         <th>Name</th>
         <th>Class</th>
-        <th>Exam Name</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody id="table_body">
-      {% for i in student %}
-      <tr>
-        <td><input class="multiplecheckchild"  type="checkbox" name="student" id="selectall" value="{{i.id}}"> {{forloop.counter }} </td>
-        <td>{{i.StudentName}}</td>
-        <td>{{i.StudentClass}}</td>
-        <td>{{i.exname}}</td>
-        <td>
-          {% comment %} <a href="/reportcard/{{i.id}}/{{i.classid}}" class="btn btn-primary">Generate Marksheet</a> {% endcomment %}
-          <a href="/reportcard/{{i.id}}/{{i.classid}}" download class="btn btn-primary">Generate Marksheet</a>
-        </td>
-      </tr>
-      {% endfor %}
+
 
     </tbody>
 
@@ -152,67 +132,29 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
 
 <script>
   $(document).ready(function () {
-    new DataTable('#studentple');
+    //new DataTable('#studentple');
+    search_student();
   });
 
-  function delete_student(studentcode) {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        var fd = new FormData();
-        fd.append("studentcode", studentcode);
-        fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
-        $.ajax({
-          type: "POST",
-          url: frontend_url + "student/delete_student",
-          data: fd,
-          processData: false,
-          contentType: false,
-
-          success: function (response) {
-            console.log("delete", response)
-            if (response.response.n == 1) {
-              Swal.fire({
-                text: response.response.msg,
-                icon: 'success',
-              }).then((result) => {
-                window.location.href = "/student/student_list";
-
-              });
-            } else {
-              Swal.fire({
-                text: response.response.msg,
-                icon: 'error',
-              })
-            }
-
-
-          },
-        });
-
-
-
-
-      }
-    });
-
+  function toggle(source) {
+    
+    var checkboxes = document.getElementsByName('student');
+    for (var i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = source.checked;
+    }
+    console.log("source.checked",source.checked)
+    if ($("#selectall").is(":checked")) {
+      $("#Generate_Marksheet_ClassDiv").show();
+    } else {
+        $("#Generate_Marksheet_ClassDiv").hide();
+    }
 
   }
 
-</script>
-<script>
   function search_student() {
-    debugger;
     var yearid = $('#academic_year').val();
     var classid = $('#classid').val();
-    var exam_id = $('#Exam').val();
+    var exam_id = $('#exam').val();
 
     var fd = new FormData();
     fd.append("class", classid);
@@ -236,12 +178,11 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
           $.each(response.data, function (o, i) {
             trhtml += `
             <tr>
-              <td><input type="checkbox" name="student" id="" value="`+ i.id + `"> ` + counter + `</td>
-              <td>`+ i.StudentName + `</td>
-              <td>`+ i.StudentClass + `</td>
-              <td>`+ i.exname + `</td>
+              <td><input type="checkbox" class="Checkbox" name="student" id="" value="`+ i.studentId_id + `"> ` + counter + `</td>
+              <td>`+ i.studentId + `</td>
+              <td>`+ i.classid + `</td>
               <td>
-                <a class="btn btn-primary" onclick="search_student();">Generate Marksheet</a>
+                <a onclick="generate_student_marksheet();" class="btn btn-primary">Generate Marksheet</a>
               </td>
           </tr>`
             counter += 1
@@ -264,118 +205,147 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
       },
     });
   }
-  function toggle(source) {
-    var checkboxes = document.getElementsByName('student');
-    for (var i = 0; i < checkboxes.length; i++) {
-      checkboxes[i].checked = source.checked;
-    }
-  }
-  function generate_student_id_card() {
 
+  function generate_student_marksheet() {
+    debugger
     var selectedCheckboxes = document.querySelectorAll('input[name="student"]:checked');
     var selectedValues = [];
     selectedCheckboxes.forEach(function (checkbox) {
       selectedValues.push(checkbox.value);
     });
-    console.log("Selected checkboxes: " + selectedValues);
+    console.log("Selected checkboxes: " , selectedValues);
 
+    var yearid = $('#academic_year').val();
     var classid = $('#classid').val();
-
-    var yearid = $('#academic_year option:selected').text();
+    var exam_id = $('#exam').val();
 
     var fd = new FormData();
-    fd.append("classid", classid);
-    fd.append("year", yearid);
+    fd.append("class", classid);
+    fd.append("yearid", yearid);
+    fd.append("exam_id", exam_id);
     fd.append("studentidlist", JSON.stringify(selectedValues));
     fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
     $.ajax({
       type: "POST",
-      url: frontend_url + "student/student_id_cards",
+      url: frontend_url + "marksheet/generate_marksheet",
       data: fd,
       processData: false,
       contentType: false,
 
       success: function (response) {
-        console.log("student_card", response)
+        console.log("student_marksheet", response)
         if (response.response.n == 1) {
 
           var containerContent = ''
 
           counter = 1
-          $.each(response.data, function (o, i) {
+          $.each(response.data.marksheet_list, function (o, i) {
+            if(i.n==1){
+
             containerContent += `
 
 
-            <table class="card" style="border: 1px solid aliceblue; border-radius: 35px;padding: 15px 20px;box-shadow: 0 0 5px grey; width:85%; margin:20px;">
-                <tr>
-                  <td style="padding-right: 15px;">
-                    <div style="text-align: center;">
-                      <img src="{% static 'assets/images/logos/school_logo.JPG' %}" alt="" />
-                    </div>
-                  </td>
-          
-                  <td style="border-bottom: 2px solid #082e68;">
-                    <table style="text-align: center;">
-                      <tr>
-                        <td class="school_name" style="font-size: 28px; color: #082e68;">`+ i.schooldata.Name + `</td>
-                      </tr>
-          
-                      <tr>
-                        <td>(CBSC AFFILITED)</td>
-                      </tr>
-          
-                      <tr>
-                        <td>`+ i.schooldata.Location + `</td>
-                      </tr>
-          
-                      <tr>
-                        <td>PH.`+ i.schooldata.Contact + ` , E-Mail : ` + i.schooldata.Email + `</td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-          
-                <tr>
-                  <td style="padding-right: 15px;">
-                    <img src="`+ i.photo + `" alt="" width="140" />
-                  </td>
-                  <td>
-                    <table>
-                      <tr>
-                        <td class="card_heading" style="color: #082e68;" >Name :</td>
-                        <td>`+ i.studentname + `</td>
-                      </tr>
-                      <tr>
-                        <td class="card_heading" style="color: #082e68;">Class :</td>
-                        <td>`+ i.classname + `</td>
-                      </tr>
-                      <tr>
-                        <td class="card_heading" style="color: #082e68;">DOB :</td>
-                        <td>`+ i.DateOfBirth + `</td>
-                      </tr>
-                      <tr>
-                        <td class="card_heading" style="color: #082e68;">Address :</td>
-                        <td>`+ i.parentinfo.Address + `</td>
-                      </tr>
-                      <tr>
-                        <td class="card_heading" style="color: #082e68;">Phone :</td>
-                        <td>`+ i.parentinfo.mobileNumber + `</td>
-                      </tr>
-                      <tr>
-                        <td class="card_heading" style="color: #082e68;">Mobile :</td>
-                        <td>`+ i.parentinfo.mobileNumber + `</td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-          
-              </table>
+            
 
+            <div style="font-family: math;width: 100vw;height: 100vh;display: flex;align-items: center;justify-content: center;">
+              <div class="row">
+                  <div style="display: flex; flex-flow: column; justify-content: space-evenly;border:4px double #01438e;padding: 15px;" >
+          
+                      <!-- Section 0 School info + img -->
+                      <div style="display: flex;justify-content: space-between;flex-wrap: nowrap;">
+                          <div>
+                              <img src="https://tse1.mm.bing.net/th?id=OIP.r-V0mO21MZnLfGJrDQKk0wHaHa&pid=Api&P=0&h=180" width="100" height="100" alt="">
+                          </div>
+                          <div style="text-align: center;font-family: serif;padding: 0 15px;color: #01438e;">
+                                  <h1>`+i.school_info.Name+`</h1>
+                                  <h3>`+i.school_info.Location+`</h3>
+                                  <h4 style="font-weight: 700;color: #01438e;">Statement of Grades</h4>
+                          </div>
+                          <div>
+                              <img src="https://tse1.mm.bing.net/th?id=OIP.duBr9Qz66n_d1tI5tBJ1eAAAAA&pid=Api&P=0&h=180" width="100" height="100" alt="">
+                          </div>
+                      </div>
+                      
+                      <!-- Section 1 Info-->
+                     
+                      <div id="student_info" style="display: flex;justify-content: space-between;font-weight: 600;font-size: 14px;padding: 20px 0;">
+                          <div>
+                              <div style="padding:3px 0;"><span style="font-weight: 700;color: #01438e;">Name Of Student: </span><span>`+i.student_info.StudentName+`</span></div>
+                              <div style="padding:3px 0;"><span style="font-weight: 700;color: #01438e;">Parent Name:</span> <span>`+i.ParentName+`</span></div>
+                              <div style="padding:3px 0;"><span style="font-weight: 700;color: #01438e;">Roll No: </span><span>`+i.roll_no+`</span></div>
+                          </div>
+                          <div>
+                              <div style="padding:3px 0;"><span style="font-weight: 700;color: #01438e;">Examination:</span> <span>`+i.exam_name+` (`+i.academic_year+`)</div>
+                              <div style="padding:3px 0;"><span style="font-weight: 700;color: #01438e;">Class:</span> <span>`+i.class_name+`</span></div>
+                              <div style="padding:3px 0;"><span style="font-weight: 700;color: #01438e;">Student Code: </span><span>`+i.student_info.StudentCode+`	</span></div>
+                          </div>
+                      </div>
+          
+                      <!-- Section 2 Middle One Table-->
+                      <div style="height: 30rem;">
+                          <table id="table" style="border-collapse: collapse; width: 100%;">
+                              <!-- HEADINGS -->
+                              <thead>
+                                  <tr>
+                                      <th style="font-size: 12px;text-transform: capitalize;color: #01438e;padding: 0.5rem;border: 1px solid #01438e; width:5%;">SR.NO</th>
+                                      <th style="font-size: 12px;text-transform: capitalize;color: #01438e;padding: 0.5rem;border: 1px solid #01438e; width:55% !important;">SUBJECT</th>
+                                      <th style="font-size: 12px;text-transform: capitalize;color: #01438e;padding: 0.5rem;border: 1px solid #01438e; width:20%;">OBTAINED MARKS</th>
+                                      <th style="font-size: 12px;text-transform: capitalize;color: #01438e;padding: 0.5rem;border: 1px solid #01438e; width:20%;">OUT OF MARKS</th>
+                                  </tr>
+                              </thead>
+          
+                              <!-- QURAN -->
+                              <tbody>
 
+                                ${i.exam_time_table.map((entry, index) => `
+                                  <tr>
+                                    <td style="padding: 0.5rem;border: 1px solid #01438e;">`+index+`1</td>
+                                    <td style="padding: 0.5rem;border: 1px solid #01438e;">`+entry.SubjectId+`</td>
+                                    <td style="padding: 0.5rem;border: 1px solid #01438e;">`+entry.ObtainedMarks+`</td>
+                                    <td style="padding: 0.5rem;border: 1px solid #01438e;">`+entry.totalMarks+`</td>
+                                  </tr>
+                                `).join("\n")}
+
+              
+          
+                     
+                                  <tr>
+                                      <td style="padding: 0.5rem;border: 1px solid #01438e;" colspan="2" style="text-align:right;padding:0 30px 0 0 ;" style="font-weight: 700;color: #01438e;">Total</td>
+                                      <td style="padding: 0.5rem;border: 1px solid #01438e;">`+i.all_subject_total_marks_obtain+`</td>
+                                      <td style="padding: 0.5rem;border: 1px solid #01438e;">`+i.all_subject_total_marks+`</td>
+                                  </tr>
+                              </tbody>
+          
+                              <!-- HIFZ -->
+                             
+                          </table>
+                      </div>
+          
+                      <!-- Section 3 Footers-->
+                      <div class="row">
+                          <div style="font-weight:700; padding:10px 0; display:flex; justify-content:space-between;"><span><span style="font-weight: 700;color: #01438e;">Status :</span>  <span>`+i.Status+`</span></span>  <span><span style="font-weight: 700;color: #01438e;">Percentage :</span>  <span>`+i.Percentage+`%</span></span></div>
+                          <div style="display:flex;justify-content: space-between;margin: 50px 0 10px 0;">
+                              <div><span style="font-weight: 700;color: #01438e;">Prepared By :________________ </span> </div>
+                              <div><span style="font-weight: 700;color: #01438e;">Checked By : ________________</span> </div>
+                              <div><span style="font-weight: 700;color: #01438e;">Controller Of Examination </span> </div>
+                          </div>
+                      </div>
+                      
+                  </div>
+              </div>
+          </div>
 
 
 
             `
+          }
+          else{
+            containerContent +=`
+            <div style="font-family: math;width: 100vw;height: 100vh;display: flex;align-items: center;justify-content: center;">
+              `+i.reason+`
+            </div>
+            `
+          }
             counter += 1
 
           });
@@ -384,7 +354,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
           if (window.print()) {
             return false;
           } else {
-            location.reload();
+           // location.reload();
           }
 
         } else {
@@ -398,6 +368,19 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
       },
     });
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   function generate_marksheet_filter() {
@@ -444,7 +427,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
                 setTimeout(
                   function() 
                   {
-                      window.location.href = "http://127.0.0.1:8000/generate_marksheet";
+                      window.location.href = frontend_url+"generate_marksheet";
                   }, 2000);
               } else {
                 Swal.fire("Poof! Your Student marksheet has not been generate!", {
@@ -466,18 +449,5 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
       });
   }
 
-
-  function multiple_generate_marksheet(){
-    debugger;
-    if ($("#selectall").is(":checked")) {
-
-      $("#Generate_Marksheet_ClassDiv").show();
-      $(".multiplecheckchild").prop('checked',true);
-    } else {
-        $("#Generate_Marksheet_ClassDiv").hide();
-        $(".multiplecheckchild").prop('checked',false);
-    }
-    
-  }
 </script>
 {% endblock %}

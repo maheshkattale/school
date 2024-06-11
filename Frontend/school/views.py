@@ -214,12 +214,8 @@ class generate_marksheet(GenericAPIView):
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
-            
-            student_list_request = requests.post(student_list_url,headers=headers)
-            student_list_response = student_list_request.json()
-            
-            # GenerateMarkSheet_request = requests.post(GenerateMarkSheet_url,data=data)
-            # GenerateMarkSheet_response = GenerateMarkSheet_request.json()
+
+
             
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
@@ -229,9 +225,9 @@ class generate_marksheet(GenericAPIView):
             
             exam_names_list_request = requests.get(exam_names_list_url,headers=headers)
             exam_names_list_response = exam_names_list_request.json()
-            
-            return render(request, 'admin/marksheet_master/generate_marksheet.html',{'student':student_list_response['data'],'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exname':exam_names_list_response['data']})
-            # return render(request, 'admin/marksheet_master/generate_marksheet.html',{'student':student_list_response['data'],'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exam_name':exam_names_list_response['data']})
+            print("exam_names_list_response",exam_names_list_response['data'])
+            return render(request, 'admin/marksheet_master/generate_marksheet.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exam_names':exam_names_list_response['data']})
+
         else:
             return redirect('school:login')
 
@@ -266,14 +262,14 @@ class upload_marksheet(GenericAPIView):
             if request.method == 'POST':
                 data = request.POST.copy()
                 file = request.FILES
+                print("data",data)
+                print("file",file)
                 UploadExcelMarkSheet_request = requests.post(UploadExcelMarkSheet_url,data=data,files=file,headers=headers)
                 UploadExcelMarkSheet_response = UploadExcelMarkSheet_request.json()
                 print('maeksheet',UploadExcelMarkSheet_response)
-                # if UploadExcelMarkSheet_response['n']==1:
+                return HttpResponse(json.dumps(UploadExcelMarkSheet_response), content_type="application/json")
 
-                # messages.error(request, msg)
 
-                return redirect('school:upload_marksheet')
 
 
 

@@ -75,8 +75,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
       <div class="card">
         <div class="card-body">
           <div class="row">
-            <form method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
               <div class="row">
                 <div class="mb-3 col-lg-4">
                   <label for="academic_year" class="form-label">Academic Year</label>
@@ -135,7 +133,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
                   <button class="btn btn-primary" onclick="return validate_form();" type="submit">Submit</button>
                 </div>
               </div>
-            </form> 
           </div>
 
         </div>
@@ -146,7 +143,9 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
 {% endblock %}
 
 {% block script %}
-
+<script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
 <script>
 
@@ -156,7 +155,8 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     var exam_name=$('#Name').val();
     var class_name=$('#classid').val();
     var myfile=$('#myfile').val();
-    
+    var file = $("#myfile")[0].files[0];
+
 
     if(IsValid(academic_year)){
       $('#academic_year').html();
@@ -186,6 +186,50 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
       $('#myfile').focus();
       return false;
     }
+    var fd = new FormData();
+    fd.append("AcademicYearId", academic_year);
+    fd.append("Exam", exam_name);
+    fd.append("ClassId", class_name);
+    fd.append("file", file);
+
+    fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
+    $.ajax({
+      type: "POST",
+      url: frontend_url + "upload_marksheet",
+      data: fd,
+      processData: false,
+      contentType: false,
+
+      success: function (response) {
+        console.log("myfile", response)
+        if (response.response.n == 1) {
+
+
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'success',
+          }).then((result) => {
+            window.location.href =          window.location.href;
+          });
+
+        } else if (response.response.n == 2) {
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'error',
+          })
+          exportToExcel(response.headers,response.data)
+        }else {
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'error',
+          })
+
+        }
+
+
+      },
+    });
+
   }
   function validateExcelFile(input) {
     debugger
@@ -203,5 +247,31 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
         errorMessage.html('');  // Clear any previous error message
     }
   }
+
+  function exportToExcel(headers, data) {
+    var workbook = XLSX.utils.book_new();
+    
+    // Create worksheet
+    var worksheet = XLSX.utils.aoa_to_sheet([]);
+  
+    // Add headers to the worksheet
+    XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
+  
+    // Add data to the worksheet
+    for (var i = 0; i < data.length; i++) {
+      var rowData = Object.values(data[i]);
+      XLSX.utils.sheet_add_aoa(worksheet, [rowData], { origin: "A" + (i + 2) });
+    }
+  
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    var excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    
+    // Convert buffer to a Blob
+    var blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    
+    // Save the file using FileSaver.js
+    saveAs(blob, "data.xlsx");
+  }
+
 </script>
 {% endblock %}
