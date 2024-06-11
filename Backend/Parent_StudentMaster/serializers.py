@@ -1,4 +1,5 @@
 from .models import *
+from User.models import *
 from rest_framework import serializers
 from Frontend.school.custom_function import *
 class StudentSerializer(serializers.ModelSerializer):
@@ -35,6 +36,14 @@ class StudentSerializer1(serializers.ModelSerializer):
         model= Students
         fields='__all__'
 
+class StudentSerializer2(serializers.ModelSerializer):
+    StudentClass=serializers.StringRelatedField()
+
+    class Meta:
+        model= Students
+        fields='__all__'
+
+        
 class BloodGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model= BloodGroup

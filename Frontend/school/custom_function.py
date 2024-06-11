@@ -89,7 +89,22 @@ def is_valid_yyyy_mm_dd(date_str):
     
     
     
-    
+def calculate_percentage(obtained_marks, total_marks):
+    """
+    Calculate the percentage of obtained marks out of total marks.
+
+    Parameters:
+    obtained_marks (float or int): The marks obtained.
+    total_marks (float or int): The total marks.
+
+    Returns:
+    float: The percentage of obtained marks out of total marks.
+    """
+    if total_marks == 0:
+        return 0
+
+    percentage = round((obtained_marks / total_marks) * 100)
+    return percentage
     
     
     

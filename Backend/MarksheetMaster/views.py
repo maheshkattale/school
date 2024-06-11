@@ -7,6 +7,8 @@ from rest_framework.response import Response
 import json
 from rest_framework.generics import GenericAPIView
 from MarksheetMaster.models import *
+from SchoolMaster.models import *
+from SchoolMaster.serializers import *
 from Parent_StudentMaster.models import *
 from Parent_StudentMaster.serializers import *
 from User.models import *
@@ -246,7 +248,7 @@ class AddExam(GenericAPIView):
         if exam_obj is None:
             return Response({"data":'',"response": {"n": 0, "msg": "exam  not found ","status": "failure"}})
         
-        academic_obj = AcademicYear.objects.filter(id=AcademicYearId,Isdeleted=False).first()
+        academic_obj = AcademicYear.objects.filter(id=AcademicYearId,Isdeleted=False,school_code=schoolcode).first()
         if academic_obj is None:
             return Response({"data":'',"response": {"n": 0, "msg": "Academic year not found ","status": "failure"}})
             
@@ -503,7 +505,6 @@ class UploadExcelMarkSheet(GenericAPIView):
             return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
         
         imported_data = dataset.load(new_fees_distributions.read(), format='xlsx')
-        print("AcademicYearId",AcademicYearId,school_code)
 
         if AcademicYearId is not None and AcademicYearId !='':
             academic_year_obj=AcademicYear.objects.filter(id=AcademicYearId,Isdeleted=False,school_code=school_code).first()
@@ -528,6 +529,7 @@ class UploadExcelMarkSheet(GenericAPIView):
             return Response({'data':[],"response":{"status":"failure",'msg': 'Please select the Exam','n':0}})
 
 
+        print("AcademicYearId",AcademicYearId,school_code)
 
 
         for i in imported_data:
@@ -557,16 +559,40 @@ class UploadExcelMarkSheet(GenericAPIView):
                                                 data={}
                                                 data['AcademicYearId']=AcademicYearId
                                                 data['ClassId']=ClassId
-                                                data['Status']=''
+
                                                 data['RollNo']=students_class_obj.RollNo
-                                                #exam name      
+                                                #exam name   
+                                                print("data",find_exam_obj)
+                                                if int(ObtainedMarks) < int(find_exam_obj.passingmarks):
+                                                    data['Status']=0
+                                                else:
+                                                    data['Status']=1
+
                                                 data['Exam']=Examid
                                                 data['ObtainedMarks']=ObtainedMarks
                                                 data['OutOfMarks']=find_exam_obj.totalMarks
                                                 data['school_code']=school_code
-                                                data['SubID']=sub_obj.id
+                                                data['subID']=str(sub_obj.id)
+                                                data['StudentId']=student_serializer.data['id']
+
                                                 print("data",data)
-                                                # obj = MarkSheet.objects.create(AcademicYearId=int(AcademicYearId),ClassId=int(ClassId),Status=Status,RollNo=RollNo,Student=student,Exam=int(Exam),ObtainedMarks=ObtainedMarks,OutOfMarks=OutOfMarks,SchoolCode=SchoolCode,SubID=SubId)
+                                                check_already_exist_obj=MarkSheet.objects.filter(AcademicYearId=data['AcademicYearId'],ClassId=data['ClassId'],Exam=data['Exam'],school_code=data['school_code'],subID=data['subID'],StudentId=data['StudentId']).first()
+                                                if check_already_exist_obj is not None:
+                                                    marksheet_serializer=MarkSheetSerializer(check_already_exist_obj,data=data,partial=True)
+                                                else:
+                                                    marksheet_serializer=MarkSheetSerializer(data=data)
+
+                                                if marksheet_serializer.is_valid():
+                                                    marksheet_serializer.save()
+                                                else:
+
+                                                    first_key, first_value = next(iter(marksheet_serializer.errors.items()))
+                                                    reason = first_key + " : "+ first_value[0]
+                                                    error = i + tuple([reason])
+                                                    fileerrorlist.append(error)
+                                                    continue  
+
+
                                             else:
                                                 reason = 'please provide obtain marks'
                                                 error = i + tuple([reason])
@@ -624,7 +650,7 @@ class UploadExcelMarkSheet(GenericAPIView):
         if len(fileerrorlist) == 0:
             return Response({"data":'',"response": {"n": 1, "msg": "marsheet uploaded success fully","status": "success"}})
         else:
-            return Response({"data":fileerrorlist,"response": {"n": 0, "msg": "file has some issues","status": "failure"}})
+            return Response({"data":fileerrorlist,'headers':['Student Code','SubName','ObtainedMarks','Paper-Type','','','','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
     
     
     
@@ -662,54 +688,163 @@ class promotemarksheetexcel(GenericAPIView):
 
         return Response({"data":'done',"response": {"n": 1, "msg": "Promote Marksheet uploaded successfully","status": "success"}})
 
-
 class GenerateMarkSheet(GenericAPIView): 
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        Status = ''
-        classid = request.POST.get('classid')
-        studentId = request.POST.get('studentId')
-        
-        studenobj = Students.objects.filter(id=studentId).first()
-        studentname = studenobj.StudentName
-        ParentId = studenobj.ParentId
-        scode = studenobj.school_code
-        rollno = studenobj.RollNo
-        AcademicYearId = ''
-        StudentCode = ''
-        classobj = Class.objects.filter(id=classid).first()
-        classname = classobj.ClassName 
-        scname = studenobj.StudentCode
-        Username_obj = User.objects.filter(id=studenobj.ParentId).first()
-        parent_name = Username_obj.Username
-        obj = MarkSheet.objects.filter(ClassId=classid,Student=studentId,isActive=True)
-        ser = MarkSheetSerializer(obj,many=True)
-        
-        for s in ser.data:
-            
-            if s['Status'] == '1':
-                Status = 'PASS'
+        class_id = request.POST.get('class')
+        academic_year_id = request.POST.get('yearid')
+        exam_name_id = request.POST.get('exam_id')
+        school_code=request.user.school_code
+        student_ids_list = json.loads(request.POST.get('studentidlist'))
+        marksheet_list=[]
+        print("request.POST",request.POST)
+        school_obj=School.objects.filter(school_code=school_code,isActive=True).first()
+        school_serializer=schoolSerializer(school_obj)
+        if class_id is not None and class_id !='':
+            class_obj=Class.objects.filter(id=class_id,isActive=True,school_code=school_code).first()
+            if class_obj is not None:
+                if academic_year_id is not None and academic_year_id !='':
+                    academic_year_obj=AcademicYear.objects.filter(id=academic_year_id,Isdeleted=False,school_code=school_code).first()
+                    if academic_year_obj is not None:
+                        if exam_name_id is not None and exam_name_id !='':
+                            exam_name_obj = Exam.objects.filter(id=exam_name_id,isActive=True,school_code=school_code).first()
+                            if exam_name_obj is not None:
+                                if student_ids_list is not None and student_ids_list !='' and student_ids_list !=[]:
+                                    for student_id in student_ids_list:
+                                        marksheet={}
+                                        marksheet['n']=1
+                                        marksheet['exam_name']=str(exam_name_obj)
+                                        student_obj = Students.objects.filter(id=student_id,isActive=True,school_code=school_code).first()
+                                        if student_obj is not None:
+                                            student_serializer=StudentSerializer2(student_obj)
+                                            parent_obj=User.objects.filter(id=student_serializer.data['ParentId'],isActive=True,school_code=school_code).first()
+                                            if parent_obj is not None:
+                                                marksheet['ParentName']=str(parent_obj)
+                                            else:
+                                                marksheet['ParentName']=''
+
+                                            marksheet['school_info']=school_serializer.data
+                                            marksheet['student_info']=student_serializer.data
+                                            marksheet['academic_year']=str(academic_year_obj)
+
+                                            students_class_obj=studentclassLog.objects.filter(classid = class_id,AcademicyearId=academic_year_id,studentId=student_serializer.data['id'],school_code=school_code,isActive=True).first()
+                                            if students_class_obj is not  None:
+                                                student_class_serilaizer=custom_studentclassLogserializer(students_class_obj)
+                                                marksheet['roll_no']=student_class_serilaizer.data['RollNo']
+                                                marksheet['class_name']=student_class_serilaizer.data['classid']
+                                                find_exams_subjects_obj=Exams.objects.filter(ClassId=class_id,AcademicYearId=academic_year_id,exam=exam_name_id,school_code=school_code)
+                                                if find_exams_subjects_obj.exists():
+                                                    exam_time_table_serializers=CustomExamsSerializer2(find_exams_subjects_obj,many=True)
+                                                    marksheet['exam_time_table']=[]
+                                                    marksheet['all_subject_total_marks']=0
+                                                    marksheet['all_subject_total_marks_obtain']=0
+                                                    Status='Pass'
+                                                    for paper in exam_time_table_serializers.data:
+                                                        papers={}
+                                                        papers['totalMarks']=paper['totalMarks']
+                                                        marksheet['all_subject_total_marks']+=int(paper['totalMarks'])
+                                                        papers['SubjectId']=paper['SubjectId']
+                                                        obtained_marks_obj=MarkSheet.objects.filter(AcademicYearId=academic_year_id,ClassId=student_class_serilaizer.data['classid_id'],StudentId=student_serializer.data['id'],
+                                                                                                    subID=paper['SubjectId_id'],Exam=exam_name_id,school_code=school_code,isActive=True).first()
+                                                        if obtained_marks_obj is not None:
+                                                            marks_serializer=MarkSheetSerializer(obtained_marks_obj)
+                                                            papers['ObtainedMarks']=marks_serializer.data['ObtainedMarks']
+                                                            papers['Status']=marks_serializer.data['Status']
+                                                            if papers['Status']=='0':
+                                                                Status='Fail'
+                                                            marksheet['all_subject_total_marks_obtain']+=int(marks_serializer.data['ObtainedMarks'])
+                                                        else:
+                                                            papers['ObtainedMarks']='NA'
+                                                            papers['Status']='NA'
+
+                                                        marksheet['exam_time_table'].append(papers)
+                                                    marksheet['Percentage']=calculate_percentage(marksheet['all_subject_total_marks_obtain'],marksheet['all_subject_total_marks'])
+                                                    marksheet['Status']=Status
+                                                else:
+                                                    marksheet['n']=0
+                                                    marksheet['reason']='This exam is not present for the calss and academics'
+                                            else:
+                                                marksheet['n']=0
+                                                marksheet['reason']='Student is not present in this class and academic year '
+                                        else:
+                                            marksheet['n']=0
+                                            marksheet['reason']='Student is no longer present'
+                                        marksheet_list.append(marksheet)     
+
+                                    return Response({"data":{'marksheet_list':marksheet_list},"response": {"n": 1, "msg": "success","status": "success"}})
+
+                                else:
+                                    return Response({"data":{},"response": {"n": 0, "msg": "Please provide students id","status": "failure"}})
+                            else:
+                                return Response({"data":{},"response": {"n": 0, "msg": "exam name not found","status": "failure"}})
+                        else:
+                            return Response({"data":{},"response": {"n": 0, "msg": "Please provide students exam name","status": "failure"}})
+                    else:
+                        return Response({"data":{},"response": {"n": 0, "msg": " academic year not found","status": "failure"}})
+                else:
+                    return Response({"data":{},"response": {"n": 0, "msg": "Please provide students academic year","status": "failure"}})
             else:
-                Status = 'FAIL'
+                return Response({"data":{},"response": {"n": 0, "msg": "class not found","status": "failure"}})
+        else:
+            return Response({"data":{},"response": {"n": 0, "msg": "Please provide students class","status": "failure"}})
+
+      
+        
+
+
+# class GenerateMarkSheet(GenericAPIView): 
+#     authentication_classes=[userJWTAuthentication]
+#     permission_classes = (permissions.IsAuthenticated,)
+#     def post(self,request):
+#         Status = ''
+#         classid = request.POST.get('classid')
+#         studentId = request.POST.get('studentId')
+        
+#         studenobj = Students.objects.filter(id=studentId).first()
+#         studentname = studenobj.StudentName
+#         ParentId = studenobj.ParentId
+#         scode = studenobj.school_code
+#         rollno = studenobj.RollNo
+#         AcademicYearId = ''
+#         StudentCode = ''
+#         classobj = Class.objects.filter(id=classid).first()
+#         classname = classobj.ClassName 
+#         scname = studenobj.StudentCode
+        
+#         Username_obj = User.objects.filter(id=studenobj.ParentId).first()
+#         parent_name = Username_obj.Username
+                 
+#         obj = MarkSheet.objects.filter(ClassId=classid,StudentId=studentId,isActive=True)
+#         ser = MarkSheetSerializer(obj,many=True)
+        
+#         for s in ser.data:
+            
+#             if s['Status'] == '1':
+#                 Status = 'PASS'
+#             else:
+#                 Status = 'FAIL'
                 
-            studenobj = Students.objects.filter(id=s['Student']).first()
-            s['studentname'] = studenobj.StudentName
+#             studenobj = Students.objects.filter(id=s['Student']).first()
+#             s['studentname'] = studenobj.StudentName
             
-            s['scode'] = s['SchoolCode']
-            s['rollno'] = s['RollNo']
-            classobj = Class.objects.filter(id=s['ClassId']).first()
-            s['classname'] = classobj.ClassName 
-            StudentCode = studenobj.StudentCode
+#             s['scode'] = s['SchoolCode']
+#             s['rollno'] = s['RollNo']
+#             classobj = Class.objects.filter(id=s['ClassId']).first()
+#             s['classname'] = classobj.ClassName 
+#             StudentCode = studenobj.StudentCode
             
-            subobj = Subject.objects.filter(id=s['SubID']).first()
-            s['subjname'] = subobj.SubjectName
+#             subobj = Subject.objects.filter(id=s['SubID']).first()
+#             s['subjname'] = subobj.SubjectName
             
-            examobj = Exam.objects.filter(id=s['Exam'],isActive=True,school_code=s['SchoolCode']).first()
-            s['exname'] = examobj.Name
+#             examobj = Exam.objects.filter(id=s['Exam'],isActive=True,school_code=s['SchoolCode']).first()
+#             s['exname'] = examobj.Name
             
-            AcademicYearId_obj = AcademicYear.objects.filter(id=s['AcademicYearId']).first()
-            AcademicYearId_name = str(AcademicYearId_obj.startdate) + '-' + str(AcademicYearId_obj.enddate)
+#             AcademicYearId_obj = AcademicYear.objects.filter(id=s['AcademicYearId']).first()
+#             AcademicYearId_name = str(AcademicYearId_obj.startdate) + '-' + str(AcademicYearId_obj.enddate)
+
             
-        return Response({"data":ser.data,"parent_name":parent_name,"AcademicYearId_name":AcademicYearId_name,"Status":Status,"studentname":studentname,"ParentId":ParentId,"scode":scode,"rollno":rollno,"classname":classname,"StudentCode":StudentCode,"response": {"n": 1, "msg": "Generate Marksheet successfully","status": "success"}})
+#         return Response({"data":ser.data,"parent_name":parent_name,"AcademicYearId_name":AcademicYearId_name,"Status":Status,"studentname":studentname,"ParentId":ParentId,"scode":scode,"rollno":rollno,"classname":classname,"StudentCode":StudentCode,"response": {"n": 1, "msg": "Generate Marksheet successfully","status": "success"}})
 
 
 

@@ -39,6 +39,7 @@ class CustomExamsSerializer2(serializers.ModelSerializer):
     SubjectId = serializers.StringRelatedField()
     ClassId = serializers.StringRelatedField()
     Date = CustomDateFormatField()
+    SubjectId_id = serializers.PrimaryKeyRelatedField(source='SubjectId', queryset=Subject.objects.all())
 
     class Meta:
         model= Exams

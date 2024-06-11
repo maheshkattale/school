@@ -273,7 +273,7 @@ class AddAcademicYear(GenericAPIView):
         data['SchoolId'] = schoolid
         newstartdate = data['startdate']
         newenddate = data['enddate']
-        yearexist = AcademicYear.objects.filter(startdate=newstartdate,enddate=newenddate,Isdeleted=False).first()
+        yearexist = AcademicYear.objects.filter(startdate=newstartdate,enddate=newenddate,Isdeleted=False,school_code=schoolcode).first()
         if yearexist is None:
             serializer = AcademicYearSerializer(data=data)
             if serializer.is_valid():
@@ -304,7 +304,7 @@ class AcademicYearbyid(GenericAPIView):
     def post(self,request):
         schoolcode = request.user.school_code
         id = request.data.get('id')
-        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
+        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False,school_code=schoolcode).first()
         if yearobj is not None:
             serializer = AcademicYearSerializer(yearobj)
             return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic Year found successfully","status": "success"}})
@@ -335,13 +335,13 @@ class updateAcademicYear(GenericAPIView):
         yearid = data['id']
         updatedstartdate = data['startdate']
         updatedenddate = data['enddate']
-        yearobjexist = AcademicYear.objects.filter(id=yearid,Isdeleted=False).first()
+        yearobjexist = AcademicYear.objects.filter(id=yearid,Isdeleted=False,school_code=schoolcode).first()
         if yearobjexist is not None:
-            duplicateyearobj = AcademicYear.objects.filter(startdate=updatedstartdate,enddate=updatedenddate,Isdeleted=False).exclude(id=yearid).first()
+            duplicateyearobj = AcademicYear.objects.filter(startdate=updatedstartdate,enddate=updatedenddate,Isdeleted=False,school_code=schoolcode).exclude(id=yearid).first()
             if duplicateyearobj is None:
                 serializer = AcademicYearSerializer(yearobjexist,data=data,partial=True)
                 if serializer.is_valid():
-                    AcademicYear.objects.all().update(isActive=False)
+                    AcademicYear.objects.filter(school_code=schoolcode).update(isActive=False)
                     serializer.save()
                     return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic year updated successfully","status": "success"}})
                 else:
@@ -360,7 +360,7 @@ class deleteAcademicYear(GenericAPIView):
         id = request.data.get('id')
         data={}
         data['Isdeleted'] = True
-        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
+        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False,school_code=schoolcode).first()
         if yearobj is not None:
             serializer = AcademicYearSerializer(yearobj,data=data,partial=True)
             if serializer.is_valid():
@@ -380,12 +380,12 @@ class enableAcademicYear(GenericAPIView):
         id = request.data.get('id')
         data={}
         data['isActive'] = True
-        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
+        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False,school_code=schoolcode).first()
         if yearobj is not None:
             if yearobj.isActive == False:
                 serializer = AcademicYearSerializer(yearobj,data=data,partial=True)
                 if serializer.is_valid():
-                    AcademicYear.objects.all().update(isActive=False)
+                    AcademicYear.objects.filter(school_code=schoolcode).update(isActive=False)
                     serializer.save()
                     return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic Year enable successfully","status": "success"}})
                 else:
@@ -404,7 +404,7 @@ class toggleAcademicYear(GenericAPIView):
         schoolcode = request.user.school_code
         id = request.data.get('id')
         data={}
-        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
+        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False,school_code=schoolcode).first()
         if yearobj is not None:
             if yearobj.isActive == True:
                 data['isActive'] = False
@@ -433,7 +433,7 @@ class disableAcademicYear(GenericAPIView):
         id = request.data.get('id')
         data={}
         data['isActive'] = False
-        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False).first()
+        yearobj = AcademicYear.objects.filter(id=id,Isdeleted=False,school_code=schoolcode).first()
         if yearobj is not None:
             if yearobj.isActive == True:
                 serializer = AcademicYearSerializer(yearobj,data=data,partial=True)
