@@ -13,127 +13,166 @@
   </div>
   
   <div class="row">
-    <div class="timetable border">
-      <div class="time-interval">
-        <div>monday</div>
-        <div>tuesday</div>
-        <div>wednesday</div>
-        <div>thursday</div>
-        <div>friday</div>
-        <div class="weekend">saturday</div>
-        <div class="weekend">sunday</div>
-
+    <div class="calendar-container">
+      <div class="header">
+          <button class="nav-buttons" id="prev-week"><i class="fa-solid fa-arrow-left"></i></button>
+          <span id="current-week"></span>
+          <button class="nav-buttons" id="next-week"><i class="fa-solid fa-arrow-right"></i></button>
       </div>
-      <div class="week-names">
-
-
-
-        <div>08:00 - 09:00</div>
-        <div>09:00 - 10:00</div>
-        <div>10:00 - 11:00</div>
-        <div>11:00 - 12:00</div>
-        <div>12:00 - 13:00</div>
-        <div>13:00 - 14:00</div>
-        <div>14:00 - 15:00</div>
+      <div class="row">
+          <div class="timetable border">
+              <div class="time-interval">
+                  <div>08:00 - 09:00</div>
+                  <div>09:00 - 10:00</div>
+                  <div>10:00 - 11:00</div>
+                  <div>11:00 - 12:00</div>
+                  <div>12:00 - 13:00</div>
+                  <div>13:00 - 14:00</div>
+                  <div>14:00 - 15:00</div>
+              </div>
+              <div class="week-names">
+                  <div id="monday">Monday</div>
+                  <div id="tuesday">Tuesday</div>
+                  <div id="wednesday">Wednesday</div>
+                  <div id="thursday">Thursday</div>
+                  <div id="friday">Friday</div>
+                  <div class="weekend" id="saturday">Saturday</div>
+                  <div class="weekend" id="sunday">Sunday</div>
+              </div>
+              <div class="content">
+                  <div><div class="accent-orange-gradient"></div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div><div class="accent-green-gradient"></div></div>
+                  <div class="weekend"></div>
+                  <div class="weekend"></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div><div class="accent-cyan-gradient"></div></div>
+                  <div></div>
+                  <div class="weekend"></div>
+                  <div class="weekend"></div>
+                  <div><div class="accent-pink-gradient"></div></div>
+                  <div></div>
+                  <div><div class="accent-purple-gradient"></div></div>
+                  <div></div>
+                  <div></div>
+                  <div class="weekend"></div>
+                  <div class="weekend"></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div class="weekend"></div>
+                  <div class="weekend"></div>
+                  <div><div class="accent-purple-gradient"></div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div class="weekend"></div>
+                  <div class="weekend"></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div class="weekend"></div>
+                  <div class="weekend"></div>
+              </div>
+          </div>
       </div>
-
-      <div class="content">
-        <div>
-          <div class="accent-orange-gradient"></div>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-            <div>
-          <div class="accent-green-gradient"></div>
-        </div>
-        <div class="weekend"></div>
-        <div class="weekend"></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>
-          <div class="accent-cyan-gradient"></div>
-        </div>
-        <div></div>
-        <div class="weekend"></div>
-        <div class="weekend"></div>
-        <div>
-          <div class="accent-pink-gradient"></div>
-        </div>
-        <div></div>
-        <div>
-          <div class="accent-purple-gradient"></div>
-        </div>
-        <div></div>
-        <div></div>
-        <div class="weekend"></div>
-        <div class="weekend"></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div class="weekend"></div>
-        <div class="weekend"></div>
-        <div>
-          <div class="accent-purple-gradient"></div>
-        </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div class="weekend"></div>
-        <div class="weekend"></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div class="weekend"></div>
-        <div class="weekend"></div>
-      </div>
-    </div>
+  </div>
   </div>
 {% endblock %}
 
 {% block script %}
   <script>
-    $(document).ready(function () {
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentWeekSpan = document.getElementById('current-week');
+      const weekDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  
+      let currentDate = new Date();
+  
+      function startOfWeek(date) {
+          const diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1); // adjust when day is sunday
+          return new Date(date.setDate(diff));
+      }
+  
+      function formatDate(date) {
+          const options = { month: 'short', day: 'numeric' };
+          return date.toLocaleDateString(undefined, options);
+      }
+      function formatDate_yy_mm_dd(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+      function updateWeek() {
+          const startOfTheWeek = startOfWeek(new Date(currentDate));
+          currentWeekSpan.textContent = `Week of ${formatDate(startOfTheWeek)}`;
+          var datelist=[]
+          weekDays.forEach((day, index) => {
+              const dayElement = document.getElementById(day);
+              const dayDate = new Date(startOfTheWeek);
+              dayDate.setDate(startOfTheWeek.getDate() + index);
+              datelist.push(formatDate_yy_mm_dd(dayDate))
+              dayElement.textContent = `${day.charAt(0).toUpperCase() + day.slice(1)} (${formatDate(dayDate)})`;
+          });
 
-      jQuery(function ($) {
-        var start = moment().subtract(0, 'days')
-        var end = moment()
+          get_time_table(datelist);
+
+      }
+  
+      document.getElementById('prev-week').addEventListener('click', () => {
+          currentDate.setDate(currentDate.getDate() - 7);
+          updateWeek();
+      });
+  
+      document.getElementById('next-week').addEventListener('click', () => {
+          currentDate.setDate(currentDate.getDate() + 7);
+          updateWeek();
+      });
+  
+      updateWeek(); // Initial call to display the current week
+   });
+   function get_time_table(datelist){
     
-        function cb(start, end) {
-          $('#daterange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+    console.log("datelist",datelist);
+    var fd = new FormData();    
+    fd.append("datelist",JSON.stringify(datelist));
+    fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+    $.ajax({
+      type: "POST",
+      url: frontend_url+"time_table_master/get_time_table",
+      data: fd,
+      processData: false,
+      contentType: false,
+      
+      success: function(response) {
+        console.log("time",response)
+        if(response.response.n ==1){
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'success',
+          }).then((result) => {
+            window.location.href = "/exam";
+    
+          });
+        }else{
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'error',
+          })
         }
-    
-        $('#daterange').daterangepicker(
-          {
-            startDate: start,
-            endDate: end,
-            ranges: {
-              Today: [moment(), moment()],
-              Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-              'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-              'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-              'This Month': [moment().startOf('month'), moment().endOf('month')],
-              'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            }
-          },
-          cb
-        )
-    
-        cb(start, end)
-    
-        // Use jQuery UI Datepicker for DOB input
-        $('#spandatechange').on('DOMSubtreeModified', function () {
-          console.log('DOMSubtreeModified')
-        })
-      })
-      new DataTable('#example');
 
-    })
+  
+      },
+    });
+   };
   </script>
 {% endblock %}

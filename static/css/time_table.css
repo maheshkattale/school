@@ -119,3 +119,32 @@
   .timetable .content > div {
     box-shadow: inset 1px 0 0 #eceff1, inset 0 1px 0 0 #eceff1;
   }
+  .calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.header button {
+    margin: 0 10px;
+}
+
+#current-week {
+    font-size: 16px;
+}
+.nav-buttons{
+  background-color: transparent;
+  padding: 0px;
+  color: #974dff;
+  border: 2px solid #974dff;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+}

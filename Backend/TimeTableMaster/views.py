@@ -23,7 +23,7 @@ from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
 from datetime import datetime, timedelta
 from Parent_StudentMaster.models import Students,studentclassLog
-
+from Frontend.school.custom_function import *
 
 
 class addtimetable(GenericAPIView):
@@ -208,25 +208,6 @@ class get_ttbyid(GenericAPIView):
 
 
 
-# class getttbystudentid(GenericAPIView):
-#     authentication_classes=[userJWTAuthentication]
-#     permission_classes = (permissions.IsAuthenticated,)
-#     def post(self,request):
-#         data={}
-#         schoolcode = request.user.school_code
-#         stuid = request.data.get('stuid')
-#         week = request.data.get('week')
-#         year = request.data.get('year')
-
-#         startdate = datetime.date.fromisocalendar(year, week, 1)
-#         dates = []
-#         for i in range(7):
-#             day = startdate + datetime.timedelta(days=i)
-#             dates.append(day)
-
-#         return Response({"data":dates,"response": {"n": 1, "msg": "Timetable Record found Successfully","status": "Success"}})
-
-
 class getttbystudentid(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -235,7 +216,6 @@ class getttbystudentid(GenericAPIView):
         schoolcode = request.user.school_code
         stuid = request.data.get('stuid')
         date = request.data.get('date')
-
         Academicyearobj = AcademicYear.objects.filter(isActive=True,school_code=schoolcode).first()
         if Academicyearobj is not None:
             academicyearid = Academicyearobj.id
@@ -281,3 +261,55 @@ class get_recipient(GenericAPIView):
             user_objs=User.objects.filter(isActive=True)
             serializers=UserlistSerializer(user_objs,many=True)
             return Response({"data":serializers.data,"response": {"n": 1, "msg": "user found successfully","status": "Success"}})
+        
+
+
+class get_time_table(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data=request.data.copy()
+        schoolcode = request.user.school_code
+
+        data['datelist']=json.loads(data['datelist'])
+        days=[]
+        for date_str in data['datelist']:
+            print("date_str",get_day_name(date_str))
+
+        
+        if True:
+            return Response({"data":'',"response": {"n": 1, "msg": "Successfully","status": "Success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "failed","status": "failed"}})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

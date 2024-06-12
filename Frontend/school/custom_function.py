@@ -107,7 +107,12 @@ def calculate_percentage(obtained_marks, total_marks):
     return percentage
     
     
-    
+def get_day_name(date_str):
+    # Convert the string to a date object
+    date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
+    # Get the day name
+    day_name = date_obj.strftime('%A')
+    return day_name
     
     
     

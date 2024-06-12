@@ -12,6 +12,7 @@ class_list_url=frontend_url+'api/ClassMaster/List'
 timetable_list_url=frontend_url+'api/TimeTableMaster/timetablelist'
 timetable_add_url=frontend_url+'api/TimeTableMaster/Add'
 timetable_delete_url=frontend_url+'api/TimeTableMaster/deletetimetable'
+get_timetable_url=frontend_url+'api/TimeTableMaster/get_time_table'
 timetable_by_id_url=frontend_url+'api/TimeTableMaster/get_ttbyid'
 timetable_edit_url=frontend_url+'api/TimeTableMaster/edittimetable'
 get_teacher_by_subject_url=frontend_url+'api/TimeTableMaster/getteachersfromsub'
@@ -132,7 +133,16 @@ class check_existing_timetable_entry(GenericAPIView):
             return HttpResponse(json.dumps(check_existing_timetable_entry_response), content_type="application/json")
         
         
-        
+class get_time_table(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            get_timetable_request = requests.post(get_timetable_url,headers=headers,data=data)
+            get_timetable_response = get_timetable_request.json()
+            return HttpResponse(json.dumps(get_timetable_response), content_type="application/json")
         
         
         

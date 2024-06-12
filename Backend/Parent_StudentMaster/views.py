@@ -474,6 +474,26 @@ class deleteStudent(GenericAPIView):
                 return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Delete student ! ","status": "failure"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "student not found ","status": "failure"}})
+
+
+class update_student(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        id = data['id']
+        studentobj = Students.objects.filter(id=id,isActive=True).first()
+        if studentobj is not None:
+            serializer = StudentSerializer(studentobj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data":'',"response": {"n": 1, "msg": "Student updated successfully","status": "success"}})
+            else:
+                first_key, first_value = next(iter(serializer.errors.items()))
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg":str(first_key) +' : '+str(first_value[0]),"status": "failure"}})
+            
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "student not found ","status": "failure"}})
         
 
 class getstudentlist(GenericAPIView):
@@ -538,13 +558,17 @@ class search_student_by_class_and_year(GenericAPIView):
 
         if studentclassLogobj.exists():
             studentclassser = custom_studentclassLogserializer(studentclassLogobj,many=True)
-            # for s in studentclassser.data:
-            #     print("s",s)
+            studentlist=studentclassser.data
+            for s in studentlist:
+                student_obj=Students.objects.filter(StudentCode=s['StudentCode'],isActive=True,school_code=schoolcode).first()
+                if student_obj is not None:
+                    student_serilzer=StudentSerializer(student_obj)
+                    s['student_details']=student_serilzer.data
 
 
 
 
-            return Response({"data":studentclassser.data,"response": {"n": 1, "msg": "Students found successfully","status": "success"}})
+            return Response({"data":studentlist,"response": {"n": 1, "msg": "Students found successfully","status": "success"}})
         else:
             return Response({"data":[],"response": {"n": 0, "msg": "No student found ","status": "failure"}})
 

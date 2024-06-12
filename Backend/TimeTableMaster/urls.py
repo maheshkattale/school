@@ -13,5 +13,6 @@ urlpatterns = [
     path('get_ttbyid',get_ttbyid.as_view(), name = 'get_ttbyid'),
     path('getttbystudentid',getttbystudentid.as_view(), name = 'getttbystudentid'),
     path('get_recipient',get_recipient.as_view(), name = 'get_recipient'),
+    path('get_time_table',get_time_table.as_view(), name = 'get_time_table'),
 
 ]
