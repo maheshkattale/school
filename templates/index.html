@@ -32,7 +32,7 @@
             {% if school_logo != '' and school_logo is not None %}
             <a class="text-nowrap logo-img"><img src="{{school_logo}}"  height="50" alt="" /></a>
             {% else %}
-            <a class="text-nowrap logo-img"><img src="{% static 'assets/images/logos/black-ort_logo.png' %}"  height="50" alt="" /></a>
+            <a class="text-nowrap logo-img"><img src="{% static 'assets/images/logos/school_logo.jpg' %}"  height="50" alt="" /></a>
             {% endif %}
             <div class="close-btn d-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
               <i class="ti ti-x fs-8"></i>
@@ -180,7 +180,7 @@
                         <p class="mb-0 fs-3">Change Password</p>
                       </a>
 
-                      <a href="/logout" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                      <a href="/logout/" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                     </div>
                   </div>
                 </li>

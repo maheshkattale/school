@@ -11,6 +11,7 @@ urlpatterns = [
     path('set_password/<str:id>', set_password.as_view(), name = 'set_password'),
     path('permissions', permissions.as_view(), name = 'permissions'),
     path('get_permissions_by_role', get_permissions_by_role.as_view(), name = 'get_permissions_by_role'),
+    path('update_profile', update_profile.as_view(), name = 'update_profile'),
     
     
 ]

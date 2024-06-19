@@ -1,7 +1,23 @@
 {% extends "index.html" %}
 {% load static %} 
 {% block head %}
-
+<style>
+  .imagepre {
+    width: 100px;
+    min-height: 100px;
+    max-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: lightgray;
+    border-width: 2px;
+    border-style: dotted;
+    border-color: rgb(136 0 239);
+    border-image: initial;
+    padding: 3px;
+}
+</style>
 
 {% endblock %}
 {% block heading %}
@@ -14,7 +30,6 @@
   <div class="mb-3 col-lg-5">
       <label for="classid" class="form-label">Class</label>
       <select id="classid" class="form-select select2" aria-describedby="class_error">
-        <option value="" selected>Please select class</option>
         {% for class in classes %}
           <option value="{{ class.id }}">{{ class.ClassName }} </option>
         {% endfor %}
@@ -25,7 +40,6 @@
   <div class="mb-3 col-lg-5">
       <label for="academic_year" class="form-label">Academic Year</label>
       <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
-        <option value="" selected>Please select academic year</option>
         {% for year in academic_years %}
           {% if year.isActive == True %}
             <option value="{{ year.id }}" selected>{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
@@ -44,6 +58,9 @@
   </div>
 </div>
   <div class="row">
+    {{ classes|json_script:"classes" }}
+    {{ bloodgroups|json_script:"bloodgroups" }}
+
     <table id="studentple" class="table table-striped table-bordered" style="width:100%">
       <thead>
           <tr>
@@ -82,7 +99,9 @@
 {% block script %}
 <script>
   $( document ).ready(function() {
-        new DataTable('#studentple');  
+        new DataTable('#studentple'); 
+        search_student() 
+
   });  
 
   function delete_student(studentcode){
@@ -136,11 +155,11 @@
 
   }
 
-</script>
-<script>
-  function search_student(){
-    var classid = $('#classid').val();
 
+  function search_student(){
+    var bloodgroups = JSON.parse(document.getElementById('bloodgroups').textContent);
+    var classlist = JSON.parse(document.getElementById('classes').textContent);
+    var classid = $('#classid').val();
     var yearid = $('#academic_year').val();
 
     var fd = new FormData();    
@@ -158,21 +177,123 @@
         console.log("student_list",response)
         if(response.response.n ==1){
           var trhtml=''
-
+      
+          var bloodgroupsOpt = '<option value="">Select blood group</option>';
+          $.each(bloodgroups, function (index, value) {
+            bloodgroupsOpt += `<option value="` + value.id + `">` + value.Groupname + `</option>`;
+          });
+          
+          var classOpt = '<option value="">Select class</option>';
+          $.each(classlist, function (index, value) {
+            classOpt += `<option value="` + value.id + `">` + value.ClassName + `</option>`;
+          });
+          console.log("bloodgroupsOpt",bloodgroupsOpt)
+          console.log("classOpt",classOpt)
           counter=1
           $.each(response.data,function(o,i){
+            
             trhtml+=`
             <tr>
               <td>`+counter+`</td>
-              <td>`+i.StudentName+`</td>
-              <td>`+i.StudentClass+`</td>
+              <td>`+i.studentId+`</td>
+              <td>`+i.classid+`</td>
               <td>
                 <a data-bs-toggle="tooltip" title="Delete student" onclick="delete_student('`+i.StudentCode+`')"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+                <a title="Edit student" data-bs-toggle="modal" data-bs-target="#edit_student`+i.studentId_id+`" data-bs-toggle="tooltip" ><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+
+
+
+
+                <div id="edit_student`+i.studentId_id+`" class="modal">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content ms-5">
+                      <div class="modal-body">
+                        <div class="card">
+                          <div class="card-body">
+                            <h5 class="card-title fw-semibold mb-4">Edit Student</h5>
+                            <div class="card">
+                              <div class="card-body">
+                                <form>
+                                  <div class="row">
+                                    <div class="mb-3 col-lg-12 text-center">
+
+                                      <label for="Photo`+i.studentId_id+`" class="form-content cursor-pointer w-100 p-1 d-flex justify-content-center">
+                                      <div class="image-div-preview">
+                                        <input type="file" id="Photo`+i.studentId_id+`" class="d-none photo" name="photo`+i.studentId_id+`"
+                                          onchange="validateImage(this,'Photopreview`+i.studentId_id+`');">
+                                        <div class="image-preview" id="imagePreview">
+                                          <img base64='`+i.student_details.photo+`' src="`+i.student_details.photo+`" id="Photopreview`+i.studentId_id+`" alt="Select Image" class="imagepre photopreview" />
+                                        </div>
+                                        <span id="photo_err`+i.studentId_id+`" class="error_message"></span>
+                                      </div>
+                                    </div>
+
+
+                                    <div class="mb-3 col-lg-6">
+                                      <label for="student_name`+i.studentId_id+`" class="form-label">Student Name<span class="text-danger">*</span> </label>
+                                      <input type="text" class="form-control" value="`+i.studentId+`" id="student_name`+i.studentId_id+`" placeholder="Please enter name" aria-describedby="student_name_error`+i.studentId_id+`"/>
+                                      <div id="student_name_error`+i.studentId_id+`" class="form-text error_message"></div>
+                                    </div>
+
+                                    <div class="mb-3 col-lg-6">
+
+                                      <label for="blood_group`+i.studentId_id+`" class="form-label">Blood Group<span class="text-danger">*</span> </label>
+                                      <select id="blood_group`+i.studentId_id+`" class="form-select select2" aria-describedby="blood_group_error`+i.studentId_id+`">
+                                            <option value="" selected>Please Select Blood Group</option>
+
+                                      </select>
+                                      <div id="blood_group_error`+i.studentId_id+`" class="form-text error_message"></div>
+                                    </div>
+
+
+                                    <div class="mb-3 col-lg-6">
+                                      <label for="date_of_birth`+i.studentId_id+`" class="form-label">Date of Birth<span class="text-danger">*</span> </label>
+                                      <input type="text" value="`+i.student_details.DateOfBirth+`"  class="form-control date_of_birth" id="date_of_birth`+i.studentId_id+`" placeholder="Please enter date of birth" aria-describedby="date_of_birth_error`+i.studentId_id+`" readonly/>
+                                      <div id="date_of_birth_error`+i.studentId_id+`" class="form-text error_message"></div>
+                                    </div>
+                                    <div class="mb-3 col-lg-6">
+                                      <label for="date_of_joining`+i.studentId_id+`" class="form-label">Date of joining<span class="text-danger">*</span> </label>
+                                      <input type="text" value="`+i.student_details.DateofJoining+`" class="form-control date_of_joining" id="date_of_joining`+i.studentId_id+`" placeholder="Please enter date of joining" aria-describedby="date_of_joining_error`+i.studentId_id+`" readonly/>
+                                      <div id="date_of_joining_error`+i.studentId_id+`" class="form-text error_message"></div>
+                                    </div>
+                                    <div class="mb-3 col-lg-6">
+                                      <label for="class_name`+i.studentId_id+`" class="form-label">Class <span class="text-danger">*</span> </label>
+                                      <select id="class_name`+i.studentId_id+`" class="form-select select2" aria-describedby="class_name_error`+i.studentId_id+`" disabled>
+                                            <option value="" selected>Please Select Class </option>
+                                 
+                                      </select>
+                                      <div id="class_name_error`+i.studentId_id+`" class="form-text error_message"></div>
+                                    </div>
+
+
+                                    <div class="mb-3 col-lg-6">
+                                      <label for="roll_no`+i.studentId_id+`" class="form-label">Roll No<span class="text-danger">*</span> </label>
+                                      <input type="text" class="form-control" value="`+i.RollNo+`"  id="roll_no`+i.studentId_id+`" placeholder="Please enter roll no" aria-describedby="roll_no_error`+i.studentId_id+`" readonly/>
+                                      <div id="roll_no_error`+i.studentId_id+`" class="form-text error_message"></div>
+                                    </div>
+                                  </div>
+          
+                                  <div class="row">
+                                    <div class="d-flex justify-content-center" id="edit_button">
+                                      <a onclick="update_student(`+i.studentId_id+`);"  class="btn btn-primary">Submit</a>
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
               </td>
             
   
   
-          </tr>
+            </tr>
             
             `
             counter+=1
@@ -180,6 +301,22 @@
           });
           $('#table_body').html(trhtml)
 
+          $.each(response.data,function(o,i){
+            $("#blood_group" + i.studentId_id).html(bloodgroupsOpt);
+            $("#class_name" + i.studentId_id).html(classOpt);
+            $("#blood_group" + i.studentId_id).val(i.student_details.BloodGroup)
+            $("#class_name" + i.studentId_id).val(i.classid_id)
+          });
+
+
+          flatpickr(".date_of_birth", {
+            dateFormat: "d-m-Y",
+          });
+          flatpickr(".date_of_joining", {
+            dateFormat: "d-m-Y",
+            maxDate: "today" // Disable future dates
+          });
+          
           Swal.fire({
             text: response.response.msg,
             icon: 'success',
@@ -193,6 +330,177 @@
 
   
       },
+    });
+  }
+  function update_student(id){
+
+    var student_name = $('#student_name'+id).val();
+    var blood_group = $('#blood_group'+id).val();
+    var date_of_birth = $('#date_of_birth'+id).val();
+    var date_of_joining = $('#date_of_joining'+id).val();
+    var Photopreview = $('#Photopreview'+id).attr('base64');
+    if (IsValid(Photopreview)) {
+      $('#photo_err'+id).html();
+      $('#photo_err_error'+id).show().delay(3000).slideUp();
+      $('#photo_err_error'+id).html('Please add student image');
+      $('#photo_err'+id).focus();
+      return false;
+    }
+    if (IsValid(student_name)) {
+      $('#student_name'+id).html();
+      $('#student_name_error'+id).show().delay(3000).slideUp();
+      $('#student_name_error'+id).html('Please enter student name');
+      $('#student_name'+id).focus();
+      return false;
+    }
+    if (IsValid(blood_group)) {
+      $('#blood_group'+id).html();
+      $('#blood_group_error'+id).show().delay(3000).slideUp();
+      $('#blood_group_error'+id).html('Please select blood group');
+      $('#blood_group'+id).focus();
+      return false;
+    }
+    if (IsValid(date_of_birth)) {
+      $('#date_of_birth'+id).html();
+      $('#date_of_birth_error'+id).show().delay(3000).slideUp();
+      $('#date_of_birth_error'+id).html('Please select date of birth');
+      $('#date_of_birth'+id).focus();
+      return false;
+    }
+    if (IsValid(date_of_joining)) {
+      $('#date_of_joining'+id).html();
+      $('#date_of_joining_error'+id).show().delay(3000).slideUp();
+      $('#date_of_joining_error'+id).html('Please select date of joining');
+      $('#date_of_joining'+id).focus();
+      return false;
+    }
+
+
+
+    var fd = new FormData();    
+    fd.append("id",id);
+    fd.append("StudentName",student_name);
+    fd.append("DateOfBirth",yyyy_mm_dd(date_of_birth));
+    fd.append("DateofJoining",yyyy_mm_dd(date_of_joining));
+    fd.append("BloodGroup",blood_group);
+    fd.append("photo",Photopreview);
+    fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+    $.ajax({
+      type: "POST",
+      url: frontend_url+"student/update_student",
+      data: fd,
+      processData: false,
+      contentType: false,
+      
+      success: function(response) {
+        console.log("update",response)
+        if(response.response.n ==1){
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'success',
+          }).then((result) => {
+            window.location.href = "/student/student_list";
+    
+          });
+        }else{
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'error',
+          })
+        }
+
+  
+      },
+    });
+  }
+
+
+  function validateImage(input, preview) {
+    debugger;
+    var maxSizeMB = 2;
+    var allowedExtensions = ["jpg", "jpeg", "png", "pdf"];
+  
+    var file = input.files[0];
+  
+    if (!file) {
+      console.error("No file selected.");
+      return;
+    }
+  
+    var fileName = file.name.toLowerCase();
+    var fileExtension = fileName.split(".").pop();
+  
+    if ($.inArray(fileExtension, allowedExtensions) === -1) {
+      showError("Invalid file type. Allowed types are: " + allowedExtensions.join(", "));
+      clearInputAndPreview(input, preview);
+      return;
+    }
+  
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function (evt) {
+        var base64 = evt.target.result;
+        $("#"+preview).attr('base64',base64)
+    }
+
+
+
+    if (fileExtension === "pdf") {
+      displayPdfPreview(file, preview);
+    } else {
+      displayImagePreview(file, preview);
+    }
+  }
+  
+  function displayPdfPreview(file, preview) {
+
+    var iframeElement = $('<iframe>');
+  
+    var fileUrl = URL.createObjectURL(file);
+    iframeElement.attr('src', fileUrl);
+  
+    replacePreviewWithElement(preview, iframeElement);
+  }
+  
+  function displayImagePreview(file, preview) {
+    var reader = new FileReader();
+  
+    reader.onload = function (e) {
+      var imageElement = $('<img>');
+      imageElement.attr('src', e.target.result);
+      imageElement.attr('base64',e.target.result)
+
+
+      replacePreviewWithElement(preview, imageElement);
+    };
+  
+    reader.onerror = function (e) {
+      console.error("Error reading file:", e);
+    };
+  
+    reader.readAsDataURL(file);
+  }
+  
+  function replacePreviewWithElement(preview, newElement) {
+    var existingPreview = $("#" + preview);
+    newElement.attr('id', existingPreview.attr('id'));
+    newElement.attr('alt', existingPreview.attr('alt'));
+    newElement.attr('class', existingPreview.attr('class'));
+    
+    existingPreview.replaceWith(newElement);
+  }
+  
+  function clearInputAndPreview(input, preview) {
+    $(input).val("");
+    $("#" + preview).attr("src", "");
+  }
+  
+  function showError(message) {
+    swal({
+      icon: "error",
+      title: "",
+      text: message,
+      timer: 2000,
     });
   }
 </script>

@@ -21,6 +21,7 @@ class CustomTimeTableSerializer(serializers.ModelSerializer):
     enddate = CustomDateFormatField()
     startdate = CustomDateFormatField()
     teacher_name = serializers.SerializerMethodField()
+    SubjectId_id = serializers.PrimaryKeyRelatedField(source='SubjectId', queryset=Subject.objects.all())
 
     def get_teacher_name(self, obj):
         teacher_id = obj.TeacherId

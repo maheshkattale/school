@@ -206,13 +206,7 @@
               {% for p in i.classes_names %}
                 {{ p }},
               {% endfor %}
-              {% comment %} {% for a in classes %}
-                {% if a.id in i.classid %}
-                    <span class="text-success">{{a.ClassName}}</span>
-                    {% else %}
-                    <span class="text-danger">{{a.ClassName}}</span>
-                {% endif %}
-              {% endfor %} {% endcomment %}
+
             </td>
             <td>{{ i.AcademicyearId }}</td>
 

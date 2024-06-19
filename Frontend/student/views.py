@@ -11,25 +11,31 @@ search_student_by_class_and_year_url=frontend_url+'api/Parent_StudentMaster/sear
 class_list_url=frontend_url+'api/ClassMaster/List'
 academic_list_url=frontend_url+'api/SchoolMaster/AcademicYearlist'
 delete_student_url=frontend_url+'api/Parent_StudentMaster/deleteStudent'
+update_student_url=frontend_url+'api/Parent_StudentMaster/update_student'
 student_id_cards_url=frontend_url+'api/Parent_StudentMaster/getstudentidcards'
 search_student_by_class_of_currentyear_url=frontend_url+'api/Parent_StudentMaster/search_student_by_class_of_currentyear'
+bloodgroups_list_url = frontend_url+'api/Parent_StudentMaster/bloodgrouplist'
+
 class student_list(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
-            student_list_request = requests.post(student_list_url,headers=headers)
-            student_list_response = student_list_request.json()
+            # student_list_request = requests.post(student_list_url,headers=headers)
+            # student_list_response = student_list_request.json()
             
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
+                        
+            bloodgroups_list_request = requests.get(bloodgroups_list_url,headers=headers)
+            bloodgroups_list_response = bloodgroups_list_request.json()
             
             academic_list_request = requests.get(academic_list_url,headers=headers)
             academic_list_response = academic_list_request.json()
             
             
-            return render(request, 'admin/student_master/studentlist.html',{'students':student_list_response['data'],
+            return render(request, 'admin/student_master/studentlist.html',{'bloodgroups':bloodgroups_list_response['data'],
                                                                             'classes':class_list_response['data'],
                                                                             'academic_years':academic_list_response['data']})
 
@@ -90,7 +96,18 @@ class delete_student(GenericAPIView):
             delete_student_response = delete_student_request.json()
             return HttpResponse(json.dumps(delete_student_response), content_type="application/json")
 
+class update_student(GenericAPIView):
 
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data = request.data.copy()
+            update_student_request = requests.post(update_student_url, data=data,headers=headers)
+            update_student_response = update_student_request.json()
+            return HttpResponse(json.dumps(update_student_response), content_type="application/json")
+        
 class get_class_students(GenericAPIView):
         
     def post(self,request):

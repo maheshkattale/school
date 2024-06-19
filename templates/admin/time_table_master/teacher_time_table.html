@@ -5,25 +5,10 @@
 
 {% endblock %}
 {% block heading %}
-  <span class="tab-title"><span class="px-1">Time Table Master</span></span>
+  <span class="tab-title"><span class="px-1">Teachers Time Table </span></span>
 {% endblock %}
 {% block body %}
-  <div class="row justify-content-end">
-    <div class="col-lg-3">
-        <label for="classid" class="form-label">Class</label>
-        <select id="classid" class="form-select select2" aria-describedby="class_error" onchange="updateWeek()">
-          {% for class in classes %}
-            <option value="{{ class.id }}">{{ class.ClassName }} </option>
-          {% endfor %}
-        </select>
-        <div id="class_error" class="form-text error_message"></div>
-    </div>
 
-    <div class="col-lg-2 text-center mt-auto">
-        <a href="/time_table_master/add_time_table" class="btn btn-primary">Add Time Table</a>
-    </div>
-    </div>
-  
   <div class="row">
     <div class="calendar-container">
       <div class="header">
@@ -126,15 +111,13 @@
       return `${year}-${month}-${day}`;
     }
     function get_time_table(datelist){
-        var classid=$('#classid').val();
-        console.log("datelist",datelist,classid);
+
         var fd = new FormData();    
         fd.append("datelist",JSON.stringify(datelist));
-        fd.append("classid",classid);
         fd.append("csrfmiddlewaretoken","{{csrf_token}}");
         $.ajax({
         type: "POST",
-        url: frontend_url+"time_table_master/get_class_time_table",
+        url: frontend_url+"time_table_master/get_teacher_time_table",
         data: fd,
         processData: false,
         contentType: false,
@@ -150,8 +133,8 @@
                     <div class="column">
                     ${value.map((entry, counter) => `
                         <div class="innerdiv `+entry.css+`">
+                        <span>`+entry.Class+`</span>
                         <span>`+entry.Subject+`</span>
-                        <span>`+entry.Teacher+`</span>
                         <span>`+entry.time+`</span>
                         </div>
                     `).join("\n")}

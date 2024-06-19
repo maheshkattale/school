@@ -69,26 +69,29 @@
           <div class="profilecard mb-1">
             <div class="proheading d-none">My Profile</div>
             <div class="py-2 text-center">
-              <div class="mb-2">
+              <label for="profileimage" >
+                <div class="mb-2">
 
 
-                {% if profile_image is not None and profile_image != "" %}
-                <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{{frontend_url}}{{profile_image}}" alt="" />
+                  {% if profile_image is not None and profile_image != "" %}
+                  <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{{frontend_url}}{{profile_image}}" alt="" />
 
-              {% else %}
-              <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{% static 'assets/images/profile/profile.png' %}" alt="" />
-              
-              {% endif %}
+                  {% else %}
+                  <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{% static 'assets/images/profile/profile.png' %}" alt="" />
+                
+                  {% endif %}
 
 
-              </div>
-              <div class="p-image">
-                <i class="fa fa-camera upload-button"></i>
-                <input data-file_types="jpg|jpeg|png|ico|bmp" name="photo" id="profileimage" type="file" class="file-upload" onchange="document.getElementById('idProofPreview').src = window.URL.createObjectURL(this.files[0])" />
-              </div>
+                </div>
 
-              <div class="mb-1 username">{{username}}</div>
-              <div class="small font-italic text-muted mb-2"></div>
+                <div class="p-image">
+                  <i class="fa fa-camera upload-button text-black"></i>
+                  <input data-file_types="jpg|jpeg|png|ico|bmp" name="photo" id="profileimage" type="file" class="file-upload" onchange="document.getElementById('idProofPreview').src = window.URL.createObjectURL(this.files[0])" />
+                </div>
+
+                <div class="mb-1 username">{{username}}</div>
+                <div class="small font-italic text-muted mb-2"></div>
+              </label>
             </div>
           </div>
         </div>
@@ -100,32 +103,29 @@
               <div class="main-card">
                 <div class="p-3">
                   <div class="row mb-3">
+
+
                     <div class="mb-3 col-lg-4">
                       <label for="name" class="form-label"> Name</label>
-                      <input type="text" class="form-control" id="name" aria-describedby="name_error" value="{{username}}" placeholder="Enter First Name"/>
+                      <input type="text" class="form-control" id="name" aria-describedby="name_error" value="{{username|default:''}}" placeholder="Enter First Name" readonly/>
                       <div id="name_error" class="form-text error_message"></div>
                     </div>
 
 
                       
-                    <div class="mb-3 col-lg-4">
+                      <div class="mb-3 col-lg-4">
                         <label for="phone_number" class="form-label">Phone Number</label>
-                        <input type="text" class="form-control" id="phone_number" aria-describedby="phone_number_error"  value="{{mobileNumber}}" placeholder="Enter Phone Name"/>
+                        <input type="text" maxlength="10"  class="form-control" id="phone_number" aria-describedby="phone_number_error"  value="{{mobileNumber|default:''}}" placeholder="Enter Phone Name" oninput="this.value = this.value.replace(/[^0-9 ]+/g,'').replace(/(\..*)\./g, '$1');" />
                         <div id="phone_number_error" class="form-text error_message"></div>
                       </div>
                       <div class="mb-3 col-lg-4">
                         <label for="email" class="form-label"> Email</label>
-                        <input type="text" class="form-control" id="email" aria-describedby="email_error" placeholder="Enter Official Email"  value="{{email}}"/>
+                        <input type="text" class="form-control" id="email" aria-describedby="email_error" placeholder="Enter Official Email"  value="{{email|default:''}}" readonly/>
                         <div id="email_error" class="form-text error_message"></div>
                       </div>
 
 
 
-                      <div class="mb-3 col-lg-4">
-                        <label for="date_of_birth" class="form-label">Birth Date</label>
-                        <input type="text" class="form-control" id="date_of_birth" aria-describedby="date_of_birth_error" readonly placeholder="Please select DOB"/>
-                        <div id="date_of_birth_error" class="form-text error_message"></div>
-                      </div>
 
 
 
@@ -135,7 +135,7 @@
 
                       <div class="mb-3 col-lg-12">
                         <label for="permanaent_addressline1" class="form-label">Address</label>
-                        <textarea class="form-control" name="address" id="address" rows="10">{{Address}}</textarea>
+                        <textarea class="form-control" name="address" id="address" rows="10">{{Address|default:''}}</textarea>
                         <div id="permanaent_addressline1_error" class="form-text error_message"></div>
                       </div>
 
@@ -152,9 +152,9 @@
                   </div>
 
                   <div class="row">
-                    {% comment %} <div class="submitbutton d-flex justify-content-center">
-                      <span class="btn btn-primary">Submit</span>
-                    </div> {% endcomment %}
+                    <div class="submitbutton d-flex justify-content-center">
+                      <span onclick="update_profile();" class="btn btn-primary">Submit</span>
+                    </div> 
                   </div>
                 </div>
               </div>
@@ -170,7 +170,73 @@
   <script>
     $(document).ready(function() {
 
+    });
+    function update_profile(){
+      debugger
+      
+      var phone_number = $("#phone_number").val();
+      var address = $("#address").val();
+      var profileimage = $("#profileimage")[0].files[0];
 
+
+
+      if(IsValid(phone_number)){
+        $('#phone_number').html();
+        $('#phone_number_error').show().delay(3000).slideUp();
+        $('#phone_number_error').html('Please enter phone number ');
+        $('#phone_number').focus();
+        return false;
+      }
+
+
+      if(IsValid(address)){
+        $('#address').html();
+        $('#address_error').show().delay(3000).slideUp();
+        $('#address_error').html('Please enter valid address ');
+        $('#address').focus();
+        return false;
+      }      
+      var fd = new FormData();    
+      fd.append("mobileNumber",phone_number);
+      fd.append("Address",address);
+
+    if (profileimage == "" || profileimage == undefined) {
+      fd.append("empty",'');
+    }else{
+      fd.append("photo",profileimage);
+    }
+
+
+
+      
+      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+      $.ajax({
+        type: "POST",
+        url: frontend_url+"user/update_profile",
+        data: fd,
+        processData: false,
+        contentType: false,
+        
+        success: function(response) {
+          if(response.response.n ==1){
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'success',
+            }).then((result) => {
+              window.location.href = "/user/profile";
+      
+            });
+          }else{
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+          }
+
+    
+        },
       });
+    }
+
   </script>
 {% endblock %}

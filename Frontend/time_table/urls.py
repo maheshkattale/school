@@ -13,5 +13,8 @@ urlpatterns = [
     path('time_table_list', time_table_list.as_view(), name = 'time_table_list'),
     path('check_existing_timetable_entry', check_existing_timetable_entry.as_view(), name = 'check_existing_timetable_entry'),
     
+    path('get_student_time_table', get_student_time_table.as_view(), name = 'get_student_time_table'),
+    path('get_class_time_table', get_class_time_table.as_view(), name = 'get_class_time_table'),
+    path('get_teacher_time_table', get_teacher_time_table.as_view(), name = 'get_teacher_time_table'),
     
 ]
