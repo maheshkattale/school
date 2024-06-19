@@ -1054,7 +1054,7 @@
   
         if (sections) {
 
-            var frontend_url="http://127.0.0.1:8000/"
+            
 
           el = $("<div class='fc-toolbar'/>")
           .append($('<div class="fc-center" id="leftsection"/>').append($('<div class="calender-heading"/>').append('<div class="icon-heading">  </div>').append((renderSection("center")))))
@@ -8043,7 +8043,7 @@
   ifmonthchanged=''
 
   function getevents(day,month,year,already_existdatelist){
-    var frontend_url="http://127.0.0.1:8000/"
+    var frontend_url="{{frontend_url}}"
 
     eventslist=[]
     $.ajax({

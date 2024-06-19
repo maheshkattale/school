@@ -64,3 +64,14 @@ class delete_subject(GenericAPIView):
             subject_delete_request = requests.post(subject_delete_url,headers=headers,data=data)
             subject_delete_response = subject_delete_request.json()
             return HttpResponse(json.dumps(subject_delete_response), content_type="application/json")
+        
+        
+        
+        
+        
+        
+        
+[{"itemno":1,"class":"2","day":"Friday","startdate":"2024-01-01","enddate":"2024-12-31","starttime":"10:00","endtime":"11:00","subject":"22","teacher":"c514b5c4-55c7-4f90-a9c4-db56cead342b","AcademicYear":"5"},{"itemno":2,"class":"2","day":"Friday","startdate":"2024-01-01","enddate":"2024-12-31","starttime":"11:00","endtime":"12:00","subject":"17","teacher":"8786b795-c7ba-482d-9a29-ff175a2d809a","AcademicYear":"5"},{"itemno":3,"class":"2","day":"Friday","startdate":"2024-01-01","enddate":"2024-12-31","starttime":"12:00","endtime":"13:00","subject":"20","teacher":"25cd9694-724c-40dd-b430-ec6494062891","AcademicYear":"5"},{"itemno":4,"class":"2","day":"Friday","startdate":"2024-01-01","enddate":"2024-12-31","starttime":"13:00","endtime":"14:00","subject":"16","teacher":"c514b5c4-55c7-4f90-a9c4-db56cead342b","AcademicYear":"5"},{"itemno":5,"class":"2","day":"Friday","startdate":"2024-01-01","enddate":"2024-12-31","starttime":"14:00","endtime":"15:00","subject":"18","teacher":"8786b795-c7ba-482d-9a29-ff175a2d809a","AcademicYear":"5"}]
+        
+        
+        
