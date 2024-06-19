@@ -15,6 +15,7 @@ permission_url=frontend_url+'api/User/getpermissions'
 menuitems_url=frontend_url+'api/User/menuitems'
 role_url=frontend_url+'api/User/getrole'
 save_permissions_url=frontend_url+'api/User/savepermissions'
+update_profile_url=frontend_url+'api/User/update_profile'
 # Create your views here.
 
 
@@ -175,4 +176,20 @@ class get_permissions_by_role(GenericAPIView):
   
   
   
-  
+class update_profile(GenericAPIView):
+    def post(self,request):
+
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data=request.data.copy()
+            update_profile_request = requests.get(update_profile_url,headers=headers,data=data,files=request.FILES)
+            update_profile_response = update_profile_request.json()
+            print("update_profile_response",update_profile_response)
+            if update_profile_response['response']['n']==1:
+                request.session['profile_image'] = update_profile_response['data']['photo']
+                request.session['mobileNumber'] = update_profile_response['data']['mobileNumber']
+                request.session['Address'] = update_profile_response['data']['Address']
+
+            return HttpResponse(json.dumps(update_profile_response), content_type="application/json")

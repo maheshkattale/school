@@ -58,9 +58,9 @@ class User(AbstractBaseUser,TrackingModel):
     school_code = models.CharField(max_length=101,null=True, blank=True)
     PasswordSet = models.BooleanField(default=False)
     Address = models.TextField(null=True, blank=True,default='')
-    
+    photo = models.ImageField(upload_to='userimages/', blank=True, null=True,verbose_name='user image')
     objects = UserManager()
-
+    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 

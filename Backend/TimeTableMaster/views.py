@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from ClassMaster.serializers import *
 
 # Create your views here.
+import random
 
 from rest_framework.response import Response
 import json
@@ -23,6 +25,7 @@ from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
 from datetime import datetime, timedelta
 from Parent_StudentMaster.models import Students,studentclassLog
+from Parent_StudentMaster.serializers import *
 from Frontend.school.custom_function import *
 
 
@@ -263,24 +266,197 @@ class get_recipient(GenericAPIView):
             return Response({"data":serializers.data,"response": {"n": 1, "msg": "user found successfully","status": "Success"}})
         
 
-
-class get_time_table(GenericAPIView):
+# day wise time table
+class get_student_time_table_in_week_days(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data=request.data.copy()
-        schoolcode = request.user.school_code
+        school_code = request.user.school_code
+        StudentCode=request.POST.get('StudentCode')
+        student_obj=Students.objects.filter(StudentCode=StudentCode,school_code=school_code,isActive=True).first()
+        print("StudentCode",StudentCode)
 
-        data['datelist']=json.loads(data['datelist'])
-        days=[]
-        for date_str in data['datelist']:
-            print("date_str",get_day_name(date_str))
+        if student_obj is not None:
+            student_serializer=StudentSerializer(student_obj)
+            ClassId=student_serializer.data['StudentClass']
+            current_academic_year=AcademicYear.objects.filter(school_code=school_code,Isdeleted=False,isActive=True).first()
+            if current_academic_year is not None:
+                data['datelist']=json.loads(data['datelist'])
 
-        
-        if True:
-            return Response({"data":'',"response": {"n": 1, "msg": "Successfully","status": "Success"}})
+                days=[]
+                for date_str in data['datelist']:
+                    day_dict={}
+                    day_str=get_day_name(date_str)
+                    day_dict[day_str] = []
+                    timetabe_obj=TimeTable.objects.filter(school_code=school_code,ClassId=ClassId,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str).order_by('start_time')
+                    time_table_serializer=CustomTimeTableSerializer(timetabe_obj,many=True)
+                    for period in time_table_serializer.data:
+                        if period['Day'] == day_str:
+                            period_dict={}
+                            period_dict['time']=str(period['start_time'])+' - '+str(period['end_time'])
+                            period_dict['Class']=str(period['ClassId'])
+                            period_dict['Subject']=str(period['SubjectId'])
+                            period_dict['Teacher']=str(period['teacher_name'])
+                            day_dict[day_str].append(period_dict)
+                    days.append(day_dict)
+                return Response({"data":days,"response": {"n": 1, "msg": "Successfully","status": "Success"}})
+            else:
+                return Response({"data":'',"response": {"n": 0, "msg": "Academic year is not active","status": "failed"}})
         else:
-            return Response({"data":'',"response": {"n": 0, "msg": "failed","status": "failed"}})
+            return Response({"data":'',"response": {"n": 0, "msg": "Student not found","status": "failed"}})
+
+
+
+class get_student_time_table(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data=request.data.copy()
+        school_code = request.user.school_code
+        StudentCode=request.POST.get('StudentCode')
+        student_obj=Students.objects.filter(StudentCode=StudentCode,school_code=school_code,isActive=True).first()
+        print("StudentCode",StudentCode)
+
+        if student_obj is not None:
+            student_serializer=StudentSerializer(student_obj)
+            ClassId=student_serializer.data['StudentClass']
+            current_academic_year=AcademicYear.objects.filter(school_code=school_code,Isdeleted=False,isActive=True).first()
+            if current_academic_year is not None:
+                data['datelist']=json.loads(data['datelist'])
+
+                days=[]
+                css_classes=["accent-purple-gradient","accent-blue-gradient","accent-cyan-gradient","accent-orange-gradient","accent-pink-gradient","timetable .accent-red-gradient","accent-cyan-gradient","accent-green-gradient","accent-orange-gradient","accent-pink-gradient","timetable .accent-red-gradient"]
+                for date_str in data['datelist']:
+                    day_dict={}
+                    day_str=get_day_name(date_str)
+                    day_dict[day_str] = []
+                    timetabe_obj=TimeTable.objects.filter(school_code=school_code,ClassId=ClassId,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str).order_by('start_time')
+                    time_table_serializer=CustomTimeTableSerializer(timetabe_obj,many=True)
+                    for period in time_table_serializer.data:
+                        if period['Day'] == day_str:
+                            period_dict={}
+                            # print("period",period)
+                            period_dict['time']=str(period['start_time'])+' - '+str(period['end_time'])
+                            period_dict['Class']=str(period['ClassId'])
+                            period_dict['Subject']=str(period['SubjectId'])
+                            period_dict['Teacher']=str(period['teacher_name'])
+                            subject_last=str(period['SubjectId_id'])[-1]
+                            
+                            period_dict['css']=css_classes[int(subject_last)]
+                            day_dict[day_str].append(period_dict)
+                    days.append(day_dict)
+                return Response({"data":days,"response": {"n": 1, "msg": "Successfully","status": "Success"}})
+            else:
+                return Response({"data":'',"response": {"n": 0, "msg": "Academic year is not active","status": "failed"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Student not found","status": "failed"}})
+
+
+class get_class_time_table(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data=request.data.copy()
+        school_code = request.user.school_code
+        classid=request.POST.get('classid')
+        class_obj=Class.objects.filter(id=classid,school_code=school_code,isActive=True).first()
+
+        if class_obj is not None:
+            class_serializer=ClassSerializer(class_obj)
+            ClassId=class_serializer.data['id']
+            current_academic_year=AcademicYear.objects.filter(school_code=school_code,Isdeleted=False,isActive=True).first()
+            if current_academic_year is not None:
+                data['datelist']=json.loads(data['datelist'])
+                days=[]
+                css_classes=["accent-purple-gradient","accent-blue-gradient","accent-cyan-gradient","accent-orange-gradient","accent-pink-gradient","timetable .accent-red-gradient","accent-cyan-gradient","accent-green-gradient","accent-orange-gradient","accent-pink-gradient","timetable .accent-red-gradient"]
+                for date_str in data['datelist']:
+                    day_dict={}
+                    day_str=get_day_name(date_str)
+                    day_dict[day_str] = []
+                    timetabe_obj=TimeTable.objects.filter(school_code=school_code,ClassId=ClassId,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str).order_by('start_time')
+                    time_table_serializer=CustomTimeTableSerializer(timetabe_obj,many=True)
+                    for period in time_table_serializer.data:
+                        if period['Day'] == day_str:
+                            period_dict={}
+                            # print("period",period)
+                            period_dict['time']=str(period['start_time'])+' - '+str(period['end_time'])
+                            period_dict['Class']=str(period['ClassId'])
+                            period_dict['Subject']=str(period['SubjectId'])
+                            period_dict['Teacher']=str(period['teacher_name'])
+                            subject_last=str(period['SubjectId_id'])[-1]
+                            
+                            period_dict['css']=css_classes[int(subject_last)]
+                            day_dict[day_str].append(period_dict)
+                    days.append(day_dict)
+                return Response({"data":days,"response": {"n": 1, "msg": "Successfully","status": "Success"}})
+            else:
+                return Response({"data":'',"response": {"n": 0, "msg": "Academic year is not active","status": "failed"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "class not found","status": "failed"}})
+
+
+
+class get_teacher_time_table(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data=request.data.copy()
+        school_code = request.user.school_code
+        TeacherId = request.user.id
+
+        current_academic_year=AcademicYear.objects.filter(school_code=school_code,Isdeleted=False,isActive=True).first()
+        if current_academic_year is not None:
+            data['datelist']=json.loads(data['datelist'])
+            days=[]
+            css_classes=["accent-purple-gradient","accent-blue-gradient","accent-cyan-gradient","accent-orange-gradient","accent-pink-gradient","timetable .accent-red-gradient","accent-cyan-gradient","accent-green-gradient","accent-orange-gradient","accent-pink-gradient","timetable .accent-red-gradient"]
+            for date_str in data['datelist']:
+                day_dict={}
+                day_str=get_day_name(date_str)
+                day_dict[day_str] = []
+                timetabe_obj=TimeTable.objects.filter(school_code=school_code,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str,TeacherId=TeacherId).order_by('start_time')
+                time_table_serializer=CustomTimeTableSerializer(timetabe_obj,many=True)
+                for period in time_table_serializer.data:
+                    if period['Day'] == day_str:
+                        period_dict={}
+                        period_dict['time']=str(period['start_time'])+' - '+str(period['end_time'])
+                        period_dict['Class']=str(period['ClassId'])
+                        period_dict['Subject']=str(period['SubjectId'])
+                        period_dict['Teacher']=str(period['teacher_name'])
+                        subject_last=str(period['SubjectId_id'])[-1]
+                        
+                        period_dict['css']=css_classes[int(subject_last)]
+                        day_dict[day_str].append(period_dict)
+                days.append(day_dict)
+            return Response({"data":days,"response": {"n": 1, "msg": "Successfully","status": "Success"}})
+        else:
+            return Response({"data":'',"response": {"n": 0, "msg": "Academic year is not active","status": "failed"}})
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

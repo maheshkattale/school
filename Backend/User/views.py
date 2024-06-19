@@ -397,7 +397,35 @@ class resetpassword(GenericAPIView):
         
         
       
-        
+    
+
+class update_profile(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self,request):
+        data=request.data.copy()
+        user_id=request.user.id
+        school_code=request.user.school_code
+        print("user_id",user_id)
+        print("data",data)
+        # print("request.FILES",request.FILES)
+        users_obj=User.objects.filter(id=user_id,school_code=school_code,isActive=True).first()
+        if users_obj is not None:
+            photo=request.FILES.get('photo')
+            if photo is not None and photo !='':
+                data['photo']=photo
+
+            serializer = UserSerializer(users_obj,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"data" : serializer.data,"response":{ "n":1,"msg":"Profile updated Successfully","status":"success"}})
+            else:
+                first_key, first_value = next(iter(serializer.errors.items()))
+                return Response({"data":'',"response": {"n": 0, "msg": first_key +' ' +first_value[0],"status": "failure"}})
+        else:
+            return Response({"data" : {},"response":{ "n":0,"msg":"user not found ","status":"failure"}})
+
+    
         
         
 

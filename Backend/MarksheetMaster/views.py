@@ -698,7 +698,6 @@ class GenerateMarkSheet(GenericAPIView):
         school_code=request.user.school_code
         student_ids_list = json.loads(request.POST.get('studentidlist'))
         marksheet_list=[]
-        print("request.POST",request.POST)
         school_obj=School.objects.filter(school_code=school_code,isActive=True).first()
         school_serializer=schoolSerializer(school_obj)
         if class_id is not None and class_id !='':
@@ -744,7 +743,7 @@ class GenerateMarkSheet(GenericAPIView):
                                                         papers={}
                                                         papers['totalMarks']=paper['totalMarks']
                                                         marksheet['all_subject_total_marks']+=int(paper['totalMarks'])
-                                                        papers['SubjectId']=paper['SubjectId']
+                                                        papers['SubjectId']=str(paper['SubjectId']).capitalize()
                                                         obtained_marks_obj=MarkSheet.objects.filter(AcademicYearId=academic_year_id,ClassId=student_class_serilaizer.data['classid_id'],StudentId=student_serializer.data['id'],
                                                                                                     subID=paper['SubjectId_id'],Exam=exam_name_id,school_code=school_code,isActive=True).first()
                                                         if obtained_marks_obj is not None:

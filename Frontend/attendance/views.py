@@ -19,6 +19,7 @@ class class_attendance(GenericAPIView):
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
+            
             teacher_classes_list_request = requests.get(teacher_classes_list_url,headers=headers)
             teacher_classes_list_response = teacher_classes_list_request.json()
             return render(request, 'admin/attendance/class_attendance.html',{

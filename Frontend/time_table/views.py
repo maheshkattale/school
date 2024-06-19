@@ -12,7 +12,10 @@ class_list_url=frontend_url+'api/ClassMaster/List'
 timetable_list_url=frontend_url+'api/TimeTableMaster/timetablelist'
 timetable_add_url=frontend_url+'api/TimeTableMaster/Add'
 timetable_delete_url=frontend_url+'api/TimeTableMaster/deletetimetable'
-get_timetable_url=frontend_url+'api/TimeTableMaster/get_time_table'
+get_student_time_table_url=frontend_url+'api/TimeTableMaster/get_student_time_table'
+get_class_time_table_url=frontend_url+'api/TimeTableMaster/get_class_time_table'
+get_teacher_time_table_table_url=frontend_url+'api/TimeTableMaster/get_teacher_time_table'
+
 timetable_by_id_url=frontend_url+'api/TimeTableMaster/get_ttbyid'
 timetable_edit_url=frontend_url+'api/TimeTableMaster/edittimetable'
 get_teacher_by_subject_url=frontend_url+'api/TimeTableMaster/getteachersfromsub'
@@ -21,7 +24,33 @@ check_existing_timetable_entry_url=frontend_url+'api/TimeTableMaster/checkdatera
 get_current_academic_year_url=frontend_url+'api/SchoolMaster/get_current_academic_year'
 class time_table_master(GenericAPIView):
     def get(self,request):
-        return render(request, 'admin/time_table_master/time_table_master.html',{})
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            StudentCode=request.session.get('PrimaryStudentCode',False)
+
+            if StudentCode:
+                print("hi")
+
+                return render(request, 'admin/time_table_master/student_time_table.html',{})
+            if request.session.get('roleid') ==4 :
+                print("by")
+
+                teacher_classes_list_url=frontend_url+'api/ClassMaster/teacher_classes_list'
+                teacher_classes_list_request = requests.get(teacher_classes_list_url,headers=headers)
+                teacher_classes_list_response = teacher_classes_list_request.json()
+                print("teacher_classes_list_response",teacher_classes_list_response)
+                return render(request, 'admin/time_table_master/teacher_time_table.html',{'classes':teacher_classes_list_response['data']})
+
+            else:
+                print("ok")
+
+                class_list_request = requests.get(class_list_url,headers=headers)
+                class_list_response = class_list_request.json()
+                return render(request, 'admin/time_table_master/time_table_master.html',{'classes':class_list_response['data']})
+        else:
+            return redirect('school:login')
     
 class add_time_table(GenericAPIView):
     def get(self,request):
@@ -133,19 +162,39 @@ class check_existing_timetable_entry(GenericAPIView):
             return HttpResponse(json.dumps(check_existing_timetable_entry_response), content_type="application/json")
         
         
-class get_time_table(GenericAPIView):
+class get_student_time_table(GenericAPIView):
     def post(self,request):
         tok = request.session.get('token', False)
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data=request.data.copy()
-            get_timetable_request = requests.post(get_timetable_url,headers=headers,data=data)
+            get_timetable_request = requests.post(get_student_time_table_url,headers=headers,data=data)
             get_timetable_response = get_timetable_request.json()
             return HttpResponse(json.dumps(get_timetable_response), content_type="application/json")
         
-        
-        
+class get_class_time_table(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            get_timetable_request = requests.post(get_class_time_table_url,headers=headers,data=data)
+            get_timetable_response = get_timetable_request.json()
+            return HttpResponse(json.dumps(get_timetable_response), content_type="application/json")
+            
+class get_teacher_time_table(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            get_timetable_request = requests.post(get_teacher_time_table_table_url,headers=headers,data=data)
+            get_timetable_response = get_timetable_request.json()
+            return HttpResponse(json.dumps(get_timetable_response), content_type="application/json")
+            
         
         
         

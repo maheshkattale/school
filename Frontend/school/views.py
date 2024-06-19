@@ -63,17 +63,22 @@ class login(GenericAPIView):
             request.session['PrimaryStudentCode'] = login_response['data']['PrimaryStudentCode']
             request.session['school_logo'] = login_response['data']['school_logo']
             request.session['user_role_name'] = login_response['data']['user_role_name']
+            request.session['profile_image'] = login_response['data']['user_info']['photo']
+            
             return redirect('school:dashboard')
 
 
 class logout(GenericAPIView):
     def get(self,request):
         try:
+            print("hiii")
             tok = request.session.get('token', False)
             t = 'Token {}'.format(tok)
             headers = {'Authorization': t}
             logout_request = requests.post(logout_url, headers=headers)
             logout_response = logout_request.json()
+            print("logout_response",logout_response)
+
             if logout_response['response']['n'] == 1:
                 del request.session['token']
                 messages.success(request, logout_response['response']['msg'])
@@ -81,7 +86,10 @@ class logout(GenericAPIView):
             else:
                 messages.error(request, logout_response['response']['msg'])
                 return redirect('school:login')
+            
         except Exception as e:
+            print("e",e)
+
             messages.error(request, e)
             return redirect('school:login')
 
