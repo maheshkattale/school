@@ -486,6 +486,13 @@ function update_draft(){
         $('#breakdown_enddate').focus();
         return false;
     }
+    if(Date.parse(breakdown_startdate) >= Date.parse(breakdown_enddate)){
+      $('#breakdown_enddate').html();
+      $('#breakdown_enddate_error').show().delay(3000).slideUp();
+      $('#breakdown_enddate_error').html('Please select end date greater then start date.');
+      $('#breakdown_enddate').focus();
+      return false;
+    }
 
     $('.rowitem'+itemNo).html(`
         

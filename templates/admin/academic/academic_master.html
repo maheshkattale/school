@@ -62,10 +62,6 @@
                 <div class="card-body">
                   <form>
                     <div class="row">
-
-
-               
-
                       <div class="mb-3 col-lg-6">
                         <label for="academic_start_date" class="form-label">Start Date <span class="text-danger">*</span> </label>
                         <input type="text" class="form-control date_picker" id="academic_start_date" placeholder="Please select start date" aria-describedby="academic_start_date_error" readonly/>
@@ -181,7 +177,7 @@
 
     })
     function validate_add_form(){
-      debugger
+      debugger;
       var academic_start_date=$('#academic_start_date').val()
       var academic_end_date=$('#academic_end_date').val()
 
@@ -200,9 +196,14 @@
         $('#academic_end_date').focus();
         return false;
       }
+      if(Date.parse(academic_start_date) >= Date.parse(academic_end_date)){
+        $('#academic_end_date').html();
+        $('#academic_end_date_error').show().delay(3000).slideUp();
+        $('#academic_end_date_error').html('Please select end date greater then start date.');
+        $('#academic_end_date').focus();
+        return false;
+      }
       else{
-
-
         var fd = new FormData();    
         fd.append("startdate",yyyy_mm_dd(academic_start_date));
         fd.append("enddate",yyyy_mm_dd(academic_end_date));
@@ -256,6 +257,13 @@
         $('#academic_end_date_error'+id).show().delay(3000).slideUp();
         $('#academic_end_date_error'+id).html('Please select academic end date');
         $('#academic_end_date'+id).focus();
+        return false;
+      }
+      if(Date.parse(academic_start_date) >= Date.parse(academic_end_date)){
+        $('#academic_end_date').html();
+        $('#academic_end_date_error').show().delay(3000).slideUp();
+        $('#academic_end_date_error').html('Please select end date greater then start date.');
+        $('#academic_end_date').focus();
         return false;
       }
       else{

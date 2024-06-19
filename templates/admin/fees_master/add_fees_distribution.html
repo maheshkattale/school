@@ -80,8 +80,6 @@
       </div>
       <div class="card">
         <div class="card-body">
-      
-     
             <div class="row">
                 <div class="mb-3 col-lg-3">
                     <label for="academic_year" class="form-label">Academic Year <span class="text-danger">*</span> </label> 
@@ -143,7 +141,7 @@
 
                 <div class="mb-3 col-lg-3">
                 <label for="breakdown_startdate" class="form-label">Start Date <span class="text-danger">*</span> </label>
-                <input type="text" class="form-control date_picker" placeholder="Please select fees breakdown start date"   id="breakdown_startdate" aria-describedby="breakdown_startdate_error" readonly/>
+                <input type="text" class="form-control date_picker" placeholder="Please select fees breakdown start date"   id="breakdown_startdate" aria-describedby="breakdown_startdate_error" readonly onclick="SecondWorkExperienceFilter();"/>
                 <div id="breakdown_startdate_error" class="form-text error_message"></div>
                 </div>
 
@@ -178,17 +176,11 @@
             </div>
 
 
-
-
             <div class="row">
               <div class="d-flex justify-content-center">
                 <a id="" onclick="save_fees_distribution();" class="btn btn-primary">Save</a>
               </div>
             </div>
-
-            
-
-
 
         </div>
       </div>
@@ -384,7 +376,7 @@ $(document).ready(function() {
 
 
 function add_breakdown(){
-    
+    debugger;
     var breakdown_name = $('#breakdown_name').val();
     var breakdown_amount = $('#breakdown_amount').val();
     var breakdown_startdate = $('#breakdown_startdate').val();
@@ -403,6 +395,7 @@ function add_breakdown(){
         $('#breakdown_amount').focus();
         return false;
     }
+    
     if(IsValid(breakdown_startdate)){
         $('#breakdown_startdate').html();
         $('#breakdown_startdate_error').show().delay(3000).slideUp();
@@ -417,7 +410,13 @@ function add_breakdown(){
         $('#breakdown_enddate').focus();
         return false;
     }
-    
+    if(Date.parse(breakdown_startdate) >= Date.parse(breakdown_enddate)){
+      $('#breakdown_enddate').html();
+      $('#breakdown_enddate_error').show().delay(3000).slideUp();
+      $('#breakdown_enddate_error').html('Please select end date greater then start date.');
+      $('#breakdown_enddate').focus();
+      return false;
+    }
     //var startTime = new Date().setHours(GetHours(breakdown_startdate), GetMinutes(breakdown_startdate), 0);
     //var endTime = new Date().setHours(GetHours(breakdown_enddate), GetMinutes(breakdown_enddate), 0);
     //if (endTime < startTime) {
@@ -574,5 +573,7 @@ function deleterow(id){
       console.log("delete draft",breakdowns)
       });
 };
+
+
 </script>
 {% endblock %}
