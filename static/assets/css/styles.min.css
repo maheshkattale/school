@@ -5433,6 +5433,7 @@ fieldset:disabled .btn {
     color: var(--bs-nav-tabs-link-active-color);
     background-color: var(--bs-nav-tabs-link-active-bg);
     border-color: var(--bs-nav-tabs-link-active-border-color)
+    
 }
 
 .nav-tabs .dropdown-menu {
@@ -19958,7 +19959,7 @@ ul {
     text-align: center;
     border-radius: 10px;
     margin: 5px;
-    width: 25%;
+    width: 100%;
 }
 
 .dashboard_count_heading{
@@ -20076,3 +20077,5 @@ ul {
 .accordion-body {
         border: var(--bs-border-width) solid #DFE5EF;
 }
+.searchbox_navlink{
+    background: #995dff;}

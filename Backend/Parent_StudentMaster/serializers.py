@@ -117,7 +117,6 @@ class CustomStudentSerializer(serializers.ModelSerializer):
     StudentClass=serializers.StringRelatedField()
     DateOfBirth = CustomDateFormatField()
     DateofJoining = CustomDateFormatField()
-
     bloodgroup_name = serializers.SerializerMethodField()
 
     def get_bloodgroup_name(self, obj):
@@ -137,4 +136,15 @@ class CustomStudentSerializer(serializers.ModelSerializer):
         
         
         
-        
+
+class custom_student_class_serializer(serializers.ModelSerializer):
+    studentId=serializers.StringRelatedField()
+    classid=serializers.StringRelatedField()
+    AcademicyearId=serializers.StringRelatedField()
+    studentId_id = serializers.PrimaryKeyRelatedField(source='studentId', queryset=Students.objects.all())
+    classid_id = serializers.PrimaryKeyRelatedField(source='classid', queryset=Class.objects.all())
+    AcademicyearId_id = serializers.PrimaryKeyRelatedField(source='AcademicyearId', queryset=AcademicYear.objects.all())
+
+    class Meta:
+        model= studentclassLog
+        fields='__all__'

@@ -223,8 +223,9 @@ class get_recipient(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
+        schoolcode = request.user.school_code
+
         if str(request.user.role) == "Parent":
-            schoolcode = request.user.school_code
             stuid = request.data.get('stuid')
             Academicyearobj = AcademicYear.objects.filter(isActive=True,school_code=schoolcode).first()
             if Academicyearobj is not None:
@@ -315,7 +316,7 @@ class get_student_time_table(GenericAPIView):
                     day_dict={}
                     day_str=get_day_name(date_str)
                     day_dict[day_str] = []
-                    timetabe_obj=TimeTable.objects.filter(school_code=school_code,ClassId=ClassId,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str).order_by('start_time')
+                    timetabe_obj=TimeTable.objects.filter(school_code=school_code,ClassId=ClassId,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str,isActive=True).order_by('start_time')
                     time_table_serializer=CustomTimeTableSerializer(timetabe_obj,many=True)
                     for period in time_table_serializer.data:
                         if period['Day'] == day_str:
@@ -357,7 +358,7 @@ class get_class_time_table(GenericAPIView):
                     day_dict={}
                     day_str=get_day_name(date_str)
                     day_dict[day_str] = []
-                    timetabe_obj=TimeTable.objects.filter(school_code=school_code,ClassId=ClassId,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str).order_by('start_time')
+                    timetabe_obj=TimeTable.objects.filter(school_code=school_code,ClassId=ClassId,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str,isActive=True).order_by('start_time')
                     time_table_serializer=CustomTimeTableSerializer(timetabe_obj,many=True)
                     for period in time_table_serializer.data:
                         if period['Day'] == day_str:
@@ -385,7 +386,6 @@ class get_teacher_time_table(GenericAPIView):
         data=request.data.copy()
         school_code = request.user.school_code
         TeacherId = request.user.id
-
         current_academic_year=AcademicYear.objects.filter(school_code=school_code,Isdeleted=False,isActive=True).first()
         if current_academic_year is not None:
             data['datelist']=json.loads(data['datelist'])
@@ -395,7 +395,7 @@ class get_teacher_time_table(GenericAPIView):
                 day_dict={}
                 day_str=get_day_name(date_str)
                 day_dict[day_str] = []
-                timetabe_obj=TimeTable.objects.filter(school_code=school_code,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str,TeacherId=TeacherId).order_by('start_time')
+                timetabe_obj=TimeTable.objects.filter(school_code=school_code,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str,TeacherId=TeacherId,isActive=True).order_by('start_time')
                 time_table_serializer=CustomTimeTableSerializer(timetabe_obj,many=True)
                 for period in time_table_serializer.data:
                     if period['Day'] == day_str:

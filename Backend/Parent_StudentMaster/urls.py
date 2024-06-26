@@ -36,6 +36,7 @@ urlpatterns = [
     path('search_students', search_students.as_view(), name = 'search_students'),
     
     path('GenerateMarksheetListApi', GenerateMarksheetListApi.as_view(), name = 'GenerateMarksheetListApi'),
+    path('search_student', search_student.as_view(), name = 'search_student'),
     
     
 ]

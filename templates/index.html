@@ -28,6 +28,7 @@
       <aside class="left-sidebar">
         <!-- Sidebar scroll -->
         <div>
+
           <div class="brand-logo d-flex align-items-center justify-content-between">
             {% if school_logo != '' and school_logo is not None %}
             <a class="text-nowrap logo-img"><img src="{{school_logo}}"  height="50" alt="" /></a>
@@ -55,7 +56,7 @@
                         <span class="hide-menu">{{i.MenuName}}</span>
                       </a>
 
-      </li>
+                  </li>
                   {% endif %}
                 {% endfor %}
               </ul>
@@ -63,31 +64,30 @@
 
  
               <ul id="sidebarnav">
-
                 {% for i in Menu %} 
                   {% if i.ParentID == 0 %}
-                  <li class="sidebar-item pagenav">
-                    <h4 class="sidebar-h4 cursor-pointer">
+                    <li class="sidebar-item pagenav">
+                      <h4 class="sidebar-h4 cursor-pointer">
                       <a class="sidebar-link"  aria-expanded="false">
                         <span class="menu-icon">{{i.MenuIcon|safe}}</span>
                         <span class="hide-menu">{{i.MenuName}}</span>
                       </a>
                       <i class="fa fa-angle-right"></i></h4>
-                    <ul>
-                      {% for j in Menu  %}
-                    {% if i.MenuID == j.ParentID %}
-                    <li class="sidebar-item page_item">
-                      <h4 class="sidebar-h4 cursor-pointer">
-                      <a class="sidebar-link justify-content-start px-2" href="{{j.MenuPath}}" aria-expanded="false">
-                        <span class="menu-icon">{{j.MenuIcon|safe}}</span>
-                        <span class="hide-menu">{{j.MenuName}}</span>
-                      </a>
-                      </h4>
+                      <ul>
+                        {% for j in Menu  %}
+                          {% if i.MenuID == j.ParentID %}
+                          <li class="sidebar-item page_item">
+                            <h4 class="sidebar-h4 cursor-pointer">
+                            <a class="sidebar-link justify-content-start px-2" href="{{j.MenuPath}}" aria-expanded="false">
+                              <span class="menu-icon">{{j.MenuIcon|safe}}</span>
+                              <span class="hide-menu">{{j.MenuName}}</span>
+                            </a>
+                            </h4>
+                          </li>
+                          {% endif %}
+                        {% endfor %}
+                      </ul>
                     </li>
-                    {% endif %}
-                  {% endfor %}
-                    </ul>
-                  </li>
                   {% endif %}
                 {% endfor %}
               </ul>
@@ -121,12 +121,17 @@
                   <a class="nav-link sidebartoggler nav-icon-hover " id="headerCollapse" href="javascript:void(0)"><i class="ti ti-menu-2"></i></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="javascript:void(0)">
+
+                  <a class="nav-link " href="javascript:void(0)">
                     {% block heading %}
 
                     {% endblock %}
+
+
                   </a>
+
                 </li>
+
               </ul>
 
               <ul class="navbar-nav flex-row align-items-center">

@@ -51,7 +51,9 @@ align-items: center;
     padding: 10px 3px 3px;
     font-size: 22px;
     text-align: center;
-}
+    text-transform: capitalize;
+    font-weight: 600;
+  }
 .user-img {
     border-radius: 10px;
     max-width: 112px;
@@ -177,4 +179,28 @@ align-items: center;
       transform: translateY(0);
     }
   }
-  
+.hexagon {
+    width: 100px;
+    margin: 0 auto;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    padding: 20px;
+    fill: white;
+    filter:invert();
+    -webkit-filter:invert();
+}
+.bg_red_cover{
+  background-color: #ff448e;
+
+}
+.bg_yellow_cover{
+  background-color: #ff6363;
+
+}
+.bg_purple_cover{
+  background-color: #3ff9ff;
+
+}
+.bg_blue_cover{
+  background-color: #1593e9;
+
+}

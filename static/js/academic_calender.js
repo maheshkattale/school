@@ -8046,157 +8046,242 @@
     var frontend_url="{{frontend_url}}"
 
     eventslist=[]
-    $.ajax({
-    url: frontend_url +"academic_calender/get_academic_calender_events",
-    type: 'POST',
-    data:{
-        'day':day,
-        'month':month,
-        'year':year,
-        'dayslist':JSON.stringify(already_existdatelist)
-    },
-    dataType: 'json',
-    beforeSend: function() {
-      $('.taskcontent').html(
-          '<span class="spiner"><i class="fa fa-spin fa-spinner"></i> Please Wait...</span>'
-      );
-    },
-    success: function(response){
-       $('.taskcontent').html('');
-        eventslist=[ {
-          "title": "English",
-          "start": "2024-04-20T08:30:00",
-          "end": "2024-04-20T10:00:00",
-          "color": "#F9F4FF",
-          "textColor": "#8833FF",
-          "uniqueText": " Lecture",
-          "date": "2024-04-20",
-        },
-        {
-          "title": "Marathi",
-          "start": "2024-04-20T10:30:00",
-          "end": "2024-04-20T12:00:00",
-          "color": "#FFF7F4",
-          "textColor": "#FF6633",
-          "uniqueText": " Lecture",
-          "date": "2024-04-20",
-        },
-        {
-          "title": "Science",
-          "start": "2024-04-20T05:30:00",
-          "end": "2024-04-20T07:00:00",
-          "color": "#FFF7F4",
-          "textColor": "#FF6633",
-          "uniqueText": " Lecture",
-          "date": "2024-04-20",
-        }
-      ]
+    // $.ajax({
+    // url: frontend_url +"academic_calender/get_academic_calender_events",
+    // type: 'POST',
+    // data:{
+    //     'day':day,
+    //     'month':month,
+    //     'year':year,
+    //     'dayslist':JSON.stringify(already_existdatelist)
+    // },
+    // dataType: 'json',
+    // beforeSend: function() {
+    //   $('.taskcontent').html(
+    //       '<span class="spiner"><i class="fa fa-spin fa-spinner"></i> Please Wait...</span>'
+    //   );
+    // },
+    // success: function(response){
+    //   //  $('.taskcontent').html('');
+    //   //   eventslist=[ {
+    //   //     "title": "English",
+    //   //     "start": "2024-04-20T08:30:00",
+    //   //     "end": "2024-04-20T10:00:00",
+    //   //     "color": "#F9F4FF",
+    //   //     "textColor": "#8833FF",
+    //   //     "uniqueText": " Lecture",
+    //   //     "date": "2024-04-20",
+    //   //   },
+    //   //   {
+    //   //     "title": "Marathi",
+    //   //     "start": "2024-04-20T10:30:00",
+    //   //     "end": "2024-04-20T12:00:00",
+    //   //     "color": "#FFF7F4",
+    //   //     "textColor": "#FF6633",
+    //   //     "uniqueText": " Lecture",
+    //   //     "date": "2024-04-20",
+    //   //   },
+    //   //   {
+    //   //     "title": "Science",
+    //   //     "start": "2024-04-20T05:30:00",
+    //   //     "end": "2024-04-20T07:00:00",
+    //   //     "color": "#FFF7F4",
+    //   //     "textColor": "#FF6633",
+    //   //     "uniqueText": " Lecture",
+    //   //     "date": "2024-04-20",
+    //   //   }
+    //   // ]
 
 
 
-        var cal = $("#calendar").fullCalendar({
-            header: {
-            left: "prev,next today",
-            center: "title",
-            right: "month,agendaWeek,agendaDay,listWeek",
-            },
-            dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    //   //   var cal = $("#calendar").fullCalendar({
+    //   //       header: {
+    //   //       left: "prev,next today",
+    //   //       center: "title",
+    //   //       right: "month,agendaWeek,agendaDay,listWeek",
+    //   //       },
+    //   //       dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
 
-            editable: false,
-            eventLimit: 0, // allow "more" link when too many events
-            navLinks: false,
-            events:eventslist,
-            dayRender: function (a) {
-            },
+    //   //       editable: false,
+    //   //       eventLimit: 0, // allow "more" link when too many events
+    //   //       navLinks: false,
+    //   //       events:eventslist,
+    //   //       dayRender: function (a) {
+    //   //       },
 
-            eventRender: function (event, element, view) {
-              // Check if event.start and event.uniqueText are defined
-              if (event.start && event.uniqueText) {
-                // Create a custom HTML with the event time and unique text
-                var timeHtml = '<span class="fc-time"> <sapn style="background:'+event.textColor+';color:white; padding: 0px 5px; margin:2px; border-radius:5px;">' + moment(event.start).format('LT') + "</sapn><span style='background:"+event.textColor+";color:white; padding: 0px 5px; margin:2px; border-radius:5px;'>"+ moment(event.end).format('LT') + '</span></span>';
-                var uniqueTextHtml = '<div class="unique-text" style="background:'+event.textColor+';color:white; padding: 0px 5px; margin:2px; border-radius:5px;">' + event.uniqueText + '</div>';
+    //   //       eventRender: function (event, element, view) {
+    //   //         // Check if event.start and event.uniqueText are defined
+    //   //         if (event.start && event.uniqueText) {
+    //   //           // Create a custom HTML with the event time and unique text
+    //   //           var timeHtml = '<span class="fc-time"> <sapn style="background:'+event.textColor+';color:white; padding: 0px 5px; margin:2px; border-radius:5px;">' + moment(event.start).format('LT') + "</sapn><span style='background:"+event.textColor+";color:white; padding: 0px 5px; margin:2px; border-radius:5px;'>"+ moment(event.end).format('LT') + '</span></span>';
+    //   //           var uniqueTextHtml = '<div class="unique-text" style="background:'+event.textColor+';color:white; padding: 0px 5px; margin:2px; border-radius:5px;">' + event.uniqueText + '</div>';
                 
-                // Append the custom HTML to the event element
-                element.find('.fc-time').html(timeHtml + uniqueTextHtml);
-                element.find('.fc-time:first').css('border-bottom', '1px solid ' + event.textColor);
-                element.find('.fc-time:first').css('padding', '3px');
+    //   //           // Append the custom HTML to the event element
+    //   //           element.find('.fc-time').html(timeHtml + uniqueTextHtml);
+    //   //           element.find('.fc-time:first').css('border-bottom', '1px solid ' + event.textColor);
+    //   //           element.find('.fc-time:first').css('padding', '3px');
 
-                element.css('border', '1px solid ' + event.textColor);
-                element.css('border-top', '2px solid ' + event.textColor);
-                element.css('border-radius', '10px');
-              }
-            },
+    //   //           element.css('border', '1px solid ' + event.textColor);
+    //   //           element.css('border-top', '2px solid ' + event.textColor);
+    //   //           element.css('border-radius', '10px');
+    //   //         }
+    //   //       },
 
-            eventClick: function (event) {
-              console.log("hii")
-              // Open Bootstrap modal and set event titlejoin
+    //   //       eventClick: function (event) {
+    //   //         console.log("hii")
+    //   //         // Open Bootstrap modal and set event titlejoin
 
-              $.ajax({
-                url: frontend_url +"get_sift_emp_attendance_and_task_by_date",
-                type: 'POST',
-                data:{
-                    'my_date':event.date,
-                    'shiftid':event.shiftid,
-                    csrfmiddlewaretoken:'{{ csrf_token }}',
+    //   //         $.ajax({
+    //   //           url: frontend_url +"get_sift_emp_attendance_and_task_by_date",
+    //   //           type: 'POST',
+    //   //           data:{
+    //   //               'my_date':event.date,
+    //   //               'shiftid':event.shiftid,
+    //   //               csrfmiddlewaretoken:'{{ csrf_token }}',
 
-                },
-                dataType: 'json',
-                beforeSend: function() {
-                  $('.taskcontent').html(
-                      '<span class="spiner"><i class="fa fa-spin fa-spinner"></i> Please Wait...</span>'
-                  );
-                },
-                success: function(respo){
-                  console.log("respo",respo.context.commonlist)
-                  $('#attendance_report_table').DataTable().destroy();
+    //   //           },
+    //   //           dataType: 'json',
+    //   //           beforeSend: function() {
+    //   //             $('.taskcontent').html(
+    //   //                 '<span class="spiner"><i class="fa fa-spin fa-spinner"></i> Please Wait...</span>'
+    //   //             );
+    //   //           },
+    //   //           success: function(respo){
+    //   //             console.log("respo",respo.context.commonlist)
+    //   //             $('#attendance_report_table').DataTable().destroy();
 
-                  $('#attendance_report').empty();
-                  $('.taskcontent').html('');
-                  var tableBody=''
-                  $.each(respo.context.commonlist, function(index, l) {
-                    tableBody+=`
-                    <tr>
-                    <td>` + (index + 1) + `</td>
-                    <td>` +  l.empname  + `</td>
-                    <td>` +  l.Designation  + `</td>
-                    <td><div data-bs-toggle='tooltip' title='` + l.check_in_attendance_type_resaon + `'>` + l.checkintime + `</div><div><a class='attendance_type text-success' data-bs-toggle='tooltip' title='` + l.check_in_remote_map_name + `' href='` + l.check_in_remote_map_location + `'>` + l.check_in_attendance_type + `</a></div></td>
-                    <td><div data-bs-toggle='tooltip' title='` + l.check_out_attendance_type_resaon + `'>` + l.checkouttime + `</div><div><a class='attendance_type text-danger' data-bs-toggle='tooltip' title='` + l.checkout_remote_map_name + `' href='` + l.checkout_remote_map_location + `'>` + l.check_out_attendance_type + `</a></div></td>                    <td>` +  l.total_time + `</td>
-                    <td>` +  l.status + `</td>
-                    <td>` +  l.shift.shiftname + ` (` + l.shift.intime + `-` + l.shift.outtime + `)` +`</td>
-                    </tr>`
+    //   //             $('#attendance_report').empty();
+    //   //             $('.taskcontent').html('');
+    //   //             var tableBody=''
+    //   //             $.each(respo.context.commonlist, function(index, l) {
+    //   //               tableBody+=`
+    //   //               <tr>
+    //   //               <td>` + (index + 1) + `</td>
+    //   //               <td>` +  l.empname  + `</td>
+    //   //               <td>` +  l.Designation  + `</td>
+    //   //               <td><div data-bs-toggle='tooltip' title='` + l.check_in_attendance_type_resaon + `'>` + l.checkintime + `</div><div><a class='attendance_type text-success' data-bs-toggle='tooltip' title='` + l.check_in_remote_map_name + `' href='` + l.check_in_remote_map_location + `'>` + l.check_in_attendance_type + `</a></div></td>
+    //   //               <td><div data-bs-toggle='tooltip' title='` + l.check_out_attendance_type_resaon + `'>` + l.checkouttime + `</div><div><a class='attendance_type text-danger' data-bs-toggle='tooltip' title='` + l.checkout_remote_map_name + `' href='` + l.checkout_remote_map_location + `'>` + l.check_out_attendance_type + `</a></div></td>                    <td>` +  l.total_time + `</td>
+    //   //               <td>` +  l.status + `</td>
+    //   //               <td>` +  l.shift.shiftname + ` (` + l.shift.intime + `-` + l.shift.outtime + `)` +`</td>
+    //   //               </tr>`
 
 
         
-                    // Append the row to the table body
-                });
+    //   //               // Append the row to the table body
+    //   //           });
 
 
 
-                  $('#attendance_report').html(tableBody);
-                  $('#eventModal').modal('show');
-                  $("#attendance_report_table").DataTable()
+    //   //             $('#attendance_report').html(tableBody);
+    //   //             $('#eventModal').modal('show');
+    //   //             $("#attendance_report_table").DataTable()
 
-                }
-                });
+    //   //           }
+    //   //           });
 
-              // $('.modal-content-calender').css('background',event.color)
-              // $('.modal-title-calender').css('color',event.textColor)
-              // $('.modal-content-calender').css('color',event.textColor)
-            }
+    //   //         // $('.modal-content-calender').css('background',event.color)
+    //   //         // $('.modal-title-calender').css('color',event.textColor)
+    //   //         // $('.modal-content-calender').css('color',event.textColor)
+    //   //       }
             
-        });
+    //   //   });
 
 
-        $('#calendar').fullCalendar('removeEvents', function () { return true; });
-        $('#calendar').fullCalendar('addEventSource', eventslist, true);
-        // $('#calendar').fullCalendar('refetchEvents')
+    //   //   $('#calendar').fullCalendar('removeEvents', function () { return true; });
+    //   //   $('#calendar').fullCalendar('addEventSource', eventslist, true);
+    //   //   // $('#calendar').fullCalendar('refetchEvents')
 
       
 
 
 
+    // }
+    // });
+
+    $('.taskcontent').html('');
+    eventslist=[ {
+      "title": "English",
+      "start": "2024-04-20T08:30:00",
+      "end": "2024-04-20T10:00:00",
+      "color": "#F9F4FF",
+      "textColor": "#8833FF",
+      "uniqueText": " Lecture",
+      "date": "2024-04-20",
+    },
+    {
+      "title": "Marathi",
+      "start": "2024-04-20T10:30:00",
+      "end": "2024-04-20T12:00:00",
+      "color": "#FFF7F4",
+      "textColor": "#FF6633",
+      "uniqueText": " Lecture",
+      "date": "2024-04-20",
+    },
+    {
+      "title": "Science",
+      "start": "2024-04-20T05:30:00",
+      "end": "2024-04-20T07:00:00",
+      "color": "#FFF7F4",
+      "textColor": "#FF6633",
+      "uniqueText": " Lecture",
+      "date": "2024-04-20",
     }
+  ]
+
+
+
+    var cal = $("#calendar").fullCalendar({
+        header: {
+        left: "prev,next today",
+        center: "title",
+        right: "month,agendaWeek,agendaDay,listWeek",
+        },
+        dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+
+        editable: false,
+        eventLimit: 0, // allow "more" link when too many events
+        navLinks: false,
+        events:eventslist,
+        dayRender: function (a) {
+        },
+
+        eventRender: function (event, element, view) {
+          // Check if event.start and event.uniqueText are defined
+          if (event.start && event.uniqueText) {
+            // Create a custom HTML with the event time and unique text
+            var timeHtml = '<span class="fc-time"> <sapn style="background:'+event.textColor+';color:white; padding: 0px 5px; margin:2px; border-radius:5px;">' + moment(event.start).format('LT') + "</sapn><span style='background:"+event.textColor+";color:white; padding: 0px 5px; margin:2px; border-radius:5px;'>"+ moment(event.end).format('LT') + '</span></span>';
+            var uniqueTextHtml = '<div class="unique-text" style="background:'+event.textColor+';color:white; padding: 0px 5px; margin:2px; border-radius:5px;">' + event.uniqueText + '</div>';
+            
+            // Append the custom HTML to the event element
+            element.find('.fc-time').html(timeHtml + uniqueTextHtml);
+            element.find('.fc-time:first').css('border-bottom', '1px solid ' + event.textColor);
+            element.find('.fc-time:first').css('padding', '3px');
+
+            element.css('border', '1px solid ' + event.textColor);
+            element.css('border-top', '2px solid ' + event.textColor);
+            element.css('border-radius', '10px');
+          }
+        },
+
+        eventClick: function (event) {
+          console.log("hii")
+          // Open Bootstrap modal and set event titlejoin
+
+
+
+          // $('.modal-content-calender').css('background',event.color)
+          // $('.modal-title-calender').css('color',event.textColor)
+          // $('.modal-content-calender').css('color',event.textColor)
+        }
+        
     });
+
+
+    $('#calendar').fullCalendar('removeEvents', function () { return true; });
+    $('#calendar').fullCalendar('addEventSource', eventslist, true);
+    // $('#calendar').fullCalendar('refetchEvents')
+
+
     return eventslist
   }
   $(function () {

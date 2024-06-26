@@ -17,6 +17,7 @@ def getMenu(request):
     school_logo = request.session.get('school_logo')
     user_role_name = request.session.get('user_role_name')
     profile_image=request.session.get('profile_image')
+    school_name=request.session.get('school_name')
 
     return {
         
@@ -34,6 +35,7 @@ def getMenu(request):
             'username':username,
             'school_logo':school_logo,
             'user_role_name':user_role_name,
+            'school_name':school_name,
             'profile_image':profile_image,
             
             
