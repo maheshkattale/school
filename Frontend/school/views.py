@@ -5,7 +5,7 @@ from django.contrib import messages
 from rest_framework.response import Response
 import json
 from rest_framework.generics import GenericAPIView
-from .static_info import frontend_url
+from .static_info import frontend_url,image_url
 # Create your views here.
 login_url=frontend_url+"api/User/login"
 logout_url = frontend_url+'api/User/logout'
@@ -66,7 +66,11 @@ class login(GenericAPIView):
             request.session['PrimaryStudentCode'] = login_response['data']['PrimaryStudentCode']
             request.session['school_logo'] = login_response['data']['school_logo']
             request.session['user_role_name'] = login_response['data']['user_role_name']
-            request.session['profile_image'] = login_response['data']['user_info']['photo']
+            if login_response['data']['user_info']['photo'] is not None and login_response['data']['user_info']['photo'] !='':
+                request.session['profile_image'] = image_url+login_response['data']['user_info']['photo']
+            else:
+                request.session['profile_image'] = ''
+                
             if login_response['data']['school_info'] !=[]:
                 request.session['school_name'] = login_response['data']['school_info']['Name']
 
