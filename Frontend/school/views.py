@@ -5,7 +5,7 @@ from django.contrib import messages
 from rest_framework.response import Response
 import json
 from rest_framework.generics import GenericAPIView
-from .static_info import frontend_url
+from .static_info import frontend_url,image_url
 # Create your views here.
 login_url=frontend_url+"api/User/login"
 logout_url = frontend_url+'api/User/logout'
@@ -16,6 +16,8 @@ enable_school_url=frontend_url+'api/SchoolMaster/enable'
 get_school_info_url=frontend_url+'api/SchoolMaster/getbyid'
 edit_school_url=frontend_url+'api/SchoolMaster/update'
 get_announcements_url=frontend_url+'api/Parent_StudentMaster/get_student_announcements'
+get_admin_dashboard_details_url=frontend_url+'api/User/get_admin_dashboard_details'
+get_teacher_dashboard_details_url=frontend_url+'api/User/get_teacher_dashboard_details'
 # student_list_url=frontend_url+'api/Parent_StudentMaster/getstudentlist'
 class_list_url=frontend_url+'api/ClassMaster/List'
 academic_list_url=frontend_url+'api/SchoolMaster/AcademicYearlist'
@@ -26,7 +28,8 @@ student_list_url=frontend_url+'api/Parent_StudentMaster/getstudentlist'
 search_students_url=frontend_url+'api/Parent_StudentMaster/search_students'
 GenerateMarkSheet_url=frontend_url+'api/MarksheetMaster/GenerateMarkSheet'
 sub_url=frontend_url+'api/SubjectMaster/List'
-
+search_user_url=frontend_url+'api/User/search_user'
+search_student_url=frontend_url+'api/Parent_StudentMaster/search_student'
 
 class login(GenericAPIView):
     def get(self,request):
@@ -63,8 +66,14 @@ class login(GenericAPIView):
             request.session['PrimaryStudentCode'] = login_response['data']['PrimaryStudentCode']
             request.session['school_logo'] = login_response['data']['school_logo']
             request.session['user_role_name'] = login_response['data']['user_role_name']
-            request.session['profile_image'] = login_response['data']['user_info']['photo']
-            
+            if login_response['data']['user_info']['photo'] is not None and login_response['data']['user_info']['photo'] !='':
+                request.session['profile_image'] = image_url+login_response['data']['user_info']['photo']
+            else:
+                request.session['profile_image'] = ''
+                
+            if login_response['data']['school_info'] !=[]:
+                request.session['school_name'] = login_response['data']['school_info']['Name']
+
             return redirect('school:dashboard')
 
 
@@ -103,17 +112,27 @@ class dashboard(GenericAPIView):
             t = 'Token {}'.format(tok)
             headers = {'Authorization': t}
             data={}
+            print("request.session.get('roleid')",request.session.get('roleid'))
+            if request.session.get('roleid') == 1:
+                return redirect("school:school_master")
+            if request.session.get('roleid') == 4:
+                get_teacher_dashboard_details = requests.post(get_teacher_dashboard_details_url,headers=headers, data=data)
+                get_teacher_dashboard_details_response = get_teacher_dashboard_details.json()
+                return render(request, 'admin/dashboard/teacher_dashboard.html',{"teacher":get_teacher_dashboard_details_response['data']})
             if request.session.get('roleid') == 5:
                 data['StudentCode']=request.session.get('PrimaryStudentCode')
                 get_announcements_request = requests.post(get_announcements_url,headers=headers, data=data)
                 get_announcements_response = get_announcements_request.json()
-
-                return render(request, 'admin/dashboard.html',{'announcements':get_announcements_response['data']})
+                return render(request, 'admin/dashboard/parent_dashboard.html',{'announcements':get_announcements_response['data']})
             else:
-                return render(request, 'admin/dashboard.html',{})
-
-        messages.error(request, 'Session expired please login again')
-        return redirect('school:login')
+                get_admin_dashboard_details = requests.post(get_admin_dashboard_details_url,headers=headers, data=data)
+                get_admin_dashboard_details_response = get_admin_dashboard_details.json()
+                return render(request, 'admin/dashboard/admin_dashboard.html',{"admin":get_admin_dashboard_details_response['data']})
+            
+            
+        else:
+            messages.error(request, 'Session expired please login again')
+            return redirect('school:login')
     
 
     
@@ -324,3 +343,56 @@ class reportcard(GenericAPIView):
         sub_response = sub_request.json()
     
         return render(request, 'admin/marksheet_master/reportcard.html',{'AcademicYearId_name':GenerateMarkSheet_response['AcademicYearId_name'],'studentname':GenerateMarkSheet_response['studentname'],'parent_name':GenerateMarkSheet_response['parent_name'],'StudentCode':GenerateMarkSheet_response['StudentCode'],'rollno':GenerateMarkSheet_response['rollno'],'classname':GenerateMarkSheet_response['classname'],'Status':GenerateMarkSheet_response['Status'],'generate':GenerateMarkSheet_response['data'],'subj':sub_response['data']})
+    
+    
+class search_student(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data = request.data.copy()
+            search_student_request = requests.post(search_student_url, data=data,headers=headers)
+            search_student_response = search_student_request.json()
+            return HttpResponse(json.dumps(search_student_response), content_type="application/json")
+        
+    
+    
+       
+    
+class search_user(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            t = 'Token {}'.format(tok)
+            headers = {'Authorization': t}
+            data = request.data.copy()
+            search_user_request = requests.post(search_user_url, data=data,headers=headers)
+            search_user_response = search_user_request.json()
+            return HttpResponse(json.dumps(search_user_response), content_type="application/json")
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

@@ -15,6 +15,9 @@ urlpatterns = [
     path('menuitems', Menulist.as_view(), name = 'menuitems'),
     path('getrole', getrole.as_view(), name = 'getrole'),
     path('update_profile', update_profile.as_view(), name = 'update_profile'),
+    path('get_admin_dashboard_details', get_admin_dashboard_details.as_view(), name = 'get_admin_dashboard_details'),
+    path('get_teacher_dashboard_details', get_teacher_dashboard_details.as_view(), name = 'get_teacher_dashboard_details'),
+    path('search_user', search_user.as_view(), name = 'search_user'),
 
     #Announcements
     

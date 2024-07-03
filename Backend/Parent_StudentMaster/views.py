@@ -938,13 +938,8 @@ class search_students(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data = request.data.copy()
-        
         schoolcode = request.user.school_code
         studentlist = []
-        # students_objects=Students.objects.filter(school_code=schoolcode,isActive=True)
-        # student_serializer=custom_student_serializer(students_objects,many=True)  
-        # stdent_list=list(student_serializer.data)
-
         studentclassLogobj = studentclassLog.objects.filter(school_code=schoolcode)
         if 'class' in request.data.keys():
             if request.data.get('class') is not None and request.data.get('class') !='':
@@ -985,3 +980,27 @@ class GenerateMarksheetListApi(GenericAPIView):
         details = []
         for t in stuser.data:
             details.append(t)
+            
+            
+            
+
+class search_student(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        StudentName=data['StudentName']
+        school_code = request.user.school_code
+        student_obj=Students.objects.filter(StudentName__contains=StudentName,isActive=True,school_code=school_code)
+        if student_obj.exists():
+            student_serializer=CustomStudentSerializer(student_obj,many=True)
+            studentlist = student_serializer.data
+            for student in studentlist:
+                class_log_obj=studentclassLog.objects.filter(studentId=student['id'],school_code=school_code,isActive=True)
+                class_log_serializer=custom_student_class_serializer(class_log_obj,many=True)
+                student['class_log']=class_log_serializer.data
+            return Response({"data":studentlist,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg": "No student found .","status": "failure"}})
+
+    

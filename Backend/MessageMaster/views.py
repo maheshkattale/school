@@ -15,6 +15,7 @@ class add_message(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data={}
+        print("reques",request.POST)
         data['from_user_id']=request.POST.get('from_user_id')
         school_code=request.user.school_code
         from_user_obj=User.objects.filter(id=data['from_user_id'],isActive=True).first()
@@ -22,7 +23,6 @@ class add_message(GenericAPIView):
             return Response({"data":'',"response": {"n": 0, "msg":'from user not found',"status": "failure"}})
         
         if str(from_user_obj.role) == 'Parent':
-            
             student_obj=Students.objects.filter(StudentCode=request.POST.get('StudentCode'),school_code=school_code,ParentId=from_user_obj.id,isActive=True).first()
             if student_obj is not None:
                 data['StudentCode']=student_obj.StudentCode
@@ -39,10 +39,7 @@ class add_message(GenericAPIView):
             return Response({"data":'',"response": {"n": 0, "msg":'To user not found',"status": "failure"}})
         
         if str(to_user_obj.role) == 'Parent':
-
-            
             student_obj=Students.objects.filter(StudentCode=request.POST.get('StudentCode'),school_code=school_code,ParentId=to_user_obj.id,isActive=True).first()
-            
             if student_obj is not None:
                 data['StudentCode']=student_obj.StudentCode
             else:

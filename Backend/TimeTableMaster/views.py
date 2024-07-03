@@ -46,10 +46,6 @@ class addtimetable(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "TimeTable list is empty","status": "failed"}})
         
-
-
-
-
 class getteachersfromsub(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -77,8 +73,6 @@ class getteachersfromsub(GenericAPIView):
         else:
             return Response({"data":[],"response": {"n": 0, "msg": "sujectid not found","status": "failed"}})
 
-
-
 class daterangelist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -87,8 +81,7 @@ class daterangelist(GenericAPIView):
         dateobjs = TimeTable.objects.filter(isActive=True,school_code=schoolcode)
         dateser = TimeTableSerializer(dateobjs,many=True)
         return Response({"data":dateser.data,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
-    
-    
+        
 class timetablelist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -127,9 +120,7 @@ class checkdaterange(GenericAPIView):
         else:
            recordexist = False
            return Response({"data":recordexist,"response": {"n": 0, "msg": "data found","status": "failed"}})
-       
-        
-
+               
 class edittimetable(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -173,8 +164,6 @@ class edittimetable(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "record not found","status": "failed"}})
 
-
-
 class deletetimetable(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -194,7 +183,6 @@ class deletetimetable(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "record not found","status": "failed"}})
 
-
 class get_ttbyid(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -208,8 +196,6 @@ class get_ttbyid(GenericAPIView):
             return Response({"data":dateser.data,"response": {"n": 1, "msg": "Timetable Record found Successfully","status": "Success"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "record not found","status": "failed"}})
-
-
 
 class getttbystudentid(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -237,8 +223,9 @@ class get_recipient(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
+        schoolcode = request.user.school_code
+
         if str(request.user.role) == "Parent":
-            schoolcode = request.user.school_code
             stuid = request.data.get('stuid')
             Academicyearobj = AcademicYear.objects.filter(isActive=True,school_code=schoolcode).first()
             if Academicyearobj is not None:
@@ -261,7 +248,7 @@ class get_recipient(GenericAPIView):
             else:
                 return Response({"data":'',"response": {"n": 0, "msg": "AcademicYear is not active","status": "failed"}})
         else:
-            user_objs=User.objects.filter(isActive=True)
+            user_objs=User.objects.filter(isActive=True,school_code=schoolcode)
             serializers=UserlistSerializer(user_objs,many=True)
             return Response({"data":serializers.data,"response": {"n": 1, "msg": "user found successfully","status": "Success"}})
         
@@ -306,8 +293,6 @@ class get_student_time_table_in_week_days(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Student not found","status": "failed"}})
 
-
-
 class get_student_time_table(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -331,7 +316,7 @@ class get_student_time_table(GenericAPIView):
                     day_dict={}
                     day_str=get_day_name(date_str)
                     day_dict[day_str] = []
-                    timetabe_obj=TimeTable.objects.filter(school_code=school_code,ClassId=ClassId,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str).order_by('start_time')
+                    timetabe_obj=TimeTable.objects.filter(school_code=school_code,ClassId=ClassId,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str,isActive=True).order_by('start_time')
                     time_table_serializer=CustomTimeTableSerializer(timetabe_obj,many=True)
                     for period in time_table_serializer.data:
                         if period['Day'] == day_str:
@@ -351,7 +336,6 @@ class get_student_time_table(GenericAPIView):
                 return Response({"data":'',"response": {"n": 0, "msg": "Academic year is not active","status": "failed"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Student not found","status": "failed"}})
-
 
 class get_class_time_table(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -374,7 +358,7 @@ class get_class_time_table(GenericAPIView):
                     day_dict={}
                     day_str=get_day_name(date_str)
                     day_dict[day_str] = []
-                    timetabe_obj=TimeTable.objects.filter(school_code=school_code,ClassId=ClassId,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str).order_by('start_time')
+                    timetabe_obj=TimeTable.objects.filter(school_code=school_code,ClassId=ClassId,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str,isActive=True).order_by('start_time')
                     time_table_serializer=CustomTimeTableSerializer(timetabe_obj,many=True)
                     for period in time_table_serializer.data:
                         if period['Day'] == day_str:
@@ -395,8 +379,6 @@ class get_class_time_table(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "class not found","status": "failed"}})
 
-
-
 class get_teacher_time_table(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -404,7 +386,6 @@ class get_teacher_time_table(GenericAPIView):
         data=request.data.copy()
         school_code = request.user.school_code
         TeacherId = request.user.id
-
         current_academic_year=AcademicYear.objects.filter(school_code=school_code,Isdeleted=False,isActive=True).first()
         if current_academic_year is not None:
             data['datelist']=json.loads(data['datelist'])
@@ -414,7 +395,7 @@ class get_teacher_time_table(GenericAPIView):
                 day_dict={}
                 day_str=get_day_name(date_str)
                 day_dict[day_str] = []
-                timetabe_obj=TimeTable.objects.filter(school_code=school_code,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str,TeacherId=TeacherId).order_by('start_time')
+                timetabe_obj=TimeTable.objects.filter(school_code=school_code,AcademicYear=current_academic_year,startdate__lte=date_str,enddate__gte=date_str,TeacherId=TeacherId,isActive=True).order_by('start_time')
                 time_table_serializer=CustomTimeTableSerializer(timetabe_obj,many=True)
                 for period in time_table_serializer.data:
                     if period['Day'] == day_str:
@@ -432,7 +413,6 @@ class get_teacher_time_table(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Academic year is not active","status": "failed"}})
         
-
 
 
 

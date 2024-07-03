@@ -40,11 +40,11 @@ class login(GenericAPIView):
         if email is None or Password is None :
             return Response(
                                                 {
-                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':'','school_logo':'','school_info':[],'user_info':[],'user_role_name':''},
+                    "data" : {'token':'','username':'','user_id':'','schoolcode':'','Menu':[],'roleid':'','Address':'','mobileNumber':'','email':'','children_list':[],'PrimaryStudentCode':'','PrimaryStudentId':'','school_logo':'','school_info':[],'user_info':[],'user_role_name':'',},
                     "response":{
-                    "status":"error",
-                    'msg': 'Please provide email and password',
-                    'n':0
+                        "status":"error",
+                        'msg': 'Please provide email and password',
+                        'n':0
                     }})
         
         userexist = User.objects.filter(email=email, isActive=True).first()
@@ -126,7 +126,6 @@ class login(GenericAPIView):
                     school_serializer=schoolSerializer(get_school_obj)
                     school_info=school_serializer.data
                     if school_info['school_logo'] is not None:
-
                         school_logo=image_url+str(school_info['school_logo'])
                     else:
                         school_logo=''
@@ -430,8 +429,96 @@ class update_profile(GenericAPIView):
         
         
 
+class get_admin_dashboard_details(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
         
+        user_id=request.user.id
+        school_code=request.user.school_code
+        current_academic_year_obj=AcademicYear.objects.filter(school_code=school_code,isActive=True,Isdeleted=False).first()
+        if current_academic_year_obj is not None:
+            class_count=0
+            students_count=0
+            teacher_count=0
+            class_count=Class.objects.filter(school_code=school_code,isActive=True).count()
+            students_count=studentclassLog.objects.filter(school_code=school_code,isActive=True,AcademicyearId=current_academic_year_obj.id).order_by('classid_id','StudentCode').distinct('classid_id','StudentCode').count()
+            teacher_count = User.objects.filter(isActive=True,role_id=4,school_code=school_code).count()
+
+            
+            
+            return Response({
+                        "data" : {'class_count':class_count,'students_count':students_count,'teacher_count':teacher_count,},
+                        "response":{
+                        "n": 1 ,
+                        "msg" : "Data found successfully",
+                        "status":"success"
+                        }
+                    })
+        else:
+            return Response({
+                        "data" : '',
+                        "response":{
+                        "n": 0 ,
+                        "msg" : "No Active academic year",
+                        "status":"failure"
+                        }
+                    })
         
+class get_teacher_dashboard_details(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        
+        user_id=request.user.id
+        school_code=request.user.school_code
+        current_academic_year_obj=AcademicYear.objects.filter(school_code=school_code,isActive=True,Isdeleted=False).first()
+        if current_academic_year_obj is not None:
+            class_count=0
+            students_count=0
+            teacher_count=0
+            class_count=Class.objects.filter(school_code=school_code,isActive=True).count()
+            students_count=studentclassLog.objects.filter(school_code=school_code,isActive=True,AcademicyearId=current_academic_year_obj.id).order_by('classid_id','StudentCode').distinct('classid_id','StudentCode').count()
+            teacher_count = User.objects.filter(isActive=True,role_id=4,school_code=school_code).count()
+
+            
+            
+            return Response({
+                        "data" : {'class_count':class_count,'students_count':students_count,'teacher_count':teacher_count,},
+                        "response":{
+                        "n": 1 ,
+                        "msg" : "Data found successfully",
+                        "status":"success"
+                        }
+                    })
+        else:
+            return Response({
+                        "data" : '',
+                        "response":{
+                        "n": 0 ,
+                        "msg" : "No Active academic year",
+                        "status":"failure"
+                        }
+                    })
+          
+
+class search_user(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        data = request.data.copy()
+        Username=data['Name']
+        school_code = request.user.school_code
+        user_obj=User.objects.filter(Username__contains=Username,isActive=True,school_code=school_code)
+        if user_obj.exists():
+            user_serializer=CustomUserSerializer(user_obj,many=True)
+            userlist = user_serializer.data
+
+            return Response({"data":userlist,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg": "No user found .","status": "failure"}})
+
+    
         
         
         

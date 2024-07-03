@@ -697,7 +697,7 @@
       fd.append("csrfmiddlewaretoken","{{csrf_token}}");
       $.ajax({
         type: "POST",
-        url: frontend_url+"/time_table_master/add_time_table",
+        url: frontend_url+"time_table_master/add_time_table",
         data: fd,
         processData: false,
         contentType: false,

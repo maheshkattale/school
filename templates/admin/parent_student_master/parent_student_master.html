@@ -1,67 +1,57 @@
-{% extends "index.html" %}
-{% load static %} 
+{% extends 'index.html' %}
+{% load static %}
 {% block head %}
-<style>
-  .modal-content{
-    margin-left:50px;
-  }
-</style>
+  <style>
+    .modal-content {
+      margin-left: 50px;
+    }
+  </style>
 {% endblock %}
 {% block heading %}
-<span class="tab-title">
-   <span class="px-1"> Parent Student Master</span>
-</span>
+  <span class="tab-title"><span class="px-1">Parent Student Master</span></span>
 {% endblock %}
 {% block body %}
-    <div class="d-flex justify-content-end">
-        <a href="/parent_student_master/add_parent_student"  class="btn btn-primary">Add Parent</a>
-
-    </div>
+  <div class="d-flex justify-content-end">
+    <a href="/parent_student_master/add_parent_student" class="btn btn-primary">Add Parent</a>
+  </div>
   <div class="row">
     <table id="example" class="table table-striped table-bordered" style="width:100%">
       <thead>
-          <tr>
-              <th>Sr No</th>
-              <th>Parent Name</th>
-              <th>Email</th>
-              <th>Contact</th>
-              <th>Students</th>
-              <th>Action</th>
-          </tr>
+        <tr>
+          <th>Sr No</th>
+          <th>Parent Name</th>
+          <th>Email</th>
+          <th>Contact</th>
+          <th>Students</th>
+          <th>Action</th>
+        </tr>
       </thead>
       <tbody>
         {% for i in parentlist %}
           <tr>
-              <td>{{forloop.counter}}</td>
-              <td>{{i.Username}}</td>
-              <td>{{i.email}}</td>
-              <td>{{i.mobileNumber}}</td>
-              <td><a href="javascript: void(0)" data-toggle="modal" onclick="studentlist('{{i.id}}')"
-                data-target="#studentsmodal" class="ml-5 btn btn-primary">View</a></td>
-              <td>
-                <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student/{{i.id}}"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-                <a data-bs-toggle="tooltip" title="Delete Parent"  onclick="delete_Parent('{{i.id}}')" ><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-              </td>
-            
-
-
+            <td>{{ forloop.counter }}</td>
+            <td>{{ i.Username }}</td>
+            <td>{{ i.email }}</td>
+            <td>{{ i.mobileNumber }}</td>
+            <td>
+              <a href="javascript: void(0)" data-toggle="modal" onclick="studentlist('{{ i.id }}')" data-target="#studentsmodal" class="ml-5 btn btn-primary">View</a>
+            </td>
+            <td>
+              <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student/{{ i.id }}"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+              <a data-bs-toggle="tooltip" title="Delete Parent" onclick="delete_Parent('{{ i.id }}')"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+            </td>
           </tr>
-          {% endfor %}
-       
+        {% endfor %}
       </tbody>
-
-  </table>
-  </div> 
-
+    </table>
+  </div>
 
   <div class="modal fade" id="studentsmodal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Students</h5>
-          <button class="modal_close_btn" type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button class="modal_close_btn" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
           <div class="row" id="students"></div>
@@ -75,150 +65,145 @@
 {% endblock %}
 
 {% block script %}
-<script>
-  $( document ).ready(function() {
-    new DataTable('#example');  
-  });  
-
-  function delete_Parent(id){
-    debugger;
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        var fd = new FormData();    
-        fd.append("id",id);
-        fd.append("csrfmiddlewaretoken","{{csrf_token}}");
-        $.ajax({
-          type: "POST",
-          url: frontend_url+"parent_student_master/delete_parent",
-          data: fd,
-          processData: false,
-          contentType: false,
-          
-          success: function(response) {
-            console.log("delete",response)
-            if(response.response.n ==1){
-              Swal.fire({
-                text: response.response.msg,
-                icon: 'success',
-              }).then((result) => {
-                location.reload();
-        
-              });
-            }else{
-              Swal.fire({
-                text: response.response.msg,
-                icon: 'error',
-              })
+  <script>
+    $(document).ready(function () {
+      new DataTable('#example')
+    })
+    
+    function delete_Parent(id) {
+      debugger
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          var fd = new FormData()
+          fd.append('id', id)
+          fd.append('csrfmiddlewaretoken', '{{csrf_token}}')
+          $.ajax({
+            type: 'POST',
+            url: frontend_url + 'parent_student_master/delete_parent',
+            data: fd,
+            processData: false,
+            contentType: false,
+    
+            success: function (response) {
+              console.log('delete', response)
+              if (response.response.n == 1) {
+                Swal.fire({
+                  text: response.response.msg,
+                  icon: 'success'
+                }).then((result) => {
+                  location.reload()
+                })
+              } else {
+                Swal.fire({
+                  text: response.response.msg,
+                  icon: 'error'
+                })
+              }
             }
-
-      
-          },
-        });
-
-
-
-
-      }
-    });
-     
-
-  }
-
-  function studentlist(parentid){
-    var trhtml = ''
-    t = 'Bearer {{token}}'
-    var fd = new FormData();    
-      fd.append("parentid",parentid);
-      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+          })
+        }
+      })
+    }
+    
+    function studentlist(parentid) {
+      var trhtml = ''
+      t = 'Bearer {{token}}'
+      var fd = new FormData()
+      fd.append('parentid', parentid)
+      fd.append('csrfmiddlewaretoken', '{{csrf_token}}')
       $.ajax({
-        type: "POST",
-        headers:{'Authorization':t},
-        url: frontend_url+"api/Parent_StudentMaster/studentsbyparentlist",
+        type: 'POST',
+        headers: { Authorization: t },
+        url: frontend_url + 'api/Parent_StudentMaster/studentsbyparentlist',
         data: fd,
         processData: false,
         contentType: false,
-        
-
-
-        success: function(response) {
-          console.log("response.data",response.data)
-          if(response.response.n ==1){
-
-            $(response.data).each(function(o,i){
-
-              var profileimage=''
-              if (i.photo !=''){
-                if(i.iframes == true){
-                  profileimage=`<iframe  src="`+i.photo+`"  class="user-img"  frameborder="0" allowfullscreen></iframe>`
-                }else{
-                  profileimage=`<img src="`+i.photo+`" class="user-img" alt="">`
+    
+        success: function (response) {
+          console.log('response.data', response.data)
+          if (response.response.n == 1) {
+            $(response.data).each(function (o, i) {
+              var profileimage = ''
+              if (i.photo != '') {
+                if (i.iframes == true) {
+                  profileimage = `<iframe  src="` + i.photo + `"  class="user-img"  frameborder="0" allowfullscreen></iframe>`
+                } else {
+                  profileimage = `<img src="` + i.photo + `" class="user-img" alt="">`
                 }
-              }else{
-                profileimage=`<img src="/static/assets/images/profile/profile.png" class="user-img" alt="">`
+              } else {
+                profileimage = `<img src="/static/assets/images/profile/profile.png" class="user-img" alt="">`
               }
-
-          trhtml += `  <div class="col-lg-6">
-        <div class="student-card border-apply">
-            <div class="contact-grid">
-                <div class="profile-header bg-cyan">
-                    <div class="user-name">
-                        `+i.StudentName+`
+    
+              trhtml +=
+                `  <div class="col-lg-6">
+            <div class="student-card border-apply">
+                <div class="contact-grid">
+                    <div class="profile-header bg-cyan">
+                        <div class="user-name">
+                            ` +
+                i.StudentName +
+                `
+                        </div>
+                        <div class="name-center">
+                          ` +
+                i.classname +
+                `
+                        </div>
                     </div>
-                    <div class="name-center">
-                      `+i.classname+`
+    
+                    ` +
+                profileimage +
+                `
+                    <div class="p-3">
+                        <div class="row">
+                            <div class="col-lg-6 text-start py-2">
+                                <i class="fa-solid fa-id-card"></i> 
+                                ` +
+                i.StudentCode +
+                `
+                            </div>
+                            <div class="col-lg-6 text-start py-2">
+                                <i class="fa-regular fa-id-card"></i>    DOJ ` +
+                i.DateofJoining +
+                `
+                            </div>
+                            <div class="col-lg-6 text-start py-2">
+                                <i class="fa-solid fa-cake-candles"></i> DOB ` +
+                i.DateOfBirth +
+                `
+                                
+                            </div>
+                            <div class="col-lg-6 text-start py-2">
+                                <i class="fa-solid fa-droplet"></i> ` +
+                i.BloodGroup +
+                `
+                            </div>
+                        </div>
                     </div>
+    
                 </div>
-
-                `+profileimage+`
-                <div class="p-3">
-                    <div class="row">
-                        <div class="col-lg-6 text-start py-2">
-                            <i class="fa-solid fa-id-card"></i> 
-                            `+i.StudentCode+`
-                        </div>
-                        <div class="col-lg-6 text-start py-2">
-                            <i class="fa-regular fa-id-card"></i>    DOJ `+i.DateofJoining+`
-                        </div>
-                        <div class="col-lg-6 text-start py-2">
-                            <i class="fa-solid fa-cake-candles"></i> DOB `+i.DateOfBirth+`
-                            
-                        </div>
-                        <div class="col-lg-6 text-start py-2">
-                            <i class="fa-solid fa-droplet"></i> `+i.BloodGroup+`
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
-    </div>
-
-    `
-  })
-  $('#students').html(trhtml)
-          }else{
+    
+        `
+            })
+            $('#students').html(trhtml)
+          } else {
             Swal.fire({
               text: response.response.msg,
-              icon: 'error',
+              icon: 'error'
             })
           }
-
-    
-        },
-      });
-
-
-
-
-
-  }
-</script>
+        }
+      })
+    }
+  </script>
 {% endblock %}

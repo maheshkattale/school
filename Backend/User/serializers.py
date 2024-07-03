@@ -30,4 +30,10 @@ class Roleserializer(serializers.ModelSerializer):
     class Meta:
         model= Role
         fields='__all__'
- 
+class CustomUserSerializer(serializers.ModelSerializer):
+    role=serializers.StringRelatedField()
+    designation=serializers.StringRelatedField()
+    
+    class Meta:
+        model= User
+        fields='__all__'

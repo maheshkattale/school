@@ -24,6 +24,8 @@ urlpatterns = [
     path('generate_marksheet', generate_marksheet.as_view(), name = 'generate_marksheet'),
     path('upload_marksheet', upload_marksheet.as_view(), name = 'upload_marksheet'),
     path('reportcard/<int:id>/<int:classid>', reportcard.as_view(), name = 'reportcard'),
+    path('search_student', search_student.as_view(), name = 'search_student'),
+    path('search_user', search_user.as_view(), name = 'search_user'),
 
     
 ]
