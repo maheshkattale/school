@@ -48,6 +48,7 @@ class login(GenericAPIView):
                     }})
         
         userexist = User.objects.filter(email=email, isActive=True).first()
+        print('userexist',userexist)
         if userexist is None:
            return Response(
                     {

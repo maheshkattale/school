@@ -30,7 +30,7 @@ class AcademicYear(TrackingModel):
         return f"{self.format_date(self.startdate)} to {self.format_date(self.enddate)}"
 
     def format_date(self, date):
-        return  date.strftime('%B %Y')
+        return  date.strftime('%d %B %Y')
 
         # return date.strftime('%d') + self.day_suffix(date.day) + ' ' + date.strftime('%B %Y')
 

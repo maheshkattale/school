@@ -21,6 +21,7 @@ class academic_master(GenericAPIView):
             headers = {'Authorization':token}
             academic_list_request = requests.get(academic_list_url,headers=headers)
             academic_list_response = academic_list_request.json()
+            print('academic_list_response',academic_list_response['data'])
             return render(request, 'admin/academic/academic_master.html',{'academics':academic_list_response['data']})
     
     def post(self,request):
