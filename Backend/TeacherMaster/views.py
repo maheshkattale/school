@@ -23,6 +23,9 @@ from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
 from Frontend.school.static_info import frontend_url
 
+from tablib import Dataset
+
+
 
 class AddTeacher(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -192,3 +195,33 @@ class UpdateTeacher(GenericAPIView):
             
             return Response({"data":'',"response": {"n": 0, "msg": "Teacher not found","status": "failure"}})
 
+
+
+class teacherdatabyexcel(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        school_code = request.user.school_code
+        dataset = Dataset()
+      
+        new_product = request.FILES.get('classfile')
+
+        if not new_product.name.endswith('xlsx'):
+            return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+
+        imported_data = dataset.load(new_product.read(), format='xlsx')
+        
+        importDataList =[]
+        notimporteddatalist = []
+        for i in imported_data:
+            if i[0] is not None:
+                importDataList.append(i)
+            else:
+                notimporteddatalist.append(i)
+
+        for i in importDataList:
+            teacherexist = TeacherSubject.objects.filter(TeacherId__in=[i[0]],SubjectId_id__in=[i[0]],school_code=school_code).first()
+            if teacherexist is None:
+                TeacherSubject.objects.create(TeacherId=i[0],SubjectId_id=i[0],school_code=school_code)
+                
+        return Response({"data":'done',"response": {"n": 1, "msg": "Teacher master uploaded successfully","status": "success"}})

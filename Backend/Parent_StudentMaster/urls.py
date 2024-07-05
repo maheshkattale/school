@@ -39,4 +39,7 @@ urlpatterns = [
     path('search_student', search_student.as_view(), name = 'search_student'),
     
     
+    # path('parentstudentbyexcel', parentstudentbyexcel.as_view(), name = 'parentstudentbyexcel'),
+    
+    
 ]

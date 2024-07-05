@@ -273,7 +273,7 @@ class AddAcademicYear(GenericAPIView):
         data['SchoolId'] = schoolid
         newstartdate = data['startdate']
         newenddate = data['enddate']
-        yearexist = AcademicYear.objects.filter(startdate=newstartdate,enddate=newenddate,Isdeleted=False,school_code=schoolcode).first()
+        yearexist = AcademicYear.objects.filter(startdate__range=[newstartdate,newenddate],Isdeleted=False,school_code=schoolcode).first()
         if yearexist is None:
             serializer = AcademicYearSerializer(data=data)
             if serializer.is_valid():
@@ -296,7 +296,11 @@ class AcademicYearlist(GenericAPIView):
         yearexist = AcademicYear.objects.filter(school_code=schoolcode,Isdeleted=False).order_by('-isActive')
         print('yearexist',yearexist)
         serializer = AcademicYearSerializer1(yearexist,many=True)
+        for ys in serializer.data:
+            ys['start_date'] = ys['startdate'].split('-')[2]
+            ys['end_date'] = ys['enddate'].split('-')[2]
         return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic year list found successfully","status": "success"}})
+    
     
 
 class AcademicYearbyid(GenericAPIView):
@@ -311,6 +315,8 @@ class AcademicYearbyid(GenericAPIView):
             return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic Year found successfully","status": "success"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Academic Year not found ","status": "failure"}})
+    
+    
             
 class get_current_academic_year(GenericAPIView):
     authentication_classes=[userJWTAuthentication]

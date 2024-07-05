@@ -23,6 +23,10 @@ from SchoolErp.settings import EMAIL_HOST_USER
 from datetime import datetime
 from Frontend.school.static_info import frontend_url,image_url
 
+from tablib import Dataset
+
+
+
 from rest_framework import generics, permissions, status
 def createstudentid(schoolcode):
     studentobject = Students.objects.filter(school_code=schoolcode, isActive=True).order_by('-id').first()
@@ -1004,3 +1008,32 @@ class search_student(GenericAPIView):
             return Response({"data":[],"response": {"n": 0, "msg": "No student found .","status": "failure"}})
 
     
+
+# class parentstudentbyexcel(GenericAPIView):
+#     authentication_classes=[userJWTAuthentication]
+#     permission_classes = (permissions.IsAuthenticated,)
+#     def post(self,request):
+#         school_code = request.user.school_code
+#         dataset = Dataset()
+      
+#         new_product = request.FILES.get('classfile')
+
+#         if not new_product.name.endswith('xlsx'):
+#             return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+
+#         imported_data = dataset.load(new_product.read(), format='xlsx')
+        
+#         importDataList =[]
+#         notimporteddatalist = []
+#         for i in imported_data:
+#             if i[0] is not None:
+#                 importDataList.append(i)
+#             else:
+#                 notimporteddatalist.append(i)
+
+#         for i in importDataList:
+#             studentexist = Students.objects.filter(ParentID__in=[i[0]],StudentName__in=[i[0]],StudentCode__in=[i[0]],DateOfBirth__in=[i[0]],DateOfJoining__in=[i[0]],BloodGroup__in=[i[0]],RollNo__in=[i[0]],Photo__in=[i[0]],primary_student__in=[i[0]],StudenClass_id__in=[i[0]],school_code=school_code).first()
+#             if studentexist is None:
+#                 Students.objects.create(ParentID=i[0],StudentName=i[0],StudentCode=[i[0]],DateOfBirth=[i[0]],DateOfJoining=[i[0]],BloodGroup=[i[0]],RollNo=[i[0]],Photo=[i[0]],primary_student=[i[0]],StudentClass_id=[i[0]],school_code=school_code)
+                
+#         return Response({"data":'done',"response": {"n": 1, "msg": "Parent student master uploaded successfully","status": "success"}})

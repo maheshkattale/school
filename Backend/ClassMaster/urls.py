@@ -17,6 +17,6 @@ urlpatterns = [
     path('teacher_classes_list', teacher_classes_list.as_view(), name = 'teacher_classes_list'),
     
     # 
-    path('classteacherdatabyexcel', classteacherdatabyexcel.as_view(), name = 'classteacherdatabyexcel'),
+    # path('classteacherdatabyexcel', classteacherdatabyexcel.as_view(), name = 'classteacherdatabyexcel'),
 
 ]

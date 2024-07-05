@@ -42,5 +42,8 @@ urlpatterns = [
     path('exam_names_list', exam_names_list.as_view(), name = 'exam_names_list'),
     path('academic_exam_list', academic_exam_list.as_view(), name = 'academic_exam_list'),
     path('add_examname', add_examname.as_view(), name = 'add_examname'),
+    
+    
+    path('examtypebyexcel', examtypebyexcel.as_view(), name = 'examtypebyexcel'),
 
 ]
