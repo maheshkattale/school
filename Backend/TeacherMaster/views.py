@@ -325,6 +325,7 @@ class UploadTeachersExcel(GenericAPIView):
                 error = i + tuple([reason])
                 fileerrorlist.append(error)
                 continue  
+
   
             data['subject_ids']=[]
             if subjects is not None and subjects !="":
