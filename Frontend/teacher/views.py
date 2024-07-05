@@ -6,6 +6,7 @@ import json
 from rest_framework.generics import GenericAPIView
 from school.static_info import frontend_url
 # Create your views here.
+
 teacher_list_url=frontend_url+'api/TeacherMaster/list'
 teacher_add_url=frontend_url+'api/TeacherMaster/Add'
 teacher_edit_url=frontend_url+'api/TeacherMaster/update'
@@ -13,6 +14,8 @@ teacher_delete_url=frontend_url+'api/TeacherMaster/delete'
 designation_list_url=frontend_url+'api/DesignationMaster/List'
 get_teacher_info_url=frontend_url+'api/TeacherMaster/getbyid'
 subject_list_url=frontend_url+'api/SubjectMaster/List'
+teacher_bulk_upload_url=frontend_url+'api/TeacherMaster/UploadTeachersExcel'
+
 class teacher_master(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
@@ -101,3 +104,17 @@ class delete_teacher(GenericAPIView):
             teacher_delete_request = requests.post(teacher_delete_url,headers=headers,data=data)
             teacher_delete_response = teacher_delete_request.json()
             return HttpResponse(json.dumps(teacher_delete_response), content_type="application/json")
+          
+        
+class teacher_bulk_upload(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            teacher_bulk_upload_request = requests.post(teacher_bulk_upload_url,headers=headers,data=data,files=request.FILES)
+            teacher_bulk_upload_response = teacher_bulk_upload_request.json()
+            return HttpResponse(json.dumps(teacher_bulk_upload_response), content_type="application/json")
+        
+        

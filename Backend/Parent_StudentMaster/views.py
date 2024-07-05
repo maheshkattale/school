@@ -657,7 +657,9 @@ class search_student_by_class_of_currentyear(GenericAPIView):
         if 'class' in request.data.keys():
             if request.data.get('class') is not None and request.data.get('class') !='':
                 class_id = data['class']
-                studentclassLogobj = studentclassLogobj.filter(classid=class_id).order_by('RollNo')
+                if class_id is not None and class_id !='' and class_id !='null':
+                    print("classid=class_id",class_id)
+                    studentclassLogobj = studentclassLogobj.filter(classid=class_id).order_by('RollNo')
                 
         
         current_acedemic_obj=AcademicYear.objects.filter(Isdeleted=False,school_code=school_code,isActive=True).first()
