@@ -10,6 +10,7 @@ from rest_framework.authentication import (BaseAuthentication,
 from rest_framework import permissions
 from User.jwt import userJWTAuthentication
 # from tablib import Dataset
+from tablib import Dataset
 
 
 
@@ -109,12 +110,9 @@ class classdatabyexcel(GenericAPIView):
     def post(self,request):
         school_code = request.user.school_code
         dataset = Dataset()
-      
         new_product = request.FILES.get('classfile')
-
         if not new_product.name.endswith('xlsx'):
             return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
-
         imported_data = dataset.load(new_product.read(), format='xlsx')
         
         importDataList =[]

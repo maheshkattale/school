@@ -99,8 +99,6 @@ class timetablelist(GenericAPIView):
 
         return Response({"data":dateser.data,"response": {"n": 1, "msg": "time table found Successfully","status": "Success"}})
 
-
-
 class checkdaterange(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -253,7 +251,6 @@ class get_recipient(GenericAPIView):
             serializers=UserlistSerializer(user_objs,many=True)
             return Response({"data":serializers.data,"response": {"n": 1, "msg": "user found successfully","status": "Success"}})
         
-
 # day wise time table
 class get_student_time_table_in_week_days(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -417,7 +414,7 @@ class get_teacher_time_table(GenericAPIView):
 
 
 
-class UploadTimeTableExcel(GenericAPIView): 
+class timetable_bulk_upload(GenericAPIView): 
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
@@ -428,31 +425,137 @@ class UploadTimeTableExcel(GenericAPIView):
         if not new_teachers.name.endswith('xlsx'):
             return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
         
+        AcademicYear_obj=AcademicYear.objects.filter(school_code=school_code,isActive=True,Isdeleted=False).first()
         imported_data = dataset.load(new_teachers.read(), format='xlsx')
         for i in imported_data:
-            teacher_name=i[0]
-            teacher_email = i[1]
-            teacher_designation = i[2]
-            joining_date = i[3]
-            teacher_mobile_number = i[4]
-            subjects = i[5]
-            address = i[6]
+            class_name=i[0]
+            start_date = i[1]
+            end_date = i[2]
+            day = i[3]
+            start_time = i[4]
+            end_time = i[5]
+            subject_name = i[6]
+            teacher_name = i[7]
             data={}
+            if AcademicYear_obj is not None:
+                data['AcademicYear']=AcademicYear_obj.id
+            else:
+                reason = 'Academic Year is not active'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue 
 
             
-
-
-
             
             
+            if class_name is not None and class_name !="":
+                class_name_exist = Class.objects.filter(ClassName__in = [class_name.strip().capitalize(),class_name.strip(),class_name.title(),class_name.upper(),class_name.lower(),class_name],isActive= True,school_code=school_code).first()
+                if class_name_exist is not None:
+                    data['ClassId']=class_name_exist.id
+                else:
+                    reason = 'class with this name is not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'class name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+
+            if start_date is not None and start_date !="":
+                data['startdate'] = str(start_date).split(' ')[0]
+            else:
+                reason = 'start date is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+
+            if end_date is not None and end_date !="":
+                data['enddate']= str(end_date).split(' ')[0]
+            else:
+                reason = 'end date is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
             
+            validate_dates=validate_start_date_and_end_date(data['startdate'],data['enddate'])
+            if validate_dates['status']==True:
+                reason = validate_dates['Reason']
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue 
+            
+            if day is not None and day !="":
+                data['Day']=day
+                if validate_day_name(data['Day']) == False:
+                    reason = 'valid day name is required.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue  
+            else:
+                reason = 'day name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+            
+            if start_time is not None and start_time !="":
+                data['start_time']=str(start_time).split(':')[0]+':'+str(start_time).split(':')[1]
+            else:
+                reason = 'start time is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+            
+            
+            if end_time is not None and end_time !="":
+                data['end_time']=str(end_time).split(':')[0]+':'+str(end_time).split(':')[1]
+
+            else:
+                reason = 'end time is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+ 
+ 
+            validate_times=validate_start_time_and_end_time(data['start_time'],data['end_time'])
+            if validate_times['status']==True:
+                reason = validate_times['Reason']
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue 
+ 
+ 
+            if subject_name is not None and subject_name !="":
+                subject_name=subject_name
+                subject_name_exist = Subject.objects.filter(SubjectName__in = [subject_name.strip().capitalize(),subject_name.strip(),subject_name.title(),subject_name.upper(),subject_name.lower(),subject_name],isActive= True,school_code=school_code).first()
+                if subject_name_exist is not None:
+                    data['SubjectId']=subject_name_exist.id
+                else:
+                    reason = 'subject with this name is not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'subject name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+
             if teacher_name is not None and teacher_name !="":
-                data['Username']=teacher_name
-                
-                
-                teacher_name_exist = User.objects.filter(Username__in = [data['Username'].strip().capitalize(),data['Username'].strip(),data['Username'].title(),data['Username'].upper(),data['Username'].lower(),data['Username']],isActive= True,school_code=school_code).first()
+                teacher_name_exist = User.objects.filter(Username__in = [teacher_name.strip().capitalize(),teacher_name.strip(),teacher_name.title(),teacher_name.upper(),teacher_name.lower(),teacher_name],isActive= True,school_code=school_code).first()
                 if teacher_name_exist is not None:
-                    reason = 'teacher with this name is already exists.'
+                    data['TeacherId']=str(teacher_name_exist.id)
+                    TeacherSubject_obj=TeacherSubject.objects.filter(TeacherId=data['TeacherId'],SubjectId=data['SubjectId'],school_code=school_code,isActive=True).first()
+                    if TeacherSubject_obj is None:
+                        reason = teacher_name+' teacher dont teaches '+subject_name +' subject.'
+                        error = i + tuple([reason])
+                        fileerrorlist.append(error)
+                        continue 
+                    
+                    
+                else:
+                    reason = 'teacher with this name is not found.'
                     error = i + tuple([reason])
                     fileerrorlist.append(error)
                     continue 
@@ -462,132 +565,32 @@ class UploadTimeTableExcel(GenericAPIView):
                 fileerrorlist.append(error)
                 continue  
 
-            if teacher_email is not None and teacher_email !="":
-                data['email']=teacher_email
-                
-                teacher_email_exist = User.objects.filter(email__in = [data['email'].strip().capitalize(),data['email'].strip(),data['email'].title(),data['email'].upper(),data['email'].lower(),data['email']],isActive= True,school_code=school_code).first()
-                if teacher_email_exist is not None:
-                    reason = 'teacher with this email is already exists.'
-                    error = i + tuple([reason])
-                    fileerrorlist.append(error)
-                    continue  
-            else:
-                reason = 'teacher email is required.'
-                error = i + tuple([reason])
-                fileerrorlist.append(error)
-                continue  
-  
-            if teacher_designation is not None and teacher_designation !="":
-                data['designation']=teacher_designation
-                teacher_designation_exist = Designation.objects.filter(designationName__in = [data['designation'].strip().capitalize(),data['designation'].strip(),data['designation'].title(),data['designation'].upper(),data['designation'].lower(),data['designation']],isActive= True,school_code=school_code).first()
-                if teacher_designation_exist is not None:
-                    data['designation']=teacher_designation_exist.id
-                else:
-                    reason = ' designation not found.'
-                    error = i + tuple([reason])
-                    fileerrorlist.append(error)
-                    continue 
-            else:
-                reason = 'teacher designation is required.'
-                error = i + tuple([reason])
-                fileerrorlist.append(error)
-                continue  
-                
-            if joining_date is not None and joining_date !="":
-                data['joiningDate'] = str(joining_date).split(' ')[0]
-            else:
-                reason = 'teacher joining date is required.'
-                error = i + tuple([reason])
-                fileerrorlist.append(error)
-                continue  
-            
-            if teacher_mobile_number is not None and teacher_mobile_number !="":
-                data['mobileNumber']=teacher_mobile_number
-                
-                teacher_mobile_number_exist = User.objects.filter(mobileNumber=data['mobileNumber'],isActive= True,school_code=school_code).first()
-                if teacher_mobile_number_exist is not None:
-                    reason = 'teacher with this mobile number is already exists.'
-                    error = i + tuple([reason])
-                    fileerrorlist.append(error)
-                    continue  
-            else:
-                reason = 'teacher mobile number is required.'
-                error = i + tuple([reason])
-                fileerrorlist.append(error)
-                continue  
-
-  
-            data['subject_ids']=[]
-            if subjects is not None and subjects !="":
-                data['subjects'] = str(subjects).split(",")
-                if len(data['subjects']) !=[]:
-                    for sub in data['subjects']:
-                        subject_obj=Subject.objects.filter(SubjectName__in = [sub.strip().capitalize(),sub.strip(),sub.title(),sub.upper(),sub.lower(),sub],isActive= True,school_code=school_code).first()
-                        if subject_obj is not None:
-                            data['subject_ids'].append(subject_obj.id)
-            
-                else:
-                    reason = 'Valid teacher subjects is required.'
-                    error = i + tuple([reason])
-                    fileerrorlist.append(error)
-                    continue 
-            else:
-                reason = 'teacher subjects is required.'
-                error = i + tuple([reason])
-                fileerrorlist.append(error)
-                continue 
-            
-            if address is not None and address !="":
-                data['Address'] = str(address)
-            else:
-                reason = 'teacher address is required.'
-                error = i + tuple([reason])
-                fileerrorlist.append(error)
-                continue 
-            
-            
             data['school_code']=school_code
-            data['role']=4
-            data['password']=str(12345)
-            data['textPassword']=str(12345)
             print('data',data)
-            serializer=UserSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                teacherid = serializer.data['id']
-                for s in data['subject_ids']:
-                    TeacherSubject.objects.create(TeacherId=str(teacherid),SubjectId_id=s,school_code=school_code)
-
-                subject = "Registration successful"
-                data2 = {"Name": serializer.data['Username'],"email":serializer.data['email'],'userid':teacherid,'frontend_url':frontend_url,
-                            "template": 'mails/teacher_registration.html'}
-                message = render_to_string(
-                        data2['template'], data2)
-                try:
-                    msg = EmailMessage(
-                        subject,
-                        message,
-                        EMAIL_HOST_USER,
-                        [serializer.data['email']],
-                    )
-                    msg.content_subtype = "html"
-                    m = msg.send()
-                    
-          
-                    
-                except Exception as e:
-                    print("exception raised",e)
-            else:
-                first_key, first_value = next(iter(serializer.errors.items()))
-                reason = 'Error in adding teacher '+first_key +' : '+ first_value[0]
+            
+            
+            
+            time_table_obj=TimeTable.objects.filter(startdate__gte=data['startdate'],enddate__lte=data['enddate'],ClassId=data['ClassId'],Day=data['Day'],start_time=data['start_time'],end_time=data['end_time'],TeacherId=data['TeacherId'],SubjectId=data['SubjectId'],school_code=data['school_code'],isActive=True).first()
+            if time_table_obj is not None:
+                reason = 'time table already exists'
                 error = i + tuple([reason])
                 fileerrorlist.append(error)
                 continue
+            else:
+                serializer=TimeTableSerializer(data=data)
+                if serializer.is_valid():
+                    serializer.save()
+                else:
+                    first_key, first_value = next(iter(serializer.errors.items()))
+                    reason = 'Error in adding time table '+first_key +' : '+ first_value[0]
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue
          
         if len(fileerrorlist) == 0:
-            return Response({"data":'',"response": {"n": 1, "msg": "Teacher excel uploaded successfully","status": "success"}})
+            return Response({"data":'',"response": {"n": 1, "msg": "Time-Table excel uploaded successfully","status": "success"}})
         else:
-            return Response({"data":fileerrorlist,'headers':['Teacher Name','Teacher Email ','Designation','Joining Date ','Contact No ','Subject ','Address','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
+            return Response({"data":fileerrorlist,'headers':['Class Name','Start Date ','End Date','Day Name ','Start Time ','End Time ','Subject Name','Teacher Name','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
     
 
 

@@ -13,6 +13,8 @@ urlpatterns = [
     path('set_primary_student', set_primary_student.as_view(), name = 'set_primary_student'),
     path('search_students', search_students.as_view(), name = 'search_students'),
     path('promote_students_class', promote_students_class.as_view(), name = 'promote_students_class'),
+    path('parent_bulk_upload', parent_bulk_upload.as_view(), name = 'parent_bulk_upload'),
+    path('student_bulk_upload', student_bulk_upload.as_view(), name = 'student_bulk_upload'),
     
     
     # announcements

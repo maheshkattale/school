@@ -16,5 +16,6 @@ urlpatterns = [
     path('get_student_time_table',get_student_time_table.as_view(), name = 'get_student_time_table'),
     path('get_class_time_table',get_class_time_table.as_view(), name = 'get_class_time_table'),
     path('get_teacher_time_table',get_teacher_time_table.as_view(), name = 'get_teacher_time_table'),
+    path('timetable_bulk_upload',timetable_bulk_upload.as_view(), name = 'timetable_bulk_upload'),
 
 ]

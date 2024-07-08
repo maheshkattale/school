@@ -20,6 +20,9 @@ get_announcement_details_url=frontend_url+'api/Parent_StudentMaster/get_announce
 edit_announcements_url=frontend_url+'api/Parent_StudentMaster/edit_announcement'
 search_students_url=frontend_url+'api/Parent_StudentMaster/search_students'
 promote_students_class_url=frontend_url+'api/Parent_StudentMaster/promote_students_class'
+parent_bulk_upload_url=frontend_url+'api/Parent_StudentMaster/parent_bulk_upload'
+student_bulk_upload_url=frontend_url+'api/Parent_StudentMaster/student_bulk_upload'
+
 class parent_student_master(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
@@ -202,5 +205,28 @@ class promote_students_class(GenericAPIView):
             promote_students_class_response = promote_students_class_request.json()
 
             return HttpResponse(json.dumps(promote_students_class_response), content_type="application/json")
+        
+class parent_bulk_upload(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            parent_bulk_upload_request = requests.post(parent_bulk_upload_url,headers=headers,data=data,files=request.FILES)
+            parent_bulk_upload_response = parent_bulk_upload_request.json()
+            return HttpResponse(json.dumps(parent_bulk_upload_response), content_type="application/json")
+class student_bulk_upload(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            student_bulk_upload_request = requests.post(student_bulk_upload_url,headers=headers,data=data,files=request.FILES)
+            student_bulk_upload_response = student_bulk_upload_request.json()
+            return HttpResponse(json.dumps(student_bulk_upload_response), content_type="application/json")
+        
+        
         
         

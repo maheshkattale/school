@@ -132,8 +132,8 @@ class students_fees(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             data={}
-            student_list_request = requests.post(search_student_by_class_and_year_url,headers=headers)
-            student_list_response = student_list_request.json()
+            # student_list_request = requests.post(search_student_by_class_and_year_url,headers=headers)
+            # student_list_response = student_list_request.json()
             
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
@@ -142,7 +142,7 @@ class students_fees(GenericAPIView):
             academic_list_response = academic_list_request.json()
             
             
-            return render(request, 'admin/fees_master/students_list.html',{'students':student_list_response['data'],
+            return render(request, 'admin/fees_master/students_list.html',{
                                                                             'classes':class_list_response['data'],
                                                                             'academic_years':academic_list_response['data'],})
         

@@ -151,8 +151,6 @@ class AddParentStudent(GenericAPIView):
             else:
                  return Response({'n': 0, 'Msg': 'Parent Not Created', 'Status': 'Failed'})
         
-           
-
 class ParentStudentlist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -173,24 +171,6 @@ class ParentStudentlist(GenericAPIView):
             p['Studentslist'] = studentser.data
         return Response({"data":parentserializer.data,"response": {"n": 1, "msg": "Parents list found successfully","status": "success"}})
     
-
-# class getParentStudentbyid(GenericAPIView):
-#     authentication_classes=[userJWTAuthentication]
-#     permission_classes = (permissions.IsAuthenticated,)
-#     def post(self,request):
-#         parentid = request.data.get('id')
-#         schoolcode = request.user.school_code
-#         Parentobj = User.objects.filter(id=parentid,isActive=True,school_code = schoolcode).first()
-#         if Parentobj is not None:
-#             serializer = UserSerializer(Parentobj)
-#             studentlist = []
-#             stuobj = Students.objects.filter(ParentId = Parentobj.id,isActive=True,school_code=schoolcode)
-#             ser = StudentSerializer(stuobj,many=True)
-#             return Response({"data":serializer.data,"studentlist":ser.data,"response": {"n": 1, "msg": "parent found successfully","status": "success"}})
-#         else:
-#             return Response({"data":'',"response": {"n": 0, "msg": "parent not found ","status": "failure"}})
-
-
 class updateParentStudent(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -306,7 +286,6 @@ class updateParentStudent(GenericAPIView):
             else:
                 return Response({"data":parentserializer.errors,"response": {"n": 0, "msg": "Couldn't Update parent ! ","status": "failure"}})
 
-
 class getParentStudentbyid(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -350,8 +329,6 @@ class getParentStudentbyid(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "parent not found ","status": "failure"}})
 
-
-
 class studentlist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -371,7 +348,6 @@ class studentlist(GenericAPIView):
 
         return Response({"data":studentser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
     
-
 class studentsbyclasslist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -387,7 +363,6 @@ class studentsbyclasslist(GenericAPIView):
                 s['photo'] = image_url + "/static/assets/images/profile.png"
         return Response({"data":ser.data,"studentlist":ser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
       
-
 class studentsbyparentlist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -426,8 +401,6 @@ class studentsbyparentlist(GenericAPIView):
 
         return Response({"data":ser.data,"response": {"n": 1, "msg": "students list found successfully","status": "success"}})
     
-
-
 class bloodgrouplist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -437,7 +410,6 @@ class bloodgrouplist(GenericAPIView):
         
         return Response({"data":bloodserializer.data,"response": {"n": 1, "msg": "bloodgroup list found successfully","status": "success"}})
     
-
 class deleteParent(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -459,8 +431,6 @@ class deleteParent(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Parent not found ","status": "failure"}})
         
-
-
 class deleteStudent(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -478,7 +448,6 @@ class deleteStudent(GenericAPIView):
                 return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Delete student ! ","status": "failure"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "student not found ","status": "failure"}})
-
 
 class update_student(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -499,7 +468,6 @@ class update_student(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "student not found ","status": "failure"}})
         
-
 class getstudentlist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -540,7 +508,6 @@ class getstudentlist(GenericAPIView):
                     studentlist.append(details[0])
         return Response({"data":studentlist,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})
 
-
 class search_student_by_class_and_year(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -575,8 +542,6 @@ class search_student_by_class_and_year(GenericAPIView):
             return Response({"data":studentlist,"response": {"n": 1, "msg": "Students found successfully","status": "success"}})
         else:
             return Response({"data":[],"response": {"n": 0, "msg": "No student found ","status": "failure"}})
-
-
 
 class getstudentidcards(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -645,7 +610,6 @@ class getstudentidcards(GenericAPIView):
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "student list is empty ","status": "failed"}})
 
-
 class search_student_by_class_of_currentyear(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -677,9 +641,7 @@ class search_student_by_class_of_currentyear(GenericAPIView):
         else:
             return Response({"data":[],"response": {"n": 0, "msg": "No student found ","status": "failure"}})
 
-
 #Announcements-------------------------------------------------------------------------------------
-
 class set_primary_student(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -707,8 +669,6 @@ class set_primary_student(GenericAPIView):
                 return Response({"data":student_serializers.data,"response": {"n": 0, "msg":"student with this student code not found,available options are given below","status": "failure"}})
         return Response({"data":[],"response": {"n": 0, "msg":"parent with this parent id not found","status": "failure"}})
             
-
-
 class add_announcement(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -725,8 +685,6 @@ class add_announcement(GenericAPIView):
             first_key, first_value = next(iter(serializer.errors.items()))
             return Response({"data":serializer.errors,"response": {"n": 0, "msg":first_key + " : "+ first_value[0],"status": "failure"}})
                             
-
-
 class announcement_list(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -737,7 +695,6 @@ class announcement_list(GenericAPIView):
         serializer = CustomAnnouncementSerializer(obj,many=True)
         return Response({"data":serializer.data,"response": {"n": 1, "msg":'Announcements found successfully',"status": "success"}})
                         
-
 class edit_announcement(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -756,14 +713,7 @@ class edit_announcement(GenericAPIView):
                 return Response({"data":serializer.errors,"response": {"n": 0, "msg":first_key + " : "+ first_value[0],"status": "failed"}})
         else:
             return Response({"data":[],"response": {"n": 0, "msg":'announcement not found',"status": "failed"}})
-        
-        
-        
-        
-        
-        
-        
-        
+                    
 class get_announcement_details(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -776,7 +726,6 @@ class get_announcement_details(GenericAPIView):
             return Response({"data":serializer.data,"response": {"n": 1, "msg":'Announcement found successfully',"status": "success"}})
         else:
             return Response({"data":[],"response": {"n": 0, "msg":'announcement not found',"status": "failed"}})
-
 
 class delete_announcement(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -797,7 +746,6 @@ class delete_announcement(GenericAPIView):
         else:
             return Response({"data":[],"response": {"n": 0, "msg":'announcement not found',"status": "failed"}})
                               
-
 class get_student_announcements(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -819,8 +767,6 @@ class get_student_announcements(GenericAPIView):
 
         else:
             return Response({"data":[],"response": {"n": 0, "msg":'student not found',"status": "failed"}})
-
-
 
 class promote_students_class(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -899,8 +845,6 @@ class promote_students_class(GenericAPIView):
         else:
             return Response({"data":{'promoted':[],'non_promoted':[]},"response": {"n": 0, "msg":'Please provide current academic year',"status": "failed"}})
 
-
-
 class getPromotedList(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -937,8 +881,6 @@ class getPromotedList(GenericAPIView):
                 
             return Response({"data":studentclassser.data,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})
 
-
-
 class search_students(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -972,8 +914,6 @@ class search_students(GenericAPIView):
 
         return Response({"data":studentlist,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})
 
-
-
 class GenerateMarksheetListApi(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -986,10 +926,7 @@ class GenerateMarksheetListApi(GenericAPIView):
         details = []
         for t in stuser.data:
             details.append(t)
-            
-            
-            
-
+   
 class search_student(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -1009,33 +946,312 @@ class search_student(GenericAPIView):
         else:
             return Response({"data":[],"response": {"n": 0, "msg": "No student found .","status": "failure"}})
 
-    
+class parent_bulk_upload(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        dataset = Dataset()
+        fileerrorlist=[]
+        new_parents = request.FILES['file']
+        school_code = request.user.school_code
+        if not new_parents.name.endswith('xlsx'):
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
+        schoolobj = School.objects.filter(school_code = school_code,isActive=True).first()
+        if schoolobj is not None:
+            schoolname = schoolobj.Name
+        else:
+            schoolname = 'School ERP'
+            
+        imported_data = dataset.load(new_parents.read(), format='xlsx')
+        for i in imported_data:
+            
+            parent_name=i[0]
+            parent_email = i[1]
+            parent_mobile_number = i[2]
+            address = i[3]
 
-# class parentstudentbyexcel(GenericAPIView):
-#     authentication_classes=[userJWTAuthentication]
-#     permission_classes = (permissions.IsAuthenticated,)
-#     def post(self,request):
-#         school_code = request.user.school_code
-#         dataset = Dataset()
-      
-#         new_product = request.FILES.get('classfile')
 
-#         if not new_product.name.endswith('xlsx'):
-#             return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+            data={}          
 
-#         imported_data = dataset.load(new_product.read(), format='xlsx')
-        
-#         importDataList =[]
-#         notimporteddatalist = []
-#         for i in imported_data:
-#             if i[0] is not None:
-#                 importDataList.append(i)
-#             else:
-#                 notimporteddatalist.append(i)
+            if parent_name is not None and parent_name !="":
+                data['Username']=parent_name
+                parent_name_exist = User.objects.filter(Username__in = [data['Username'].strip().capitalize(),data['Username'].strip(),data['Username'].title(),data['Username'].upper(),data['Username'].lower(),data['Username']],isActive= True,school_code=school_code).first()
+                if parent_name_exist is not None:
+                    reason = 'parent with this name is already exists.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'parent name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
 
-#         for i in importDataList:
-#             studentexist = Students.objects.filter(ParentID__in=[i[0]],StudentName__in=[i[0]],StudentCode__in=[i[0]],DateOfBirth__in=[i[0]],DateOfJoining__in=[i[0]],BloodGroup__in=[i[0]],RollNo__in=[i[0]],Photo__in=[i[0]],primary_student__in=[i[0]],StudenClass_id__in=[i[0]],school_code=school_code).first()
-#             if studentexist is None:
-#                 Students.objects.create(ParentID=i[0],StudentName=i[0],StudentCode=[i[0]],DateOfBirth=[i[0]],DateOfJoining=[i[0]],BloodGroup=[i[0]],RollNo=[i[0]],Photo=[i[0]],primary_student=[i[0]],StudentClass_id=[i[0]],school_code=school_code)
+            if parent_email is not None and parent_email !="":
+                data['email']=parent_email
+                parent_email_exist = User.objects.filter(email__in = [data['email'].strip().capitalize(),data['email'].strip(),data['email'].title(),data['email'].upper(),data['email'].lower(),data['email']],isActive= True,school_code=school_code).first()
+                if parent_email_exist is not None:
+                    reason = 'parent with this email is already exists.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue  
+            else:
+                reason = 'parent email is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+  
+            if parent_mobile_number is not None and parent_mobile_number !="":
+                data['mobileNumber']=str(parent_mobile_number)
+                parent_mobile_number_exist = User.objects.filter(mobileNumber__in = [data['mobileNumber'].strip().capitalize(),data['mobileNumber'].strip(),data['mobileNumber'].title(),data['mobileNumber'].upper(),data['mobileNumber'].lower(),data['mobileNumber']],isActive= True,school_code=school_code).first()
+                if parent_mobile_number_exist is not None:
+                    reason = 'parent with this mobile number is already exists.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue  
+            else:
+                reason = 'parent mobile number is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+  
+  
+            if address is not None and address !="":
+                data['Address']=address
                 
-#         return Response({"data":'done',"response": {"n": 1, "msg": "Parent student master uploaded successfully","status": "success"}})
+            else:
+                reason = 'parent address is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+  
+            data['school_code']=school_code
+            data['role']=5
+            data['password'] = str(12345)
+            data['textPassword'] = str(12345)
+            
+            print('data',data)
+            
+
+            
+ 
+                
+            serializer=UserSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                #send mail
+                subject = "Registration succesful"
+                data2 = {"Name": serializer.data['Username'],"email":serializer.data['email'],'userid':serializer.data['id'],'frontend_url':frontend_url,
+                         'bestregard_from':'School ERP','phone_no':'0201-890890','school_name':schoolname,
+                         
+                         
+                            "template": 'mails/parent_registration.html'}
+                message = render_to_string(
+                        data2['template'], data2)
+                # send_mail(data2, message)
+                try:
+                    msg = EmailMessage(
+                        subject,
+                        message,
+                        EMAIL_HOST_USER,
+                        [data['Email']],
+                    )
+                    msg.content_subtype = "html"
+                    m = msg.send()
+ 
+                    data['n'] = 1
+                    data['Msg'] = 'Email has been sent'
+                    data['Status'] = "Success"
+                    
+                except Exception as e:
+                    print("e",e)
+                
+                
+                
+                
+            else:
+                first_key, first_value = next(iter(serializer.errors.items()))
+                reason = 'Error in adding Parent '+first_key +' : '+ first_value[0]
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+         
+        if len(fileerrorlist) == 0:
+            return Response({"data":'',"response": {"n": 1, "msg": "Parents excel uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['Parent Name','Parent email','Contact No','Address ','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
+    
+class student_bulk_upload(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        dataset = Dataset()
+        fileerrorlist=[]
+        new_parents = request.FILES['file']
+        school_code = request.user.school_code
+        if not new_parents.name.endswith('xlsx'):
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
+
+        Academic_obj=AcademicYear.objects.filter(school_code=school_code,isActive=True,Isdeleted=False).first()   
+        
+        imported_data = dataset.load(new_parents.read(), format='xlsx')
+        for i in imported_data:
+            print('i',i)
+            parent_email=i[0]
+            student_name = i[1]
+            class_name = i[2]
+            blood_group = i[3]
+            date_of_birth = i[4]
+            date_of_joining = i[5]
+            student_roll_no = i[6]
+
+
+            data={}          
+            if Academic_obj is None:
+                reason = 'Academic Year is not Active'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+            
+            
+            if parent_email is not None and parent_email !="":
+                data['email']=parent_email
+                parent_email_exist = User.objects.filter(email__in = [data['email'].strip().capitalize(),data['email'].strip(),data['email'].title(),data['email'].upper(),data['email'].lower(),data['email']],isActive= True,school_code=school_code).first()
+                if parent_email_exist is not None:
+                    data['ParentId']=str(parent_email_exist.id)
+                else:
+                    reason = 'parent with this email is not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue  
+            else:
+                reason = 'parent email is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+            
+            
+            if class_name is not None and class_name !="":
+                class_name_exist = Class.objects.filter(ClassName__in = [class_name.strip().capitalize(),class_name.strip(),class_name.title(),class_name.upper(),class_name.lower(),class_name],isActive= True,school_code=school_code).first()
+                if class_name_exist is not None:
+                    data['StudentClass']=class_name_exist.id
+                    
+                else:
+                    reason = 'Class with this name is not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue  
+            else:
+                reason = 'Class name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+  
+  
+  
+            if student_name is not None and student_name !="":
+                data['StudentName']=student_name
+                
+            else:
+                reason = 'student name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+  
+
+  
+            if blood_group is not None and blood_group !="":
+                blood_group_exist = BloodGroup.objects.filter(Groupname__in = [blood_group.strip().capitalize(),blood_group.strip(),blood_group.title(),blood_group.upper(),blood_group.lower(),blood_group],isActive= True).first()
+                if blood_group_exist is not None:
+                    data['BloodGroup']=blood_group_exist.id
+                    
+                else:
+                    reason = 'Blood Group with this name is not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue  
+            else:
+                reason = 'Blood Group  is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue  
+  
+  
+            if date_of_birth is not None and date_of_birth !="":
+                data['DateOfBirth']= str(date_of_birth).split(' ')[0]
+            else:
+                reason = 'Date Of Birth is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue 
+            
+            if date_of_joining is not None and date_of_joining !="":
+                data['DateofJoining']= str(date_of_joining).split(' ')[0]
+            else:
+                reason = 'Date Of joining is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue 
+            
+            
+            if student_roll_no is not None and student_roll_no !="":
+                data['RollNo']= str(student_roll_no).split(' ')[0]
+            else:
+                reason = 'student roll no is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue 
+  
+            data['school_code']=school_code
+
+            print('data',data)
+            
+
+            
+            check_already_exist=Students.objects.filter(ParentId=data['ParentId'],StudentClass=data['StudentClass'],StudentName__in = [student_name.strip().capitalize(),student_name.strip(),student_name.title(),student_name.upper(),student_name.lower(),student_name],isActive= True,school_code=school_code).first()
+
+            if check_already_exist is not None:
+                serializer=StudentSerializer(check_already_exist,data=data,partial=True)
+            else:
+                data['StudentCode'] = createstudentid(school_code)
+                serializer=StudentSerializer(data=data)
+                
+
+                
+            if serializer.is_valid():
+                serializer.save()
+                class_data={}
+                class_data['AcademicyearId']=Academic_obj.id
+                class_data['studentId']=serializer.data['id']
+                class_data['StudentCode']=serializer.data['StudentCode']
+                class_data['classid']=serializer.data['StudentClass']
+                class_data['school_code']=school_code
+                
+                check_already_exist_class_log_obj=studentclassLog.objects.filter(AcademicyearId=class_data['AcademicyearId'],studentId=class_data['studentId'],StudentCode=class_data['StudentCode'],classid=class_data['classid'],school_code=class_data['school_code']).first()
+                if check_already_exist_class_log_obj is not None:
+                    class_log_serializer=studentclassLogserializer(check_already_exist_class_log_obj,data=class_data,partial=True)
+                else:
+                    class_log_serializer=studentclassLogserializer(data=class_data)
+                    
+                if class_log_serializer.is_valid():
+                    class_log_serializer.save()
+                else:
+                    first_key, first_value = next(iter(class_log_serializer.errors.items()))
+                    reason = 'Error in adding student class'+first_key +' : '+ first_value[0]
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue
+                # create student class log
+                
+            else:
+                first_key, first_value = next(iter(serializer.errors.items()))
+                reason = 'Error in adding student '+first_key +' : '+ first_value[0]
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+         
+        if len(fileerrorlist) == 0:
+            return Response({"data":'',"response": {"n": 1, "msg": "Students excel uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['Parent Name','Parent email','Contact No','Address ','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
+   
