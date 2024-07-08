@@ -109,26 +109,44 @@ class designationdatabyexcel(GenericAPIView):
     def post(self,request):
         school_code = request.user.school_code
         dataset = Dataset()
-      
+        fileerrorlist=[]
         new_product = request.FILES.get('classfile')
 
         if not new_product.name.endswith('xlsx'):
-            return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
 
         imported_data = dataset.load(new_product.read(), format='xlsx')
-        
-        importDataList =[]
-        notimporteddatalist = []
         for i in imported_data:
-            if i[0] is not None:
-                importDataList.append(i)
+            designation =i[0]
+            data={}
+            
+            if designation is not None and designation !="":
+                data['designation']= designation
+                designation_exist = Designation.objects.filter(designationName__in = [data['designation'].strip().capitalize(),data['designation'].strip(),data['designation'].title(),data['designation'].upper(),data['designation'].lower(),data['designation']],isActive= True,school_code=school_code).first()
+                if designation_exist is not None:
+                    data['designation']= designation_exist.id
+                else:
+                    reason = 'designation not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
             else:
-                notimporteddatalist.append(i)
+                reason = 'teacher designation is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+  
 
-        for i in importDataList:
-            designationexist = Designation.objects.filter(designationName__in=[i[0].lower(),i[0].upper()],school_code=school_code).first()
-            if designationexist is None:
-                Designation.objects.create(designationName=i[0],school_code=school_code)
+        if len(fileerrorlist) == 0:
+            return Response({"data":'done',"response": {"n": 1, "msg": "Designation uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['Designation','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
+    
+    
+        # for i in designation_exist:
+        #     designationexist = Designation.objects.filter(designationName__in=[i[0].lower(),i[0].upper()],school_code=school_code).first()
+        #     if designationexist is None:
+        #         Designation.objects.create(designationName=i[0],school_code=school_code)
 
-        return Response({"data":'done',"response": {"n": 1, "msg": "Designation uploaded successfully","status": "success"}})
+        # return Response({"data":'done',"response": {"n": 1, "msg": "Designation uploaded successfully","status": "success"}})
 

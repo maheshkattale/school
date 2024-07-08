@@ -250,12 +250,6 @@ class UploadTeachersExcel(GenericAPIView):
             data={}
 
             
-
-
-
-            
-            
-            
             if teacher_name is not None and teacher_name !="":
                 data['Username']=teacher_name
                 

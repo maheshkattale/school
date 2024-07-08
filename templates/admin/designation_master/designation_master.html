@@ -12,8 +12,9 @@
 {% endblock %}
 {% block body %}
   <div class="d-flex justify-content-end">
-    <a data-bs-toggle="modal" data-bs-target="#uploadexcelfordesignation" class="btn btn-primary mx-2">Upload Excel</a>
+    
     <a data-bs-toggle="modal" data-bs-target="#add_designation" class="btn btn-primary">Add Designation</a>
+    <a data-bs-toggle="modal" data-bs-target="#uploadexcelfordesignation" class="btn btn-primary mx-2">Bulk Upload</a>
     
     <div id="uploadexcelfordesignation" class="modal">
       <div class="modal-dialog modal-lg">
@@ -22,7 +23,7 @@
           <div class="modal-body">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Upload Excel</h5>
+              <h5 class="card-title fw-semibold mb-4">Bulk Upload</h5>
               <div class="card">
                 <div class="card-body">
                   <div class="file-upload-box text-center">
@@ -163,6 +164,9 @@
 {% endblock %}
 
 {% block script %}
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
   <script>
     $(document).ready(function () {
 
@@ -341,13 +345,19 @@
   
     $('#mydesignationfile').bind('change', function () {
     var designationfileName = $("#mydesignationfile").val();
+    var validExtensions = ['xls', 'xlsx']; // Array of valid extensions
+    var fileExtension = designationfileName.split('.').pop().toLowerCase(); // Get the file extension
+
     if (/^\s*$/.test(designationfileName)) {
       $(".file-upload").removeClass('active');
-      $("#noFile").text("No file chosen..."); 
-    }
-    else {
-      $(".file-upload").addClass('active');
-      $("#noFile").text(designationfileName.replace("C:\\fakepath\\", "")); 
+      $("#custom-text").text("No file chosen...");
+    } else if (validExtensions.indexOf(fileExtension) === -1) {
+        $(".file-upload").removeClass('active');
+        $("#custom-text").text("Invalid file type. Please choose an Excel file.");
+        $("#mydesignationfile").val(''); // Clear the file input
+    } else {
+        $(".file-upload").addClass('active');
+        $("#custom-text").text(designationfileName.replace("C:\\fakepath\\", ""));
     }
   });
 
@@ -392,6 +402,7 @@
                     text: response.response.msg,
                     icon: 'error',
                   })
+                  exportToExcel(response.headers, response.data)
                 }
     
           
@@ -400,6 +411,29 @@
     
       }
     }
-
+    function exportToExcel(headers, data) {
+      var workbook = XLSX.utils.book_new();
+      
+      // Create worksheet
+      var worksheet = XLSX.utils.aoa_to_sheet([]);
+    
+      // Add headers to the worksheet
+      XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
+    
+      // Add data to the worksheet
+      for (var i = 0; i < data.length; i++) {
+        var rowData = Object.values(data[i]);
+        XLSX.utils.sheet_add_aoa(worksheet, [rowData], { origin: "A" + (i + 2) });
+      }
+    
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+      var excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      
+      // Convert buffer to a Blob
+      var blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      
+      // Save the file using FileSaver.js
+      saveAs(blob, "failed_Teachers.xlsx");
+    }
   </script>
 {% endblock %}
