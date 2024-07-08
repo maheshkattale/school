@@ -93,7 +93,7 @@
   <div class="mb-3 col-lg-4">
     <label for="classid" class="form-label">Class</label>
     <select id="classid" class="form-select select2" aria-describedby="class_error">
-      <option value="" selected>Please select class</option>
+      
       {% for class in classes %}
       <option value="{{ class.id }}">{{ class.ClassName }} </option>
       {% endfor %}
@@ -104,7 +104,7 @@
   <div class="mb-3 col-lg-4">
     <label for="academic_year" class="form-label">Academic Year</label>
     <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
-      <option value="" selected>Please select academic year</option>
+      
       {% for year in academic_years %}
       {% if year.isActive == True %}
       <option value="{{ year.id }}" selected>{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
@@ -125,27 +125,16 @@
   <table id="studentple" class="table table-striped table-bordered" style="width:100%">
     <thead>
       <tr>
-        <th><input type="checkbox" class="Checkbox" name="" id="selectall" onclick="toggle(this);"> Sr No</th>
-        <th>Name</th>
-        <th>Class</th>
-        <th>Action</th>
+        <th style="width:5%;"><input type="checkbox" class="Checkbox" name="" id="selectall" onclick="toggle(this);"></th>
+        <th style="width:10%;"> Sr No</th>
+        <th style="width:65%;">Name</th>
+        <th style="width:10%;">Class</th>
+        <th style="width:10%;">Action</th>
       </tr>
     </thead>
     <tbody id="table_body">
 
-      {% for i in students %}
-      <tr>
-        <td> <input type="checkbox" class="Checkbox" name="student" id="" value="{{i.studentId_id}}-{{i.classid_id}}-{{i.AcademicyearId}}"> {{forloop.counter }} </td>
-        <td>{{i.studentId}}</td>
-        <td>{{i.classid}}</td>
-        <td>
-          
-        </td>
-
-
-
-      </tr>
-      {% endfor %}
+ 
 
     </tbody>
 
@@ -157,7 +146,7 @@
 {% endblock %}
 
 {% block script %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
 
@@ -165,7 +154,7 @@
 
 <script>
   $(document).ready(function () {
-    new DataTable('#studentple');
+    search_student()
   });
 
   function delete_student(studentcode) {
@@ -218,8 +207,6 @@
 
   }
 
-</script>
-<script>
   function search_student() {
     var classid = $('#classid').val();
 
@@ -245,7 +232,9 @@
 
             trhtml += `
             <tr>
-              <td><input type="checkbox" class="Checkbox" name="student" id="" value="`+ i.studentId_id + `-`+ i.classid_id +`-`+ i.AcademicyearId +`"> ` + counter + `</td>
+              <td> <input type="checkbox" class="Checkbox" name="student" id="" value="`+ i.studentId_id + `-`+ i.classid_id +`-`+ i.AcademicyearId +`"></td>
+      
+              <td> ` + counter + `</td>
               <td>`+ i.studentId + `</td>
               <td>`+ i.classid + `</td>
               <td>
@@ -259,6 +248,17 @@
           });
           $('#table_body').html(trhtml)
 
+          var table = $('#studentple').DataTable();
+
+          // Function to destroy and reinitialize the DataTable
+          function reinitializeDataTable() {
+              // Destroy the existing DataTable
+              table.destroy();
+  
+              // Reinitialize the DataTable
+              table = $('#studentple').DataTable();
+          }
+  
           Swal.fire({
             text: response.response.msg,
             icon: 'success',

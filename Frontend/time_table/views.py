@@ -22,6 +22,8 @@ get_teacher_by_subject_url=frontend_url+'api/TimeTableMaster/getteachersfromsub'
 timetable_dates_ranges_url=frontend_url+'api/TimeTableMaster/daterangelist'
 check_existing_timetable_entry_url=frontend_url+'api/TimeTableMaster/checkdaterange'
 get_current_academic_year_url=frontend_url+'api/SchoolMaster/get_current_academic_year'
+timetable_bulk_upload_url=frontend_url+'api/TimeTableMaster/timetable_bulk_upload'
+
 class time_table_master(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)
@@ -196,6 +198,16 @@ class get_teacher_time_table(GenericAPIView):
             return HttpResponse(json.dumps(get_timetable_response), content_type="application/json")
             
         
+class timetable_bulk_upload(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data=request.data.copy()
+            timetable_bulk_upload_request = requests.post(timetable_bulk_upload_url,headers=headers,data=data,files=request.FILES)
+            timetable_bulk_upload_response = timetable_bulk_upload_request.json()
+            return HttpResponse(json.dumps(timetable_bulk_upload_response), content_type="application/json")
         
         
         

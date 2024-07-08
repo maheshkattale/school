@@ -60,7 +60,6 @@ class User(AbstractBaseUser,TrackingModel):
     Address = models.TextField(null=True, blank=True,default='')
     photo = models.ImageField(upload_to='userimages/', blank=True, null=True,verbose_name='user image')
     objects = UserManager()
-    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 

@@ -14,7 +14,6 @@
   <div class="mb-3 col-lg-5">
       <label for="classid" class="form-label">Class</label>
       <select id="classid" class="form-select select2" aria-describedby="class_error">
-        <option value="" selected>Please select class</option>
         {% for class in classes %}
           <option value="{{ class.id }}">{{ class.ClassName }} </option>
         {% endfor %}
@@ -25,7 +24,6 @@
   <div class="mb-3 col-lg-5">
       <label for="academic_year" class="form-label">Academic Year</label>
       <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
-        <option value="" selected>Please select academic year</option>
         {% for year in academic_years %}
 
           <option value="{{ year.id }}">{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
@@ -53,21 +51,7 @@
       </thead>
       <tbody id="table_body">
 
-        {% for i in students %}
-          <tr>
-              <td>{{i.StudentCode }}</td>
-              <td>{{i.studentId}}</td>
-              <td>{{i.classid}}</td>
-      
- 
-              <td>
-                <a href="/fees/student_fee/{{i.studentId_id}}" data-bs-toggle="tooltip" class="btn btn-primary" title="View Fees">Fees</a>
-              </td>
-            
 
-
-          </tr>
-          {% endfor %}
 
       </tbody>
 
@@ -80,7 +64,7 @@
 {% block script %}
 <script>
   $( document ).ready(function() {
-        new DataTable('#studentple');  
+        search_student() 
   });  
 
   function delete_student(studentcode){
@@ -139,9 +123,7 @@
 <script>
   function search_student(){
     var classid = $('#classid').val();
-
     var yearid = $('#academic_year').val();
-
     var fd = new FormData();    
     fd.append("class",classid);
     fd.append("yearid",yearid);
@@ -182,6 +164,18 @@
 
           });
           $('#table_body').html(trhtml)
+
+          var table = $('#studentple').DataTable();
+
+          // Function to destroy and reinitialize the DataTable
+          function reinitializeDataTable() {
+              // Destroy the existing DataTable
+              table.destroy();
+  
+              // Reinitialize the DataTable
+              table = $('#studentple').DataTable();
+          }
+
 
           Swal.fire({
             text: response.response.msg,

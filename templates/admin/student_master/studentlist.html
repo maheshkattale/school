@@ -99,7 +99,6 @@
 {% block script %}
 <script>
   $( document ).ready(function() {
-        new DataTable('#studentple'); 
         search_student() 
 
   });  
@@ -307,7 +306,17 @@
             $("#blood_group" + i.studentId_id).val(i.student_details.BloodGroup)
             $("#class_name" + i.studentId_id).val(i.classid_id)
           });
+          var table = $('#studentple').DataTable();
 
+          // Function to destroy and reinitialize the DataTable
+          function reinitializeDataTable() {
+              // Destroy the existing DataTable
+              table.destroy();
+  
+              // Reinitialize the DataTable
+              table = $('#studentple').DataTable();
+          }
+  
 
           flatpickr(".date_of_birth", {
             dateFormat: "d-m-Y",

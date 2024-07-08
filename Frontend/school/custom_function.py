@@ -117,6 +117,43 @@ def get_day_name(date_str):
     
     
     
+def validate_start_date_and_end_date(start_date_str, end_date_str):
+    date_format = "%Y-%m-%d"
+    try:
+        start_date = datetime.strptime(start_date_str, date_format)
+        end_date = datetime.strptime(end_date_str, date_format)
+    except ValueError:
+        return {"status":True,"Reason":"Incorrect date format, should be YYYY-MM-DD"}
+    
+    if start_date > end_date:
+        return {"status":True,"Reason":'Start date should be before end date'}
+    
+    return {"status":False,"Reason":'valid date'}
+    
+def validate_day_name(day_name):
+    
+    valid_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    
+    if day_name.capitalize() in valid_days:
+        return True
+    else:
+        return False
+def validate_start_time_and_end_time(start_time_str, end_time_str):
+    time_format = "%H:%M"
+    try:
+        start_time = datetime.strptime(start_time_str, time_format).time()
+        end_time = datetime.strptime(end_time_str, time_format).time()
+    except ValueError:
+        return {"status": True, "Reason": "Incorrect time format, should be HH:MM"}
+    
+    if start_time >= end_time:
+        return {"status": True, "Reason": "Start time should be before end time"}
+    
+    return {"status": False, "Reason": "Valid times"}
+    
+    
+    
+    
     
     
     
