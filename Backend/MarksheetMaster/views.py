@@ -965,34 +965,81 @@ class examtypebyexcel(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
+        
         school_code = request.user.school_code
         dataset = Dataset()
-      
+        fileerrorlist=[]
         new_product = request.FILES.get('classfile')
 
         if not new_product.name.endswith('xlsx'):
-            return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
 
         imported_data = dataset.load(new_product.read(), format='xlsx')
-        
-        importDataList =[]
-        notimporteddatalist = []
         for i in imported_data:
-            if i[0] is not None:
-                importDataList.append(i)
+            TypeName =i[0]
+            data={}
+            
+            if TypeName is not None and TypeName !="":
+                data['TypeName']= TypeName
+                ExamType_exist = ExamType.objects.filter(TypeName__in = [data['TypeName'].strip().capitalize(),data['TypeName'].strip(),data['TypeName'].title(),data['TypeName'].upper(),data['TypeName'].lower(),data['TypeName']],isActive= True,school_code=school_code).first()
+                if ExamType_exist is None:
+                    ExamType.objects.create(TypeName= data['TypeName'],school_code=school_code)
+                else:
+                    reason = 'Exam type name already exits.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
             else:
-                notimporteddatalist.append(i)
+                reason = 'Exam type name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+  
 
-        for i in importDataList:
-            examtyperexist = ExamTypeMarks.objects.filter(passingmarks__in=[i[0]],Marks__in=[i[0]],Typeid_id__in=[i[0]],school_code=school_code).first()
-            if examtyperexist is None:
-                ExamTypeMarks.objects.create(passingmarks=i[0],Marks=i[0],school_code=school_code)
-
-        return Response({"data":'done',"response": {"n": 1, "msg": "Exam type uploaded successfully","status": "success"}})
+        if len(fileerrorlist) == 0:
+            return Response({"data":'done',"response": {"n": 1, "msg": "Exam Type Name uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['TypeName','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
 
 
+class examnamedatabyexcel(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        school_code = request.user.school_code
+        dataset = Dataset()
+        fileerrorlist=[]
+        new_product = request.FILES.get('classfile')
 
+        if not new_product.name.endswith('xlsx'):
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
 
+        imported_data = dataset.load(new_product.read(), format='xlsx')
+        for i in imported_data:
+            Name =i[0]
+            data={}
+            
+            if Name is not None and Name !="":
+                data['Name']= Name
+                Examname_exist = Exam.objects.filter(Name__in = [data['Name'].strip().capitalize(),data['Name'].strip(),data['Name'].title(),data['Name'].upper(),data['Name'].lower(),data['Name']],isActive= True,school_code=school_code).first()
+                if Examname_exist is None:
+                    Exam.objects.create(Name= data['Name'],school_code=school_code)
+                else:
+                    reason = 'Exam name already exits.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'Exam name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+  
+
+        if len(fileerrorlist) == 0:
+            return Response({"data":'done',"response": {"n": 1, "msg": "Exam Name uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['ExamName','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
 
 
 

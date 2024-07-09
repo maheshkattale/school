@@ -111,12 +111,12 @@ class add_exam(GenericAPIView):
             
             academic_list_request = requests.get(academic_list_url,headers=headers)
             academic_list_response = academic_list_request.json()
+            
             teacher_list_request = requests.get(teacher_list_url,headers=headers)
             teacher_list_response = teacher_list_request.json()
+            
             subject_list_request = requests.get(subject_list_url,headers=headers)
             subject_list_response = subject_list_request.json()
-
-            
             
             return render(request, 'admin/exam/add_exam.html',{'exam_types':exam_type_list_response['data'],'classes':class_list_response['data'],'teachers':teacher_list_response['data'],'subjects':subject_list_response['data'],'academics':academic_list_response['data'],'exams':exams_list_response['data']})
         else:

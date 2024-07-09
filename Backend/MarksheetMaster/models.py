@@ -14,6 +14,8 @@ class ExamType(TrackingModel):
     def __str__(self):
         return self.TypeName
 
+
+
 class ExamTypeMarks(TrackingModel):
     Typeid = models.ForeignKey(ExamType,on_delete=models.CASCADE,null=True,blank=True)
     Marks =  models.CharField(max_length=150,null=True,blank=True)
@@ -29,22 +31,22 @@ class Exam(TrackingModel):
 
 
 
-class Exams(TrackingModel):
+class Exams(TrackingModel):    #Schedule
     ClassId = models.ForeignKey(Class,on_delete=models.CASCADE,null=True,blank=True)
     Date = models.DateField(null=True,blank=True)
     Examstarttime = models.CharField(max_length=255,null=True,blank=True)
     Examendtime = models.CharField(max_length=255,null=True,blank=True)
-    InvigilatorId =  models.CharField(max_length=250,null=True,blank=True)
+    InvigilatorId =  models.CharField(max_length=250,null=True,blank=True)   #user table
     SubjectId = models.ForeignKey(Subject,on_delete=models.CASCADE,null=True,blank=True)
-    ExamType =  models.ForeignKey(ExamType,on_delete=models.CASCADE,null=True,blank=True)
+    ExamType =  models.ForeignKey(ExamType,on_delete=models.CASCADE,null=True,blank=True)  #paper type
     totalMarks = models.CharField(max_length=255,null=True,blank=True)
-    passingmarks = models.CharField(max_length=255,null=True,blank=True)
+    passingmarks = models.CharField(max_length=255,null=True,blank=True)  #not in excel
 
     reportTime =  models.CharField(max_length=255,null=True,blank=True)
     RoomNo = models.CharField(max_length=255,null=True,blank=True)
     Instructions = models.TextField(null=True,blank=True)
     AcademicYearId = models.ForeignKey(AcademicYear,on_delete=models.CASCADE,null=True,blank=True)
-    exam = models.ForeignKey(Exam,on_delete=models.CASCADE,null=True,blank=True)
+    exam = models.ForeignKey(Exam,on_delete=models.CASCADE,null=True,blank=True)  #exam name
     school_code = models.CharField(max_length=150,null=True,blank=True)
 
 
