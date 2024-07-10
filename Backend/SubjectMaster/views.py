@@ -111,26 +111,38 @@ class subjectdatabyexcel(GenericAPIView):
     def post(self,request):
         school_code = request.user.school_code
         dataset = Dataset()
-      
+        fileerrorlist=[]
         new_product = request.FILES.get('classfile')
 
         if not new_product.name.endswith('xlsx'):
-            return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
 
         imported_data = dataset.load(new_product.read(), format='xlsx')
-        
-        importDataList =[]
-        notimporteddatalist = []
         for i in imported_data:
-            if i[0] is not None:
-                importDataList.append(i)
+            SubjectName =i[0]
+            data={}
+            
+            if SubjectName is not None and SubjectName !="":
+                data['SubjectName']= SubjectName
+                SubjectName_exist = Subject.objects.filter(SubjectName__in = [data['SubjectName'].strip().capitalize(),data['SubjectName'].strip(),data['SubjectName'].title(),data['SubjectName'].upper(),data['SubjectName'].lower(),data['SubjectName']],isActive= True,school_code=school_code).first()
+                if SubjectName_exist is None:
+                    Subject.objects.create(SubjectName= data['SubjectName'],school_code=school_code)
+                else:
+                    reason = 'Subject already exits.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
             else:
-                notimporteddatalist.append(i)
+                reason = 'Subject master is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+  
 
-        for i in importDataList:
-            subjexist = Subject.objects.filter(SubjectName__in=[i[0].lower(),i[0].upper()],school_code=school_code).first()
-            if subjexist is None:
-                Subject.objects.create(SubjectName=i[0],school_code=school_code)
+        if len(fileerrorlist) == 0:
+            return Response({"data":'done',"response": {"n": 1, "msg": "Subject master uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['SubjectName','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
 
-        return Response({"data":'done',"response": {"n": 1, "msg": "Subject uploaded successfully","status": "success"}})
+
 

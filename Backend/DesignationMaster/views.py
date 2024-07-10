@@ -123,15 +123,15 @@ class designationdatabyexcel(GenericAPIView):
             if designation is not None and designation !="":
                 data['designation']= designation
                 designation_exist = Designation.objects.filter(designationName__in = [data['designation'].strip().capitalize(),data['designation'].strip(),data['designation'].title(),data['designation'].upper(),data['designation'].lower(),data['designation']],isActive= True,school_code=school_code).first()
-                if designation_exist is not None:
-                    data['designation']= designation_exist.id
+                if designation_exist is None:
+                    Designation.objects.create(designationName= data['designation'],school_code=school_code)
                 else:
-                    reason = 'designation not found.'
+                    reason = 'designation already exits.'
                     error = i + tuple([reason])
                     fileerrorlist.append(error)
                     continue 
             else:
-                reason = 'teacher designation is required.'
+                reason = 'designation is required.'
                 error = i + tuple([reason])
                 fileerrorlist.append(error)
                 continue

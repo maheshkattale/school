@@ -12,7 +12,7 @@
 {% endblock %}
 {% block body %}
   <div class="d-flex justify-content-end">
-    <a data-bs-toggle="modal" data-bs-target="#uploadexcel" class="btn btn-primary mx-2 mb-3">Upload Excel</a>
+    <a data-bs-toggle="modal" data-bs-target="#uploadexcel" class="btn btn-primary mx-2 mb-3">Bulk Upload</a>
     <a data-bs-toggle="modal" data-bs-target="#add_examtype" class="btn btn-primary mx-2 mb-3">Add Exam Type</a>
  
     <div id="add_examtype" class="modal">
@@ -351,6 +351,9 @@
 {% endblock %}
 
 {% block script %}
+
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script>
     $(document).ready(function () {
 
@@ -670,15 +673,21 @@ realFileBtn.addEventListener("change", function() {
 });
 
 $('#myfile').bind('change', function () {
-var filename = $("#myfile").val();
-if (/^\s*$/.test(filename)) {
-  $(".file-upload").removeClass('active');
-  $("#noFile").text("No file chosen..."); 
-}
-else {
-  $(".file-upload").addClass('active');
-  $("#noFile").text(filename.replace("C:\\fakepath\\", "")); 
-}
+  var filename = $("#myfile").val();
+  var validExtensions = ['xls', 'xlsx']; // Array of valid extensions
+  var fileExtension = filename.split('.').pop().toLowerCase(); // Get the file extension
+
+  if (/^\s*$/.test(filename)) {
+    $(".file-upload").removeClass('active');
+    $("#noFile").text("No file chosen...");
+  } else if (validExtensions.indexOf(fileExtension) === -1) {
+      $(".file-upload").removeClass('active');
+      $("#noFile").text("Invalid file type. Please choose an Excel file.");
+      $("#myfile").val(''); // Clear the file input
+  } else {
+      $(".file-upload").addClass('active');
+      $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
+  }
 });
 
 function filevalidation(){
@@ -722,6 +731,7 @@ else{
               text: response.response.msg,
               icon: 'error',
             })
+            exportToExcel(response.headers, response.data)
           }
 
     
@@ -729,6 +739,30 @@ else{
       });
 
 }
+}
+function exportToExcel(headers, data) {
+  var workbook = XLSX.utils.book_new();
+  
+  // Create worksheet
+  var worksheet = XLSX.utils.aoa_to_sheet([]);
+
+  // Add headers to the worksheet
+  XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
+
+  // Add data to the worksheet
+  for (var i = 0; i < data.length; i++) {
+    var rowData = Object.values(data[i]);
+    XLSX.utils.sheet_add_aoa(worksheet, [rowData], { origin: "A" + (i + 2) });
+  }
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  var excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  
+  // Convert buffer to a Blob
+  var blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+  // Save the file using FileSaver.js
+  saveAs(blob, "failed_examtype.xlsx");
 }
 
   </script>

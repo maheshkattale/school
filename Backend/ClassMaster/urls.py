@@ -8,8 +8,9 @@ urlpatterns = [
     path('getbyid',getclassbyid.as_view(), name = 'getbyid'),
     path('update', updateclass.as_view(), name = 'update'),
     path('delete', deleteclass.as_view(), name = 'delete'),
-
+    # 
     path('classdatabyexcel', classdatabyexcel.as_view(), name = 'classdatabyexcel'),
+    
     path('add_class_teacher', add_class_teacher.as_view(), name = 'add_class_teacher'),
     path('get_class_teachers', get_class_teachers.as_view(), name = 'get_class_teachers'),
     path('edit_class_teacher', edit_class_teacher.as_view(), name = 'edit_class_teacher'),
@@ -17,6 +18,6 @@ urlpatterns = [
     path('teacher_classes_list', teacher_classes_list.as_view(), name = 'teacher_classes_list'),
     
     # 
-    # path('classteacherdatabyexcel', classteacherdatabyexcel.as_view(), name = 'classteacherdatabyexcel'),
+    path('classteacherdatabyexcel', classteacherdatabyexcel.as_view(), name = 'classteacherdatabyexcel'),
 
 ]

@@ -965,36 +965,229 @@ class examtypebyexcel(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
+        
         school_code = request.user.school_code
         dataset = Dataset()
-      
+        fileerrorlist=[]
         new_product = request.FILES.get('classfile')
 
         if not new_product.name.endswith('xlsx'):
-            return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
 
         imported_data = dataset.load(new_product.read(), format='xlsx')
-        
-        importDataList =[]
-        notimporteddatalist = []
         for i in imported_data:
-            if i[0] is not None:
-                importDataList.append(i)
+            TypeName =i[0]
+            data={}
+            
+            if TypeName is not None and TypeName !="":
+                data['TypeName']= TypeName
+                ExamType_exist = ExamType.objects.filter(TypeName__in = [data['TypeName'].strip().capitalize(),data['TypeName'].strip(),data['TypeName'].title(),data['TypeName'].upper(),data['TypeName'].lower(),data['TypeName']],isActive= True,school_code=school_code).first()
+                if ExamType_exist is None:
+                    ExamType.objects.create(TypeName= data['TypeName'],school_code=school_code)
+                else:
+                    reason = 'Exam type name already exits.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
             else:
-                notimporteddatalist.append(i)
+                reason = 'Exam type name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+  
 
-        for i in importDataList:
-            examtyperexist = ExamTypeMarks.objects.filter(passingmarks__in=[i[0]],Marks__in=[i[0]],Typeid_id__in=[i[0]],school_code=school_code).first()
-            if examtyperexist is None:
-                ExamTypeMarks.objects.create(passingmarks=i[0],Marks=i[0],school_code=school_code)
-
-        return Response({"data":'done',"response": {"n": 1, "msg": "Exam type uploaded successfully","status": "success"}})
-
-
-
-
+        if len(fileerrorlist) == 0:
+            return Response({"data":'done',"response": {"n": 1, "msg": "Exam Type Name uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['TypeName','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
 
 
+class examnamedatabyexcel(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        school_code = request.user.school_code
+        dataset = Dataset()
+        fileerrorlist=[]
+        new_product = request.FILES.get('classfile')
+
+        if not new_product.name.endswith('xlsx'):
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
+
+        imported_data = dataset.load(new_product.read(), format='xlsx')
+        for i in imported_data:
+            Name =i[0]
+            data={}
+            
+            if Name is not None and Name !="":
+                data['Name']= Name
+                Examname_exist = Exam.objects.filter(Name__in = [data['Name'].strip().capitalize(),data['Name'].strip(),data['Name'].title(),data['Name'].upper(),data['Name'].lower(),data['Name']],isActive= True,school_code=school_code).first()
+                if Examname_exist is None:
+                    Exam.objects.create(Name= data['Name'],school_code=school_code)
+                else:
+                    reason = 'Exam name already exits.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'Exam name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+  
+
+        if len(fileerrorlist) == 0:
+            return Response({"data":'done',"response": {"n": 1, "msg": "Exam Name uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['ExamName','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
+
+
+class examscheduldatabyexcel(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        school_code = request.user.school_code
+        dataset = Dataset()
+        fileerrorlist=[]
+        new_product = request.FILES.get('classfile')
+
+        if not new_product.name.endswith('xlsx'):
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
+
+        imported_data = dataset.load(new_product.read(), format='xlsx')
+        for i in imported_data:
+            
+            ClassId =i[0]
+            Date =i[1]
+            Examstarttime =i[2]
+            Examendtime =i[3]
+            InvigilatorId =i[4]
+            SubjectId =i[5]
+            Examtype =i[6]
+            totalMarks =i[7]
+            reportTime =i[8]
+            RoomNo =i[9]
+            Instructions =i[10]
+            AcademicYearId =i[11]
+            exam = i[11]
+            data={}
+            
+            if ClassId is not None and ClassId !="":
+                ClassName_exist = Class.objects.filter(ClassName=i[0],isActive= True,school_code=school_code).first()
+                if ClassName_exist is not None:
+                    data['ClassId']= ClassName_exist.id
+                else:
+                    reason = 'Class name not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'Class is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+                
+            data['Date']= Date
+            data['Examstarttime']= Examstarttime
+            data['Examendtime']= Examendtime
+            data['InvigilatorId']= InvigilatorId
+            
+            
+            if SubjectId is not None and SubjectId !="":
+                data['SubjectId']= SubjectId
+                print('hii',data['SubjectId'])
+                subject_exist = Subject.objects.filter(SubjectName=i[5],isActive= True,school_code=school_code).first()
+                print('subject_exist',subject_exist)
+                if subject_exist is not None:
+                    data['SubjectId']= subject_exist.id
+                else:
+                    reason = 'Subject not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'Subject is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+            
+            if Examtype is not None and Examtype !="":
+                data['Examtype']= Examtype
+                print('i6',i[6])
+                examtype_exist = ExamType.objects.filter(TypeName=i[6],isActive= True,school_code=school_code).first()
+                print('examtype_exist',examtype_exist)
+                if examtype_exist is not None:
+                    data['Examtype']= examtype_exist.id
+                else:
+                    reason = 'Exam type name already exits.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'Exam type name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+            
+            
+            data['totalMarks']= totalMarks
+            data['reportTime']= reportTime
+            data['RoomNo']= RoomNo
+            data['Instructions']= Instructions
+            
+            if AcademicYearId is not None and AcademicYearId !="":
+                data['AcademicYearId']= AcademicYearId 
+                AcademicYear_exist = AcademicYear.objects.filter(startdate__in=[i[11].split('to')[0].strip()],enddate__in=[i[11].split('to')[1].strip()],school_code=school_code).first()
+                if AcademicYear_exist is not None:
+                    data['AcademicYearId']= AcademicYear_exist.id
+                else:
+                    reason = 'Academic Year not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'Academic Year is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue 
+            
+            if exam is not None and exam !="":
+                data['exam']= exam
+                Examname_exist = Exam.objects.filter(Name=i[12],isActive= True,school_code=school_code).first()
+                if Examname_exist is not None:
+                    data['exam']= Examname_exist.id
+                else:
+                    reason = 'Exam name already exits.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'Exam name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+            
+            
+            Date =i[1]
+            Exam_schedule = Exams.objects.filter(reportTime=data['reportTime'],ClassId_id=data['ClassId'],Date=data['Date'],Examstarttime=data['Examstarttime'],Examendtime=data['Examendtime'],InvigilatorId=data['InvigilatorId'],totalMarks=data['totalMarks'],AcademicYearId_id=data['AcademicYearId'],SubjectId_id=data['SubjectId'],ExamType_id=data['Examtype'],Instructions=data['Instructions'],RoomNo=data['RoomNo'],exam_id=data['exam'],isActive= True,school_code=school_code).first()
+            if Exam_schedule is None:
+                Exams.objects.create(reportTime=data['reportTime'],ClassId_id=data['ClassId'],Date=data['Date'],Examstarttime=data['Examstarttime'],Examendtime=data['Examendtime'],InvigilatorId=data['InvigilatorId'],totalMarks=data['totalMarks'],AcademicYearId_id=data['AcademicYearId'],SubjectId_id=data['SubjectId'],ExamType_id=data['Examtype'],Instructions=data['Instructions'],RoomNo=data['RoomNo'],exam_id=data['exam'],school_code=school_code)
+            else:
+                reason = 'Exam schedule already exits.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue 
+        # else:
+        #     reason = 'Exam schedule is required.'
+        #     error = i + tuple([reason])
+        #     fileerrorlist.append(error)
+        #     continue
+  
+
+        if len(fileerrorlist) == 0:
+            return Response({"data":'done',"response": {"n": 1, "msg": "Exam schedule uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['Class','Date','ExamStartTime','ExamEndTime','InvigilatorId','Subject','ExamType','TotalMarks','ReportTime','RoomNo','Instructions','AcademicYear','ExamName','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
 
 
 

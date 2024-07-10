@@ -110,25 +110,41 @@ class classdatabyexcel(GenericAPIView):
     def post(self,request):
         school_code = request.user.school_code
         dataset = Dataset()
+        fileerrorlist=[]
         new_product = request.FILES.get('classfile')
+
         if not new_product.name.endswith('xlsx'):
-            return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
+
         imported_data = dataset.load(new_product.read(), format='xlsx')
-        
-        importDataList =[]
-        notimporteddatalist = []
         for i in imported_data:
-            if i[0] is not None:
-                importDataList.append(i)
+            ClassName =i[0]
+            data={}
+            
+            if ClassName is not None and ClassName !="":
+                data['ClassName']= ClassName
+                ClassName_exist = Class.objects.filter(ClassName__in = [data['ClassName'].strip().capitalize(),data['ClassName'].strip(),data['ClassName'].title(),data['ClassName'].upper(),data['ClassName'].lower(),data['ClassName']],isActive= True,school_code=school_code).first()
+                print("ClassName_exist",ClassName_exist)
+                if ClassName_exist is None:
+                    Class.objects.create(ClassName= data['ClassName'],school_code=school_code)
+                else:
+                    print("hii")
+                    reason = 'Class name already exits.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    print("fileerrorlist",fileerrorlist)
+                    continue 
             else:
-                notimporteddatalist.append(i)
-
-        for i in importDataList:
-            classdataexist = Class.objects.filter(ClassName__in=[i[0].lower(),i[0].upper()],school_code=school_code).first()
-            if classdataexist is None:
-                Class.objects.create(ClassName=i[0],school_code=school_code)
-
-        return Response({"data":'done',"response": {"n": 1, "msg": "Class uploaded successfully","status": "success"}})
+                reason = 'Class name is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+  
+        print("length1",len(fileerrorlist))
+        if len(fileerrorlist) == 0:
+            return Response({"data":'done',"response": {"n": 1, "msg": "Class Name uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['ClassName','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
 
 
 
@@ -231,34 +247,75 @@ class teacher_classes_list(GenericAPIView):
 
 
 
-# class classteacherdatabyexcel(GenericAPIView):
-#     authentication_classes=[userJWTAuthentication]
-#     permission_classes = (permissions.IsAuthenticated,)
-#     def post(self,request):
-#         school_code = request.user.school_code
-#         dataset = Dataset()
-      
-#         new_product = request.FILES.get('classfile')
+class classteacherdatabyexcel(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        school_code = request.user.school_code
+        dataset = Dataset()
+        fileerrorlist=[]
+        new_product = request.FILES.get('classfile')
 
-#         if not new_product.name.endswith('xlsx'):
-#             return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+        if not new_product.name.endswith('xlsx'):
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
 
-#         imported_data = dataset.load(new_product.read(), format='xlsx')
-        
-#         importDataList =[]
-#         notimporteddatalist = []
-#         for i in imported_data:
-#             if i[0] is not None:
-#                 importDataList.append(i)
-#             else:
-#                 notimporteddatalist.append(i)
-
-#         for i in importDataList:
-#             classteacherexist = ClassTeacher.objects.filter(classid_id__in=[i[0]],teacherid_id__in=[i[0]],academic_year_id_id__in=[i[0]],school_code=school_code).first()
-#             if classteacherexist is None:
-#                 ClassTeacher.objects.create(classid_id=i[0],teacherid_id=i[0],academic_year_id_id=i[0],school_code=school_code)
-
-#         return Response({"data":'done',"response": {"n": 1, "msg": "Class Teacher uploaded successfully","status": "success"}})
+        imported_data = dataset.load(new_product.read(), format='xlsx')
+        for i in imported_data:
+            classid =i[0]
+            teacherid =i[1]
+            academic_year_id =i[2]
+            data={}
+            
+            if classid is not None and classid !="":
+                ClassName_exist = Class.objects.filter(ClassName__in = [i[0].strip().capitalize(),i[0].strip(),i[0].title(),i[0].upper(),i[0].lower(),i[0]],isActive= True,school_code=school_code).first()
+                if ClassName_exist is not None:
+                    data['classid']= ClassName_exist.id
+                else:
+                    reason = 'Class name not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    print("fileerrorlist",fileerrorlist)
+                    continue 
+                
+                teacher = User.objects.filter(Username__in = [i[1].strip().capitalize(),i[1].strip(),i[1].title(),i[1].upper(),i[1].lower(),i[1]],isActive= True,school_code=school_code).first()
+                if teacher is not None:
+                    data['teacherid']= teacher.id
+                else:
+                    reason = 'Tecaher name not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+                
+                ExamType_exist = AcademicYear.objects.filter(startdate__in=[i[2].split('to')[0].strip()],enddate__in=[i[2].split('to')[1].strip()],school_code=school_code).first()
+                if ExamType_exist is not None:
+                    data['academic_year_id']= ExamType_exist.id
+                else:
+                    reason = 'Academic Year not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+                
+                Classteacher_exist = ClassTeacher.objects.filter(classid__in=[data['classid']],teacherid__in=[data['teacherid']],academic_year_id__in=[data['academic_year_id']],isActive= True,school_code=school_code).first()
+                print('Classteacher_exist',Classteacher_exist)
+                if Classteacher_exist is None:
+                    ClassTeacher.objects.create(classid_id=int(data['classid']),teacherid_id=int(data['teacherid']),academic_year_id_id=int(data['academic_year_id']),school_code=school_code)
+                    
+                else:
+                    reason = 'Class teacher already exit.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    print('fileerrorlist',fileerrorlist)
+                    continue 
+            else:
+                reason = 'Class teacher is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+                
+        if len(fileerrorlist) == 0:
+            return Response({"data":'done',"response": {"n": 1, "msg": "Class Name uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['Class','ClassTeacherName','AcademicYear','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
 
 
 

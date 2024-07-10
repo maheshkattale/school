@@ -463,30 +463,39 @@ class academicdatabyexcel(GenericAPIView):
     def post(self,request):
         school_code = request.user.school_code
         dataset = Dataset()
-      
+        fileerrorlist=[]
         new_product = request.FILES.get('classfile')
 
         if not new_product.name.endswith('xlsx'):
-            return Response({"data":'',"response": {"n": 0, "msg": "Wrong File Format","status": "failure"}})
+            return Response({'data':[],"response":{"status":"failure",'msg': 'file format not supported','n':0}})
 
         imported_data = dataset.load(new_product.read(), format='xlsx')
-        
-        importDataList =[]
-        notimporteddatalist = []
         for i in imported_data:
-            if i[0] is not None:
-                importDataList.append(i)
+            startdate =i[0]
+            enddate =i[1]
+            data={}
+            data['isActive']=False
+            if startdate is not None and startdate !="":
+                data['startdate']= startdate
+                data['enddate']= enddate
+                ExamType_exist = AcademicYear.objects.filter(startdate__in=[i[0]],enddate__in=[i[1]],school_code=school_code,Isdeleted=False).first()
+                if ExamType_exist is None:
+                    AcademicYear.objects.create(startdate=i[0],enddate=i[1],school_code=school_code,isActive=False)
+                else:
+                    reason = 'Academic Year already exits.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
             else:
-                notimporteddatalist.append(i)
+                reason = 'Academic Year is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
 
-        for i in importDataList:
-            classexist = AcademicYear.objects.filter(startdate__in=[i[0]],enddate__in=[i[0]],school_code=school_code).first()
-            if classexist is None:
-                AcademicYear.objects.create(startdate=i[0],enddate=i[0],school_code=school_code)
-
-        return Response({"data":'done',"response": {"n": 1, "msg": "Academic Year uploaded successfully","status": "success"}})
-
-
+        if len(fileerrorlist) == 0:
+            return Response({"data":'done',"response": {"n": 1, "msg": "Academic Year uploaded successfully","status": "success"}})
+        else:
+            return Response({"data":fileerrorlist,'headers':['startdate','enddate','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
 
         
         
