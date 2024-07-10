@@ -19459,7 +19459,9 @@ fieldset:disabled .btn {
 
 .navbar-nav .dropdown-menu {
     position: absolute;
-    min-width: 200px
+    min-width: 300px;
+    max-height: 50vh;
+    overflow-y: scroll;
 }
 
 .navbar-nav .dropdown-menu .dropdown-item {
@@ -19469,10 +19471,15 @@ fieldset:disabled .btn {
 .notification {
     content: "";
     position: absolute;
-    top: 22px;
-    right: 9px;
-    width: 8px;
-    height: 8px
+    top: 18px;
+    right: 8px;
+    width: 15px;
+    height: 15px;
+    font-size: 10px;
+    color: white;
+    text-align: center;
+    font-weight: 900;
+    line-height: 14px;
 }
 
 @media (max-width:991.98px) {
@@ -20079,3 +20086,67 @@ ul {
 }
 .searchbox_navlink{
     background: #995dff;}
+.text-wrap-balance{
+    text-wrap: balance;
+}
+
+.notice-type{
+    font-size: 14px;
+    font-weight: 500;
+    color: black;
+    text-wrap:balance;
+}
+.notice-title{
+    font-size: 12px;
+    font-weight: 500;
+    color: black;
+    text-wrap:balance;
+}
+.notice-message{
+    font-size: 12px;
+    text-wrap:balance;
+}
+.notice-by{
+    font-size: 14px;
+}
+.notification-notice-by{
+    font-size: 10px;
+}
+.notification-header{
+    font-size: 16px;
+    color: black;
+    font-weight: 500;
+    border-bottom: 1px solid #0000004a;
+    border-radius: 0 !important;
+    padding: 5px !important;
+}
+.notification-footer{
+    color: #0000ff7d;
+    font-weight: 800;
+    border-top: 1px solid #00000042;
+    border-radius: 0 !important;
+    padding: 5px !important;
+    text-align: center;
+    font-size: 12px;
+}
+.unread_notification{
+    background: #e5efff;
+}
+/* For WebKit browsers */
+::-webkit-scrollbar {
+  width: 5px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #995dff;
+  /*Colorofthescrollbarthumb*/border-radius: 6px;
+   /* Round the corners of the scrollbar thumb */
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -o-border-radius: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #995dff; /* Color of the scrollbar track */
+}

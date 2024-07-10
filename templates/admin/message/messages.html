@@ -42,7 +42,9 @@
     .tile
     {
       width:80%;
-      margin:60px auto;
+      min-height:70vh;
+      overflow-y:auto;
+
     }
     #tile-1 .tab-pane
     {
@@ -88,8 +90,7 @@
       transition:all .4s linear;
       
     }
-    #tile-1 .nav-tabs .active
-    {
+    #tile-1 .nav-tabs .active{
       background-color:transparent!important;
       border:none!important;
       color:#995dff!important;
@@ -97,6 +98,16 @@
     .modal-content{
       margin-left:50px;
     }
+
+    #main_recipient, #sub_recipient {
+      transition: all 0.5s ease; /* Change 0.5s to your desired duration */
+    }
+
+    .tab-content{
+      min-height: 70vh;
+      overflow: scroll;  
+    }
+
 </style>
 {% endblock %}
 {% block heading %}
@@ -109,7 +120,6 @@
     <div id="add_message" class="modal">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-  
             <div class="modal-body">
             <div class="card">
               <div class="card-body">
@@ -119,36 +129,48 @@
                     <form>
                       <div class="row">
   
-                        <div class="mb-3 col-lg-12">
-                          <label for="recipient" class="form-label">Recipient  <span class="text-danger">*</span> </label>
-                          <select id="recipient" class="form-select select2" aria-describedby="recipient_error">
+                       
+                          <div id="main_recipient" class="mb-3 col-lg-12">
+                            <label for="recipient" class="form-label">Recipient  <span class="text-danger">*</span> </label>
+                            <select id="recipient" class="form-select select2" aria-describedby="recipient_error" onchange="check_recipient_type();">
+  
+                              <option value="" selected>Please select recipient</option>
+                              {% for recipient in recipients %}
+                                {% if recipient.id != user_id %}
+                                  <option value="{{recipient.id}}"> {{recipient.Username}}</option>
+                                {% endif %}
+                              {% endfor %}
+            
+                            </select>
+                            <div id="recipient_error" class="form-text error_message mt-2"></div>
+                          </div>
 
-                            <option value="" selected> Please select recipient</option>
-                            {% for recipient in recipients %}
-                              {% if recipient.id != user_id %}
-                                <option value="{{recipient.id}}"> {{recipient.Username}}</option>
-                              {% endif %}
-                            {% endfor %}
-          
-                          </select>
-                          
-                          <div id="recipient_error" class="form-text error_message mt-2"></div>
-                        </div>
+
+                          <div id="sub_recipient" class="mb-3 col-lg-0 d-none">
+                            <label for="student" class="form-label">Student  <span class="text-danger">*</span> </label>
+                            <select id="student" class="form-select select2" aria-describedby="student_error">
+                            </select>
+                            
+                            <div id="student_error" class="form-text error_message mt-2"></div>
+
+
+                          </div>
+                      
 
 
                         <div class="mb-3 col-lg-12">
                             <label for="subject" class="form-label">Subject  <span class="text-danger">*</span> </label>
                             <input type="text" class="form-control" id="subject" placeholder="Please enter subject" aria-describedby="subject_error" />
                             <div id="subject_error" class="form-text error_message"></div>
-                          </div>
+                        </div>
 
 
-                          <div class="mb-3 col-lg-12">
+                        <div class="mb-3 col-lg-12">
                             <label for="message" class="form-label">message  <span class="text-danger">*</span> </label>
                             <textarea class="form-control" rows="5" id="message" >Please enter message</textarea>
                             <div id="message_error" class="form-text error_message"></div>
                           </div>
-                      </div>
+                        </div>
   
                       <div class="row">
                         <div class="d-flex justify-content-center">
@@ -165,7 +187,7 @@
         </div>
       </div>
   </div>
-  <div class="row card pb-5 my-2">
+  <div class="row card mt-3">
 
 
 
@@ -179,7 +201,7 @@
         <ul class="nav nav-tabs nav-justified" role="tablist">
           <div class="slider"></div>
            <li class="nav-item">
-              <a class="nav-link active" id="recived-tab" data-toggle="tab" href="#recived" role="tab" aria-controls="recived" aria-selected="true"><i class="ti ti-arrow-down"></i> Recieved Messages</a>
+              <a class="nav-link active" id="recived-tab" data-toggle="tab" href="#recived" role="tab" aria-controls="recived" aria-selected="true"><i class="ti ti-arrow-down"></i> Received Messages</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" id="sent-tab" data-toggle="tab" href="#sent" role="tab" aria-controls="sent" aria-selected="false"><i class="ti ti-arrow-up"></i> Sent Messages</a>
@@ -248,12 +270,16 @@
       var recipient=$('#recipient').val()
       var subject=$('#subject').val()
       var message=$('#message').val()
+      
       var fd = new FormData();    
 
-        if('{{roleid}}' == 5){
-            var logined_student=$('#logined_children').val()
-            fd.append("StudentCode",logined_student);
-        }
+      if('{{roleid}}' == 5){
+          var logined_student=$('#logined_children').val();
+          fd.append("from_user_studentcode",logined_student);
+      }else{
+        var student_code=$('#student').val()
+        fd.append("to_user_studentcode",student_code);
+      }
 
       if(IsValid(recipient)){
         $('#recipient').html();
@@ -339,13 +365,12 @@
             contentType: false,
             
             success: function(response) {
-              console.log("delete",response)
               if(response.response.n ==1){
                 Swal.fire({
                   text: response.response.msg,
                   icon: 'success',
                 }).then((result) => {
-                  window.location.href = "/subject_master";
+                  window.location.href = "/messages";
           
                 });
               }else{
@@ -378,6 +403,38 @@
     var actPosition = $("#tile-1 .nav-tabs .active").position();
     $("#tile-1 .slider").css({ left: +actPosition.left, width: actWidth });
 
+    function check_recipient_type(){
+      var main_recipient=$('#recipient').val();
 
+      var fd = new FormData();    
+      fd.append("id",main_recipient);
+      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+      $.ajax({
+              type: "POST",
+              url: frontend_url+"messages/check_recipient_type",
+              data: fd,
+              processData: false,
+              contentType: false,
+            
+              success: function(response) {
+                console.log("response",response)
+                if(response.response.n ==1){
+                  $('#main_recipient').removeClass('col-lg-12').addClass('col-lg-6');
+                  $('#sub_recipient').removeClass('col-lg-0').removeClass('d-none').addClass('col-lg-6');
+                  var options=''
+                  $.each(response.data, function(index, value){  
+                    options += `<option value="` + value.StudentCode + `">` + value.StudentName + `</option>`;           
+                  });
+                  $("#student").html(options);
+                }else{
+                  $('#main_recipient').removeClass('col-lg-6').addClass('col-lg-12');
+                  $('#sub_recipient').addClass('col-lg-0').addClass('d-none').addClass('col-lg-6');
+                }
+    
+          
+              },
+      });
+
+    }
   </script>
 {% endblock %}

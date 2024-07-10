@@ -63,7 +63,7 @@
 }
 
 .notice-row {
-    box-shadow: 0 0 5px grey;
+    box-shadow:0 0 5px #80808070;
     margin: 16px 0px !important;
     border-radius: 10px;
 }
@@ -78,4 +78,9 @@
 
 .imgclass {
     border-radius: 10px;
+}
+.notice_board{
+    height:230px;
+    overflow-y: auto;
+    padding :0 10px;
 }

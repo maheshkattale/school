@@ -166,7 +166,7 @@
             contentType: false,
     
             success: function (response) {
-              console.log('delete', response)
+             
               if (response.response.n == 1) {
                 Swal.fire({
                   text: response.response.msg,
@@ -201,7 +201,7 @@
         contentType: false,
     
         success: function (response) {
-          console.log('response.data', response.data)
+          
           if (response.response.n == 1) {
             $(response.data).each(function (o, i) {
               var profileimage = ''

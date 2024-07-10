@@ -224,7 +224,7 @@
         contentType: false,
         
         success: function(response) {
-          console.log("timetable",response)
+  
           if(response.response.n == 1){
             Swal.fire({
               text: response.response.msg,
@@ -293,7 +293,6 @@
     $.each(breakdowns,function(i,o){
       breakdown_total_amount+=parseInt(o.amount)
     });
-    console.log('isChecked && breakdowns.length',isChecked, breakdowns.length,breakdown_total_amount,total_amount)
     if (isChecked && breakdowns.length == 0){
       Swal.fire({
         text: "Please add fees breakdowns",
@@ -325,7 +324,6 @@
         contentType: false,
         
         success: function(response) {
-          console.log(response)
           if(response.response.n == 1){
             Swal.fire({
               text: response.response.msg,
@@ -355,7 +353,6 @@ $(document).ready(function() {
 
 
       var isChecked = $(this).prop('checked'); // Get the checked property
-      console.log("Checkbox checked: " + isChecked);
 
       // You can perform further actions based on whether the checkbox is checked
       if (isChecked) {
@@ -448,7 +445,6 @@ function add_breakdown(){
   
     breakdowns.push({"itemno":rowno,"name":breakdown_name,"amount":breakdown_amount,"start_date":breakdown_startdate,"end_date":breakdown_enddate});
     rowno++;
-    console.log("add draft",breakdowns)
                 
           
 };
@@ -570,7 +566,6 @@ function deleterow(id){
 
     }
 
-      console.log("delete draft",breakdowns)
       });
 };
 

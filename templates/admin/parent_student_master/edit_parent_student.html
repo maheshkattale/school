@@ -228,7 +228,6 @@
     for (var i = 1; i <= count; i++) {
       counterlist.push(i);
     }
-    console.log("list", counterlist)
   }
 
   function addchild() {
@@ -239,7 +238,7 @@
   }
 
   lenth = $('#listlength').text();
-  console.log("productCount", lenth)
+  
   var counter = parseInt(lenth) + 1;
   var srNo = parseInt(lenth) + 1;
 
@@ -314,7 +313,6 @@
       $(v).text(i + 1);
     })
 
-    console.log('classlist', classlist)
     var classOpt = '<option value="">select class</option>';
     $.each(classlist, function (index, value) {
       classOpt += `<option value="` + value.id + `">` + value.ClassName + `</option>`;
@@ -344,7 +342,7 @@
 
   function deleteChild(childid) {
     var studentcode = $('#stucode' + childid).text();
-    console.log("studentcode", studentcode)
+    
     if (studentcode != '') {
 
       Swal.fire({
@@ -368,7 +366,7 @@
             contentType: false,
 
             success: function (response) {
-              console.log("delete", response)
+              
               if (response.response.n == 1) {
                 Swal.fire({
                   text: response.response.msg,
@@ -644,7 +642,7 @@
         studentlist.push(data)
       })
       t = 'Bearer {{token}}'
-      console.log("tttttttt", t)
+      
       var fd = new FormData();
       fd.append('id', id)
       fd.append('Username', parent_name)
@@ -653,7 +651,7 @@
       fd.append('Address', address)
       fd.append("studentlist", JSON.stringify(studentlist));
       fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
-      console.log("fd", fd)
+      
       $.ajax({
         type: "POST",
         url: frontend_url + "api/Parent_StudentMaster/update",

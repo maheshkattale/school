@@ -288,7 +288,7 @@
 
         $(".day").removeClass("selected");
         $("."+selectdateclass).addClass("selected");
-        console.log("selectdateclass",selectdateclass)
+      
         var selected_d=selectdateclass.split("-")
         var s_d=selected_d[2]
         var s_m=selected_d[1]
@@ -380,7 +380,7 @@
             contentType: false,
 
             success: function (response) {
-            console.log(" response: " ,response);
+          
             $('[data-state]').attr('data-state', 'empty');
             $('[data-state]').removeClass();
             $('[data-state]').addClass('tri-state-checkbox');

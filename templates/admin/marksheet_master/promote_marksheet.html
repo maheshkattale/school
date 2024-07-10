@@ -182,7 +182,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
           contentType: false,
 
           success: function (response) {
-            console.log("delete", response)
             if (response.response.n == 1) {
               Swal.fire({
                 text: response.response.msg,
@@ -235,7 +234,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
       contentType: false,
 
       success: function (response) {
-        console.log("student_list", response)
         if (response.response.n == 1) {
           var trhtml = ''
 
@@ -282,7 +280,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     selectedCheckboxes.forEach(function (checkbox) {
       selectedValues.push(checkbox.value);
     });
-    console.log("Selected checkboxes: " + selectedValues);
 
     var classid = $('#classid').val();
 
@@ -301,7 +298,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
       contentType: false,
 
       success: function (response) {
-        console.log("student_card", response)
         if (response.response.n == 1) {
 
           var containerContent = ''
@@ -413,7 +409,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
         userlist.push($(this).val());
     });
 
-    console.log(userlist)
 
     Swal.fire({
       text: 'Are you sure you want to promoted all this Student?',
@@ -430,7 +425,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     })
       .then((result) => {
         if (result.isConfirmed) {
-          console.log("userlistsss",userlist)
           $.ajax({
             url: frontend_url + 'api/MarksheetMaster/MultipleStudentShortlist',
             data: {
@@ -439,7 +433,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
             },
             type: 'POST',
             success: function (response) {
-              console.log("assss", response)
               if (response.status == 1) {
                 Swal.fire("Student have been Promoted!", {
                   icon: "success",
@@ -502,7 +495,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     }
 
     }else{
-      console.log("id",id)
       checklist.push(id);
     }
       
@@ -532,7 +524,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
             },
             type: 'POST',
             success: function (response) {
-              console.log("assss", response)
               if (response.status == 1) {
                 Swal.fire("Student have been Promoted!", {
                   icon: "success",

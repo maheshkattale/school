@@ -240,7 +240,6 @@
       $(v).text(i + 1);
     })
 
-    console.log('classlist', classlist)
     var classOpt = '<option value="">select class</option>';
     $.each(classlist, function (index, value) {
       classOpt += `<option value="` + value.id + `">` + value.ClassName + `</option>`;
@@ -531,7 +530,6 @@
       fd.append('Address', address)
       fd.append("studentlist", JSON.stringify(studentlist));
       fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
-      console.log("fd", fd)
       $.ajax({
         type: "POST",
         url: frontend_url + "api/Parent_StudentMaster/Add",
@@ -541,7 +539,6 @@
         contentType: false,
 
         success: function (response) {
-          console.log("response", response)
 
           if (response.response.n == 1) {
             Swal.fire({

@@ -78,7 +78,8 @@
 
                         <div class="mb-3 col-lg-12">
                           <label for="class_name" class="form-label">Classes <span class="text-danger">*</span> </label>
-                          <select id="class_name" class="form-select select2" aria-describedby="class_name_error" multiple>
+                          <select  id="class_name" class="form-select select2" aria-describedby="class_name_error" multiple>
+                            <option value="All">All</option>
                             {% for class in classes %}
                               <option value="{{ class.id }}">{{ class.ClassName }}</option>
                             {% endfor %}
@@ -225,16 +226,27 @@
 {% endblock %}
 
 {% block script %}
-  <script>
 
+  <script>
+    $('#class_name').on('change', function() {
+      
+      var selectedValues = $(this).val();
+      if (selectedValues) {
+        if (selectedValues.includes('All')) {
+          $('#class_name option:not([value="All"])').prop('selected', true);
+          $(this).find('option[value="All"]').prop('selected', false);
+        } else if (selectedValues.length === 0) {
+          $('#class_name option').prop('selected', false);
+        }
+      }         
+    });
 
     function validate_add_form() {
-      debugger
+      
       var academic_year = $('#academic_year').val()
       var announcement_date = $('#announcement_date').val()
       var class_name = $('#class_name').val()
       var announcement_text = $('#announcement_text').val()
-    
       var fd = new FormData()
     
       if (IsValid(academic_year)) {
@@ -319,7 +331,7 @@
             contentType: false,
     
             success: function (response) {
-              console.log('delete', response)
+         
               if (response.response.n == 1) {
                 Swal.fire({
                   text: response.response.msg,
@@ -351,7 +363,7 @@
           contentType: false,
   
           success: function (response) {
-            console.log('get_announcement_details', response)
+         
             if (response.response.n == 1) {
 
                 $('#academic_yearedit').val(response.data.AcademicyearId).trigger('change')

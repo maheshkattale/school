@@ -2,6 +2,10 @@ from django.utils.dateformat import DateFormat
 from rest_framework import serializers
 from datetime import datetime
 import re
+from rest_framework import pagination
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+
 
 class dd_mm_yyyy(serializers.Field):
     def to_representation(self, value):
@@ -152,8 +156,25 @@ def validate_start_time_and_end_time(start_time_str, end_time_str):
     return {"status": False, "Reason": "Valid times"}
     
     
-    
-    
+
+class CustomPagination(pagination.PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 50
+    page_query_param = 'p'
+
+    def get_paginated_response(self,data):
+        response = Response({
+            'data':data,
+            'response':{
+                'n':1,
+                'status':"success",
+                'count':self.page.paginator.count,
+                'next' : self.get_next_link(),
+                'previous' : self.get_previous_link(),
+            }
+        })
+        return response    
     
     
     

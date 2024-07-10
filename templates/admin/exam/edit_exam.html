@@ -211,8 +211,7 @@
         var totalMarks = selectedOption.val();
         var passingMarks = selectedOption.attr('passingmarks');
 
-        console.log('Total Marks:', totalMarks);
-        console.log('Passing Marks:', passingMarks);
+        
         $('#exam_passingmarks').val(passingMarks)
         // Display the values in a div
       });
@@ -397,7 +396,7 @@
         contentType: false,
   
         success: function (response) {
-          console.log("ExamTypMarkseobj",response)
+       
           if (response.response.n == 1) {
             $("#exam_passingmarks").val(' ');
 

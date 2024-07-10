@@ -218,49 +218,62 @@
       }
     return monthNumber
   }
-  function check_existing_entry(){
 
+
+
+
+  function check_existing_entry(){
+    debugger
+    var subject_id = $('#subject option:selected').val();
+    var teacher_id = $('#teacher option:selected').val();
     var classid=$('#class_name').val();
     var day=$('#day').val();
     var starttime=$('#start_time').val();
     var endtime=$('#end_time').val();
     var dates = getdates($('#spandatechange').html());
     var status =false
-      var fd = new FormData();   
-      fd.append("startdate",dates.start_date);
-      fd.append("enddate",dates.end_date);
-      fd.append("starttime",starttime);
-      fd.append("endtime",endtime);
-      fd.append("classid",classid);
-      fd.append("day",day);
-      fd.append("csrfmiddlewaretoken","{{csrf_token}}");
 
-      $.ajax({
-        type: "POST",
-        url: frontend_url+"time_table_master/check_existing_timetable_entry",
-        data: fd,
-        processData: false,
-        contentType: false,
+    var fd = new FormData();  
+    fd.append("startdate",dates.start_date);
+    fd.append("enddate",dates.end_date);
+    fd.append("starttime",starttime);
+    fd.append("endtime",endtime);
+    fd.append("classid",classid);
+    fd.append("day",day);
+    fd.append("subject_id",subject_id);
+    fd.append("teacher_id",teacher_id);
+    fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+
+    $.ajax({
+      type: "POST",
+      url: frontend_url+"time_table_master/check_existing_timetable_entry",
+      data: fd,
+      processData: false,
+      contentType: false,
+      async:false,
+      
+      success: function(response) {
+        debugger;
         
-        success: function(response) {
-          console.log("timetable",response)
-          if(response.response.n == 1){
-            Swal.fire({
-              text: response.response.msg,
-              icon: 'error',
-            })
-            status= true
-            
-          }else{
+      
 
-            status=false
-          }
+        if(response.data == true){
+          Swal.fire({
+            text: response.response.msg,
+            icon: 'error',
+          });
+          status=true
+        }else{
+          status=false
+        }
+
   
+      },
+    });
     
-        },
-      });
-      return status
 
+
+    return status
 
 
 
@@ -389,7 +402,7 @@
           contentType: false,
           
           success: function(response) {
-            console.log("delete",response)
+        
             if(response.response.n ==1){
               Swal.fire({
                 text: response.response.msg,
@@ -429,10 +442,10 @@
       contentType: false,
       
       success: function(response) {
-        console.log("delete",response)
+     
         if(response.response.n ==1){
           var d=response.data
-          console.log("good",d)
+      
           $('#addtimetableBtn').addClass('d-none')
           $('#updatedrafttimetableBtn').addClass('d-none')
           $('#updatenormaltimetableBtn').removeClass('d-none')
@@ -638,7 +651,7 @@
       contentType: false,
       
       success: function(response) {
-        console.log("delete",response)
+      
         if(response.response.n ==1){
 
           Swal.fire({
@@ -662,28 +675,12 @@
   
       },
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     
     }
 
   };
   function save_timetable(){
 
-
-    console.log('timetables save',timetables)
 
     if (timetables.length == 0){
       Swal.fire({
@@ -767,7 +764,7 @@
     
       // Use jQuery UI Datepicker for DOB input
       $('#spandatechange').on('DOMSubtreeModified', function () {
-        //console.log('DOMSubtreeModified',spandatechange)
+     
       });
     
     });
@@ -777,11 +774,12 @@
 
 
     $('#addtimetableBtn').on('click', function() {
+      debugger;
       if(validate_form() == true){
-        console.log("check_existing_entry",check_existing_entry())
-        if(check_existing_entry() == false ){
-
-
+        var existing_entry=check_existing_entry()
+        
+        if(existing_entry == false ){
+          debugger
           var class_name = $('#class_name option:selected').text();
           var class_id = $('#class_name option:selected').val();
           var day = $('#day option:selected').text();
@@ -833,7 +831,7 @@
     $('#subject').change(function() {
       // Your code here to handle the change event
       var selectedSubject = $(this).val(); // Get the selected value
-      console.log("Selected Subject: " + selectedSubject);
+   
       var fd = new FormData();    
       fd.append("subject",selectedSubject);
       fd.append("csrfmiddlewaretoken","{{csrf_token}}");
@@ -845,7 +843,7 @@
         contentType: false,
         
         success: function(response) {
-          console.log("teacher",response)
+     
           if(response.response.n == 1){
             var options=''
             options += `<option value="">Please select teacher</option>        `
@@ -858,10 +856,7 @@
   
   
           }else{
-            Swal.fire({
-              text: response.response.msg,
-              icon: 'error',
-            })
+           console.log("response.response.msg",response.response.msg)
           }
   
     
@@ -875,7 +870,7 @@
       // Your code here to handle the change event
       var selected_range = $(this).val(); // Get the selected value
       var dates = selected_range.split(" to "); // Split the string at the comma
-      console.log("Selected dates: " + dates[0]);
+   
       var startdate=dates[0];
       var enddate=dates[1];
    
@@ -891,7 +886,7 @@
         contentType: false,
         
         success: function(response) {
-          console.log("timetable",response)
+       
           if(response.response.n == 1){
             var trhtml=''
 
@@ -911,7 +906,7 @@
               </tr>
 
               `
-              console.log("o",o)
+         
 
             });
             $('#table_body').html(trhtml)

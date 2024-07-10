@@ -11,6 +11,7 @@ class MessageSerializer(serializers.ModelSerializer):
         
 
 class CustomMessageSerializer(serializers.ModelSerializer):
+    date_str = CustomDateFormatField()
 
     class Meta:
         model= Messages

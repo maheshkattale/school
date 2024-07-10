@@ -36,6 +36,7 @@ urlpatterns = [
     path('fees/',include(('fees.urls','fees'),namespace='fees')),
     path('attendance/',include(('attendance.urls','attendance'),namespace='attendance')),
     path('marksheet/',include(('marksheet.urls','marksheet'),namespace='marksheet')),
+    path('notifications/',include(('notifications.urls','notifications'),namespace='notifications')),
 
 
     path('',include(('school.urls', 'school'),namespace='school')),
@@ -53,6 +54,7 @@ urlpatterns = [
     path('api/MarksheetMaster/', include('MarksheetMaster.urls')),
     path('api/MessageMaster/', include('MessageMaster.urls')),
     path('api/AttendanceMaster/', include('AttendanceMaster.urls')),
+    path('api/NotificationMaster/', include('NotificationMaster.urls')),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
