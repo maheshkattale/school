@@ -23,13 +23,13 @@ from django.template.loader import get_template, render_to_string
 from django.core.mail import EmailMessage
 from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta,date
 from Parent_StudentMaster.models import Students,studentclassLog
 from Parent_StudentMaster.serializers import *
 from Frontend.school.custom_function import *
 from tablib import Dataset
 
-
+from django.db.models import Q
 class addtimetable(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -54,8 +54,7 @@ class getteachersfromsub(GenericAPIView):
         subjectid = request.data.get('subject')
         teacherlist = []
         schoolcode = request.user.school_code
-        
-        if subjectid is not None or subjectid != '':
+        if subjectid is not None and subjectid != '':
             teacherobj = TeacherSubject.objects.filter(SubjectId = subjectid,isActive=True,school_code=schoolcode)
             teachser = TeacherSubjectSerializer(teacherobj,many=True)
             
@@ -64,15 +63,14 @@ class getteachersfromsub(GenericAPIView):
                 tobj = {}
                 teacherobj = User.objects.filter(id=t['TeacherId'],isActive=True).first()
                 if teacherobj is not None:
-
-                    tobj['teacherid'] = teacherobj.id
+                    tobj['teacherid'] = str(teacherobj.id)
                     tobj['teachername'] = teacherobj.Username
 
                     teacherlist.append(tobj)
 
             return Response({"data":teacherlist,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
         else:
-            return Response({"data":[],"response": {"n": 0, "msg": "sujectid not found","status": "failed"}})
+            return Response({"data":[],"response": {"n": 0, "msg": "suject id not found","status": "failed"}})
 
 class daterangelist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -103,22 +101,46 @@ class checkdaterange(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
+        # one teacher cannot be present in another class at same time
+        
         schoolcode = request.user.school_code
-        newstartdate = request.data.get('startdate')
-        newenddate = request.data.get('enddate')
+        startdate = request.data.get('startdate')
+        enddate = request.data.get('enddate')
         classid = request.data.get('classid')
         day = request.data.get('day')
-        newstarttime =  request.data.get('starttime')
-        newendtime = request.data.get('endtime')
+        starttime =  request.data.get('starttime')
+        endtime = request.data.get('endtime')
+        teacher_id = request.data.get('teacher_id')
         
+        print("request",request.POST)
+   
+        overlapping_entries = TimeTable.objects.filter(
+            Q(startdate__lte=enddate,isActive=True,school_code=schoolcode,Day=day) & Q(enddate__gte=startdate,isActive=True,school_code=schoolcode,Day=day)
+        )
         
-        dateobjs = TimeTable.objects.filter(startdate__lte = newenddate, enddate__gte=newstartdate,ClassId=classid,isActive=True,school_code=schoolcode,start_time__lt = newendtime,Day=day,end_time__gt=newstarttime)
-        if dateobjs.exists():
-            recordexist = True
-            return Response({"data":recordexist,"response": {"n": 1, "msg": "data found Successfully","status": "Success"}})
+        if overlapping_entries.exists():# for given day and dates exists
+            overlapping_entries = overlapping_entries.filter(
+                Q(start_time__lte=endtime) & Q(end_time__gte=starttime)
+            )   
+            if overlapping_entries.exists():# for given time exists
+                classoverlapping_entries = overlapping_entries.filter(ClassId=classid)
+                teacheroverlapping_entries = overlapping_entries.filter(TeacherId=teacher_id)
+                if classoverlapping_entries.exists():# for given class exists
+                    recordexist = True
+                    return Response({"data":recordexist,"response": {"n": 1, "msg": "Class Timetable exists of this date and time","status": "Success"}})
+                elif teacheroverlapping_entries.exists():
+                    recordexist = True
+                    return Response({"data":recordexist,"response": {"n": 1, "msg": "Teacher Timetable exists of this date and time","status": "Success"}})
+                else:
+                    recordexist = False
+                    return Response({"data":recordexist,"response": {"n": 0, "msg": "for given day and dates and time exists","status": "failed"}})
+            else:
+                recordexist = False
+                return Response({"data":recordexist,"response": {"n": 0, "msg": "for given day and dates exists","status": "failed"}})
+        
         else:
            recordexist = False
-           return Response({"data":recordexist,"response": {"n": 0, "msg": "data found","status": "failed"}})
+           return Response({"data":recordexist,"response": {"n": 0, "msg": "No time table found","status": "failed"}})
                
 class edittimetable(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -222,36 +244,53 @@ class get_recipient(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        schoolcode = request.user.school_code
-
+        school_code = request.user.school_code
+        school_admin_obj=User.objects.filter(school_code=school_code,role=2,isActive=True).first()
+        if school_admin_obj is not None:
+            admin={}
+            admin['id']=str(school_admin_obj.id)
+            admin['Username']='School Admin'
+            
+            
+            
         if str(request.user.role) == "Parent":
             stuid = request.data.get('stuid')
-            Academicyearobj = AcademicYear.objects.filter(isActive=True,school_code=schoolcode).first()
-            if Academicyearobj is not None:
-                academicyearid = Academicyearobj.id
-                stuobj = studentclassLog.objects.filter(studentId=stuid,AcademicyearId=academicyearid,school_code=schoolcode).first()
-                if stuobj is not None:
-                    studentclass = stuobj.classid                
-                    ttobjs = TimeTable.objects.filter(ClassId=studentclass,school_code=schoolcode,isActive=True)
-                    ttser = CustomTimeTableSerializer(ttobjs,many=True)
-                    userlist=[]
-                    for i in ttser.data:
-                        j={}
-                        j['id']=i['TeacherId']
-                        j['Username']=i['teacher_name']
-                        userlist.append(j)
+            if stuid is not None and stuid !='':
+                Academicyearobj = AcademicYear.objects.filter(isActive=True,school_code=school_code,Isdeleted=False).first()
+                if Academicyearobj is not None:
+                    academicyearid = Academicyearobj.id
+                    stuobj = studentclassLog.objects.filter(studentId=stuid,AcademicyearId=academicyearid,school_code=school_code).first()
+                    if stuobj is not None:
+                        studentclass = stuobj.classid                
+                        ttobjs = TimeTable.objects.filter(ClassId=studentclass,school_code=school_code,isActive=True)
+                        ttser = CustomTimeTableSerializer(ttobjs,many=True)
+                        userlist=[]
+                        userlist.append(admin)
+                        for i in ttser.data:
+                            j={}
+                            j['id']=i['TeacherId']
+                            j['Username']=i['teacher_name']
+                            userlist.append(j)
 
-                    return Response({"data":userlist,"response": {"n": 1, "msg": "Timetable Record found Successfully","status": "Success"}})
+                        return Response({"data":userlist,"response": {"n": 1, "msg": "Reciptients found Successfully","status": "Success"}})
+                    else:
+                        return Response({"data":'',"response": {"n": 0, "msg": "Student class not found","status": "failed"}})
                 else:
-                    return Response({"data":'',"response": {"n": 0, "msg": "student class not found","status": "failed"}})
+                    return Response({"data":'',"response": {"n": 0, "msg": "Academic Year is not active","status": "failed"}})
             else:
-                return Response({"data":'',"response": {"n": 0, "msg": "AcademicYear is not active","status": "failed"}})
-        else:
-            user_objs=User.objects.filter(isActive=True,school_code=schoolcode)
+                return Response({"data":'',"response": {"n": 0, "msg": "Please provide student id","status": "failed"}})
+        elif str(request.user.role) == "Teacher":
+            user_objs=User.objects.filter(isActive=True,school_code=school_code)
             serializers=UserlistSerializer(user_objs,many=True)
-            return Response({"data":serializers.data,"response": {"n": 1, "msg": "user found successfully","status": "Success"}})
+            userlist=serializers.data
+            userlist.append(admin)
+            return Response({"data":userlist,"response": {"n": 1, "msg": "reciptients found successfully","status": "Success"}})
+        else:
+            user_objs=User.objects.filter(isActive=True,school_code=school_code)
+            serializers=UserlistSerializer(user_objs,many=True)
+            return Response({"data":serializers.data,"response": {"n": 1, "msg": "reciptients found successfully","status": "Success"}})
         
-# day wise time table
+
 class get_student_time_table_in_week_days(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -260,7 +299,6 @@ class get_student_time_table_in_week_days(GenericAPIView):
         school_code = request.user.school_code
         StudentCode=request.POST.get('StudentCode')
         student_obj=Students.objects.filter(StudentCode=StudentCode,school_code=school_code,isActive=True).first()
-        print("StudentCode",StudentCode)
 
         if student_obj is not None:
             student_serializer=StudentSerializer(student_obj)
@@ -299,7 +337,6 @@ class get_student_time_table(GenericAPIView):
         school_code = request.user.school_code
         StudentCode=request.POST.get('StudentCode')
         student_obj=Students.objects.filter(StudentCode=StudentCode,school_code=school_code,isActive=True).first()
-        print("StudentCode",StudentCode)
 
         if student_obj is not None:
             student_serializer=StudentSerializer(student_obj)
@@ -319,7 +356,6 @@ class get_student_time_table(GenericAPIView):
                     for period in time_table_serializer.data:
                         if period['Day'] == day_str:
                             period_dict={}
-                            # print("period",period)
                             period_dict['time']=str(period['start_time'])+' - '+str(period['end_time'])
                             period_dict['Class']=str(period['ClassId'])
                             period_dict['Subject']=str(period['SubjectId'])
@@ -361,7 +397,6 @@ class get_class_time_table(GenericAPIView):
                     for period in time_table_serializer.data:
                         if period['Day'] == day_str:
                             period_dict={}
-                            # print("period",period)
                             period_dict['time']=str(period['start_time'])+' - '+str(period['end_time'])
                             period_dict['Class']=str(period['ClassId'])
                             period_dict['Subject']=str(period['SubjectId'])
@@ -566,7 +601,6 @@ class timetable_bulk_upload(GenericAPIView):
                 continue  
 
             data['school_code']=school_code
-            print('data',data)
             
             
             

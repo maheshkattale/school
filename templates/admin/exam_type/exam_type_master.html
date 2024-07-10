@@ -482,7 +482,6 @@
           contentType: false,
           
           success: function(response) {
-            console.log("edit",response)
             if(response.response.n ==1){
               Swal.fire({
                 text: response.response.msg,
@@ -526,7 +525,7 @@
             contentType: false,
             
             success: function(response) {
-              console.log("delete",response)
+           
               if(response.response.n ==1){
                 Swal.fire({
                   text: response.response.msg,
@@ -626,7 +625,7 @@
             contentType: false,
             
             success: function(response) {
-              console.log("delete",response)
+        
               if(response.response.n ==1){
                 Swal.fire({
                   text: response.response.msg,
@@ -694,7 +693,6 @@ $('#myfile').bind('change', function () {
 function filevalidation(){
 debugger;
 var file = $("#myfile")[0].files[0];
-console.log("filefile",file)
 
 if (file == "" || file == undefined) {
   event.preventDefault()

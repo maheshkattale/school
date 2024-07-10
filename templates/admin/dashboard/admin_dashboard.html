@@ -108,19 +108,18 @@
         </div>
         <div class="col-lg-4">
           <div class="row">
-            <div class="col-lg-12">
-              <div id="calendarContainer" class="calendar-container"></div>
-            </div>
-            <div class="col-lg-12">
-              <div>
-                <div class="pt-2">
-                  <h5>Notice Board</h5>
-                </div>
+
+            <div class="col-lg-12  py-2">
+              <div class="">
+                <h5>Notice Board</h5>
+              </div>
+              <div class="notice_board">
+
                 {% for i in announcements %}
                   <div class="notice-row row">
                     <div class="col-lg-4 p-0">
                       <div class="imgdiv">
-                        <img class="w-100 imgclass" src="{% static 'assets/images/products/s1.JPG ' %}" alt="" />
+                        <img class="w-100 imgclass" src="{% static 'assets/images/backgrounds/speaker.JPG ' %}" alt="" />
                       </div>
                     </div>
                     <div class="col-lg-8">
@@ -131,9 +130,20 @@
                       </div>
                     </div>
                   </div>
+                {% empty %}
+                  <div class="overflow-hidden h-100 p-4 pt-0">
+                    <img class="w-100 imgclass" style="height:230px" src="{% static 'assets/images/backgrounds/noevents.JPG ' %}" alt="" />
+                  </div>
+
                 {% endfor %}
               </div>
             </div>
+
+            <div class="col-lg-12">
+              <div id="calendarContainer" class="calendar-container"></div>
+            </div>
+
+
           </div>
         </div>
       </div>
@@ -250,7 +260,7 @@
         },
         success: function (response) {
           Swal.close();
-          console.log('response', response)
+     
           var trhtml=''
           if (response.response.n == 1) {
             $('#studentsmodal').modal('show')
@@ -337,7 +347,7 @@
         },
         success: function (response) {
           Swal.close();
-          console.log(' response', response)
+         
           var trhtml=''
           if (response.response.n == 1) {
             $('#usersmodal').modal('show')

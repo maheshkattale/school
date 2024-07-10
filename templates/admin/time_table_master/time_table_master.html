@@ -182,7 +182,7 @@
     }
     function get_time_table(datelist){
         var classid=$('#classid').val();
-        console.log("datelist",datelist,classid);
+        
         var fd = new FormData();    
         fd.append("datelist",JSON.stringify(datelist));
         fd.append("classid",classid);
@@ -195,12 +195,12 @@
         contentType: false,
         
         success: function(response) {
-            console.log("time",response)
+     
             if(response.response.n ==1){
             var time_table_column=''
             $.each(response.data, function(index, dayObject) {
                 $.each(dayObject, function(key, value) {
-                    console.log('Key:', key, 'Value:', value);
+                    
                     time_table_column+=`
                     <div class="column">
                     ${value.map((entry, counter) => `
@@ -304,7 +304,7 @@
                   text: response.response.msg,
                   icon: 'success',
                 }).then((result) => {
-                  window.location.href = "/teacher_master";
+                  window.location.href = "/time_table_master";
           
                 });
               }else{

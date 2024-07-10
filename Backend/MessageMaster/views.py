@@ -7,55 +7,74 @@ from rest_framework import permissions
 from .models import *
 from .serializers import *
 from rest_framework.response import Response
-from Parent_StudentMaster.models import Students
-
-
+from Parent_StudentMaster.models import *
+from Parent_StudentMaster.serializers import *
+from NotificationMaster.models import *
+from NotificationMaster.serializers import *
 class add_message(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data={}
-        print("reques",request.POST)
-        data['from_user_id']=request.POST.get('from_user_id')
+        print("request",request.POST)
         school_code=request.user.school_code
-        from_user_obj=User.objects.filter(id=data['from_user_id'],isActive=True).first()
-        if from_user_obj is None:
-            return Response({"data":'',"response": {"n": 0, "msg":'from user not found',"status": "failure"}})
-        
-        if str(from_user_obj.role) == 'Parent':
-            student_obj=Students.objects.filter(StudentCode=request.POST.get('StudentCode'),school_code=school_code,ParentId=from_user_obj.id,isActive=True).first()
+        data['from_user_id']=str(request.user.id)
+        data['from_user_str']=request.user.Username
+        from_user_studentcode=request.POST.get('from_user_studentcode')
+        from_user_studentid=''
+        if from_user_studentcode is not None and from_user_studentcode !='':
+            student_obj=Students.objects.filter(StudentCode=from_user_studentcode,school_code=school_code,isActive=True).first()
             if student_obj is not None:
-                data['StudentCode']=student_obj.StudentCode
+                data['from_user_studentcode']=student_obj.StudentCode
+                from_user_studentid=student_obj.id
             else:
                 return Response({"data":'',"response": {"n": 0, "msg":'we dont found your student ',"status": "failure"}})
 
-        data['from_user_str']=from_user_obj.Username
         data['message']=request.POST.get('message')
         data['short_message']=request.POST.get('subject')
         
         data['to_user_id']=request.POST.get('to_user_id')
-        to_user_obj=User.objects.filter(id=data['to_user_id'],isActive=True).first()
+        to_user_obj=User.objects.filter(id=data['to_user_id'],isActive=True,school_code=school_code).first()
         if to_user_obj is None:
             return Response({"data":'',"response": {"n": 0, "msg":'To user not found',"status": "failure"}})
-        
-        if str(to_user_obj.role) == 'Parent':
-            student_obj=Students.objects.filter(StudentCode=request.POST.get('StudentCode'),school_code=school_code,ParentId=to_user_obj.id,isActive=True).first()
+        to_user_studentid=''
+        to_user_studentcode=request.POST.get('to_user_studentcode')
+        if to_user_studentcode is not None and to_user_studentcode !='':
+            student_obj=Students.objects.filter(StudentCode=to_user_studentcode,school_code=school_code,isActive=True).first()
             if student_obj is not None:
-                data['StudentCode']=student_obj.StudentCode
+                data['to_user_studentcode']=student_obj.StudentCode
+                to_user_studentid=student_obj.id
             else:
-                return Response({"data":'',"response": {"n": 0, "msg":'we dont found your student ',"status": "failure"}})
-
+                return Response({"data":'',"response": {"n": 0, "msg":'we dont found to user student ',"status": "failure"}})
         data['to_user_str']=to_user_obj.Username
-
-        current_date = datetime.now()
-        formatted_date = current_date.strftime('%Y-%m-%d')
-        data['date_str']=formatted_date
+        current_date = datetime.now().strftime('%Y-%m-%d')
+        data['date_str']=current_date
         data['school_code']=school_code
         
         serializer=MessageSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"data":serializer.data,"response": {"n": 1, "msg": "Message Added Successfully","status": "Success"}})
+            notification_data={}
+            
+            notification_data['to_user']=str(serializer.data['to_user_id'])
+            notification_data['to_user_studentid']=str(to_user_studentid)
+            notification_data['from_user']=str(serializer.data['from_user_id'])
+            notification_data['from_user_studentid']=str(from_user_studentid)
+            notification_data['notification_title']=str(serializer.data['short_message'])
+            notification_data['notification_message']=str(serializer.data['message'])
+            notification_data['notification_type']=str(1)
+            notification_data['school_code']=str(school_code)
+            
+            print("notification_data",notification_data)
+            
+            notification_serializer=NotificationMasterSerializer(data=notification_data)
+            if notification_serializer.is_valid():
+                notification_serializer.save()
+            else:
+                print("notifi",notification_serializer.errors)
+                
+                
+            return Response({"data":serializer.data,"response": {"n": 1, "msg": "Message send successfully","status": "Success"}})
         else:
             first_key, first_value = next(iter(serializer.errors.items()))
             return Response({"data":'',"response": {"n": 0, "msg":first_key + ' : '+first_value[0],"status": "failure"}})
@@ -89,15 +108,12 @@ class get_send_messages(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):   
         user_id=request.user.id
-
         message_obj=Messages.objects.filter(from_user_id=user_id,isActive=True)
-
         if str(request.user.role) == 'Parent':
             if request.POST.get('StudentCode') is not None and request.POST.get('StudentCode') !="":
-                
                 student_obj=Students.objects.filter(StudentCode=request.POST.get('StudentCode'),ParentId=user_id,isActive=True).first()
                 if student_obj is not None:
-                    message_obj=message_obj.filter(StudentCode=student_obj.StudentCode)
+                    message_obj=message_obj.filter(from_user_studentcode=student_obj.StudentCode)
                 else:
                     return Response({"data":'',"response": {"n": 0, "msg":'we dont found your student ',"status": "failure"}})
             else: 
@@ -114,6 +130,16 @@ class get_recived_messages(GenericAPIView):
     def post(self,request):   
         user_id=request.user.id
         message_obj=Messages.objects.filter(to_user_id=user_id,isActive=True)
+        if str(request.user.role) == 'Parent':
+            if request.POST.get('StudentCode') is not None and request.POST.get('StudentCode') !="":
+                student_obj=Students.objects.filter(StudentCode=request.POST.get('StudentCode'),ParentId=user_id,isActive=True).first()
+                if student_obj is not None:
+                    message_obj=message_obj.filter(to_user_studentcode=student_obj.StudentCode)
+                else:
+                    return Response({"data":'',"response": {"n": 0, "msg":'we dont found your student ',"status": "failure"}})
+            else: 
+                return Response({"data":'',"response": {"n": 0, "msg":'please provide student code ',"status": "failure"}})
+        
         serializer=CustomMessageSerializer(message_obj,many=True)
         return Response({"data":serializer.data,"response": {"n": 1, "msg": "Message found Successfully","status": "Success"}})
 
@@ -158,6 +184,27 @@ class get_recipients(GenericAPIView):
                 return Response({"data":'',"response": {"n": 0, "msg":first_key + ' : '+first_value[0],"status": "failure"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg":'message not found',"status": "failure"}})
+            
+class check_recipient_type(GenericAPIView):
+    authentication_classes=[userJWTAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self,request):
+        user_id=request.POST.get('id')
+        school_code=request.user.school_code
+        user_obj=User.objects.filter(id=user_id,isActive=True,school_code=school_code).first()
+        if user_obj is not None:
+            print("user_obj",user_obj.role)
+            if str(user_obj.role) == 'Parent':
+                studentlist_obj=Students.objects.filter(ParentId=user_obj.id,isActive=True,school_code=school_code)
+                if studentlist_obj.exists():
+                    serializer=StudentSerializer(studentlist_obj,many=True)
+                    return Response({"data":serializer.data,"response": {"n": 1, "msg": "This user is a parent user","status": "Success"}})
+                else:
+                    return Response({"data":[],"response": {"n": 0, "msg": "This user is a parent user but dont have any childs","status": "failure"}})
+            else:
+                return Response({"data":[],"response": {"n": 0, "msg":'This user is not parent user',"status": "failure"}})
+        else:
+            return Response({"data":[],"response": {"n": 0, "msg":'User not found',"status": "failure"}})
             
 
 

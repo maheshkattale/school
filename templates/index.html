@@ -152,12 +152,20 @@
                   {% endif %}
 
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link nav-icon-hover" href="javascript:void(0)">
+                <li class="nav-item dropdown">
+                  <a class="nav-link nav-icon-hover" onclick="check_new_notification();" href="javascript:void(0)" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="ti ti-bell-ringing"></i>
-                    <div class="notification bg-primary rounded-circle"></div>
+                    <div class="notification bg-primary rounded-circle" id="notification_count">0</div>
                   </a>
+                  <ul id="notification_popup" class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="notificationDropdown">
+                    
+                    
+
+
+                    
+                  </ul>
                 </li>
+                
 
                 <li class="nav-item">
                   <div class="user_name_text">{{username}}</div>
@@ -228,17 +236,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap4.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.1/jquery.twbsPagination.min.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
+
+    
     <script src="{% static 'js/index.js' %} "></script>
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <script src="{% static 'assets/js/sidebarmenu.js' %}"></script>
+    <script src="{% static 'assets/js/sidebarmenu.js' %}"></script>
     <script src="{% static 'assets/js/app.min.js' %} "></script>
 
     {% block script %}
@@ -246,7 +259,12 @@
     {% endblock %}
     <script>
 
-     
+      $(document).ready(function() {
+
+        setInterval(check_new_notification_count, 60000);
+
+        check_new_notification_count();
+      });
       // Initialize tooltips
       var frontend_url = '{{frontend_url}}'
 
@@ -266,7 +284,7 @@
               'StudentCode': StudentCode,
          },
           success: function (response) {  
-          console.log("rep",response)          
+                 
           if(response.response.n ==1){
             Swal.fire({
               text: response.response.msg,
@@ -283,9 +301,11 @@
 
               
           }
-      });
+        });
 
       }
+
+
     </script>
     {% if messages %}
       <div class="alert admin-alert">

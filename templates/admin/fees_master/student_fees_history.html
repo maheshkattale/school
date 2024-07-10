@@ -313,7 +313,6 @@
 {% endblock %} {% block script %}
 <script>
   function pay_student_fees(fees_distributions_id, class_id, breakdowns) {
-    console.log("pay", fees_distributions_id, class_id, breakdowns);
     var breakdowns_id = [];
 
     if (breakdowns == true) {
@@ -322,7 +321,6 @@
           breakdowns_id.push($(this).val());
         }
       });
-      console.log(breakdowns_id);
       if (breakdowns_id.length == 0) {
         Swal.fire({
           text: "Please select atleast one payment",

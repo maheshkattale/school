@@ -22,12 +22,10 @@ from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
 from datetime import datetime
 from Frontend.school.static_info import frontend_url,image_url
-
 from tablib import Dataset
-
-
-
 from rest_framework import generics, permissions, status
+
+
 def createstudentid(schoolcode):
     studentobject = Students.objects.filter(school_code=schoolcode, isActive=True).order_by('-id').first()
     if studentobject is None:

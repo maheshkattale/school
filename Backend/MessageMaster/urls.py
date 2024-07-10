@@ -9,5 +9,6 @@ urlpatterns = [
     path('get_send_messages', get_send_messages.as_view(), name = 'get_send_messages'),
     path('get_recived_messages', get_recived_messages.as_view(), name = 'get_recived_messages'),
     path('get_recipients', get_recipients.as_view(), name = 'get_recipients'),
+    path('check_recipient_type', check_recipient_type.as_view(), name = 'check_recipient_type'),
 
 ]

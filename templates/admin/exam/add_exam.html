@@ -282,7 +282,7 @@
     
           classlist.push({ itemno: rowno, ClassId: exam_class, ClassName: exam_classname, RoomNo: exam_roomno, InvigilatorId: exam_invigilator })
           rowno++
-          console.log('add classlist', classlist)
+         
 
           Swal.fire({
             text: "Added Successfully",
@@ -298,8 +298,6 @@
         var totalMarks = selectedOption.val();
         var passingMarks = selectedOption.attr('passingmarks');
 
-        console.log('Total Marks:', totalMarks);
-        console.log('Passing Marks:', passingMarks);
         $('#exam_passingmarks').val(passingMarks)
         // Display the values in a div
     });
@@ -340,7 +338,7 @@
 
       $('#addbtn').removeClass('d-none');
       $('#updatedraftBtn').addClass('d-none');
-      console.log('updatea classlist', classlist)
+     
       Swal.fire({
         text: "Updated Successfully",
         icon: 'success',
@@ -376,7 +374,7 @@
     
           $('#addbtn').removeClass('d-none')
           $('#updatedraftBtn').addClass('d-none')
-          console.log('delete classlist', classlist)
+      
 
           Swal.fire({
             text: "Deleted Successfully",
@@ -597,7 +595,7 @@
         contentType: false,
   
         success: function (response) {
-          console.log("ExamTypMarkseobj",response)
+       
           if (response.response.n == 1) {
             $("#exam_passingmarks").val(' ');
 

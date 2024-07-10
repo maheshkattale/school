@@ -9,7 +9,7 @@ send_messages_list_url=frontend_url+'api/MessageMaster/get_send_messages'
 recived_messages_list_url=frontend_url+'api/MessageMaster/get_recived_messages'
 recipients_list_url=frontend_url+'api/TimeTableMaster/get_recipient'
 add_message_url=frontend_url+'api/MessageMaster/add_message'
-
+check_recipient_type_url=frontend_url+'api/MessageMaster/check_recipient_type'
 
 
 class messages(GenericAPIView):
@@ -49,7 +49,18 @@ class add_message(GenericAPIView):
             return HttpResponse(json.dumps(add_message_response), content_type="application/json")
         else:
             return redirect('school:login')
-        
+class check_recipient_type(GenericAPIView):
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            data = request.data.copy()
+            check_recipient_type_request = requests.post(check_recipient_type_url, data=data,headers=headers)
+            check_recipient_type_response = check_recipient_type_request.json()
+            return HttpResponse(json.dumps(check_recipient_type_response), content_type="application/json")
+        else:
+            return redirect('school:login')
         
         
         

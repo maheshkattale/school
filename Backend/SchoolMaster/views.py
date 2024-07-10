@@ -474,13 +474,13 @@ class academicdatabyexcel(GenericAPIView):
             startdate =i[0]
             enddate =i[1]
             data={}
-            
+            data['isActive']=False
             if startdate is not None and startdate !="":
                 data['startdate']= startdate
                 data['enddate']= enddate
-                ExamType_exist = AcademicYear.objects.filter(startdate__in=[i[0]],enddate__in=[i[1]],school_code=school_code).first()
+                ExamType_exist = AcademicYear.objects.filter(startdate__in=[i[0]],enddate__in=[i[1]],school_code=school_code,Isdeleted=False).first()
                 if ExamType_exist is None:
-                    AcademicYear.objects.create(startdate=i[0],enddate=i[1],school_code=school_code)
+                    AcademicYear.objects.create(startdate=i[0],enddate=i[1],school_code=school_code,isActive=False)
                 else:
                     reason = 'Academic Year already exits.'
                     error = i + tuple([reason])

@@ -1,0 +1,143 @@
+{% extends "index.html" %}
+{% load static %} 
+{% block head %}
+
+
+{% endblock %}
+{% block heading %}
+<span class="tab-title">
+<span class="px-1"> Notifications</span>
+</span>
+{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-end">
+
+
+</div>
+<div class="row">
+  <table id="example" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+      <tr>
+        <th style="width:10%">Sr No</th>
+        <th style="width:15%">Notification Date</th>
+        <th style="width:15%">Notification Type</th>
+        <th style="width:60%">Notification Message</th>
+      </tr>
+    </thead>
+    <tbody id="notification_list">
+
+    </tbody>
+  </table>
+  <div class=" d-flex justify-content-end m-3" id="secondpagination-demo2">
+    <ul id="pagination-demo2" class="pagination-sm"></ul>
+  </div>
+</div>
+  
+  
+{% endblock %}
+
+{% block script %}
+
+<script>
+  $(document).ready(function() {
+    Pagination();
+  });  
+  function getnotifications(p) {
+    var fd = new FormData()
+    fd.append('p', p)
+    fd.append('csrfmiddlewaretoken', '{{csrf_token}}')
+    $.ajax({
+        url: frontend_url + "notifications/all_notifications",
+        data: fd,
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        beforeSend: function() {
+            Swal.fire({
+              icon: "info",
+              title: "",
+              text: "Loading...",
+              buttons: false,
+    
+          });
+        },
+        success: function (response) {
+          var infohtml = ''
+
+          console.log('response d', response)
+          if (response.response.n == 1){
+              var counter = 0
+
+                $.each(response.data,function(i,o){
+                  
+                    counter += 1
+                    infohtml += `<tr>
+                        <td>`+counter+`</td>
+                        <td>`+o.createdAt+`</td>
+                        <td>`+o.notification_type+`</td>
+                        <td>
+                          <div class="d-flex justify-content-between">
+                            <div>From  : `+o.from_user_name+`</div>
+                            <div> Date : `+o.createdAt+`</div>
+                          </div>
+                          <div>
+                            <div>Subject : `+o.notification_title+`</div>
+                            <div>Message : `+o.notification_message+`</div>
+                          </div>
+                        </td>
+                    </tr>
+                    `
+                  
+                });
+                $('#notification_list').html(infohtml);
+                var totalfilter = Math.ceil(parseInt(response.response.count)/10);
+                $('#pagination-demo2').twbsPagination({
+                    totalPages: totalfilter,
+                    visiblePages: 3,
+                    next: 'Next',
+                    prev: 'Prev',
+                    onPageClick: function (event, page) {
+                      var testflag=true;
+                      //fetch content and render here
+                      filternamepageno = page
+                      if (testflag==true){
+                        testflag=false;
+                        getnotifications(page)
+                      }
+                      $('#page-content').text('Page ' + page) + ' content here';
+                    }
+                  })
+
+
+
+                
+          }else{
+              infohtml = `
+              <tr class="border-bottom text-center">
+                      <td colspan="4">No Notifications found</td>
+                  </tr>
+              `
+              $('#notification_list').html(infohtml);
+
+              Swal.fire({
+                  icon: "error",
+                  title: "",
+                  text: "No notifications found !",
+                  button: "Close",
+              });
+          }
+
+        }
+    })
+    
+  }
+  function Pagination(){
+    var testflag =true;
+    $('#secondpagination-demo2').html('<ul id="pagination-demo2" class="pagination-sm"></ul>');
+    getnotifications(1);
+    
+  }
+  
+
+</script>
+{% endblock %}

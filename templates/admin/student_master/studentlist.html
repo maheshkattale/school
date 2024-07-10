@@ -125,7 +125,7 @@
           contentType: false,
           
           success: function(response) {
-            console.log("delete",response)
+          
             if(response.response.n ==1){
               Swal.fire({
                 text: response.response.msg,
@@ -173,7 +173,7 @@
       contentType: false,
       
       success: function(response) {
-        console.log("student_list",response)
+       
         if(response.response.n ==1){
           var trhtml=''
       
@@ -186,8 +186,7 @@
           $.each(classlist, function (index, value) {
             classOpt += `<option value="` + value.id + `">` + value.ClassName + `</option>`;
           });
-          console.log("bloodgroupsOpt",bloodgroupsOpt)
-          console.log("classOpt",classOpt)
+          
           counter=1
           $.each(response.data,function(o,i){
             
@@ -402,7 +401,7 @@
       contentType: false,
       
       success: function(response) {
-        console.log("update",response)
+       
         if(response.response.n ==1){
           Swal.fire({
             text: response.response.msg,

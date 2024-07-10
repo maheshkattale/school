@@ -112,7 +112,7 @@
    });
    function get_time_table(datelist){
     var StudentCode='{{PrimaryStudentCode}}';
-    console.log("datelist",datelist);
+    
     var fd = new FormData();    
     fd.append("datelist",JSON.stringify(datelist));
     fd.append("StudentCode",StudentCode);
@@ -125,12 +125,12 @@
       contentType: false,
       
       success: function(response) {
-        console.log("time",response)
+
         if(response.response.n ==1){
           var time_table_column=''
           $.each(response.data, function(index, dayObject) {
             $.each(dayObject, function(key, value) {
-                console.log('Key:', key, 'Value:', value);
+             
                 time_table_column+=`
                 <div class="column">
                   ${value.map((entry, counter) => `

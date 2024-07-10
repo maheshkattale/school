@@ -140,6 +140,7 @@ class get_teacher_by_subject(GenericAPIView):
             headers = {'Authorization':token}
             data=request.data.copy()
             get_teacher_by_subject_request = requests.post(get_teacher_by_subject_url,headers=headers,data=data)
+            print("get_teacher_by_subject_request",get_teacher_by_subject_request)
             get_teacher_by_subject_response = get_teacher_by_subject_request.json()
             return HttpResponse(json.dumps(get_teacher_by_subject_response), content_type="application/json")
 class time_table_list(GenericAPIView):

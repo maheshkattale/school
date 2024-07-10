@@ -281,7 +281,7 @@
         $('.Checkbox').prop('checked', false)
         var roleid = $('#roleid').val();
         var html;
-        console.log("roleid",roleid)
+     
         $.ajax({
             type: "POST",
             url: frontend_url + "user/get_permissions_by_role",
@@ -290,7 +290,7 @@
                 csrfmiddlewaretoken: '{{ csrf_token }}',
             },
             success: function (response) {  
-            console.log("rep",response)          
+                 
                     $(response.data).each(function (i, o) {
                         $(o.permission).each(function (j, k) {
                             $('#check' + k).prop('checked', true)

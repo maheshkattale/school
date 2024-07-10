@@ -126,3 +126,117 @@ $('.accordion h4').click(function(event) {
     $(this).parent('.pagenav').toggleClass('open');
   });
 });
+
+function check_new_notification_count(){
+        
+
+  $.ajax({
+    type: "POST",
+    url: frontend_url + "notifications/check_new_notification_count",
+    data: {},
+    success: function (response) {  
+    console.log("notification",response)  
+            
+    if(response.response.n ==1){
+      $('#notification_count').removeClass('d-none');
+      $('#notification_count').html(response.data)  ;
+    }else{
+      $('#notification_count').html('')  ;
+      $('#notification_count').addClass('d-none');
+    }
+
+        
+    }
+  });
+
+}
+function check_new_notification(){
+        
+
+  $.ajax({
+    type: "POST",
+    url: frontend_url + "notifications/check_new_notification",
+    data: {},
+    success: function (response) {  
+    console.log("check_new_notification",response)  
+    var lihtml='';  
+    lihtml+=`
+    <li>
+        <a class="dropdown-item notification-header" href="#">Notifications</a>
+    </li>
+    ` 
+    if(response.response.n ==1){
+      $.each(response.data,function(i,o){
+        var message_logo
+        var message_class
+        if(o.notification_type =='Message'){
+          message_logo=frontend_url+'static/assets/images/backgrounds/message.png';
+        }else{
+          message_logo=frontend_url+'static/assets/images/backgrounds/speaker.jpg'
+        }
+        if(o.notification_read == false){
+          message_class='unread_notification'
+        }else{
+          message_class='read_notification'
+        }
+
+        lihtml+=`
+                <li>
+                  <a class="dropdown-item p-2 `+message_class+`" href="#">
+                    <div class="row m-0 p-0">
+                      <div class="col-lg-2 p-0">
+                        <div class="imgdiv">
+                          <img class="w-100 imgclass" src="`+message_logo+`" alt="" />
+                        </div>
+                      </div>
+                      <div class="col-lg-10 p-0">
+                        <div class="notice-div p-0">
+                          <div class="notice-title">`+o.from_user_name+` : `+o.notification_title+`</div>
+                          <div class="notice-message">`+o.notification_message+`</div>
+                          <div class="notification-notice-by pt-2">`+o.createdAt+`
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                `
+      });
+
+    }else{
+          message_logo=frontend_url+'static/assets/images/backgrounds/blocked.jpg';
+
+          lihtml=`
+                  <li>
+                    <a class="dropdown-item p-2" href="#">
+                      <div class="row m-0 p-0">
+                        <div class="col-lg-2 p-0">
+                          <div class="imgdiv">
+                            <img class="w-100 imgclass" src="`+message_logo+`" alt="" />
+                          </div>
+                        </div>
+                        <div class="col-lg-10 p-0">
+                          <div class="notice-div p-0">
+                            <div class="notice-type">No Notification</div>
+                            <div class="notice-message">No notification received yet</div>
+                            <div class="notification-notice-by pt-2">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+          `
+    }
+    lihtml+=`
+    <li>
+              <a class="dropdown-item notification-footer" href="/notifications/all_notifications">View All</a>
+    </li>
+    `
+    $('#notification_popup').html(lihtml)
+
+        
+    }
+  });
+
+}
