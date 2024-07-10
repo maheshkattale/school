@@ -46,5 +46,6 @@ urlpatterns = [
     #
     path('examtypebyexcel', examtypebyexcel.as_view(), name = 'examtypebyexcel'),
     path('examnamedatabyexcel', examnamedatabyexcel.as_view(), name = 'examnamedatabyexcel'),
+    path('examscheduldatabyexcel', examscheduldatabyexcel.as_view(), name = 'examscheduldatabyexcel'),
 
 ]

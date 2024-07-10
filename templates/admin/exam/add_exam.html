@@ -1,7 +1,18 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block head %}
-
+<style>
+  .astyleinexam{
+    margin-right:8px;
+  }
+  .divstyle{
+    display: flex!important;
+    justify-content: center!important;
+  }
+  .modal-content{
+    margin-left:50px;
+  }
+</style>
 {% endblock %}
 
 {% block heading %}
@@ -11,7 +22,10 @@
 {% block body %}
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title fw-semibold mb-4">Create Exam  </h5>
+      <div style="display:flex; justify-content:space-between;">
+        <h5 class="card-title fw-semibold mb-4">Create Exam</h5>
+        <a data-bs-toggle="modal" data-bs-target="#uploadexcel" class="btn btn-primary" style="margin-bottom:13px;">Bulk Upload</a>
+      </div>
       <div class="card">
         <div class="card-body">
           <form>
@@ -175,11 +189,47 @@
           </form>
         </div>
       </div>
+      <div id="uploadexcel" class="modal">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+    
+            <div class="modal-body">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title fw-semibold mb-4">Upload Excel</h5>
+                <div class="card">
+                  <div class="card-body">
+                    <div class="file-upload-box text-center">
+                      <div class="px-2">
+                        <a class="btn btn-primary" title="download excel format" href="{% static 'Media/SampleExcels/examschedule.xlsx'%}" download>Download Sample<i class="fa fa-download" aria-hidden="true"></i></a>
+                      </div>
+                      <div class="file-upload-btn">
+                        <input type="file" name="myfile" id="myfile" hidden="hidden" />
+                        <p id="custom-text">No file chosen, yet.</p>
+                        <button type="button" id="fileName" class="btn-primary btn excel-btn-info">Upload Excel File</button>
+                       <div class="mt-3">
+                        <a class="btn btn-primary" onclick="filevalidationexamschedule();">Submit</a>
+                       </div>
+                      
+                     </div>
+                    
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}
 
 {% block script %}
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
   <script>
     var classlist = [] // Array to store classlist
     var rowno = 1 //  number counter
@@ -570,6 +620,118 @@
         }
       }) 
     }
+  //
+const realFileBtn = document.getElementById("myfile");
+const customBtn = document.getElementById("fileName");
+const customTxt = document.getElementById("custom-text");
+
+customBtn.addEventListener("click", function() {
+  realFileBtn.click();
+});
+
+realFileBtn.addEventListener("change", function() {
+  if (realFileBtn.value) {
+    customTxt.innerHTML = realFileBtn.value.match(
+      /[\/\\]([\w\d\s\.\-\(\)]+)$/
+    )[1];
+  } else {
+    customTxt.innerHTML = "No file chosen, yet.";
+  }
+});
+
+$('#myfile').bind('change', function () {
+  var filename = $("#myfile").val();
+  var validExtensions = ['xls', 'xlsx']; // Array of valid extensions
+  var fileExtension = filename.split('.').pop().toLowerCase(); // Get the file extension
+
+  if (/^\s*$/.test(filename)) {
+    $(".file-upload").removeClass('active');
+    $("#noFile").text("No file chosen...");
+  } else if (validExtensions.indexOf(fileExtension) === -1) {
+      $(".file-upload").removeClass('active');
+      $("#noFile").text("Invalid file type. Please choose an Excel file.");
+      $("#myfile").val(''); // Clear the file input
+  } else {
+      $(".file-upload").addClass('active');
+      $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
+  }
+});
+
+function filevalidationexamschedule(){
+debugger;
+var file = $("#myfile")[0].files[0];
+console.log("filefile",file)
+
+if (file == "" || file == undefined) {
+  event.preventDefault()
+  Swal.fire({
+    text: "choose file",
+    icon: 'error',
+  })
+ 
+  return false;
+}
+else{
+  t = 'Bearer {{token}}'
+  var fd = new FormData();    
+      fd.append("classfile",file);
+
+      $.ajax({
+        type: "POST",
+        url: frontend_url+"api/MarksheetMaster/examscheduldatabyexcel",
+        data: fd,
+        headers:{'Authorization':t},
+        processData: false,
+        contentType: false,
+        
+        success: function(response) {
+          if(response.response.n ==1){
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'success',
+            }).then((result) => {
+              window.location.href = "/exam/add_exam";
+      
+            });
+          }else{
+            Swal.fire({
+              text: response.response.msg,
+              icon: 'error',
+            })
+            exportToExcel(response.headers, response.data)
+          }
+
+    
+        },
+      });
+
+}
+}
+
+function exportToExcel(headers, data) {
+  var workbook = XLSX.utils.book_new();
+  
+  // Create worksheet
+  var worksheet = XLSX.utils.aoa_to_sheet([]);
+
+  // Add headers to the worksheet
+  XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
+
+  // Add data to the worksheet
+  for (var i = 0; i < data.length; i++) {
+    var rowData = Object.values(data[i]);
+    XLSX.utils.sheet_add_aoa(worksheet, [rowData], { origin: "A" + (i + 2) });
+  }
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  var excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  
+  // Convert buffer to a Blob
+  var blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+  // Save the file using FileSaver.js
+  saveAs(blob, "failed_examschedule.xlsx");
+}
 
 
   </script>
