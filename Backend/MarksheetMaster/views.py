@@ -1035,11 +1035,11 @@ class examnamedatabyexcel(GenericAPIView):
                 fileerrorlist.append(error)
                 continue
   
-
         if len(fileerrorlist) == 0:
             return Response({"data":'done',"response": {"n": 1, "msg": "Exam Name uploaded successfully","status": "success"}})
         else:
             return Response({"data":fileerrorlist,'headers':['ExamName','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
+
 
 
 class examscheduldatabyexcel(GenericAPIView):
