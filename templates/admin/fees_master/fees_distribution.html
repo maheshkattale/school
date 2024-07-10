@@ -35,12 +35,12 @@
 {% block body %}
 <div class="d-flex justify-content-end mb-3">
 
-  <a data-bs-toggle="modal" data-bs-target="#uploadexcel" class="btn btn-primary mx-2">Upload Excel</a>
+  {% comment %} <a data-bs-toggle="modal" data-bs-target="#uploadexcel" class="btn btn-primary mx-2">Upload Excel</a> {% endcomment %}
   <a href="/fees/add_fees_distrubution" class="btn btn-primary">Add Fees</a>
 
   </div>
 
-   
+{% comment %}    
   <div id="uploadexcel" class="modal">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -73,7 +73,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> {% endcomment %}
  
   <div class="row">
     <table id="" class="table table-striped table-bordered" style="width:100%">
