@@ -1091,13 +1091,29 @@ class examscheduldatabyexcel(GenericAPIView):
             data['Date']= Date
             data['Examstarttime']= Examstarttime
             data['Examendtime']= Examendtime
-            data['InvigilatorId']= InvigilatorId
             
+            if InvigilatorId is not None and InvigilatorId !="":
+                data['InvigilatorId']= InvigilatorId
+                obj = User.objects.filter(role_id=4,isActive=True).first()
+                if obj is not None:
+                    data['InvigilatorId']= obj.id
+                    
+                else:
+                    reason = 'InvigilatorId not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'InvigilatorId is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+                
             
             if SubjectId is not None and SubjectId !="":
                 data['SubjectId']= SubjectId
                 print('hii',data['SubjectId'])
-                subject_exist = Subject.objects.filter(SubjectName=i[5],isActive= True,school_code=school_code).first()
+                subject_exist = Subject.objects.filter(SubjectName__in=[i[5].strip().capitalize(),i[5].strip(),i[5].title(),i[5].upper(),i[5].lower(),i[5]],isActive= True,school_code=school_code).first()
                 print('subject_exist',subject_exist)
                 if subject_exist is not None:
                     data['SubjectId']= subject_exist.id
@@ -1115,7 +1131,7 @@ class examscheduldatabyexcel(GenericAPIView):
             if Examtype is not None and Examtype !="":
                 data['Examtype']= Examtype
                 print('i6',i[6])
-                examtype_exist = ExamType.objects.filter(TypeName=i[6],isActive= True,school_code=school_code).first()
+                examtype_exist = ExamType.objects.filter(TypeName__in=[i[6].strip().capitalize(),i[6].strip(),i[6].title(),i[6].upper(),i[6].lower(),i[6]],isActive= True,school_code=school_code).first()
                 print('examtype_exist',examtype_exist)
                 if examtype_exist is not None:
                     data['Examtype']= examtype_exist.id
@@ -1154,7 +1170,7 @@ class examscheduldatabyexcel(GenericAPIView):
             
             if exam is not None and exam !="":
                 data['exam']= exam
-                Examname_exist = Exam.objects.filter(Name=i[12],isActive= True,school_code=school_code).first()
+                Examname_exist = Exam.objects.filter(Name__in=[i[12].strip().capitalize(),i[12].strip(),i[12].title(),i[12].upper(),i[12].lower(),i[12]],isActive= True,school_code=school_code).first()
                 if Examname_exist is not None:
                     data['exam']= Examname_exist.id
                 else:
