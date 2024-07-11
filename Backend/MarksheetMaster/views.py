@@ -370,6 +370,7 @@ class exam_names_list(GenericAPIView):
         Examser = ExamNameSerializer(Examobjs,many=True)
         
         return Response({"data":Examser.data,"response": {"n": 1, "msg": "Exams found successfully","status": "success"}})
+   
     
 class academic_exam_list(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
