@@ -74,7 +74,7 @@
 
 
                   {% if profile_image is not None and profile_image != "" %}
-                  <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{{frontend_url}}{{profile_image}}" alt="" />
+                  <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{{profile_image}}" alt="" />
 
                   {% else %}
                   <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{% static 'assets/images/profile/profile.png' %}" alt="" />

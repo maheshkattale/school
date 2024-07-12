@@ -72,22 +72,15 @@ class user_all_notifications(GenericAPIView):
         to_user = str(request.user.id)
         school_code = request.user.school_code
         student_id = request.POST.get('student_id')
-        
         if student_id is not None and student_id !='':
-           
             notifications_obj=NotificationMaster.objects.filter(to_user=to_user,to_user_studentid=student_id,school_code=school_code)
         else:
-            
             notifications_obj=NotificationMaster.objects.filter(to_user=to_user,school_code=school_code)
-        print("count",notifications_obj.count()) 
         if notifications_obj.exists():
             page = self.paginate_queryset(notifications_obj)               
             serializer=CustomNotificationMasterSerializer(page,many=True)
-            print("hi11",serializer.data)
-            
             return self.get_paginated_response(serializer.data)  
         else:
-            print("by")
             return Response({"data":[],"response": {"n": 0, "msg": "No Notifications ","status": "faliure"}})
             
 

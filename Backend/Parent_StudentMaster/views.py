@@ -22,6 +22,7 @@ from rest_framework.response import Response
 from SchoolErp.settings import EMAIL_HOST_USER
 from datetime import datetime
 from Frontend.school.static_info import frontend_url,image_url
+from Frontend.school.custom_function import *
 from tablib import Dataset
 from rest_framework import generics, permissions, status
 
@@ -152,22 +153,19 @@ class AddParentStudent(GenericAPIView):
 class ParentStudentlist(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class=CustomPagination
+    
     def get(self,request):
         schoolcode = request.user.school_code
         Parentobj = User.objects.filter(isActive=True,role_id=5,school_code = schoolcode)
-        parentserializer = UserlistSerializer(Parentobj,many=True)
-        for p in parentserializer.data:
-            
-            studentobj = Students.objects.filter(ParentId = p['id'],isActive=True,school_code=schoolcode)
-            studentser =  StudentSerializer(studentobj,many=True)
-            for s in studentser.data:
-                if s['photo'] != "" and s['photo'] is not None:
-                    s['stdimage'] = image_url + str(s['photo'])
-                else:
-                    s['stdimage'] = image_url + "/static/assets/images/profile.png"
-           
-            p['Studentslist'] = studentser.data
-        return Response({"data":parentserializer.data,"response": {"n": 1, "msg": "Parents list found successfully","status": "success"}})
+        
+        if Parentobj.exists():
+            page = self.paginate_queryset(Parentobj)               
+            parentserializer = UserlistSerializer(page,many=True)
+            return self.get_paginated_response(parentserializer.data) 
+        else:
+                   
+            return Response({"data":[],"response": {"n": 0, "msg": "Parents list not found ","status": "failure"}})
     
 class updateParentStudent(GenericAPIView):
     authentication_classes=[userJWTAuthentication]

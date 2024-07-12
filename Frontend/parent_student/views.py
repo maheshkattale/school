@@ -29,12 +29,22 @@ class parent_student_master(GenericAPIView):
         if tok:
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
-            parent_list_request = requests.get(parent_list_url,headers=headers)
-            parent_list_response = parent_list_request.json()
-            return render(request, 'admin/parent_student_master/parent_student_master.html',{'parentlist':parent_list_response['data']})
+            
+            return render(request, 'admin/parent_student_master/parent_student_master.html',)
         else:
             return redirect('school:login')
-
+    def post(self,request):
+        tok = request.session.get('token', False)
+        if tok:
+            token = 'Bearer {}'.format(tok)
+            headers = {'Authorization':token}
+            p = request.POST.get('p')
+            parent_list_url_pagination_url = parent_list_url + "?p=" +str(p)     
+            parent_list_request = requests.get(parent_list_url_pagination_url,headers=headers)
+            parent_list_response = parent_list_request.json()
+            # print("parent_list_response",parent_list_response)
+            return HttpResponse(json.dumps(parent_list_response), content_type="application/json")
+        
 class add_parent_student(GenericAPIView):
     def get(self,request):
         tok = request.session.get('token', False)

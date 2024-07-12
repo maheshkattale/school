@@ -262,7 +262,7 @@ class get_recipient(GenericAPIView):
                     stuobj = studentclassLog.objects.filter(studentId=stuid,AcademicyearId=academicyearid,school_code=school_code).first()
                     if stuobj is not None:
                         studentclass = stuobj.classid                
-                        ttobjs = TimeTable.objects.filter(ClassId=studentclass,school_code=school_code,isActive=True)
+                        ttobjs = TimeTable.objects.filter(ClassId=studentclass,school_code=school_code,isActive=True).order_by('TeacherId').distinct('TeacherId')
                         ttser = CustomTimeTableSerializer(ttobjs,many=True)
                         userlist=[]
                         userlist.append(admin)

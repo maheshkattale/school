@@ -97,24 +97,13 @@
           <th>Action</th>
         </tr>
       </thead>
-      <tbody>
-        {% for i in parentlist %}
-          <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ i.Username }}</td>
-            <td>{{ i.email }}</td>
-            <td>{{ i.mobileNumber }}</td>
-            <td>
-              <a href="javascript: void(0)" data-toggle="modal" onclick="studentlist('{{ i.id }}')" data-target="#studentsmodal" class="ml-5 btn btn-primary">View</a>
-            </td>
-            <td>
-              <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student/{{ i.id }}"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
-              <a data-bs-toggle="tooltip" title="Delete Parent" onclick="delete_Parent('{{ i.id }}')"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
-            </td>
-          </tr>
-        {% endfor %}
+      <tbody id="parent_list">
+
       </tbody>
     </table>
+    <div class=" d-flex justify-content-end m-3" id="secondpagination-demo2">
+      <ul id="pagination-demo2" class="pagination-sm"></ul>
+    </div>
   </div>
 
   <div class="modal fade" id="studentsmodal" tabindex="-1" role="dialog">
@@ -139,9 +128,102 @@
 <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script>
-    $(document).ready(function () {
-      new DataTable('#example')
-    })
+    $(document).ready(function() {
+      Pagination();
+    });  
+    function get_parents(p) {
+      var fd = new FormData()
+      fd.append('p', p)
+      fd.append('csrfmiddlewaretoken', '{{csrf_token}}')
+      $.ajax({
+          url: frontend_url + "parent_student_master/",
+          data: fd,
+          type: 'POST',
+          processData: false,
+          contentType: false,
+          beforeSend: function() {
+              Swal.fire({
+                icon: "info",
+                title: "",
+                text: "Loading...",
+                buttons: false,
+      
+            });
+          },
+          success: function (response) {
+            var infohtml = ''
+  
+            console.log('response ', response)
+            if (response.response.n == 1){
+                var counter = 0
+  
+                  $.each(response.data,function(i,o){
+                    
+                      counter += 1
+                      infohtml += `<tr>
+                      <td>`+counter+`</td>
+                        <td>`+o.Username+`</td>
+                        <td>`+o.email+`</td>
+                        <td>`+o.mobileNumber+`</td>
+                        <td>
+                          <a href="javascript: void(0)" data-toggle="modal" onclick="studentlist('`+o.id+`')" data-target="#studentsmodal" class="ml-5 btn btn-primary">View</a>
+                        </td>
+                        <td>
+                          <a data-bs-toggle="tooltip" title="Edit Parent" href="/parent_student_master/edit_parent_student/`+o.id+`"><i class="fa-solid fa-pen-to-square mx-1"></i></a>
+                          <a data-bs-toggle="tooltip" title="Delete Parent" onclick="delete_Parent('`+o.id+`')"><i class="fa-solid fa-trash-can text-danger mx-1"></i></a>
+                        </td>
+                      </tr>
+                      `
+                    
+                  });
+                  $('#parent_list').html(infohtml);
+                  var totalfilter = Math.ceil(parseInt(response.response.count)/10);
+                  $('#pagination-demo2').twbsPagination({
+                      totalPages: totalfilter,
+                      visiblePages: 3,
+                      next: 'Next',
+                      prev: 'Prev',
+                      onPageClick: function (event, page) {
+                        var testflag=true;
+                        //fetch content and render here
+                        filternamepageno = page
+                        if (testflag==true){
+                          testflag=false;
+                          get_parents(page)
+                        }
+                        $('#page-content').text('Page ' + page) + ' content here';
+                      }
+                    })
+  
+  
+  
+                  
+            }else{
+                infohtml = `
+                <tr class="border-bottom text-center">
+                        <td colspan="4">No parents found</td>
+                    </tr>
+                `
+                $('#parent_list').html(infohtml);
+  
+                Swal.fire({
+                    icon: "error",
+                    title: "",
+                    text: "No parents found !",
+                    button: "Close",
+                });
+            }
+  
+          }
+      })
+      
+    }
+    function Pagination(){
+      var testflag =true;
+      $('#secondpagination-demo2').html('<ul id="pagination-demo2" class="pagination-sm"></ul>');
+      get_parents(1);
+      
+    }
     
     function delete_Parent(id) {
       debugger
