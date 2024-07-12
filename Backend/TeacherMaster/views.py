@@ -91,7 +91,7 @@ class Teacherlist(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
         schoolcode = request.user.school_code
-        teacherobj = User.objects.filter(isActive=True,role_id=4,school_code = schoolcode)
+        teacherobj = User.objects.filter(isActive=True,role_id=4,school_code = schoolcode).order_by('-createdAt')
         teacherserializer = UserlistSerializer(teacherobj,many=True)
         for t in teacherserializer.data:
             subjectlist = []

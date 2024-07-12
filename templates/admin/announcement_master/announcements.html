@@ -64,7 +64,7 @@
                           <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
                             <option value="" selected>Please select Academic Year</option>
                             {% for academic in academic_years %}
-                              <option value="{{ academic.id }}">{{ academic.startdate_month_yyyy }} to {{ academic.enddate_month_yyyy }}</option>
+                              <option value="{{ academic.id }}">{{academic.start_date}} {{ academic.startdate_month_yyyy }} to {{academic.end_date}} {{ academic.enddate_month_yyyy }}</option>
                             {% endfor %}
                           </select>
                           <div id="academic_year_error" class="form-text error_message mt-3"></div>
@@ -88,8 +88,8 @@
                         </div>
                         <div class="mb-3 col-lg-12">
                           <label for="announcement_text" class="form-label">Announcement Text <span class="text-danger">*</span> </label>
-                          <textarea class="form-control" rows="5" id="announcement_text">Please enter announcement text</textarea>
-                          <div id="announcement_text_error" class="form-text error_message"></div>
+                          <textarea class="form-control" rows="5" id="announcement_text" placeholder="Please enter announcement text"></textarea>
+                          <div id="announcement_text_error" class="form-text error_message mt-3"></div>
                         </div>
                       </div>
 
@@ -128,9 +128,9 @@
                               <option value="" selected>Please select Academic Year</option>
                               {% for academic in academic_years %}
                                 {% if i.AcademicyearId == academic.id %}
-                                  <option value="{{ academic.id }}" selected>{{ academic.startdate_month_yyyy }} to {{ academic.enddate_month_yyyy }}</option>
+                                  <option value="{{ academic.id }}" selected>{{academic.start_date}} {{ academic.startdate_month_yyyy }} to {{academic.end_date}} {{ academic.enddate_month_yyyy }}</option>
                                 {% else %}
-                                  <option value="{{ academic.id }}">{{ academic.startdate_month_yyyy }} to {{ academic.enddate_month_yyyy }}</option>
+                                  <option value="{{ academic.id }}">{{academic.start_date}} {{ academic.startdate_month_yyyy }} to {{academic.end_date}} {{ academic.enddate_month_yyyy }}</option>
                                 {% endif %}
                               {% endfor %}
                             </select>

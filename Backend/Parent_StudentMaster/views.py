@@ -154,7 +154,7 @@ class ParentStudentlist(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
         schoolcode = request.user.school_code
-        Parentobj = User.objects.filter(isActive=True,role_id=5,school_code = schoolcode)
+        Parentobj = User.objects.filter(isActive=True,role_id=5,school_code = schoolcode).order_by('-createdAt')
         parentserializer = UserlistSerializer(Parentobj,many=True)
         for p in parentserializer.data:
             

@@ -250,8 +250,10 @@ class get_recipient(GenericAPIView):
             admin={}
             admin['id']=str(school_admin_obj.id)
             admin['Username']='School Admin'
-            
-            
+        else:
+            admin={}
+            admin['id']=''
+            admin['Username']='School Admin'
             
         if str(request.user.role) == "Parent":
             stuid = request.data.get('stuid')

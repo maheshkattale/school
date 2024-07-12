@@ -35,7 +35,7 @@
                 <select id="exam_academic" class="form-select select2" aria-describedby="exam_academic_error">
                   <option value="" selected>Please select academic</option>
                   {% for academic in academics %}
-                    <option value="{{ academic.id }}">{{academic.startdate_month_yyyy}} to {{academic.enddate_month_yyyy}}</option>
+                    <option value="{{ academic.id }}">{{academic.start_date}} {{academic.startdate_month_yyyy}} to {{academic.end_date}} {{academic.enddate_month_yyyy}}</option>
                   {% endfor %}
                 </select>
                 <div id="exam_academic_error" class="form-text error_message mt-3"></div>
@@ -128,7 +128,7 @@
 
               <div class="mb-3 col-lg-12">
                 <label for="exam_instruction" class="form-label">Exam Instruction <span class="text-danger">*</span> </label>
-                <textarea class="form-control" name="exam_instruction" id="exam_instruction" cols="30" rows="5" aria-describedby="exam_instruction_error"></textarea>
+                <textarea class="form-control" name="exam_instruction" id="exam_instruction" cols="30" rows="5" aria-describedby="exam_instruction_error" placeholder="Please enter exam instruction"></textarea>
                 <div id="exam_instruction_error" class="form-text error_message mt-3"></div>
               </div>
 
