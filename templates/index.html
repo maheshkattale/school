@@ -55,7 +55,6 @@
                         <span class="menu-icon">{{i.MenuIcon|safe}}</span>
                         <span class="hide-menu">{{i.MenuName}}</span>
                       </a>
-
                   </li>
                   {% endif %}
                 {% endfor %}
@@ -276,7 +275,6 @@
 
       function set_primary_student(){
         var StudentCode=$('#logined_children').val();
-
         $.ajax({
           type: "POST",
           url: frontend_url + "parent_student_master/set_primary_student",

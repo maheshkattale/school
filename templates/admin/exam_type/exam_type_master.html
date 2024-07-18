@@ -12,7 +12,7 @@
 {% endblock %}
 {% block body %}
   <div class="d-flex justify-content-end">
-    <a data-bs-toggle="modal" data-bs-target="#uploadexcel" class="btn btn-primary mx-2 mb-3">Bulk Upload</a>
+    
     <a data-bs-toggle="modal" data-bs-target="#add_examtype" class="btn btn-primary mx-2 mb-3">Add Exam Type</a>
  
     <div id="add_examtype" class="modal">
@@ -22,8 +22,11 @@
           <div class="modal-body">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Add Exam Type</h5>
-              <div class="card">
+              <div style="display:flex; justify-content:space-between;">
+                <h5 class="card-title fw-semibold mb-4">Add Exam Type</h5>
+                <a data-bs-toggle="modal" data-bs-target="#uploadexcel" class="btn btn-primary mx-2 mb-3">Bulk Upload</a>
+              </div>
+                <div class="card">
                 <div class="card-body">
                   <form>
                     <div class="row">

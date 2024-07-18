@@ -86,7 +86,7 @@
                     <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
                       <option value="">Please Select Academic Year</option>
                       {% for i in academic_years %}
-                        <option value="{{i.id}}">{{i.startdate_month_yyyy}} to {{i.enddate_month_yyyy}}</option>
+                        <option value="{{i.id}}">{{i.start_date}} {{i.startdate_month_yyyy}} to {{i.end_date}} {{i.enddate_month_yyyy}}</option>
                       {% endfor %}
                     </select>
                     <div id="academic_year_error" class="form-text error_message mt-3"></div>

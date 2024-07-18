@@ -15,7 +15,6 @@ import os
 import sys
 import environ
 from django.conf import settings
-
 env = environ.Env()
 environ.Env.read_env()
 

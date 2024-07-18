@@ -34,7 +34,6 @@ $(function () {
           heading.addClass('active');
           heading.parent().parent().css('display','block');
           heading.parent().parent().parent().addClass('open');
-
       }
     });
 

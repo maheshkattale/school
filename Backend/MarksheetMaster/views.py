@@ -370,6 +370,7 @@ class exam_names_list(GenericAPIView):
         Examser = ExamNameSerializer(Examobjs,many=True)
         
         return Response({"data":Examser.data,"response": {"n": 1, "msg": "Exams found successfully","status": "success"}})
+   
     
 class academic_exam_list(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -1035,11 +1036,11 @@ class examnamedatabyexcel(GenericAPIView):
                 fileerrorlist.append(error)
                 continue
   
-
         if len(fileerrorlist) == 0:
             return Response({"data":'done',"response": {"n": 1, "msg": "Exam Name uploaded successfully","status": "success"}})
         else:
             return Response({"data":fileerrorlist,'headers':['ExamName','Failure Reason'],"response": {"n": 2, "msg": "file has some issues","status": "failure"}})
+
 
 
 class examscheduldatabyexcel(GenericAPIView):
@@ -1088,15 +1089,30 @@ class examscheduldatabyexcel(GenericAPIView):
                 continue
                 
             data['Date']= Date
-            data['Examstarttime']= Examstarttime
-            data['Examendtime']= Examendtime
-            data['InvigilatorId']= InvigilatorId
+            data['Examstarttime']= str(Examstarttime).split(':')[0] + ':' + str(Examstarttime).split(':')[1]
+            data['Examendtime']= str(Examendtime).split(':')[0] + ':' + str(Examendtime).split(':')[1]
             
+            if InvigilatorId is not None and InvigilatorId !="":
+                data['InvigilatorId']= InvigilatorId
+                obj = User.objects.filter(role_id=4,isActive=True).first()
+                if obj is not None:
+                    data['InvigilatorId']= obj.id
+                else:
+                    reason = 'InvigilatorId not found.'
+                    error = i + tuple([reason])
+                    fileerrorlist.append(error)
+                    continue 
+            else:
+                reason = 'InvigilatorId is required.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue
+                
             
             if SubjectId is not None and SubjectId !="":
                 data['SubjectId']= SubjectId
                 print('hii',data['SubjectId'])
-                subject_exist = Subject.objects.filter(SubjectName=i[5],isActive= True,school_code=school_code).first()
+                subject_exist = Subject.objects.filter(SubjectName__in=[i[5].strip().capitalize(),i[5].strip(),i[5].title(),i[5].upper(),i[5].lower(),i[5]],isActive= True,school_code=school_code).first()
                 print('subject_exist',subject_exist)
                 if subject_exist is not None:
                     data['SubjectId']= subject_exist.id
@@ -1114,7 +1130,7 @@ class examscheduldatabyexcel(GenericAPIView):
             if Examtype is not None and Examtype !="":
                 data['Examtype']= Examtype
                 print('i6',i[6])
-                examtype_exist = ExamType.objects.filter(TypeName=i[6],isActive= True,school_code=school_code).first()
+                examtype_exist = ExamType.objects.filter(TypeName__in=[i[6].strip().capitalize(),i[6].strip(),i[6].title(),i[6].upper(),i[6].lower(),i[6]],isActive= True,school_code=school_code).first()
                 print('examtype_exist',examtype_exist)
                 if examtype_exist is not None:
                     data['Examtype']= examtype_exist.id
@@ -1131,7 +1147,12 @@ class examscheduldatabyexcel(GenericAPIView):
             
             
             data['totalMarks']= totalMarks
-            data['reportTime']= reportTime
+            passing_marks_obj = ExamTypeMarks.objects.filter(Marks=totalMarks,isActive=True).first()
+            print('passing_marks_obj oo',passing_marks_obj.passingmarks)
+            if passing_marks_obj is not None:
+                data['passingmarks'] = passing_marks_obj.passingmarks
+                
+            data['reportTime']= str(reportTime).split(':')[0] + ':' + str(reportTime).split(':')[1]
             data['RoomNo']= RoomNo
             data['Instructions']= Instructions
             
@@ -1153,7 +1174,7 @@ class examscheduldatabyexcel(GenericAPIView):
             
             if exam is not None and exam !="":
                 data['exam']= exam
-                Examname_exist = Exam.objects.filter(Name=i[12],isActive= True,school_code=school_code).first()
+                Examname_exist = Exam.objects.filter(Name__in=[i[12].strip().capitalize(),i[12].strip(),i[12].title(),i[12].upper(),i[12].lower(),i[12]],isActive= True,school_code=school_code).first()
                 if Examname_exist is not None:
                     data['exam']= Examname_exist.id
                 else:
@@ -1169,9 +1190,9 @@ class examscheduldatabyexcel(GenericAPIView):
             
             
             Date =i[1]
-            Exam_schedule = Exams.objects.filter(reportTime=data['reportTime'],ClassId_id=data['ClassId'],Date=data['Date'],Examstarttime=data['Examstarttime'],Examendtime=data['Examendtime'],InvigilatorId=data['InvigilatorId'],totalMarks=data['totalMarks'],AcademicYearId_id=data['AcademicYearId'],SubjectId_id=data['SubjectId'],ExamType_id=data['Examtype'],Instructions=data['Instructions'],RoomNo=data['RoomNo'],exam_id=data['exam'],isActive= True,school_code=school_code).first()
+            Exam_schedule = Exams.objects.filter(reportTime=data['reportTime'],ClassId_id=data['ClassId'],Date=data['Date'],Examstarttime=data['Examstarttime'],Examendtime=data['Examendtime'],InvigilatorId=data['InvigilatorId'],totalMarks=data['totalMarks'],AcademicYearId_id=data['AcademicYearId'],SubjectId_id=data['SubjectId'],ExamType_id=data['Examtype'],Instructions=data['Instructions'],RoomNo=data['RoomNo'],exam_id=data['exam'],passingmarks=data['passingmarks'],isActive= True,school_code=school_code).first()
             if Exam_schedule is None:
-                Exams.objects.create(reportTime=data['reportTime'],ClassId_id=data['ClassId'],Date=data['Date'],Examstarttime=data['Examstarttime'],Examendtime=data['Examendtime'],InvigilatorId=data['InvigilatorId'],totalMarks=data['totalMarks'],AcademicYearId_id=data['AcademicYearId'],SubjectId_id=data['SubjectId'],ExamType_id=data['Examtype'],Instructions=data['Instructions'],RoomNo=data['RoomNo'],exam_id=data['exam'],school_code=school_code)
+                Exams.objects.create(reportTime=data['reportTime'],ClassId_id=data['ClassId'],Date=data['Date'],Examstarttime=data['Examstarttime'],Examendtime=data['Examendtime'],InvigilatorId=data['InvigilatorId'],totalMarks=data['totalMarks'],AcademicYearId_id=data['AcademicYearId'],SubjectId_id=data['SubjectId'],ExamType_id=data['Examtype'],Instructions=data['Instructions'],RoomNo=data['RoomNo'],exam_id=data['exam'],passingmarks=data['passingmarks'],school_code=school_code)
             else:
                 reason = 'Exam schedule already exits.'
                 error = i + tuple([reason])

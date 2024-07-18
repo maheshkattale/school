@@ -68,7 +68,7 @@
                                 <option value="" selected> Please select academic year</option>
                                 {% for years in academic_years %}
             
-                                <option value="{{years.id}}"> {{years.startdate_month_yyyy}} to {{years.enddate_month_yyyy}}</option>
+                                <option value="{{years.id}}"> {{years.start_date}} {{years.startdate_month_yyyy}} to {{years.end_date}} {{years.enddate_month_yyyy}}</option>
                                 {% endfor %}
             
                             </select>
@@ -162,13 +162,7 @@
                         <div class="card-body">
                           <form>
                             <div class="row">
-        
-        
-        
-        
-        
-             
-        
+
                                 <div class="mb-3 col-lg-6">
                                     <label for="class_name{{i.id}}" class="form-label">Class  <span class="text-danger">*</span> </label>
                                     
@@ -217,11 +211,11 @@
                                         <option value="" selected> Please select academic year</option>
                                         {% for years in academic_years %}
                                         {% if years.id == i.academic_year_id_id%}
-                                            <option value="{{years.id}}" selected> {{years.startdate_month_yyyy}} to {{years.enddate_month_yyyy}}</option>
-                                            {% else %}
-                                            <option value="{{years.id}}"> {{years.startdate_month_yyyy}} to {{years.enddate_month_yyyy}}</option>
+                                          <option value="{{years.id}}" selected> {{years.start_date}} {{years.startdate_month_yyyy}} to {{years.end_date}} {{years.enddate_month_yyyy}}</option>
+                                          {% else %}
+                                          <option value="{{years.id}}">{{years.start_date}} {{years.startdate_month_yyyy}} to {{years.end_date}} {{years.enddate_month_yyyy}}</option>
 
-                                            {% endif %}
+                                          {% endif %}
                                         {% endfor %}
                     
                                     </select>

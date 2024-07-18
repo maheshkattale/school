@@ -76,7 +76,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     <select id="academic_year" class="form-select select2" aria-describedby="academic_year_error">
       <option value="" selected>Please select academic year</option>
       {% for year in academic_years %}
-      <option value="{{ year.id }}">{{ year.startdate_month_yyyy }} to {{ year.enddate_month_yyyy }}</option>
+      <option value="{{ year.id }}">{{year.start_date}} {{ year.startdate_month_yyyy }} to {{year.end_date}} {{ year.enddate_month_yyyy }}</option>
       {% endfor %}
     </select>
     <div id="academic_year_error" class="form-text error_message"></div>
@@ -311,7 +311,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
                 <tr>
                   <td style="padding-right: 15px;">
                     <div style="text-align: center;">
-                      <img src="{% static 'assets/images/logos/school_logo.JPG' %}" alt="" />
+                      <img src="{% static 'assets/images/logos/school_logo.jpg' %}" alt="" />
                     </div>
                   </td>
           

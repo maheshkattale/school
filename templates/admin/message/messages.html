@@ -167,7 +167,7 @@
 
                         <div class="mb-3 col-lg-12">
                             <label for="message" class="form-label">message  <span class="text-danger">*</span> </label>
-                            <textarea class="form-control" rows="5" id="message" >Please enter message</textarea>
+                            <textarea class="form-control" rows="5" id="message" placeholder="Please enter message"></textarea>
                             <div id="message_error" class="form-text error_message"></div>
                           </div>
                         </div>
@@ -270,14 +270,13 @@
       var recipient=$('#recipient').val()
       var subject=$('#subject').val()
       var message=$('#message').val()
-      
+      var student_code=$('#student').val()
       var fd = new FormData();    
 
       if('{{roleid}}' == 5){
           var logined_student=$('#logined_children').val();
           fd.append("from_user_studentcode",logined_student);
-      }else{
-        var student_code=$('#student').val()
+      }else if(student_code !='' && student_code != null){
         fd.append("to_user_studentcode",student_code);
       }
 

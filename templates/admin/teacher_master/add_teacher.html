@@ -35,7 +35,6 @@
 
                   <option value="" selected> Please select Designation</option>
                   {% for designation in designations %}
-
                     <option value="{{designation.id}}"> {{designation.designationName}}</option>
                   {% endfor %}
 
@@ -59,9 +58,7 @@
                 <label for="teacher_subject" class="form-label">Subject <span class="text-danger">*</span> </label>
                 <select id="teacher_subject" class="form-select select2" aria-describedby="teacher_subject_error" multiple>
    
-
                   {% for subject in subjects %}
-
                   <option value="{{subject.id}}"> {{subject.SubjectName}}</option>
                 {% endfor %}
                 </select>
@@ -69,7 +66,7 @@
               </div>
               <div class="mb-3 col-lg-12">
                 <label for="teacher_address" class="form-label">Teacher Address <span class="text-danger">*</span> </label>
-                <textarea class="form-control" name="teacher_address" id="teacher_address" cols="30" rows="5" aria-describedby="teacher_address_error"></textarea>
+                <textarea class="form-control" name="teacher_address" id="teacher_address" cols="30" rows="5" placeholder="Please enter address" aria-describedby="teacher_address_error"></textarea>
                 <div id="teacher_address_error" class="form-text error_message"></div>
               </div>
             </div>
