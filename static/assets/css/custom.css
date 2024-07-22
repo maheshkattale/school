@@ -205,3 +205,18 @@ align-items: center;
   background-color: #1593e9;
 
 }
+.imagepre {
+  width: 100px !important;
+  min-height: 100px !important;
+  max-height: 100px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  font-weight: bold !important;
+  color: lightgray !important;
+  border-width: 2px !important;
+  border-style: dotted !important;
+  border-color: rgb(136 0 239) !important;
+  border-image: initial !important;
+  padding: 3px !important;
+}

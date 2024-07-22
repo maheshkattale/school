@@ -57,7 +57,7 @@
             </div>
 
             <div class="mb-3 col-lg-3">
-              <label for="children_count" class="form-label">No of Children <span class="text-danger">*</span> </label>
+              <label for="children_count" class="form-label">No of Children  </label>
               <div class="childddcount "><span class="quantity_Id ps-2" id="child_count">0</span><span
                   class="quantitybtnspan"><button type="button" class="btn quantitybtn plus-btn" id="addquantity2"
                     onclick="addchild()">+</button></span></div>
@@ -191,7 +191,7 @@
               <input type="file" id="Photo`+counter+`" class="d-none photo" name="photo`+counter+`"
                 onchange="validateImage(this,'Photopreview`+counter+`');">
               <div class="image-preview" id="imagePreview">
-                <img base64='' src="" id="Photopreview`+counter+`" alt="Select Image" class="imagepre photopreview" />
+                <img base64='' src="`+frontend_url+`static/assets/images/backgrounds/dummyimage.jpg" id="Photopreview`+counter+`" alt="Select Image" class="imagepre photopreview" />
               </div>
               <span id="photo_err`+counter+`" class="error_message"></span>
             </div>
@@ -202,7 +202,7 @@
 
         <td class="text-center"> 
 
-          <input type="text" class="form-control childname"  id="childname`+ counter + `"  placeholder="Please enter children name" aria-describedby="childnameerror` + counter + `" />
+          <input type="text" class="form-control childname"  id="childname`+ counter + `"  placeholder="Children name" aria-describedby="childnameerror` + counter + `" />
           <div id="childnameerror`+ counter + `" class="form-text error_message"></div>
     
           <select id="child_bloodgroup`+ counter + `" class="form-select bloodgroup select2" aria-describedby="child_bloodgrouperror` + counter + `" >
@@ -216,7 +216,7 @@
           </select>
           <div id="childclasserror`+ counter + `" class="form-text error_message"></div>
 
-          <input type="text" class="form-control childrollno"  id="childrollno`+ counter + `"  placeholder="Please enter children roll no" aria-describedby="childrollnoerror` + counter + `" />
+          <input type="text" class="form-control childrollno"  id="childrollno`+ counter + `"  placeholder="Children roll no" aria-describedby="childrollnoerror` + counter + `" />
           <div id="childrollnoerror`+ counter + `" class="form-text error_message"></div>
         </td>
 
@@ -240,13 +240,13 @@
       $(v).text(i + 1);
     })
 
-    var classOpt = '<option value="">select class</option>';
+    var classOpt = '<option value="">Select Class</option>';
     $.each(classlist, function (index, value) {
       classOpt += `<option value="` + value.id + `">` + value.ClassName + `</option>`;
     });
     $("#childclass" + counter).html(classOpt);
 
-    var bloodgropOpt = '<option value="">select Blood Group</option>';
+    var bloodgropOpt = '<option value="">Select Blood Group</option>';
     //bloodgropOpt += `<option value="o">o</option>`;           
 
     $.each(bloodgrplist, function (index, value) {
@@ -256,9 +256,20 @@
 
     counterlist.push(counter)
     counter = counter + 1;
+    var threeYearsAgo = new Date();
+    threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+
 
     flatpickr(".date_of_birth", {
       dateFormat: "d-m-Y",
+      maxDate: threeYearsAgo, // Disable dates from three years ago until today
+      disable: [
+        {
+          from: threeYearsAgo,
+          to: "today"
+        }
+      ]
+
     });
     flatpickr(".date_of_joining", {
       dateFormat: "d-m-Y",
@@ -643,7 +654,7 @@
     }
     
     function showError(message) {
-      swal({
+      Swal.fire({
         icon: "error",
         title: "",
         text: message,

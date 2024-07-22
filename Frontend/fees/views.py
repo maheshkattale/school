@@ -43,7 +43,7 @@ class add_fees_distrubution(GenericAPIView):
             academic_list_response = academic_list_request.json()
             class_list_request = requests.get(class_list_url,headers=headers)
             class_list_response = class_list_request.json()
-            return render(request, 'admin/fees_master/add_fees_distribution.html',{'academic_years':academic_list_response['data'],'classes':class_list_response['data'],})
+            return render(request, 'admin/fees_master/add_fees.html',{'academic_years':academic_list_response['data'],'classes':class_list_response['data'],})
         else:
             return redirect('school:login')
         

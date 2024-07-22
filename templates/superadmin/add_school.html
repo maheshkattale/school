@@ -3,24 +3,10 @@
 {% block head %}
 
 <style>
-  .imagepre {
-    width: 100px !important;
-    min-height: 100px !important;
-    max-height: 100px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    font-weight: bold !important;
-    color: lightgray !important;
-    border-width: 2px !important;
-    border-style: dotted !important;
-    border-color: rgb(136 0 239) !important;
-    border-image: initial !important;
-    padding: 3px !important;
-}
-.textstyle{
-  text-align:center;
-}
+
+  .textstyle{
+    text-align:center;
+  }
 </style>
 {% endblock %}
 
@@ -39,7 +25,7 @@
         <div class="card-body">
           <form>
             <div class="row">
-                <div class="mb-3 col-lg-4">
+                  <div class="mb-3 col-lg-4">
                     <label for="school_name" class="form-label">School Name <span class="text-danger">*</span> </label>
                     <input type="text" class="form-control" id="school_name" placeholder="Please enter school name" aria-describedby="school_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');">
                     <div id="school_name_error" class="form-text error_message"></div>
@@ -66,26 +52,21 @@
                   </div>
                  
                   <div class="mb-3 col-lg-4 image-div-preview">
+                    <label for="" class="form-label">School Logo </label>
+
                     <label for="school_logo" class="form-content cursor-pointer w-100 p-1">
                       <div class="image-div-preview">
                         <input type="file" id="school_logo" class="d-none school_logo" name="school_logo"
                           onchange="validateImage(this,'Photopreview');">
                         <div class="image-preview" id="imagePreview">
-                          <img base64='' src="" id="Photopreview" alt="Select Logo" class="imagepre photopreview" />
+                          <img base64='' src="{%static 'assets/images/backgrounds/dummyimage.jpg'%}" id="Photopreview" alt="Select Logo" class="imagepre photopreview" />
                         </div>
                         <div id="school_logo_error" class="form-text error_message"></div>
                       </div>
 
                     </label>
                   </div>
-                  {% comment %} <div class="mb-3 col-lg-4">
-                    <label for="school_logo" class="form-label">School Logo <span class="text-danger">*</span> </label>
-                    <input name="school_logo" id="school_logo" type="file" class="form-control-file" aria-describedby="school_logo_error" onchange="document.getElementById('school_logoPreview').src = window.URL.createObjectURL(this.files[0])" data-file_types="jpg|jpeg|png|ico|bmp">
 
-                    <img id="school_logoPreview" style="width: 12%;" src="{%static 'assets/img/dummy-image.png'%}" class="preview-img mt-1">
-
-                    <div id="school_logo_error" class="form-text error_message"></div>
-                  </div> {% endcomment %}
 
                   <div class="mb-3 col-lg-12">
                       <label for="school_address" class="form-label">School Address <span class="text-danger">*</span> </label>
@@ -118,6 +99,7 @@
 {% block script %}
 <script>
 
+ /*
   $('input#school_logo').bind('change', function() {
         var resultid = $(this).val().split(".");
         var gettypeup = resultid[resultid.length - 1];
@@ -126,12 +108,12 @@
         var tolovercase = gettypeup.toLowerCase();
         var onlist = $(this).attr('data-file_types').indexOf(tolovercase) > -1;
         if (!onlist) {
-          $('#school_logo').html();
           $('#school_logo_error').show().delay(3000).slideUp();
           $('#school_logo_error').html('Please enter valid photo format');
           $('#school_logo').focus();
         } 
     });
+ */
 
 
   function validate_form(){
@@ -271,7 +253,7 @@
   function validateImage(input, preview) {
     debugger;
     var maxSizeMB = 2;
-    var allowedExtensions = ["jpg", "jpeg", "png", "pdf"];
+    var allowedExtensions = ["jpg", "jpeg", "png"];
   
     var file = input.files[0];
   
@@ -310,7 +292,6 @@
   
     replacePreviewWithElement(preview, iframeElement);
   }
-  
   function displayImagePreview(file, preview) {
     var reader = new FileReader();
   
@@ -329,7 +310,6 @@
   
     reader.readAsDataURL(file);
   }
-  
   function replacePreviewWithElement(preview, newElement) {
     var existingPreview = $("#" + preview);
     newElement.attr('id', existingPreview.attr('id'));
@@ -338,14 +318,12 @@
     
     existingPreview.replaceWith(newElement);
   }
-  
   function clearInputAndPreview(input, preview) {
     $(input).val("");
     $("#" + preview).attr("src", "");
   }
-  
   function showError(message) {
-    swal({
+    Swal.fire({
       icon: "error",
       title: "",
       text: message,

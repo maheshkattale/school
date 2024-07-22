@@ -232,7 +232,6 @@ class AddExam(GenericAPIView):
             classlist = json.loads(request.POST.get('classlist'))
         else:
             classlist = []
-        print("daya",data)
         Date = data['date']
         Examstarttime = data['Examstarttime']
         Examendtime = data['Examendtime']
@@ -383,7 +382,6 @@ class academic_exam_list(GenericAPIView):
         
         newlist=serializer.data
         for i in newlist:
-            print('sssss',i['exam_id'],i['AcademicYearId_id'])
             Exam_shedule_obj = Exams.objects.filter(exam=int(i['exam_id']),AcademicYearId=int(i['AcademicYearId_id']),isActive=True).order_by('Date')
             Exam_shedule_serializer = CustomExamsSerializer2(Exam_shedule_obj,many=True)
             i['shedule']=Exam_shedule_serializer.data
@@ -476,12 +474,7 @@ class uploadmarksheet(GenericAPIView):
                 data.append(row)
             all_sheet_data[sheet_name] = data
 
-        # Now all_sheet_data contains data from all sheets in the Excel file
-        # You can access each sheet's data using its name as key
-        # for sheet_name, data in all_sheet_data.items():
-        #     for row in data:
-        #         print("row",row)
-        
+
         return Response({"data":'',"response": {"n": 0, "msg": "Exam not found ","status": "failure"}})
     
     
@@ -530,7 +523,6 @@ class UploadExcelMarkSheet(GenericAPIView):
             return Response({'data':[],"response":{"status":"failure",'msg': 'Please select the Exam','n':0}})
 
 
-        print("AcademicYearId",AcademicYearId,school_code)
 
 
         for i in imported_data:
@@ -563,7 +555,6 @@ class UploadExcelMarkSheet(GenericAPIView):
 
                                                 data['RollNo']=students_class_obj.RollNo
                                                 #exam name   
-                                                print("data",find_exam_obj)
                                                 if int(ObtainedMarks) < int(find_exam_obj.passingmarks):
                                                     data['Status']=0
                                                 else:
@@ -576,7 +567,6 @@ class UploadExcelMarkSheet(GenericAPIView):
                                                 data['subID']=str(sub_obj.id)
                                                 data['StudentId']=student_serializer.data['id']
 
-                                                print("data",data)
                                                 check_already_exist_obj=MarkSheet.objects.filter(AcademicYearId=data['AcademicYearId'],ClassId=data['ClassId'],Exam=data['Exam'],school_code=data['school_code'],subID=data['subID'],StudentId=data['StudentId']).first()
                                                 if check_already_exist_obj is not None:
                                                     marksheet_serializer=MarkSheetSerializer(check_already_exist_obj,data=data,partial=True)
@@ -1111,9 +1101,7 @@ class examscheduldatabyexcel(GenericAPIView):
             
             if SubjectId is not None and SubjectId !="":
                 data['SubjectId']= SubjectId
-                print('hii',data['SubjectId'])
                 subject_exist = Subject.objects.filter(SubjectName__in=[i[5].strip().capitalize(),i[5].strip(),i[5].title(),i[5].upper(),i[5].lower(),i[5]],isActive= True,school_code=school_code).first()
-                print('subject_exist',subject_exist)
                 if subject_exist is not None:
                     data['SubjectId']= subject_exist.id
                 else:
@@ -1129,9 +1117,7 @@ class examscheduldatabyexcel(GenericAPIView):
             
             if Examtype is not None and Examtype !="":
                 data['Examtype']= Examtype
-                print('i6',i[6])
                 examtype_exist = ExamType.objects.filter(TypeName__in=[i[6].strip().capitalize(),i[6].strip(),i[6].title(),i[6].upper(),i[6].lower(),i[6]],isActive= True,school_code=school_code).first()
-                print('examtype_exist',examtype_exist)
                 if examtype_exist is not None:
                     data['Examtype']= examtype_exist.id
                 else:
@@ -1148,7 +1134,6 @@ class examscheduldatabyexcel(GenericAPIView):
             
             data['totalMarks']= totalMarks
             passing_marks_obj = ExamTypeMarks.objects.filter(Marks=totalMarks,isActive=True).first()
-            print('passing_marks_obj oo',passing_marks_obj.passingmarks)
             if passing_marks_obj is not None:
                 data['passingmarks'] = passing_marks_obj.passingmarks
                 

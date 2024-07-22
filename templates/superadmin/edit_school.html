@@ -48,16 +48,37 @@
                   <div id="school_contact_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">
-                <label for="school_logo" class="form-label">School Logo <span class="text-danger">*</span> </label>
+                <label for="" class="form-label">School Logo </label>
                 {% if school.school_logo == None %}
-                <input name="school_logo" id="school_logo" type="file" class="form-control-file" onchange="document.getElementById('school_logoPreview').src = window.URL.createObjectURL(this.files[0])" data-file_types="jpg|jpeg|png|ico|bmp">
+                          
+                    <label for="school_logo" class="form-content cursor-pointer w-100 p-1">
+                      <div class="image-div-preview">
+                        <input type="file" id="school_logo" class="d-none school_logo" name="school_logo"
+                          onchange="validateImage(this,'Photopreview');">
+                        <div class="image-preview" id="imagePreview">
+                          <img base64='' src="{%static 'assets/images/backgrounds/dummyimage.jpg'%}" id="Photopreview" alt="Select Logo" class="imagepre photopreview" />
+                        </div>
+                        <div id="school_logo_error" class="form-text error_message"></div>
+                      </div>
 
-                <img id="school_logoPreview" src="{%static 'assets/img/dummy-image.png'%}" class="preview-img mt-1">
-                {%else%}
-                <input name="school_logo"  id="school_logo" type="file" class="form-control-file" onchange="document.getElementById('school_logoPreview').src = window.URL.createObjectURL(this.files[0])" data-file_types="jpg|jpeg|png|ico|bmp">
+                    </label>
+                
+                
+                    {%else%}
+                    <label for="school_logo" class="form-content cursor-pointer w-100 p-1">
+                      <div class="image-div-preview">
+                        <input type="file" id="school_logo" class="d-none school_logo" name="school_logo"
+                          onchange="validateImage(this,'Photopreview');">
+                        <div class="image-preview" id="imagePreview">
+                          <img base64='' src="{{school.school_logo}}" id="Photopreview" alt="Select Logo" class="imagepre photopreview" />
+                        </div>
+                        <div id="school_logo_error" class="form-text error_message"></div>
+                      </div>
 
-                <img id="school_logoPreview" src="{{school.school_logo}}" class="preview-img mt-1">
+                    </label>
 
+
+                   
                 {%endif%}
                 <div id="school_logo_error" class="form-text error_message"></div>
               </div>
@@ -133,7 +154,7 @@
     if(email_validate('school_admin_email') == false){
       $('#school_admin_email').html();
       $('#school_admin_email_error').show().delay(3000).slideUp();
-      $('#school_admin_email_error').html('Please enter school valid admin email ');
+      $('#school_admin_email_error').html('Please enter valid school  admin email ');
       $('#school_admin_email').focus();
       return false;
     }
@@ -219,6 +240,92 @@
           },
         });
     }
+  }
+
+
+  function validateImage(input, preview) {
+    debugger;
+    var maxSizeMB = 2;
+    var allowedExtensions = ["jpg", "jpeg", "png"];
+  
+    var file = input.files[0];
+  
+    if (!file) {
+      console.error("No file selected.");
+      return;
+    }
+  
+    var fileName = file.name.toLowerCase();
+    var fileExtension = fileName.split(".").pop();
+  
+    if ($.inArray(fileExtension, allowedExtensions) === -1) {
+      showError("Invalid file type. Allowed types are: " + allowedExtensions.join(", "));
+      clearInputAndPreview(input, preview);
+      return;
+    }
+  
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function (evt) {
+        var base64 = evt.target.result;
+        $("#"+preview).attr('base64',base64)
+    }
+    if (fileExtension === "pdf") {
+      displayPdfPreview(file, preview);
+    } else {
+      displayImagePreview(file, preview);
+    }
+  }
+  function displayPdfPreview(file, preview) {
+
+    var iframeElement = $('<iframe>');
+  
+    var fileUrl = URL.createObjectURL(file);
+    iframeElement.attr('src', fileUrl);
+  
+    replacePreviewWithElement(preview, iframeElement);
+  }
+  
+  function displayImagePreview(file, preview) {
+    var reader = new FileReader();
+  
+    reader.onload = function (e) {
+      var imageElement = $('<img>');
+      imageElement.attr('src', e.target.result);
+      imageElement.attr('base64',e.target.result)
+
+
+      replacePreviewWithElement(preview, imageElement);
+    };
+  
+    reader.onerror = function (e) {
+      console.error("Error reading file:", e);
+    };
+  
+    reader.readAsDataURL(file);
+  }
+  
+  function replacePreviewWithElement(preview, newElement) {
+    var existingPreview = $("#" + preview);
+    newElement.attr('id', existingPreview.attr('id'));
+    newElement.attr('alt', existingPreview.attr('alt'));
+    newElement.attr('class', existingPreview.attr('class'));
+    
+    existingPreview.replaceWith(newElement);
+  }
+  
+  function clearInputAndPreview(input, preview) {
+    $(input).val("");
+    $("#" + preview).attr("src", "");
+  }
+  
+  function showError(message) {
+    Swal.fire({
+      icon: "error",
+      title: "",
+      text: message,
+      timer: 2000,
+    });
   }
 </script>
 {% endblock %}

@@ -16,7 +16,6 @@ class add_message(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
         data={}
-        print("request",request.POST)
         school_code=request.user.school_code
         data['from_user_id']=str(request.user.id)
         data['from_user_str']=request.user.Username
@@ -65,7 +64,6 @@ class add_message(GenericAPIView):
             notification_data['notification_type']=str(1)
             notification_data['school_code']=str(school_code)
             
-            print("notification_data",notification_data)
             
             notification_serializer=NotificationMasterSerializer(data=notification_data)
             if notification_serializer.is_valid():
@@ -193,7 +191,6 @@ class check_recipient_type(GenericAPIView):
         school_code=request.user.school_code
         user_obj=User.objects.filter(id=user_id,isActive=True,school_code=school_code).first()
         if user_obj is not None:
-            print("user_obj",user_obj.role)
             if str(user_obj.role) == 'Parent':
                 studentlist_obj=Students.objects.filter(ParentId=user_obj.id,isActive=True,school_code=school_code)
                 if studentlist_obj.exists():

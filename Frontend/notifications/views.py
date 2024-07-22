@@ -56,7 +56,6 @@ class all_notifications(GenericAPIView):
             data={}
             data['student_id']=request.session.get('PrimaryStudentId',None)
             p = request.POST.get('p')
-            print("pp",p)
             user_all_notifications_pagination_url = user_all_notifications_url + "?p=" +str(p)     
             all_notifications_request = requests.post(user_all_notifications_pagination_url,headers=headers,data=data)
             all_notifications_response = all_notifications_request.json()

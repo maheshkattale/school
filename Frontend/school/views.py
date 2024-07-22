@@ -80,13 +80,11 @@ class login(GenericAPIView):
 class logout(GenericAPIView):
     def get(self,request):
         try:
-            print("hiii")
             tok = request.session.get('token', False)
             t = 'Token {}'.format(tok)
             headers = {'Authorization': t}
             logout_request = requests.post(logout_url, headers=headers)
             logout_response = logout_request.json()
-            print("logout_response",logout_response)
 
             if logout_response['response']['n'] == 1:
                 del request.session['token']
@@ -98,7 +96,6 @@ class logout(GenericAPIView):
             
         except Exception as e:
             print("e",e)
-
             messages.error(request, e)
             return redirect('school:login')
 
@@ -112,7 +109,6 @@ class dashboard(GenericAPIView):
             t = 'Token {}'.format(tok)
             headers = {'Authorization': t}
             data={}
-            print("request.session.get('roleid')",request.session.get('roleid'))
             if request.session.get('roleid') == 1:
                 return redirect("school:school_master")
             if request.session.get('roleid') == 4:
@@ -252,7 +248,6 @@ class generate_marksheet(GenericAPIView):
             
             exam_names_list_request = requests.get(exam_names_list_url,headers=headers)
             exam_names_list_response = exam_names_list_request.json()
-            print("exam_names_list_response",exam_names_list_response['data'])
             return render(request, 'admin/marksheet_master/generate_marksheet.html',{'classes':class_list_response['data'],'academic_years':academic_list_response['data'],'exam_names':exam_names_list_response['data']})
 
         else:
@@ -289,11 +284,9 @@ class upload_marksheet(GenericAPIView):
             if request.method == 'POST':
                 data = request.POST.copy()
                 file = request.FILES
-                print("data",data)
-                print("file",file)
+
                 UploadExcelMarkSheet_request = requests.post(UploadExcelMarkSheet_url,data=data,files=file,headers=headers)
                 UploadExcelMarkSheet_response = UploadExcelMarkSheet_request.json()
-                print('maeksheet',UploadExcelMarkSheet_response)
                 return HttpResponse(json.dumps(UploadExcelMarkSheet_response), content_type="application/json")
 
 

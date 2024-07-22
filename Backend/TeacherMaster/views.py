@@ -354,7 +354,6 @@ class UploadTeachersExcel(GenericAPIView):
             data['role']=4
             data['password']=str(12345)
             data['textPassword']=str(12345)
-            print('data',data)
             serializer=UserSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()

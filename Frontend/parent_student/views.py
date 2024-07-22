@@ -42,7 +42,6 @@ class parent_student_master(GenericAPIView):
             parent_list_url_pagination_url = parent_list_url + "?p=" +str(p)     
             parent_list_request = requests.get(parent_list_url_pagination_url,headers=headers)
             parent_list_response = parent_list_request.json()
-            # print("parent_list_response",parent_list_response)
             return HttpResponse(json.dumps(parent_list_response), content_type="application/json")
         
 class add_parent_student(GenericAPIView):

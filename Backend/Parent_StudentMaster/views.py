@@ -618,7 +618,6 @@ class search_student_by_class_of_currentyear(GenericAPIView):
             if request.data.get('class') is not None and request.data.get('class') !='':
                 class_id = data['class']
                 if class_id is not None and class_id !='' and class_id !='null':
-                    print("classid=class_id",class_id)
                     studentclassLogobj = studentclassLogobj.filter(classid=class_id).order_by('RollNo')
                 
         
@@ -930,7 +929,7 @@ class search_student(GenericAPIView):
         data = request.data.copy()
         StudentName=data['StudentName']
         school_code = request.user.school_code
-        student_obj=Students.objects.filter(StudentName__contains=StudentName,isActive=True,school_code=school_code)
+        student_obj=Students.objects.filter(StudentName__icontains=StudentName,isActive=True,school_code=school_code)
         if student_obj.exists():
             student_serializer=CustomStudentSerializer(student_obj,many=True)
             studentlist = student_serializer.data
@@ -1026,7 +1025,6 @@ class parent_bulk_upload(GenericAPIView):
             data['password'] = str(12345)
             data['textPassword'] = str(12345)
             
-            print('data',data)
             
 
             
@@ -1092,7 +1090,6 @@ class student_bulk_upload(GenericAPIView):
         
         imported_data = dataset.load(new_parents.read(), format='xlsx')
         for i in imported_data:
-            print('i',i)
             parent_email=i[0]
             student_name = i[1]
             class_name = i[2]
@@ -1200,7 +1197,6 @@ class student_bulk_upload(GenericAPIView):
   
             data['school_code']=school_code
 
-            print('data',data)
             
 
             

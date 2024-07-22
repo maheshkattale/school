@@ -48,7 +48,6 @@ class login(GenericAPIView):
                     }})
         
         userexist = User.objects.filter(email=email, isActive=True).first()
-        print('userexist',userexist)
         if userexist is None:
            return Response(
                     {
@@ -406,9 +405,7 @@ class update_profile(GenericAPIView):
         data=request.data.copy()
         user_id=request.user.id
         school_code=request.user.school_code
-        print("user_id",user_id)
-        print("data",data)
-        # print("request.FILES",request.FILES)
+
         users_obj=User.objects.filter(id=user_id,school_code=school_code,isActive=True).first()
         if users_obj is not None:
             photo=request.FILES.get('photo')
@@ -509,7 +506,7 @@ class search_user(GenericAPIView):
         data = request.data.copy()
         Username=data['Name']
         school_code = request.user.school_code
-        user_obj=User.objects.filter(Username__contains=Username,isActive=True,school_code=school_code)
+        user_obj=User.objects.filter(Username__icontains=Username,isActive=True,school_code=school_code)
         if user_obj.exists():
             user_serializer=CustomUserSerializer(user_obj,many=True)
             userlist = user_serializer.data

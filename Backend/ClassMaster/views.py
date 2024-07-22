@@ -124,15 +124,12 @@ class classdatabyexcel(GenericAPIView):
             if ClassName is not None and ClassName !="":
                 data['ClassName']= ClassName
                 ClassName_exist = Class.objects.filter(ClassName__in = [data['ClassName'].strip().capitalize(),data['ClassName'].strip(),data['ClassName'].title(),data['ClassName'].upper(),data['ClassName'].lower(),data['ClassName']],isActive= True,school_code=school_code).first()
-                print("ClassName_exist",ClassName_exist)
                 if ClassName_exist is None:
                     Class.objects.create(ClassName= data['ClassName'],school_code=school_code)
                 else:
-                    print("hii")
                     reason = 'Class name already exits.'
                     error = i + tuple([reason])
                     fileerrorlist.append(error)
-                    print("fileerrorlist",fileerrorlist)
                     continue 
             else:
                 reason = 'Class name is required.'
@@ -140,7 +137,6 @@ class classdatabyexcel(GenericAPIView):
                 fileerrorlist.append(error)
                 continue
   
-        print("length1",len(fileerrorlist))
         if len(fileerrorlist) == 0:
             return Response({"data":'done',"response": {"n": 1, "msg": "Class Name uploaded successfully","status": "success"}})
         else:
@@ -274,7 +270,6 @@ class classteacherdatabyexcel(GenericAPIView):
                     reason = 'Class name not found.'
                     error = i + tuple([reason])
                     fileerrorlist.append(error)
-                    print("fileerrorlist",fileerrorlist)
                     continue 
                 
                 teacher = User.objects.filter(Username__in = [i[1].strip().capitalize(),i[1].strip(),i[1].title(),i[1].upper(),i[1].lower(),i[1]],isActive= True,school_code=school_code).first()
@@ -296,7 +291,6 @@ class classteacherdatabyexcel(GenericAPIView):
                     continue 
                 
                 Classteacher_exist = ClassTeacher.objects.filter(classid__in=[data['classid']],teacherid__in=[data['teacherid']],academic_year_id__in=[data['academic_year_id']],isActive= True,school_code=school_code).first()
-                print('Classteacher_exist',Classteacher_exist)
                 if Classteacher_exist is None:
                     ClassTeacher.objects.create(classid_id=int(data['classid']),teacherid_id=int(data['teacherid']),academic_year_id_id=int(data['academic_year_id']),school_code=school_code)
                     
@@ -304,7 +298,6 @@ class classteacherdatabyexcel(GenericAPIView):
                     reason = 'Class teacher already exit.'
                     error = i + tuple([reason])
                     fileerrorlist.append(error)
-                    print('fileerrorlist',fileerrorlist)
                     continue 
             else:
                 reason = 'Class teacher is required.'

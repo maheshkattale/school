@@ -598,7 +598,6 @@ class pay_student_fees(GenericAPIView):
                                         serializer.save()
                                         successfull_payments.append(payment_entry)
                                     else:
-                                        print(serializer.errors)
                                         unsuccessfull_payments.append(payment_entry)
 
 

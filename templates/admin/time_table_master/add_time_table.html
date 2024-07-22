@@ -96,11 +96,8 @@
                 <select id="teacher" class="form-select select2" aria-describedby="teacher_error">
                   <option value=""> Please select teacher</option>
 
-                  {% comment %} {% for teacher in teachers %}
-                    <option value="{{teacher.id}}"> {{teacher.Username}}</option>
-                  {% endfor %} {% endcomment %}
                 </select>
-                <div id="teacher_error" class="form-text error_message"></div>
+                <div id="teacher_error" class="form-text error_message mt-3"></div>
               </div>
 
 
@@ -452,13 +449,14 @@
           itemtobechange=id
          
           $("#class_name").val(d.ClassId).trigger("change");
-          $('#day').val(d.Day).trigger("change");;
+          $('#day').val(d.Day).trigger("change");
+          
           $('#subject').val(d.SubjectId).trigger("change");;
-          $('#teacher').val(d.TeacherId).trigger("change");;
           $('#start_time').val(d.start_time);
           $('#end_time').val(d.end_time);
           setDateRange(d.startdate, d.enddate);
-
+          //$('#teacher').val(d.TeacherId).trigger("change");;
+          set_teacher(d.TeacherId)
 
 
         }else{
@@ -939,6 +937,10 @@
 
 
   });
+
+  function set_teacher(id){
+    $('#teacher').val(id).trigger('change');
+  }
 
 
 

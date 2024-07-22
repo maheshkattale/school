@@ -53,6 +53,9 @@
       }
       .profile-pic{
         border-radius: 50%;
+        width:150px;
+        height:150px;
+
       }
   </style>
 {% endblock %}
@@ -74,11 +77,10 @@
 
 
                   {% if profile_image is not None and profile_image != "" %}
-                  <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{{profile_image}}" alt="" />
+                    <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{{profile_image}}" alt="" />
 
                   {% else %}
-                  <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{% static 'assets/images/profile/profile.png' %}" alt="" />
-                
+                    <img id="idProofPreview" class="profile-pic" width="150" height="150" src="{% static 'assets/images/profile/profile.png' %}" alt="" />
                   {% endif %}
 
 
@@ -86,7 +88,7 @@
 
                 <div class="p-image">
                   <i class="fa fa-camera upload-button text-black"></i>
-                  <input data-file_types="jpg|jpeg|png|ico|bmp" name="photo" id="profileimage" type="file" class="file-upload" onchange="document.getElementById('idProofPreview').src = window.URL.createObjectURL(this.files[0])" />
+                  <input data-file_types="jpg|jpeg|png|ico|bmp" name="photo" id="profileimage" type="file" class="file-upload" onchange="validateImage(this,'idProofPreview');" />
                 </div>
 
                 <div class="mb-1 username">{{username}}</div>
@@ -168,9 +170,7 @@
 
 {% block script %}
   <script>
-    $(document).ready(function() {
 
-    });
     function update_profile(){
       debugger
       
@@ -178,12 +178,10 @@
       var address = $("#address").val();
       var profileimage = $("#profileimage")[0].files[0];
 
-
-
-      if(IsValid(phone_number)){
+      if(mobile_validate('phone_number') == false){
         $('#phone_number').html();
         $('#phone_number_error').show().delay(3000).slideUp();
-        $('#phone_number_error').html('Please enter phone number ');
+        $('#phone_number_error').html('Please enter valid phone number ');
         $('#phone_number').focus();
         return false;
       }
@@ -200,11 +198,11 @@
       fd.append("mobileNumber",phone_number);
       fd.append("Address",address);
 
-    if (profileimage == "" || profileimage == undefined) {
-      fd.append("empty",'');
-    }else{
-      fd.append("photo",profileimage);
-    }
+      if (profileimage == "" || profileimage == undefined) {
+        fd.append("empty",'');
+      }else{
+        fd.append("photo",profileimage);
+      }
 
 
 
@@ -237,6 +235,85 @@
         },
       });
     }
-
+    function validateImage(input, preview) {
+      debugger;
+      var maxSizeMB = 2;
+      var allowedExtensions = ["jpg", "jpeg", "png"];
+    
+      var file = input.files[0];
+    
+      if (!file) {
+        console.error("No file selected.");
+        return;
+      }
+    
+      var fileName = file.name.toLowerCase();
+      var fileExtension = fileName.split(".").pop();
+    
+      if ($.inArray(fileExtension, allowedExtensions) === -1) {
+        showError("Invalid file type. Allowed types are: " + allowedExtensions.join(", "));
+        clearInputAndPreview(input, preview);
+        return;
+      }
+    
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function (evt) {
+          var base64 = evt.target.result;
+          $("#"+preview).attr('base64',base64)
+      }
+      if (fileExtension === "pdf") {
+        displayPdfPreview(file, preview);
+      } else {
+        displayImagePreview(file, preview);
+      }
+    }
+    function displayPdfPreview(file, preview) {
+  
+      var iframeElement = $('<iframe>');
+    
+      var fileUrl = URL.createObjectURL(file);
+      iframeElement.attr('src', fileUrl);
+    
+      replacePreviewWithElement(preview, iframeElement);
+    }
+    function displayImagePreview(file, preview) {
+      var reader = new FileReader();
+    
+      reader.onload = function (e) {
+        var imageElement = $('<img>');
+        imageElement.attr('src', e.target.result);
+        imageElement.attr('base64',e.target.result)
+  
+  
+        replacePreviewWithElement(preview, imageElement);
+      };
+    
+      reader.onerror = function (e) {
+        console.error("Error reading file:", e);
+      };
+    
+      reader.readAsDataURL(file);
+    }
+    function replacePreviewWithElement(preview, newElement) {
+      var existingPreview = $("#" + preview);
+      newElement.attr('id', existingPreview.attr('id'));
+      newElement.attr('alt', existingPreview.attr('alt'));
+      newElement.attr('class', existingPreview.attr('class'));
+      
+      existingPreview.replaceWith(newElement);
+    }
+    function clearInputAndPreview(input, preview) {
+      $(input).val("");
+      $("#" + preview).attr("src", "");
+    }
+    function showError(message) {
+      Swal.fire({
+        icon: "error",
+        title: "",
+        text: message,
+        timer: 2000,
+      });
+    }
   </script>
 {% endblock %}

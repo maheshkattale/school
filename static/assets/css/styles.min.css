@@ -19733,7 +19733,7 @@ ul {
     padding: 16px;
     box-shadow: 0 0 5px grey;
     border-radius: 15px;
-    margin-top: 15%;
+    margin-top: 10%;
 }
 
 .tab-title {
@@ -20149,4 +20149,19 @@ ul {
 
 ::-webkit-scrollbar-track {
   background: #995dff; /* Color of the scrollbar track */
+}
+.installment_count {
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    align-items: center;
+}
+.toggle_btn{
+    background: white !important;
+    font-size: 22px;
+    padding: 0px 5px 5px 5px;
+    color: grey !important;
+    border-radius: 0px;
+    text-align: center;
 }

@@ -186,7 +186,6 @@ class update_profile(GenericAPIView):
             data=request.data.copy()
             update_profile_request = requests.get(update_profile_url,headers=headers,data=data,files=request.FILES)
             update_profile_response = update_profile_request.json()
-            print("update_profile_response",update_profile_response)
             if update_profile_response['response']['n']==1:
                 request.session['profile_image'] = update_profile_response['data']['photo']
                 request.session['mobileNumber'] = update_profile_response['data']['mobileNumber']

@@ -112,7 +112,6 @@ class checkdaterange(GenericAPIView):
         endtime = request.data.get('endtime')
         teacher_id = request.data.get('teacher_id')
         
-        print("request",request.POST)
    
         overlapping_entries = TimeTable.objects.filter(
             Q(startdate__lte=enddate,isActive=True,school_code=schoolcode,Day=day) & Q(enddate__gte=startdate,isActive=True,school_code=schoolcode,Day=day)

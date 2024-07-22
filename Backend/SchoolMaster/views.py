@@ -108,8 +108,11 @@ class AddSchool(GenericAPIView):
                 else:
                     return Response({"data":'',"response": {"n": 0, "msg": "admin not found","status": "failure"}})
             else:
-                return Response({"data":serializer.errors,"response": {"n": 0, "msg": "School not added ","status": "failure"}})
+                first_key, first_value = next(iter(serializer.errors.items()))
+                return Response({"data":serializer.errors,"response": {"n": 0, "msg": first_key + " : "+ first_value[0],"status": "failure"}})
+                            
 
+                            
 
 
 class schoollist(GenericAPIView):
@@ -204,7 +207,8 @@ class updateSchool(GenericAPIView):
                     else:
                         return Response({"data":'',"response": {"n": 0, "msg": "Couldn't find admin email to update ! ","status": "failure"}})
                 else:
-                    return Response({"data":serializer.errors,"response": {"n": 0, "msg": "Couldn't Update School ! ","status": "failure"}})
+                    first_key, first_value = next(iter(serializer.errors.items()))
+                    return Response({"data":serializer.errors,"response": {"n": 0, "msg": first_key + " : "+ first_value[0],"status": "failure"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "School is not Active ","status": "failure"}})
 
@@ -294,7 +298,6 @@ class AcademicYearlist(GenericAPIView):
     def get(self,request):
         schoolcode = request.user.school_code
         yearexist = AcademicYear.objects.filter(school_code=schoolcode,Isdeleted=False).order_by('-isActive')
-        print('yearexist',yearexist)
         serializer = AcademicYearSerializer1(yearexist,many=True)
         for ys in serializer.data:
             ys['start_date'] = ys['startdate'].split('-')[2]

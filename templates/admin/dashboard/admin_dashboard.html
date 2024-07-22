@@ -151,9 +151,9 @@
   </div>
 {% endblock %} {% block script %}
   <script>
-    function createCalendar(containerId, year, month) {
+    function createCalendar(containerId, year, month,dayno) {
       const container = document.getElementById(containerId)
-      const currentDate = new Date(year, month - 1) // month is 0-based
+      const currentDate = new Date(year, month - 1,dayno) // month is 0-based
       const daysInMonth = new Date(year, month, 0).getDate()
       const startingDay = new Date(year, month - 1, 1).getDay() // 0-based index
     
@@ -168,7 +168,7 @@
       const prevMonthBtn = document.createElement('button')
       prevMonthBtn.innerHTML = '<i class="fa-solid fa-arrow-left"></i>'
       prevMonthBtn.addEventListener('click', () => {
-        createCalendar(containerId, currentDate.getFullYear(), currentDate.getMonth())
+        createCalendar(containerId, currentDate.getFullYear(), currentDate.getMonth(),1)
       })
       header.appendChild(prevMonthBtn)
     
@@ -182,7 +182,7 @@
       const nextMonthBtn = document.createElement('button')
       nextMonthBtn.innerHTML = '<i class="fa-solid fa-arrow-right"></i>'
       nextMonthBtn.addEventListener('click', () => {
-        createCalendar(containerId, currentDate.getFullYear(), currentDate.getMonth() + 2)
+        createCalendar(containerId, currentDate.getFullYear(), currentDate.getMonth() + 2,1)
       })
       header.appendChild(nextMonthBtn)
     
@@ -234,7 +234,7 @@
     }
     
     const currentDate = new Date()
-    createCalendar('calendarContainer', currentDate.getFullYear(), currentDate.getMonth() + 1)
+    createCalendar('calendarContainer', currentDate.getFullYear(), currentDate.getMonth() + 1,currentDate.getDate())
     
     function search_student() {
       var student_name = document.getElementById('student_name').value
