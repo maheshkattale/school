@@ -256,14 +256,14 @@ class AddExam(GenericAPIView):
         for i in classlist :
             examobj = Exams.objects.filter(ClassId=i['ClassId'],Date=Date,Examstarttime__lt = Examendtime,Examendtime__gt=Examstarttime,school_code=schoolcode)
             if examobj.exists():
-                return Response({"data":'',"response": {"n": 0, "msg": "Exam shedule already exists ! ","status": "failure"}})
+                return Response({"data":'',"response": {"n": 0, "msg": "Exam schedule already exists ! ","status": "failure"}})
 
         duplicateexist = has_duplicate_value(classlist, 'ClassId')
 
         if duplicateexist == False:
             for i in classlist:
                 Exams.objects.create(ClassId_id=i['ClassId'],Date=Date,Examstarttime=Examstarttime,Examendtime=Examendtime,SubjectId_id=SubjectId,ExamType_id=ExamType,totalMarks=totalMarks,passingmarks=passingmarks,reportTime=reportTime,RoomNo=i['RoomNo'],InvigilatorId=i['InvigilatorId'],Instructions=Instructions,school_code=schoolcode,AcademicYearId=academic_obj,exam=exam_obj)
-            return Response({"data":'',"response": {"n": 1, "msg": "Exams shedule created successfully","status": "success"}})
+            return Response({"data":'',"response": {"n": 1, "msg": "Exams schedule created successfully","status": "success"}})
         else:
             return Response({"data":'',"response": {"n": 0, "msg": "Class repeated in list","status": "failed"}})
     
@@ -723,6 +723,7 @@ class GenerateMarkSheet(GenericAPIView):
                                                 student_class_serilaizer=custom_studentclassLogserializer(students_class_obj)
                                                 marksheet['roll_no']=student_class_serilaizer.data['RollNo']
                                                 marksheet['class_name']=student_class_serilaizer.data['classid']
+                                                print("academic_year_id",academic_year_id,class_id,exam_name_id)
                                                 find_exams_subjects_obj=Exams.objects.filter(ClassId=class_id,AcademicYearId=academic_year_id,exam=exam_name_id,school_code=school_code)
                                                 if find_exams_subjects_obj.exists():
                                                     exam_time_table_serializers=CustomExamsSerializer2(find_exams_subjects_obj,many=True)
@@ -1136,6 +1137,12 @@ class examscheduldatabyexcel(GenericAPIView):
             passing_marks_obj = ExamTypeMarks.objects.filter(Marks=totalMarks,isActive=True).first()
             if passing_marks_obj is not None:
                 data['passingmarks'] = passing_marks_obj.passingmarks
+            
+            else:
+                reason = 'exam type with this marks not found.'
+                error = i + tuple([reason])
+                fileerrorlist.append(error)
+                continue 
                 
             data['reportTime']= str(reportTime).split(':')[0] + ':' + str(reportTime).split(':')[1]
             data['RoomNo']= RoomNo

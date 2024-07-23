@@ -281,8 +281,7 @@ class AddAcademicYear(GenericAPIView):
         if yearexist is None:
             serializer = AcademicYearSerializer(data=data)
             if serializer.is_valid():
-                AcademicYear.objects.all().update(isActive=False)
-
+                
                 serializer.save()
                 return Response({"data":serializer.data,"response": {"n": 1, "msg": "Academic year added successfully","status": "success"}})
             else:

@@ -762,7 +762,6 @@ class get_student_announcements(GenericAPIView):
 
         else:
             return Response({"data":[],"response": {"n": 0, "msg":'student not found',"status": "failed"}})
-
 class promote_students_class(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -839,7 +838,7 @@ class promote_students_class(GenericAPIView):
                 return Response({"data":{'promoted':[],'non_promoted':[]},"response": {"n": 0, "msg":'Please provide current class',"status": "failed"}})
         else:
             return Response({"data":{'promoted':[],'non_promoted':[]},"response": {"n": 0, "msg":'Please provide current academic year',"status": "failed"}})
-
+        
 class getPromotedList(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -905,9 +904,11 @@ class search_students(GenericAPIView):
                         t['classid'] = s['classid']
                         details.append(t)
                     studentlist.append(details[0])
+            return Response({"data":studentlist,"response": {"n": 1, "msg": "Students found successfully","status": "success"}})
+                    
+        else:
 
-
-        return Response({"data":studentlist,"response": {"n": 1, "msg": "Data found successfully","status": "success"}})
+            return Response({"data":[],"response": {"n": 0, "msg": "No students found","status": "failure"}})
 
 class GenerateMarksheetListApi(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
