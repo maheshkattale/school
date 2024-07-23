@@ -63,7 +63,7 @@
     
       <div class="mb-3 my-auto col-lg-3 d-flex justify-content-end ">
         <a data-bs-toggle="modal" data-bs-target="#add_exam" class="btn btn-primary mx-1"> Exam <i class="fa-solid fa-plus"></i></a>
-        <a href="/exam/add_exam"  class="btn btn-primary">Shedule <i class="fa-solid fa-plus"></i></a>
+        <a href="/exam/add_exam"  class="btn btn-primary">Schedule <i class="fa-solid fa-plus"></i></a>
 
         <div id="add_exam" class="modal">
           <div class="modal-dialog modal-lg">
@@ -84,7 +84,7 @@
        
                           <div class="mb-3 col-lg-6">
                             <label for="examname" class="form-label">Exam Name<span class="text-danger">*</span> </label>
-                            <input type="text" class="form-control" id="examname" placeholder="Please enter marks" aria-describedby="examname_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
+                            <input type="text" class="form-control" id="examname" placeholder="Please enter exam name" aria-describedby="examname_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
                             <div id="examname_error" class="form-text error_message"></div>
                           </div>
     
