@@ -19,7 +19,7 @@
             <div class="row">
               <div class="mb-3 col-lg-4">
                 <label for="teacher_name" class="form-label">Teacher Name <span class="text-danger">*</span> </label>
-                <input type="text" class="form-control" id="teacher_name" placeholder="Please enter name" value="{{ teacher.Username }}" aria-describedby="teacher_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
+                <input type="text" class="form-control" maxlength="250" id="teacher_name" placeholder="Please enter name" value="{{ teacher.Username }}" aria-describedby="teacher_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
                 <div id="teacher_name_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-4">

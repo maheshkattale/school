@@ -35,7 +35,7 @@
           <div class="row">
             <div class="mb-3 col-lg-3">
               <label for="parent_name" class="form-label">Parent Name <span class="text-danger">*</span> </label>
-              <input type="text" class="form-control" id="parent_name" placeholder="Please enter parent name"
+              <input type="text" class="form-control" maxlength="250" id="parent_name" placeholder="Please enter parent name"
                 aria-describedby="parent_name_error"
                 oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');" />
               <div id="parent_name_error" class="form-text error_message"></div>
@@ -94,39 +94,12 @@
           </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           <div class="row">
 
             <div class="mb-3 col-lg-12">
               <label for="address" class="form-label"> Address <span class="text-danger">*</span> </label>
               <textarea class="form-control" name="address" id="address" cols="30" rows="5"
-                aria-describedby="address_error" placeholder="Please enter address"></textarea>
+                aria-describedby="address_error"  maxlength="500" placeholder="Please enter address"></textarea>
               <div id="address_error" class="form-text error_message"></div>
             </div>
 
