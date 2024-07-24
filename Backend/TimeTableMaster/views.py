@@ -77,7 +77,7 @@ class daterangelist(GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self,request):
         schoolcode = request.user.school_code
-        dateobjs = TimeTable.objects.filter(isActive=True,school_code=schoolcode)
+        dateobjs = TimeTable.objects.filter(isActive=True,school_code=schoolcode).order_by('startdate','enddate').distinct('startdate','enddate')
         dateser = TimeTableSerializer(dateobjs,many=True)
         return Response({"data":dateser.data,"response": {"n": 1, "msg": "teachers found Successfully","status": "Success"}})
         

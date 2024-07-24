@@ -620,6 +620,8 @@ class search_student_by_class_of_currentyear(GenericAPIView):
                 if class_id is not None and class_id !='' and class_id !='null':
                     studentclassLogobj = studentclassLogobj.filter(classid=class_id).order_by('RollNo')
                 
+
+        
         
         current_acedemic_obj=AcademicYear.objects.filter(Isdeleted=False,school_code=school_code,isActive=True).first()
         if current_acedemic_obj is not None:
@@ -627,15 +629,26 @@ class search_student_by_class_of_currentyear(GenericAPIView):
 
 
         if studentclassLogobj.exists():
-            studentclassser = custom_studentclassLogserializer(studentclassLogobj,many=True)
-
-
-
-
-            return Response({"data":studentclassser.data,"response": {"n": 1, "msg": "Students found successfully","status": "success"}})
+            studentclassser = custom_student_class_log_studentcode_list_serializer(studentclassLogobj,many=True)
+            student_obj=Students.objects.filter(StudentCode__in=list(studentclassser.data),isActive=True).order_by('StudentCode').distinct('StudentCode')
+            if student_obj.exists():
+                if 'student_name' in request.data.keys():
+                    if request.data.get('student_name') is not None and request.data.get('student_name') !='':
+                        student_name = data['student_name']
+                        if student_name is not None and student_name !='' and student_name !='null':
+                            student_obj = student_obj.filter(StudentName__icontains=student_name)
+                student_serializer_id=custom_student_serializer(student_obj,many=True)
+                
+                print("studentclassser",list(student_serializer_id.data))
+                studentclassLogobj=studentclassLogobj.filter(studentId__in=list(student_serializer_id.data))
+                class_serializer=custom_studentclassLogserializer(studentclassLogobj,many=True)
+                return Response({"data":class_serializer.data,"response": {"n": 1, "msg": "Students found successfully","status": "success"}})
+            else:
+                return Response({"data":[],"response": {"n": 0, "msg": "No student found ","status": "failure"}})
         else:
             return Response({"data":[],"response": {"n": 0, "msg": "No student found ","status": "failure"}})
-
+        
+        
 #Announcements-------------------------------------------------------------------------------------
 class set_primary_student(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
@@ -753,7 +766,9 @@ class get_student_announcements(GenericAPIView):
         if student_obj is not None:
             student_serializeer=StudentSerializer(student_obj)
             class_id=[str(student_serializeer.data['StudentClass'])]
-            obj=Announcements.objects.filter(classid__contains=class_id,isActive=True,school_code=data['school_code']).order_by('-Date')
+            todays_date=str(datetime.today().date())
+            print("todays_date",todays_date)
+            obj=Announcements.objects.filter(classid__contains=class_id,isActive=True,school_code=data['school_code'],Date__gte=todays_date).order_by('Date')
             if obj.exists():
                 serializer = CustomAnnouncementSerializer2(obj,many=True)
                 return Response({"data":serializer.data,"response": {"n": 1, "msg":'Announcement found successfully',"status": "success"}})

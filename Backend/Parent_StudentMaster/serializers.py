@@ -6,7 +6,12 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model= Students
         fields='__all__'
-
+        
+class StudentSerializer3(serializers.ModelSerializer):
+    class Meta:
+        model= Students
+        fields=['id','StudentCode','StudentName','RollNo']
+        
 class custom_student_serializer_id_list(serializers.ListSerializer):
     def to_representation(self, data):
         return [item.id for item in data]
@@ -148,3 +153,21 @@ class custom_student_class_serializer(serializers.ModelSerializer):
     class Meta:
         model= studentclassLog
         fields='__all__'
+
+
+
+
+class custom_student_class_log_serializer_studentcode_list(serializers.ListSerializer):
+    def to_representation(self, data):
+        return [item.StudentCode for item in data]
+
+class custom_student_class_log_studentcode_list_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = studentclassLog
+        fields = ['StudentCode']
+        list_serializer_class = custom_student_class_log_serializer_studentcode_list
+
+
+
+
+

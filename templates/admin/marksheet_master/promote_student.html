@@ -81,7 +81,7 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     <label for="classid" class="form-label">Current Class</label>
     <select id="classid" class="form-select select2" aria-describedby="class_error">
       {% for class in classes %}
-      <option value="{{ class.id }}">{{ class.ClassName }} </option>
+        <option value="{{ class.id }}">{{ class.ClassName }} </option>
       {% endfor %}
 
     </select>
@@ -170,7 +170,6 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
     var fd = new FormData();
     fd.append("class", classid);
     fd.append("yearid", yearid);
-
     fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
 
     $.ajax({
@@ -191,13 +190,15 @@ box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1p
               <td><input type="checkbox" class="multiplecheckchild Checkbox" name="student" id="" value="`+ i.id + `"> ` + counter + `</td>
               <td>`+ i.StudentName + `</td>
               <td>`+ i.StudentClass + `</td>
-          </tr>`
+            </tr>`
             counter += 1
 
           });
           $('#table_body').html(trhtml)
-          new DataTable('#studentple');
-
+          //new DataTable('#studentple');
+          $('#studentple').DataTable({
+            "ordering": false
+          });
           Swal.fire({
             text: response.response.msg,
             icon: 'success',

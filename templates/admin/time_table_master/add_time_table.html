@@ -148,9 +148,7 @@
         <select id="timetable_daterange" class="form-select select2" aria-describedby="timetable_daterange_error">
           <option value="">Please select Dates</option>
           {% for i in timetable_dates_ranges %}
-
             <option value="{{i.startdate}} to {{i.enddate}}" >{{i.startdate}} to {{i.enddate}}</option>
-
           {% endfor %}
         </select>
         <div id="timetable_daterange_error" class="form-text error_message"></div>

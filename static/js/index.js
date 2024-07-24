@@ -109,6 +109,11 @@ flatpickr(".date_picker_upto_today", {
   // You can add more configuration options here
   maxDate: "today" // Disable future dates
 });
+flatpickr(".date_picker_from_today", {
+  dateFormat: "d-m-Y", // Customize date format if needed
+  // You can add more configuration options here
+  minDate: "today" // Disable future dates
+});
 $('.select2').select2()
 // In this function every menu which has an active link opens if a link is active. Its ul parent opens itself and adds the class 'open' to its parent (the arrow) so it turns 90 degrees
 $('.pagenav li').each(function(i, el) {
