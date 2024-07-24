@@ -5,16 +5,33 @@
     .modal-content {
       margin-left: 50px;
     }
+    ms-n5 {
+      margin-left: -40px;
+   }
   </style>
 {% endblock %}
 {% block heading %}
   <span class="tab-title"><span class="px-1">Parent Student Master</span></span>
 {% endblock %}
 {% block body %}
+<div class="row">
+  
+</div>
   <div class="d-flex justify-content-end">
+    <div class="col-sm-4">
+      <div class="input-group">
+          <input class="form-control border-end-0 border rounded-pill" type="search" placeholder="search" id="example-search-input" oninput="get_parents(1)">
+          <span class="input-group-append">
+            {% comment %} <button class="btn btn-outline-secondary bg-white border-bottom-0 border rounded-pill ms-n5" type="button">
+                <i class="fa fa-search"></i>
+            </button> {% endcomment %}
+        </span>
+      </div>
+  </div>
     <a data-bs-toggle="modal" data-bs-target="#uploadexcel" class="btn btn-primary mx-2">Upload Parent Excel</a>
     <a data-bs-toggle="modal" data-bs-target="#uploadstudentexcel" class="btn btn-primary mx-2">Upload Student Excel</a>
     <a href="/parent_student_master/add_parent_student" class="btn btn-primary">Add Parent</a>
+    
   </div>
 
   <div id="uploadexcel" class="modal">
@@ -127,13 +144,16 @@
 {% block script %}
 <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-  <script>
+<script>
     $(document).ready(function() {
       Pagination();
     });  
+
     function get_parents(p) {
+      var parent_name = $("#example-search-input").val();
       var fd = new FormData()
       fd.append('p', p)
+      fd.append('search',parent_name)
       fd.append('csrfmiddlewaretoken', '{{csrf_token}}')
       $.ajax({
           url: frontend_url + "parent_student_master/",
@@ -141,15 +161,15 @@
           type: 'POST',
           processData: false,
           contentType: false,
-          beforeSend: function() {
-              Swal.fire({
-                icon: "info",
-                title: "",
-                text: "Loading...",
-                buttons: false,
+          //beforeSend: function() {
+          //    Swal.fire({
+          //      icon: "info",
+          //      title: "",
+          //      text: "Loading...",
+          //      buttons: false,
       
-            });
-          },
+          //  });
+          //},
           success: function (response) {
             var infohtml = ''
   
@@ -194,10 +214,7 @@
                         $('#page-content').text('Page ' + page) + ' content here';
                       }
                     })
-  
-  
-  
-                  
+    
             }else{
                 infohtml = `
                 <tr class="border-bottom text-center">
@@ -206,12 +223,12 @@
                 `
                 $('#parent_list').html(infohtml);
   
-                Swal.fire({
-                    icon: "error",
-                    title: "",
-                    text: "No parents found !",
-                    button: "Close",
-                });
+                //Swal.fire({
+                //    icon: "error",
+                //    title: "",
+                //    text: "No parents found !",
+                //    button: "Close",
+                //});
             }
   
           }
@@ -400,154 +417,201 @@
   
 
   
-  function filevalidation(){
-    debugger
-    var file = $("#myfile")[0].files[0];
+    function filevalidation(){
+      debugger
+      var file = $("#myfile")[0].files[0];
 
-    if (file == "" || file == undefined) {
-      event.preventDefault()
+      if (file == "" || file == undefined) {
+        event.preventDefault()
 
-      Swal.fire({
-                  text: "choose file!",
-                  icon: "error",
-              })
-      return false;
-    }
-    else{
-      
-          var fd = new FormData();    
-          fd.append("file",file);
-          $.ajax({
-            type: "POST",
-            url: frontend_url+"parent_student_master/parent_bulk_upload",
-            data: fd,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-              if(response.response.n ==1){
-                Swal.fire({
-                  text: response.response.msg,
-                  icon: 'success',
-                }).then((result) => {
-                  window.location.href = "/parent_student_master";
-                });
-              }else{
-                Swal.fire({
-                  text: response.response.msg,
-                  icon: 'error',
+        Swal.fire({
+                    text: "choose file!",
+                    icon: "error",
                 })
-                exportToExcel(response.headers, response.data)
-              }
+        return false;
+      }
+      else{
         
-            },
-          });
-  
-    }
-  }
-
-  function exportToExcel(headers, data) {
-    var workbook = XLSX.utils.book_new();
-    // Create worksheet
-    var worksheet = XLSX.utils.aoa_to_sheet([]);
-    // Add headers to the worksheet
-    XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
-    // Add data to the worksheet
-    for (var i = 0; i < data.length; i++) {
-      var rowData = Object.values(data[i]);
-      XLSX.utils.sheet_add_aoa(worksheet, [rowData], { origin: "A" + (i + 2) });
-    }
-  
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    var excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+            var fd = new FormData();    
+            fd.append("file",file);
+            $.ajax({
+              type: "POST",
+              url: frontend_url+"parent_student_master/parent_bulk_upload",
+              data: fd,
+              processData: false,
+              contentType: false,
+              success: function(response) {
+                if(response.response.n ==1){
+                  Swal.fire({
+                    text: response.response.msg,
+                    icon: 'success',
+                  }).then((result) => {
+                    window.location.href = "/parent_student_master";
+                  });
+                }else{
+                  Swal.fire({
+                    text: response.response.msg,
+                    icon: 'error',
+                  })
+                  exportToExcel(response.headers, response.data)
+                }
+          
+              },
+            });
     
-    // Convert buffer to a Blob
-    var blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      }
+    }
+
+    function exportToExcel(headers, data) {
+      var workbook = XLSX.utils.book_new();
+      // Create worksheet
+      var worksheet = XLSX.utils.aoa_to_sheet([]);
+      // Add headers to the worksheet
+      XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
+      // Add data to the worksheet
+      for (var i = 0; i < data.length; i++) {
+        var rowData = Object.values(data[i]);
+        XLSX.utils.sheet_add_aoa(worksheet, [rowData], { origin: "A" + (i + 2) });
+      }
     
-    // Save the file using FileSaver.js
-    saveAs(blob, "failed_parents_students.xlsx");
-  }
-
-  const studentrealFileBtn = document.getElementById("studentfile");
-  const studentcustomBtn = document.getElementById("studentfileName");
-  const studentcustomTxt = document.getElementById("studentcustom-text");
-  
-  studentcustomBtn.addEventListener("click", function() {
-    studentrealFileBtn.click();
-  });
-  
-  studentrealFileBtn.addEventListener("change", function() {
-    if (studentrealFileBtn.value) {
-      studentcustomTxt.innerHTML = studentrealFileBtn.value.match(
-        /[\/\\]([\w\d\s\.\-\(\)]+)$/
-      )[1];
-    } else {
-      studentcustomTxt.innerHTML = "No file chosen, yet.";
-    }
-  });
-
-  $('#studentfile').bind('change', function () {
-    debugger;
-    var filename = $("#studentfile").val();
-    var validExtensions = ['xls', 'xlsx']; // Array of valid extensions
-    var fileExtension = filename.split('.').pop().toLowerCase(); // Get the file extension
-
-    if (/^\s*$/.test(filename)) {
-        $(".file-upload").removeClass('active');
-        $("#studentcustom-text").text("No file chosen...");
-    } else if (validExtensions.indexOf(fileExtension) === -1) {
-        $(".file-upload").removeClass('active');
-        $("#studentcustom-text").text("Invalid file type. Please choose an Excel file.");
-        $("#studentfile").val(''); // Clear the file input
-    } else {
-        $(".file-upload").addClass('active');
-        $("#studentcustom-text").text(filename.replace("C:\\fakepath\\", ""));
-    }
-  });
-
-  function studentfilevalidation(){
-    debugger
-    var file = $("#studentfile")[0].files[0];
-
-    if (file == "" || file == undefined) {
-      event.preventDefault()
-
-      Swal.fire({
-                  text: "choose file!",
-                  icon: "error",
-              })
-      return false;
-    }
-    else{
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+      var excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       
-          var fd = new FormData();    
-          fd.append("file",file);
-          $.ajax({
-            type: "POST",
-            url: frontend_url+"parent_student_master/student_bulk_upload",
-            data: fd,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-              if(response.response.n ==1){
-                Swal.fire({
-                  text: response.response.msg,
-                  icon: 'success',
-                }).then((result) => {
-                  window.location.href = "/parent_student_master";
-                });
-              }else{
-                Swal.fire({
-                  text: response.response.msg,
-                  icon: 'error',
-                })
-                exportToExcel(response.headers, response.data)
-              }
-        
-            },
-          });
-  
+      // Convert buffer to a Blob
+      var blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      
+      // Save the file using FileSaver.js
+      saveAs(blob, "failed_parents_students.xlsx");
     }
-  }
 
-  </script>
+    const studentrealFileBtn = document.getElementById("studentfile");
+    const studentcustomBtn = document.getElementById("studentfileName");
+    const studentcustomTxt = document.getElementById("studentcustom-text");
+    
+    studentcustomBtn.addEventListener("click", function() {
+      studentrealFileBtn.click();
+    });
+    
+    studentrealFileBtn.addEventListener("change", function() {
+      if (studentrealFileBtn.value) {
+        studentcustomTxt.innerHTML = studentrealFileBtn.value.match(
+          /[\/\\]([\w\d\s\.\-\(\)]+)$/
+        )[1];
+      } else {
+        studentcustomTxt.innerHTML = "No file chosen, yet.";
+      }
+    });
+
+    $('#studentfile').bind('change', function () {
+      debugger;
+      var filename = $("#studentfile").val();
+      var validExtensions = ['xls', 'xlsx']; // Array of valid extensions
+      var fileExtension = filename.split('.').pop().toLowerCase(); // Get the file extension
+
+      if (/^\s*$/.test(filename)) {
+          $(".file-upload").removeClass('active');
+          $("#studentcustom-text").text("No file chosen...");
+      } else if (validExtensions.indexOf(fileExtension) === -1) {
+          $(".file-upload").removeClass('active');
+          $("#studentcustom-text").text("Invalid file type. Please choose an Excel file.");
+          $("#studentfile").val(''); // Clear the file input
+      } else {
+          $(".file-upload").addClass('active');
+          $("#studentcustom-text").text(filename.replace("C:\\fakepath\\", ""));
+      }
+    });
+
+    function studentfilevalidation(){
+      debugger
+      var file = $("#studentfile")[0].files[0];
+
+      if (file == "" || file == undefined) {
+        event.preventDefault()
+
+        Swal.fire({
+                    text: "choose file!",
+                    icon: "error",
+                })
+        return false;
+      }
+      else{
+        
+            var fd = new FormData();    
+            fd.append("file",file);
+            $.ajax({
+              type: "POST",
+              url: frontend_url+"parent_student_master/student_bulk_upload",
+              data: fd,
+              processData: false,
+              contentType: false,
+              success: function(response) {
+                if(response.response.n ==1){
+                  Swal.fire({
+                    text: response.response.msg,
+                    icon: 'success',
+                  }).then((result) => {
+                    window.location.href = "/parent_student_master";
+                  });
+                }else{
+                  Swal.fire({
+                    text: response.response.msg,
+                    icon: 'error',
+                  })
+                  exportToExcel(response.headers, response.data)
+                }
+          
+              },
+            });
+    
+      }
+    }
+
+    //function searchparent_list(){
+      //var parent_name = $("#example-search-input").val();
+     
+      {% comment %} Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+
+        if (result.isConfirmed) { {% endcomment %}
+          //var fd = new FormData()
+          //fd.append('search', parent_name)
+          //fd.append('csrfmiddlewaretoken', '{{csrf_token}}')
+          //$.ajax({
+            //type: 'POST',
+            //url: frontend_url + 'parent_student_master/',
+            //data: fd,
+            //processData: false,
+            //contentType: false,
+    
+            //success: function (response) {
+              
+              //if (response.response.n == 1) {
+                //Swal.fire({
+                  //text: response.response.msg,
+                  //icon: 'success'
+                //}).then((result) => {
+                  //location.reload()
+                //)
+              //} else {
+                //Swal.fire({
+                  //text: response.response.msg,
+                  //icon: 'error'
+                //})
+              //}
+            //}
+          //})
+        {% comment %} }
+      }) {% endcomment %}
+    //}
+  
+      
+
+</script>
 {% endblock %}
