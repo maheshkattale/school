@@ -39,8 +39,9 @@ class parent_student_master(GenericAPIView):
             token = 'Bearer {}'.format(tok)
             headers = {'Authorization':token}
             p = request.POST.get('p')
+            data = {'search':request.POST.get('search')}
             parent_list_url_pagination_url = parent_list_url + "?p=" +str(p)     
-            parent_list_request = requests.get(parent_list_url_pagination_url,headers=headers)
+            parent_list_request = requests.get(parent_list_url_pagination_url,headers=headers,params=data)
             parent_list_response = parent_list_request.json()
             return HttpResponse(json.dumps(parent_list_response), content_type="application/json")
         

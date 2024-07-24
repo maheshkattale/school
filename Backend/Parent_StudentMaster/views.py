@@ -157,8 +157,12 @@ class ParentStudentlist(GenericAPIView):
     
     def get(self,request):
         schoolcode = request.user.school_code
-        Parentobj = User.objects.filter(isActive=True,role_id=5,school_code = schoolcode)
-        
+        search = request.GET.get('search')
+        Parentobj = ''
+        if search is not None and search !="":
+            Parentobj = User.objects.filter(isActive=True,role_id=5,school_code = schoolcode,Username__icontains=search)
+        else:
+            Parentobj = User.objects.filter(isActive=True,role_id=5,school_code = schoolcode)
         if Parentobj.exists():
             page = self.paginate_queryset(Parentobj)               
             parentserializer = UserlistSerializer(page,many=True)
@@ -166,6 +170,23 @@ class ParentStudentlist(GenericAPIView):
         else:
                    
             return Response({"data":[],"response": {"n": 0, "msg": "Parents list not found ","status": "failure"}})
+        
+    def post(self,request):
+        schoolcode = request.user.school_code
+        search = request.POST.get('search')
+        Parentobj = ''
+        if search is not None and search !="":
+            Parentobj = User.objects.filter(isActive=True,role_id=5,school_code = schoolcode,Username=search)
+        else:
+            Parentobj = User.objects.filter(isActive=True,role_id=5,school_code = schoolcode)
+        if Parentobj.exists():
+            page = self.paginate_queryset(Parentobj)               
+            parentserializer = UserlistSerializer(page,many=True)
+            return self.get_paginated_response(parentserializer.data) 
+        else:
+                   
+            return Response({"data":[],"response": {"n": 0, "msg": "Parents list not found ","status": "failure"}})
+    
     
 class updateParentStudent(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
