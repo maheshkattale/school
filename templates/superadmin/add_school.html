@@ -27,7 +27,7 @@
             <div class="row">
                   <div class="mb-3 col-lg-4">
                     <label for="school_name" class="form-label">School Name <span class="text-danger">*</span> </label>
-                    <input type="text" class="form-control" id="school_name" placeholder="Please enter school name" aria-describedby="school_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');">
+                    <input type="text" class="form-control" maxlength="250" id="school_name" placeholder="Please enter school name" aria-describedby="school_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');">
                     <div id="school_name_error" class="form-text error_message"></div>
                   </div>
                   <div class="mb-3 col-lg-4">
@@ -42,7 +42,7 @@
                   </div>
                   <div class="mb-3 col-lg-4">
                       <label for="school_admin_name" class="form-label">Admin Name <span class="text-danger">*</span> </label>
-                      <input type="text" class="form-control" id="school_admin_name" placeholder="Please enter school admin name" aria-describedby="school_admin_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');">
+                      <input type="text" class="form-control"  maxlength="250" id="school_admin_name" placeholder="Please enter school admin name" aria-describedby="school_admin_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');">
                       <div id="school_admin_name_error" class="form-text error_message"></div>
                   </div>
                   <div class="mb-3 col-lg-4">
@@ -70,7 +70,7 @@
 
                   <div class="mb-3 col-lg-12">
                       <label for="school_address" class="form-label">School Address <span class="text-danger">*</span> </label>
-                      <textarea  class="form-control"  name="school_address" id="school_address" cols="30" rows="5" aria-describedby="school_address_error"></textarea>
+                      <textarea  class="form-control" maxlength="300" name="school_address" id="school_address" cols="30" rows="5" aria-describedby="school_address_error"></textarea>
                       <div id="school_address_error" class="form-text error_message"></div>
                   </div>
             </div>

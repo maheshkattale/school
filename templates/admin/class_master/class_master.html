@@ -68,7 +68,7 @@
   
                         <div class="mb-3 col-lg-6">
                           <label for="class_name" class="form-label">Class Name <span class="text-danger">*</span> </label>
-                          <input type="text" class="form-control" id="class_name" placeholder="Please enter class name" aria-describedby="class_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"  />
+                          <input type="text" maxlength="250" class="form-control" id="class_name" placeholder="Please enter class name" aria-describedby="class_name_error"  />
                           <div id="class_name_error" class="form-text error_message"></div>
                         </div>
   
@@ -131,7 +131,7 @@
         
                               <div class="mb-3 col-lg-6">
                                 <label for="class_name{{i.id}}" class="form-label">Class Name <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control" id="class_name{{i.id}}" value="{{i.ClassName}}" placeholder="Please enter class name" aria-describedby="class_name_error{{i.id}}" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ]+/g,'').replace(/(\..*)\./g, '$1');"/>
+                                <input type="text" maxlength="250" class="form-control" id="class_name{{i.id}}" value="{{i.ClassName}}" placeholder="Please enter class name" aria-describedby="class_name_error{{i.id}}" />
                                 <div id="class_name_error{{i.id}}" class="form-text error_message"></div>
                               </div>
         

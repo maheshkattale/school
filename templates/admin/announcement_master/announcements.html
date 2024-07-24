@@ -88,7 +88,7 @@
                         </div>
                         <div class="mb-3 col-lg-12">
                           <label for="announcement_text" class="form-label">Announcement Text <span class="text-danger">*</span> </label>
-                          <textarea class="form-control" rows="5" id="announcement_text" placeholder="Please enter announcement text"></textarea>
+                          <textarea class="form-control" rows="5" maxlength="1000" id="announcement_text" placeholder="Please enter announcement text"></textarea>
                           <div id="announcement_text_error" class="form-text error_message mt-3"></div>
                         </div>
                       </div>
@@ -159,7 +159,7 @@
                           </div>
                           <div class="mb-3 col-lg-12">
                             <label for="announcement_textedit" class="form-label">Announcement Text <span class="text-danger">*</span> </label>
-                            <textarea class="form-control" rows="5" id="announcement_textedit">{{i.announcement_text}}</textarea>
+                            <textarea class="form-control" rows="5"  maxlength="1000" id="announcement_textedit">{{i.announcement_text}}</textarea>
                             <div id="announcement_text_erroredit" class="form-text error_message"></div>
                           </div>
                         </div>

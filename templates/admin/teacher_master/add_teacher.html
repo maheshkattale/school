@@ -19,7 +19,7 @@
             <div class="row">
               <div class="mb-3 col-lg-4">
                 <label for="teacher_name" class="form-label">Teacher Name <span class="text-danger">*</span> </label>
-                <input type="text" class="form-control" id="teacher_name" placeholder="Please enter name" aria-describedby="teacher_name_error" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
+                <input type="text" class="form-control" id="teacher_name" placeholder="Please enter name" aria-describedby="teacher_name_error" maxlength="250" oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g,'').replace(/(\..*)\./g, '$1');"/>
                 <div id="teacher_name_error" class="form-text error_message"></div>
               </div>
 
@@ -59,14 +59,14 @@
                 <select id="teacher_subject" class="form-select select2" aria-describedby="teacher_subject_error" multiple>
    
                   {% for subject in subjects %}
-                  <option value="{{subject.id}}"> {{subject.SubjectName}}</option>
-                {% endfor %}
+                    <option value="{{subject.id}}"> {{subject.SubjectName}}</option>
+                  {% endfor %}
                 </select>
                 <div id="teacher_subject_error" class="form-text error_message"></div>
               </div>
               <div class="mb-3 col-lg-12">
                 <label for="teacher_address" class="form-label">Teacher Address <span class="text-danger">*</span> </label>
-                <textarea class="form-control" name="teacher_address" id="teacher_address" cols="30" rows="5" placeholder="Please enter address" aria-describedby="teacher_address_error"></textarea>
+                <textarea class="form-control" name="teacher_address"  maxlength="500" id="teacher_address" cols="30" rows="5" placeholder="Please enter address" aria-describedby="teacher_address_error"></textarea>
                 <div id="teacher_address_error" class="form-text error_message"></div>
               </div>
             </div>
