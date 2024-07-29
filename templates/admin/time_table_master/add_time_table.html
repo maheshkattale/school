@@ -214,67 +214,190 @@
     return monthNumber
   }
 
+  // function check_existing_entry(){
+  //   debugger;
+  //   var subject_id = $('#subject option:selected').val();
+  //   var teacher_id = $('#teacher option:selected').val();
+  //   var classid=$('#class_name').val();
+  //   var day=$('#day').val();
+  //   var starttime=$('#start_time').val();
+  //   var endtime=$('#end_time').val();
+  //   var dates = getdates($('#spandatechange').html());
+  //   var status = false
 
+  //   var entryExists = timetables.some(function(entry) {
+  //     console.log("entry",entry.class, classid , entry.day , day);
+  //       if (entry.class === classid && entry.day === day) {
+           
+  //           var oldStartDate = new Date(entry.startdate);
+  //           var oldEndDate = new Date(entry.enddate);
+  //           var newStartDate = new Date(dates.start_date);
+  //           var newEndDate = new Date(dates.end_date);
+  //           console.log("h1",oldStartDate,oldEndDate,newStartDate,newEndDate);
 
+  //           if (
+  //               (newStartDate <= oldStartDate && newStartDate <= oldEndDate && newEndDate <= oldStartDate && newEndDate <= oldEndDate) ||
+  //               (newStartDate <= oldStartDate && newStartDate <= oldEndDate && newEndDate >= oldStartDate && newEndDate <= oldEndDate) ||
+  //               (newStartDate <= oldStartDate && newStartDate <= oldEndDate && newEndDate >= oldStartDate && newEndDate <= oldEndDate) ||
+  //               (newStartDate <= oldStartDate && newStartDate <= oldEndDate && newEndDate >= oldStartDate && newEndDate >= oldEndDate) ||
+  //               (newStartDate >= oldStartDate && newStartDate <= oldEndDate && newEndDate >= oldStartDate && newEndDate <= oldEndDate)
+  //           ) {
+  //               // Your code here for when any of the conditions are true
+  //               console.log("h2");
+  //               status= true;
+  //               return status
 
-  function check_existing_entry(){
-    debugger
-    var subject_id = $('#subject option:selected').val();
-    var teacher_id = $('#teacher option:selected').val();
-    var classid=$('#class_name').val();
-    var day=$('#day').val();
-    var starttime=$('#start_time').val();
-    var endtime=$('#end_time').val();
-    var dates = getdates($('#spandatechange').html());
-    var status =false
+  //           }
 
-    var fd = new FormData();  
-    fd.append("startdate",dates.start_date);
-    fd.append("enddate",dates.end_date);
-    fd.append("starttime",starttime);
-    fd.append("endtime",endtime);
-    fd.append("classid",classid);
-    fd.append("day",day);
-    fd.append("subject_id",subject_id);
-    fd.append("teacher_id",teacher_id);
-    fd.append("csrfmiddlewaretoken","{{csrf_token}}");
-
-    $.ajax({
-      type: "POST",
-      url: frontend_url+"time_table_master/check_existing_timetable_entry",
-      data: fd,
-      processData: false,
-      contentType: false,
-      async:false,
+  //       }
       
-      success: function(response) {
-        debugger;
+  //   });
+
+
+
+
+  //   var fd = new FormData();  
+
+  //   fd.append("startdate",dates.start_date);
+  //   fd.append("enddate",dates.end_date);
+  //   fd.append("starttime",starttime);
+  //   fd.append("endtime",endtime);
+  //   fd.append("classid",classid);
+  //   fd.append("day",day);
+  //   fd.append("subject_id",subject_id);
+  //   fd.append("teacher_id",teacher_id);
+  //   fd.append("csrfmiddlewaretoken","{{csrf_token}}");
+
+
+  //   $.ajax({
+  //     type: "POST",
+  //     url: frontend_url+"time_table_master/check_existing_timetable_entry",
+  //     data: fd,
+  //     processData: false,
+  //     contentType: false,
+  //     async:false,
+      
+  //     success: function(response) {
+  
         
       
 
-        if(response.data == true){
-          Swal.fire({
-            text: response.response.msg,
-            icon: 'error',
-          });
-          status=true
-        }else{
-          status=false
-        }
+  //       if(response.data == true){
+  //         Swal.fire({
+  //           text: response.response.msg,
+  //           icon: 'error',
+  //         });
+  //         status=true
+  //       }else{
+  //         status=false
+  //       }
 
   
-      },
-    });
+  //     },
+  //   });
     
 
 
-    return status
+  //   return status
 
 
 
 
 
+  // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  function check_existing_entry() {
+  debugger;
+  var subject_id = $('#subject option:selected').val();
+  var teacher_id = $('#teacher option:selected').val();
+  var classid = $('#class_name').val();
+  var day = $('#day').val();
+  var starttime = $('#start_time').val();
+  var endtime = $('#end_time').val();
+  var dates = getdates($('#spandatechange').html());
+  var status = false;
+
+  var entryExists = timetables.some(function(entry) {
+    console.log("entry", entry.class, classid, entry.day, day);
+    if (entry.class === classid && entry.day === day) {
+      var oldStartDate = new Date(entry.startdate);
+      var oldEndDate = new Date(entry.enddate);
+      var newStartDate = new Date(dates.start_date);
+      var newEndDate = new Date(dates.end_date);
+      console.log("h1", oldStartDate, oldEndDate, newStartDate, newEndDate);
+
+      // Simplified date overlap check
+      if ((newStartDate <= oldEndDate && newEndDate >= oldStartDate) ||
+          (newStartDate >= oldStartDate && newStartDate <= oldEndDate)) {
+          
+
+          
+
+            console.log("h2");
+            status = true;
+            return true; // Exit loop early
+      }
+    }
+  });
+
+  if (entryExists) {
+    return true; // Conflict found, no need to proceed
   }
+
+  var fd = new FormData();
+  fd.append("startdate", dates.start_date);
+  fd.append("enddate", dates.end_date);
+  fd.append("starttime", starttime);
+  fd.append("endtime", endtime);
+  fd.append("classid", classid);
+  fd.append("day", day);
+  fd.append("subject_id", subject_id);
+  fd.append("teacher_id", teacher_id);
+  fd.append("csrfmiddlewaretoken", "{{csrf_token}}");
+
+  $.ajax({
+    type: "POST",
+    url: frontend_url + "time_table_master/check_existing_timetable_entry",
+    data: fd,
+    processData: false,
+    contentType: false,
+    async: false,
+    success: function(response) {
+      if (response.data === true) {
+        Swal.fire({
+          text: response.response.msg,
+          icon: 'error',
+        });
+        status = true;
+      } else {
+        status = false;
+      }
+    },
+  });
+
+  return status;
+}
+
+
+
+
+
+
+
 
 
 
@@ -434,27 +557,24 @@
       url: frontend_url+"time_table_master/get_timetable_by_id",
       data: fd,
       processData: false,
-      contentType: false,
-      
+      contentType: false,      
       success: function(response) {
-     
+        console.log("response",response)
         if(response.response.n ==1){
           var d=response.data
-      
           $('#addtimetableBtn').addClass('d-none')
           $('#updatedrafttimetableBtn').addClass('d-none')
           $('#updatenormaltimetableBtn').removeClass('d-none')
           itemtobechange=id
-         
           $("#class_name").val(d.ClassId).trigger("change");
           $('#day').val(d.Day).trigger("change");
-          
-          $('#subject').val(d.SubjectId).trigger("change");;
           $('#start_time').val(d.start_time);
           $('#end_time').val(d.end_time);
           setDateRange(d.startdate, d.enddate);
-          //$('#teacher').val(d.TeacherId).trigger("change");;
-          set_teacher(d.TeacherId)
+          //set_teacher(d.TeacherId)
+
+          $('#subject').val(d.SubjectId).trigger('change')
+          $('#teacher').val(d.TeacherId).trigger('change')
 
 
         }else{
@@ -499,9 +619,9 @@
 
     rownoToRemove.remove();
     $("#class_name").val("").trigger("change");
-    $('#day').val("").trigger("change");;
-    $('#subject').val("").trigger("change");;
-    $('#teacher').val("").trigger("change");;
+    $('#day').val("").trigger("change");
+    $('#subject').val("").trigger("change");
+    $('#teacher').val("").trigger("change");
     $('#start_time').val(' ');
     $('#end_time').val(' ');
     $('#addtimetableBtn').removeClass('d-none')
@@ -543,7 +663,6 @@
     return hour + ':' + minute + ' ' + amPm;
   }
   function editrow(itemNo){
-
     var result=timetables.find(item => item.itemno === itemNo)
     const index = timetables.findIndex(item => item.itemno === itemNo);
 
@@ -554,11 +673,13 @@
 
     itemtobechange=itemNo
     $("#class_name").val(result.class).trigger("change");
-    $('#day').val(result.day).trigger("change");;
-    $('#subject').val(result.subject).trigger("change");;
-    $('#teacher').val(result.teacher).trigger("change");;
+    $('#day').val(result.day).trigger("change");
     $('#start_time').val(result.starttime);
     $('#end_time').val(result.endtime);
+
+    $('#subject').select2('destroy');
+    $('#subject').val(result.subject).select2();
+    $('#teacher').val(result.teacher).trigger("change");
     setDateRange(result.startdate, result.enddate);
 
 
@@ -601,9 +722,9 @@
     } 
 
     $("#class_name").val("").trigger("change");
-    $('#day').val("").trigger("change");;
-    $('#subject').val("").trigger("change");;
-    $('#teacher').val("").trigger("change");;
+    $('#day').val("").trigger("change");
+    $('#subject').val("").trigger("change");
+    $('#teacher').val("").trigger("change");
     $('#start_time').val(' ');
     $('#end_time').val(' ');
     $('#addtimetableBtn').removeClass('d-none')
@@ -770,12 +891,11 @@
 
 
     $('#addtimetableBtn').on('click', function() {
-      debugger;
+      
       if(validate_form() == true){
         var existing_entry=check_existing_entry()
         
         if(existing_entry == false ){
-          debugger
           var class_name = $('#class_name option:selected').text();
           var class_id = $('#class_name option:selected').val();
           var day = $('#day option:selected').text();
@@ -805,9 +925,9 @@
 
 
           $("#class_name").val("").trigger("change");
-          $('#day').val("").trigger("change");;
-          $('#subject').val("").trigger("change");;
-          $('#teacher').val("").trigger("change");;
+          $('#day').val("").trigger("change");
+          $('#subject').val("").trigger("change");
+          $('#teacher').val("").trigger("change");
           $('#start_time').val(' ');
           $('#end_time').val(' ');
 
@@ -817,14 +937,13 @@
 
           timetables.push({"itemno":rowno,"class":class_id,"day":day,"startdate":dates.start_date,"enddate":dates.end_date,"starttime":start_time ,"endtime":end_time, "subject":subject_id,"teacher":teacher_id,'AcademicYear':'{{academic_year.id}}'});
           rowno++;
-
-            //addtimetableToArray(timetable);
+          console.log("timetables",timetables)
               
         }
       }
     });
 
-    $('#subject').change(function() {
+    $('#subject').change(function(){
       // Your code here to handle the change event
       var selectedSubject = $(this).val(); // Get the selected value
    

@@ -30,6 +30,7 @@ from Frontend.school.custom_function import *
 from tablib import Dataset
 
 from django.db.models import Q
+
 class addtimetable(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -41,6 +42,9 @@ class addtimetable(GenericAPIView):
         schoolcode = request.user.school_code
         if timetablelist != []:
             for t in timetablelist :
+                
+                
+                
                 TimeTable.objects.create(ClassId_id=t['class'],startdate = t['startdate'],enddate=t['enddate'],Day=t['day'],start_time=t['starttime'],end_time = t['endtime'],SubjectId_id=t['subject'],TeacherId = t['teacher'],school_code=schoolcode,AcademicYear_id = t['AcademicYear'])
 
             return Response({"data":'',"response": {"n": 1, "msg": "TimeTable Added Successfully","status": "Success"}})
@@ -101,8 +105,6 @@ class checkdaterange(GenericAPIView):
     authentication_classes=[userJWTAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def post(self,request):
-        # one teacher cannot be present in another class at same time
-        
         schoolcode = request.user.school_code
         startdate = request.data.get('startdate')
         enddate = request.data.get('enddate')
@@ -111,7 +113,6 @@ class checkdaterange(GenericAPIView):
         starttime =  request.data.get('starttime')
         endtime = request.data.get('endtime')
         teacher_id = request.data.get('teacher_id')
-        
    
         overlapping_entries = TimeTable.objects.filter(
             Q(startdate__lte=enddate,isActive=True,school_code=schoolcode,Day=day) & Q(enddate__gte=startdate,isActive=True,school_code=schoolcode,Day=day)
